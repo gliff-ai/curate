@@ -1,7 +1,5 @@
-import React, { Component, ReactNode} from "react";
+import React from "react";
 
-export class UserInterface extends Component {
-render = (): ReactNode => (
-    <h1>CURATE</h1>
-)
-}
+export const UserInterface: React.FC = (): React.ReactElement => (
+  <h1>CURATE</h1>
+);
