@@ -15,8 +15,8 @@ export const UserInterface = (props: Props): React.ReactElement => (
   <div>
     <h1>CURATE</h1>
     <Grid container spacing={3}>
-      {props.tiles.map((tile) => (
-        <Grid item xs={1}>
+      {props.tiles.map((tile, index) => (
+        <Grid item xs={1} key={index}>
           <img
             height={128}
             src={`data:image/png;base64,${tile.thumbnail}`}
