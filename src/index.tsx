@@ -20,7 +20,8 @@ export const UserInterface = (props: Props): React.ReactElement => (
           <img
             height={128}
             src={`data:image/png;base64,${tile.thumbnail}`}
-          ></img>
+            alt={tile.name}
+          />
         </Grid>
       ))}
     </Grid>
