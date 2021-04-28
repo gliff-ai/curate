@@ -50,8 +50,8 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: "examples/cells",
-          to: "cells",
+          from: "examples/samples",
+          to: "samples",
         },
       ],
     }),

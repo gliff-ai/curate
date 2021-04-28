@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import { UserInterface } from "@/index";
 
-// load the cells images, construct an array of tiles:
+// load the sample images, construct an array of tiles:
 const loadImage = (filename: string): Promise<string> =>
   new Promise((resolve) => {
     const image = new Image();
@@ -26,7 +26,7 @@ const loadImage = (filename: string): Promise<string> =>
 // get image promises:
 const promises: Array<Promise<string>> = [];
 for (let i = 0; i < 20; i += 1) {
-  const filename = `cells/cell${i}.png`;
+  const filename = `samples/sample${i}.png`;
   promises.push(loadImage(filename));
 }
 
@@ -37,7 +37,7 @@ Promise.all(promises)
       // make tiles:
       const tiles = images.map((image: string, i) => ({
         id: String(i),
-        name: `cells/cell${i}.png`,
+        name: `samples/sample${i}.png`,
         label: i % 2 ? "cancer" : "notcancer",
         thumbnail: image,
       }));
