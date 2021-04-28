@@ -36,6 +36,7 @@ Promise.all(promises)
     (images: string[]) => {
       // make tiles:
       const tiles = images.map((image: string, i) => ({
+        id: String(i),
         name: `cells/cell${i}.png`,
         label: i % 2 ? "cancer" : "notcancer",
         thumbnail: image,
