@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
-import { Drawer, List, ListItem } from "@material-ui/core";
+import { Drawer, List, ListItem, ListItemText } from "@material-ui/core";
 import { render } from "react-dom";
 
 export interface Tile {
@@ -32,7 +32,7 @@ export class UserInterface extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      selected: 0,
+      selected: null,
     };
   }
 
@@ -60,17 +60,19 @@ export class UserInterface extends React.Component<Props, State> {
         ))}
       </Grid>
 
-      <Drawer variant="permanent" anchor="right">
-        {this.state.selected !== null && (
+      {this.state.selected !== null && (
+        <Drawer variant="permanent" anchor="right">
           <List>
             {Object.entries(this.props.tiles[this.state.selected].metadata).map(
               ([key, value], index) => (
-                <ListItem key={index}>{`${key}: ${value}`}</ListItem>
+                <ListItem key={index}>
+                  <ListItemText primary={`${key}: ${value}`} />
+                </ListItem>
               )
             )}
           </List>
-        )}
-      </Drawer>
+        </Drawer>
+      )}
     </div>
   );
 }
