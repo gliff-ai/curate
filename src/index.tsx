@@ -1,7 +1,44 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
-import { Drawer, List, ListItem, ListItemText } from "@material-ui/core";
-import { render } from "react-dom";
+import {
+  AppBar,
+  CssBaseline,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import { Theme, withStyles } from "@material-ui/core";
+
+const drawerWidth = 240;
+
+const styles = (theme: Theme) => ({
+  root: {
+    display: "flex",
+  },
+  appBar: {
+    // width: `calc(100% - ${drawerWidth}px)`,
+    width: `calc(100%)`,
+    // marginRight: drawerWidth,
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3),
+  },
+});
 
 export interface Tile {
   id: string;
@@ -22,13 +59,14 @@ export interface Metadata {
 
 interface Props {
   tiles: Array<Tile>;
+  classes: any;
 }
 
 interface State {
   selected: number;
 }
 
-export class UserInterface extends React.Component<Props, State> {
+class UserInterface extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -42,37 +80,77 @@ export class UserInterface extends React.Component<Props, State> {
     });
   };
 
-  render = () => (
-    <div>
-      <h1>CURATE</h1>
-      <Grid container spacing={3}>
-        {this.props.tiles.map((tile, index) => (
-          <Grid item xs={1} key={tile.id}>
-            <img
-              height={128}
-              src={`data:image/png;base64,${tile.thumbnail}`}
-              alt={tile.name}
-              onClick={() => {
-                this.setSelected(index);
-              }}
-            />
-          </Grid>
-        ))}
-      </Grid>
+  render = () => {
+    const { classes } = this.props;
 
-      {this.state.selected !== null && (
-        <Drawer variant="permanent" anchor="right">
-          <List>
-            {Object.entries(this.props.tiles[this.state.selected].metadata).map(
-              ([key, value], index) => (
+    let drawerItems;
+    if (this.state.selected !== null) {
+      const metadata = this.props.tiles[this.state.selected].metadata;
+      drawerItems = [
+        ["Size", metadata.size],
+        ["Created", metadata.created],
+        ["Number Of Dimensions", metadata.numberOfDimensions],
+        ["Dimensions", metadata.dimensions],
+        ["Number Of Channels", metadata.numberOfChannels],
+        ["Labels", metadata.imageLabels.toString()],
+      ];
+    }
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar position="fixed" className={classes.appBar}>
+          <Toolbar>
+            <Typography variant="h5" noWrap>
+              CURATE
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <Grid container spacing={3}>
+            {this.props.tiles.map((tile, index) => (
+              <Grid item key={tile.id}>
+                <img
+                  height={128}
+                  src={`data:image/png;base64,${tile.thumbnail}`}
+                  alt={tile.name}
+                  onClick={() => {
+                    this.setSelected(index);
+                  }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </main>
+
+        {this.state.selected !== null && (
+          <Drawer
+            variant="permanent"
+            anchor="right"
+            className={classes.drawer}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <ListItem>
+              {/* <ListItemText primary={"Metadata"} /> */}
+              <Typography variant="h4">Metadata</Typography>
+            </ListItem>
+            <Divider />
+
+            <List>
+              {drawerItems.map(([name, value], index) => (
                 <ListItem key={index}>
-                  <ListItemText primary={`${key}: ${value}`} />
+                  <ListItemText>{`${name}: ${value}`}</ListItemText>
                 </ListItem>
-              )
-            )}
-          </List>
-        </Drawer>
-      )}
-    </div>
-  );
+              ))}
+            </List>
+          </Drawer>
+        )}
+      </div>
+    );
+  };
 }
+
+export default withStyles(styles)(UserInterface);
