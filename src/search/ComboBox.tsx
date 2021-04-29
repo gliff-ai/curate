@@ -12,7 +12,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex",
-      float: "right",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "absolute",
+      right: "10px",
     },
     input: {
       paddingLeft: "10px",
@@ -58,46 +61,44 @@ export default function ComboBox({ metadata, metadataKeys, callback }: Props) {
   }
 
   return (
-    <div className={style.root}>
-      <Paper
-        component="form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          callback(inputKey, inputValue);
+    <Paper
+      component="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        callback(inputKey, inputValue);
+      }}
+      className={style.root}
+    >
+      <Autocomplete
+        id="combobox-metadata-key"
+        className={style.input}
+        inputValue={inputKey}
+        onInputChange={(e: any, newInputKey: string) => {
+          setInputKey(newInputKey);
         }}
-        className={style.root}
+        options={metadataKeys}
+        renderInput={(params: any) => <TextField {...params} label="Key" />}
+      />
+      <Autocomplete
+        key={inputValue}
+        id="combobox-metadata-value"
+        className={style.input}
+        inputValue={inputValue}
+        onInputChange={(e: any, newInputValue: string) => {
+          if (newInputValue !== "") {
+            setInputValue(newInputValue);
+          }
+        }}
+        options={inputOptions}
+        renderInput={(params: any) => <TextField {...params} label="Value" />}
+      />
+      <IconButton
+        type="submit"
+        aria-label="search"
+        className={style.iconButton}
       >
-        <Autocomplete
-          id="combobox-metadata-key"
-          className={style.input}
-          inputValue={inputKey}
-          onInputChange={(e: any, newInputKey: string) => {
-            setInputKey(newInputKey);
-          }}
-          options={metadataKeys}
-          renderInput={(params: any) => <TextField {...params} label="Key" />}
-        />
-        <Autocomplete
-          key={inputValue}
-          id="combobox-metadata-value"
-          className={style.input}
-          inputValue={inputValue}
-          onInputChange={(e: any, newInputValue: string) => {
-            if (newInputValue !== "") {
-              setInputValue(newInputValue);
-            }
-          }}
-          options={inputOptions}
-          renderInput={(params: any) => <TextField {...params} label="Value" />}
-        />
-        <IconButton
-          type="submit"
-          aria-label="search"
-          className={style.iconButton}
-        >
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-    </div>
+        <SearchIcon />
+      </IconButton>
+    </Paper>
   );
 }
