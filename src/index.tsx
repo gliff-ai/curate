@@ -1,17 +1,18 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
 import {
   AppBar,
   CssBaseline,
   Divider,
   Drawer,
+  Grid,
   List,
   ListItem,
   ListItemText,
+  Theme,
   Toolbar,
   Typography,
+  withStyles,
 } from "@material-ui/core";
-import { Theme, withStyles } from "@material-ui/core";
 
 const drawerWidth = 240;
 
@@ -59,7 +60,14 @@ export interface Metadata {
 
 interface Props {
   tiles: Array<Tile>;
-  classes: any;
+  classes: {
+    root: string;
+    appBar: string;
+    drawer: string;
+    drawerPaper: string;
+    toolbar: string;
+    content: string;
+  };
 }
 
 interface State {
@@ -85,7 +93,7 @@ class UserInterface extends React.Component<Props, State> {
 
     let drawerItems;
     if (this.state.selected !== null) {
-      const metadata = this.props.tiles[this.state.selected].metadata;
+      const { metadata } = this.props.tiles[this.state.selected];
       drawerItems = [
         ["Size", metadata.size],
         ["Created", metadata.created],
@@ -140,8 +148,8 @@ class UserInterface extends React.Component<Props, State> {
             <Divider />
 
             <List>
-              {drawerItems.map(([name, value], index) => (
-                <ListItem key={index}>
+              {drawerItems.map(([name, value]) => (
+                <ListItem key={name}>
                   <ListItemText>{`${name}: ${value}`}</ListItemText>
                 </ListItem>
               ))}

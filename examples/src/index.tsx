@@ -60,7 +60,7 @@ Promise.all(promises)
       const tiles = images.map((image: string, i) => ({
         id: String(i),
         name: `samples/sample${i}.png`,
-        metadata: i % 2 == 0 ? metadata1 : metadata2,
+        metadata: i % 2 === 0 ? metadata1 : metadata2,
         thumbnail: image,
       }));
       // render main component:
