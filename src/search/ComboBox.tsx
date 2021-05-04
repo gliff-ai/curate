@@ -1,4 +1,5 @@
-import React, { useState, useEffect, ReactElement } from "react";
+/* eslint-disable react/jsx-props-no-spreading */
+import React, { ChangeEvent, useState, useEffect, ReactElement } from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { IconButton, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -78,7 +79,7 @@ export default function ComboBox({
         id="combobox-metadata-key"
         className={style.input}
         inputValue={inputKey}
-        onInputChange={(e: any, newInputKey: string) => {
+        onInputChange={(e: ChangeEvent, newInputKey: string) => {
           setInputKey(newInputKey);
         }}
         options={metadataKeys}
@@ -89,7 +90,7 @@ export default function ComboBox({
         className={style.input}
         inputValue={inputValue}
         freeSolo
-        onInputChange={(e: any, newInputValue: string) => {
+        onInputChange={(e: ChangeEvent, newInputValue: string) => {
           setInputValue(newInputValue);
         }}
         options={inputOptions}

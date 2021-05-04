@@ -14,7 +14,6 @@ interface Props {
   tiles: Array<Tile>;
 }
 interface State {
-  filteredMeta: Metadata;
   metadata: Metadata;
   metadataKeys: string[];
   imageLabels: string[];
@@ -23,17 +22,20 @@ interface State {
 }
 
 export class UserInterface extends Component<Props, State> {
+  private filteredMeta: Metadata;
+
   constructor(props: Props) {
     super(props);
 
     this.state = {
       metadata: [],
       metadataKeys: [],
-      filteredMeta: [],
       imageLabels: [],
       imageNames: [],
       expanded: "labels-toolbox",
     };
+
+    this.filteredMeta = [];
   }
 
   componentDidMount = (): void => {
@@ -42,11 +44,11 @@ export class UserInterface extends Component<Props, State> {
       if (data && data.length > 0) {
         this.setState({
           metadata: data,
-          filteredMeta: data,
           metadataKeys: Object.keys(data[0]),
           imageLabels: this.getImageLabels(data),
           imageNames: this.getImageNames(data),
         });
+        this.filteredMeta = data;
       }
     });
   };
@@ -69,9 +71,8 @@ export class UserInterface extends Component<Props, State> {
         }
       }
     });
-    console.log(filteredMeta);
+    this.filteredMeta = filteredMeta;
     this.setState({
-      filteredMeta,
       imageNames: this.getImageNames(filteredMeta),
     });
   };
@@ -94,9 +95,9 @@ export class UserInterface extends Component<Props, State> {
         filteredMeta.push(mitem);
       }
     });
-    console.log(filteredMeta);
+
+    this.filteredMeta = filteredMeta;
     this.setState({
-      filteredMeta,
       imageNames: this.getImageNames(filteredMeta),
     });
   };
@@ -109,13 +110,18 @@ export class UserInterface extends Component<Props, State> {
     return Array.from(labels);
   };
 
-  getImageNames = (data: Metadata): string[] => {
-    return data.map((mitem: MetaItem) => mitem.imageName);
-  };
+  getImageNames = (data: Metadata): string[] =>
+    data.map((mitem: MetaItem) => mitem.imageName);
 
-  isTileInSelectedImages = (tileName: string): boolean => {
-    const [file, _] = tileName.split("\\").pop().split("/").pop().split(".");
-    return this.state.imageNames.includes(file);
+  isTileInSelectedImages = (tileFileName: string): boolean => {
+    const tileName = tileFileName
+      .split("\\")
+      .pop()
+      .split("/")
+      .pop()
+      .split(".")
+      .shift();
+    return this.state.imageNames.includes(tileName);
   };
 
   loadMeta = (
