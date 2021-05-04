@@ -4,7 +4,14 @@ import { Metadata, MetaItem } from "./search/interfaces";
 import ComboBox from "./search/ComboBox";
 import LabelsAccordion from "./search/LabelsAccordion";
 
+export interface Tile {
+  id: string;
+  name: string;
+  label: string;
+  thumbnail: string; // base64
+}
 interface Props {
+  tiles: Array<Tile>;
   filteredMeta?: Metadata;
 }
 interface State {
@@ -112,7 +119,7 @@ export class UserInterface extends Component<Props, State> {
     <div style={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Curate</Typography>
+          <Typography variant="h6">CURATE</Typography>
           <ComboBox
             metadata={this.state.metadata}
             metadataKeys={this.state.metadataKeys}
@@ -130,7 +137,19 @@ export class UserInterface extends Component<Props, State> {
             callback={this.handleOnLabelSelection}
           />
         </Grid>
-        <Grid item style={{ position: "relative", width: "80%" }} />
+        <Grid item style={{ position: "relative", width: "80%" }}>
+          <Grid container spacing={3}>
+            {this.props.tiles.map((tile) => (
+              <Grid item xs={1} key={tile.id}>
+                <img
+                  height={128}
+                  src={`data:image/png;base64,${tile.thumbnail}`}
+                  alt={tile.name}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
       </Grid>
     </div>
   );
