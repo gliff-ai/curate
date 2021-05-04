@@ -42,7 +42,7 @@ export default function ComboBox({
   const style = useStyles();
   const [inputKey, setInputKey] = useState("");
   const [inputOptions, setOptions] = useState([]);
-  const [inputValue, setInputValue] = useState<string | null>("");
+  const [inputValue, setInputValue] = useState("");
 
   const updateOptions = (): void => {
     const options: Set<string> = new Set();
@@ -61,7 +61,7 @@ export default function ComboBox({
   };
 
   useEffect(() => {
-    if (inputValue !== "") setInputValue(null);
+    if (inputValue !== "") setInputValue("");
     updateOptions();
   }, [inputKey]);
 
@@ -69,8 +69,8 @@ export default function ComboBox({
     <Paper
       component="form"
       onSubmit={(e) => {
-        e.preventDefault();
         callback(inputKey, inputValue);
+        e.preventDefault();
       }}
       className={style.root}
     >
@@ -88,10 +88,8 @@ export default function ComboBox({
         id="combobox-metadata-value"
         className={style.input}
         inputValue={inputValue}
+        freeSolo
         onInputChange={(e: any, newInputValue: string) => {
-          // When inputOptions is reset, the previous inputValue is no more an accepted value.
-          // To avoid this issue we set newInputValue to null when inputOptions is reset.
-          if (newInputValue === null) return;
           setInputValue(newInputValue);
         }}
         options={inputOptions}
