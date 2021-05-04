@@ -1,12 +1,9 @@
-/* eslint-disable no-use-before-define */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
+import { IconButton, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { Search } from "@material-ui/icons";
 import { Metadata, MetaItem } from "./interfaces";
-import IconButton from "@material-ui/core/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
-import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,13 +13,17 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       position: "absolute",
       right: "10px",
+      height: "85%",
     },
     input: {
       paddingLeft: "10px",
       width: "250px",
     },
+    inputField: {
+      fontSize: "11px",
+    },
     iconButton: {
-      padding: 10,
+      padding: "10px",
     },
   })
 );
@@ -30,22 +31,21 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   metadata: Metadata;
   metadataKeys: string[];
-  callback?: (key: string, value: string) => void;
+  callback: (key: string, value: string) => void;
 }
 
-export default function ComboBox({ metadata, metadataKeys, callback }: Props) {
+export default function ComboBox({
+  metadata,
+  metadataKeys,
+  callback,
+}: Props): ReactElement {
   const style = useStyles();
   const [inputKey, setInputKey] = useState("");
   const [inputOptions, setOptions] = useState([]);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string | null>("");
 
-  useEffect(() => {
-    inputValue === "" || setInputValue("");
-    updateOptions();
-  }, [inputKey]);
-
-  function updateOptions(): void {
-    let options: Set<string> = new Set();
+  const updateOptions = (): void => {
+    const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
       for (const [key, value] of Object.entries(mitem)) {
         if (key === inputKey) {
@@ -58,7 +58,12 @@ export default function ComboBox({ metadata, metadataKeys, callback }: Props) {
       }
     });
     setOptions(Array.from(options));
-  }
+  };
+
+  useEffect(() => {
+    if (inputValue !== "") setInputValue(null);
+    updateOptions();
+  }, [inputKey]);
 
   return (
     <Paper
@@ -80,14 +85,14 @@ export default function ComboBox({ metadata, metadataKeys, callback }: Props) {
         renderInput={(params: any) => <TextField {...params} label="Key" />}
       />
       <Autocomplete
-        key={inputValue}
         id="combobox-metadata-value"
         className={style.input}
         inputValue={inputValue}
         onInputChange={(e: any, newInputValue: string) => {
-          if (newInputValue !== "") {
-            setInputValue(newInputValue);
-          }
+          // When inputOptions is reset, the previous inputValue is no more an accepted value.
+          // To avoid this issue we set newInputValue to null when inputOptions is reset.
+          if (newInputValue === null) return;
+          setInputValue(newInputValue);
         }}
         options={inputOptions}
         renderInput={(params: any) => <TextField {...params} label="Value" />}
@@ -97,7 +102,7 @@ export default function ComboBox({ metadata, metadataKeys, callback }: Props) {
         aria-label="search"
         className={style.iconButton}
       >
-        <SearchIcon />
+        <Search />
       </IconButton>
     </Paper>
   );
