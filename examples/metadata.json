@@ -6,7 +6,7 @@
         "dimensions": "120 x 140",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
-        "imageLabels": ["label1", "label2", "label3"],
+        "imageLabels": ["label1"],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -16,11 +16,41 @@
         "dimensions": "130 x 170",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
-        "imageLabels": ["label1", "label5"],
+        "imageLabels": ["label1", "label2"],
         "fileMetaVersion": "1.0.0"
     },
     {
         "imageName": "sample2",
+        "size": "1260 bytes",
+        "created": "28/04/2021",
+        "dimensions": "120 x 140",
+        "numberOfDimensions": "2",
+        "numberOfChannels": "1",
+        "imageLabels": ["label1", "label2", "label3"],
+        "fileMetaVersion": "1.0.0"
+    },
+        {
+        "imageName": "sample3",
+        "size": "1260 bytes",
+        "created": "28/04/2021",
+        "dimensions": "120 x 140",
+        "numberOfDimensions": "2",
+        "numberOfChannels": "1",
+        "imageLabels": ["label5", "label7"],
+        "fileMetaVersion": "1.0.0"
+    },
+        {
+        "imageName": "sample4",
+        "size": "1260 bytes",
+        "created": "28/04/2021",
+        "dimensions": "120 x 140",
+        "numberOfDimensions": "2",
+        "numberOfChannels": "1",
+        "imageLabels": ["label4"],
+        "fileMetaVersion": "1.0.0"
+    },
+        {
+        "imageName": "sample5",
         "size": "1260 bytes",
         "created": "28/04/2021",
         "dimensions": "120 x 140",
