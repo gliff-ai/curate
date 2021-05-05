@@ -46,7 +46,7 @@ export default function ComboBox({
   const [inputValue, setInputValue] = useState("");
 
   const updateOptions = (): void => {
-    if (metadataKeys.indexOf(inputKey) === -1) return;
+    if (!metadataKeys.includes(inputKey)) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
       const value = mitem[inputKey];
