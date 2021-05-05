@@ -128,7 +128,6 @@ export class UserInterface extends Component<Props, State> {
     jsonUrl: string,
     onLoadCallback: (data: Metadata) => void
   ): void => {
-    // const myRequest = new Request(jsonUrl);
     fetch(jsonUrl)
       .then((response) => response.json())
       .then((data) => {
