@@ -1,6 +1,7 @@
 export type Metadata = Array<MetaItem>;
 
 export type MetaItem = {
+  [index: string]: string | string[];
   imageName: string;
   size: string;
   created: string;
