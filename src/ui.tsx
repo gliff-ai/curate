@@ -88,8 +88,8 @@ export class UserInterface extends Component<Props, State> {
     // Filter metadata based on selected labels.
     const filteredMeta: Metadata = [];
     this.state.metadata.forEach((mitem: MetaItem) => {
-      const intersectionLabels = mitem.imageLabels.filter((l) =>
-        selectedLabels.includes(l)
+      const intersectionLabels = (mitem.imageLabels as string[]).filter(
+        (l: string) => selectedLabels.includes(l)
       );
       if (intersectionLabels.length !== 0) {
         filteredMeta.push(mitem);
@@ -105,13 +105,13 @@ export class UserInterface extends Component<Props, State> {
   getImageLabels = (data: Metadata): string[] => {
     const labels: Set<string> = new Set();
     data.forEach((mitem: MetaItem): void => {
-      mitem.imageLabels.forEach((l) => labels.add(l));
+      (mitem.imageLabels as string[]).forEach((l) => labels.add(l));
     });
     return Array.from(labels);
   };
 
   getImageNames = (data: Metadata): string[] =>
-    data.map((mitem: MetaItem) => mitem.imageName);
+    data.map((mitem: MetaItem) => mitem.imageName as string);
 
   isTileInSelectedImages = (tileFileName: string): boolean => {
     const tileName = tileFileName

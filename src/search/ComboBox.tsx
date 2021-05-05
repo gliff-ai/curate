@@ -46,16 +46,14 @@ export default function ComboBox({
   const [inputValue, setInputValue] = useState("");
 
   const updateOptions = (): void => {
+    if (metadataKeys.indexOf(inputKey) === -1) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
-      for (const [key, value] of Object.entries(mitem)) {
-        if (key === inputKey) {
-          if (typeof value === "object") {
-            value.forEach((v) => options.add(v));
-          } else {
-            options.add(value);
-          }
-        }
+      const value = mitem[inputKey];
+      if (Array.isArray(value)) {
+        value.forEach((v) => options.add(v));
+      } else {
+        options.add(value);
       }
     });
     setOptions(Array.from(options));
