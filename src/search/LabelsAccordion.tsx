@@ -46,7 +46,7 @@ export default function LabelsAccordion({
   callback,
 }: Props): ReactElement {
   const style = useStyles();
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState(imageLabels);
 
   const addDelLabel = (label: string) => (): void => {
     // Add label to list of selectedLabels if not present,
@@ -64,6 +64,10 @@ export default function LabelsAccordion({
   useEffect(() => {
     callback(selectedLabels);
   }, [selectedLabels]);
+
+  useEffect(() => {
+    setSelectedLabels(imageLabels);
+  }, [imageLabels]);
 
   return (
     <Accordion expanded={expanded} onChange={handleToolboxChange}>
