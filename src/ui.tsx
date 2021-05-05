@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Grid, Typography } from "@material-ui/core";
 import { Metadata, MetaItem } from "./search/interfaces";
 import ComboBox from "./search/ComboBox";
 import LabelsAccordion from "./search/LabelsAccordion";
+import BaseDrawer from "./components/BaseDrawer";
 
 export interface Tile {
   id: string;
@@ -142,6 +143,16 @@ export class UserInterface extends Component<Props, State> {
     <div style={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+          <BaseDrawer
+            drawerContent={
+              <LabelsAccordion
+                expanded={this.state.expanded === "labels-toolbox"}
+                handleToolboxChange={this.handleToolboxChange("labels-toolbox")}
+                imageLabels={this.state.imageLabels}
+                callback={this.handleOnLabelSelection}
+              />
+            }
+          />
           <Typography variant="h6">CURATE</Typography>
           <ComboBox
             metadata={this.state.metadata}
@@ -152,14 +163,6 @@ export class UserInterface extends Component<Props, State> {
       </AppBar>
 
       <Grid container spacing={0} wrap="nowrap">
-        <Grid item style={{ position: "relative", width: "200px" }}>
-          <LabelsAccordion
-            expanded={this.state.expanded === "labels-toolbox"}
-            handleToolboxChange={this.handleToolboxChange("labels-toolbox")}
-            imageLabels={this.state.imageLabels}
-            callback={this.handleOnLabelSelection}
-          />
-        </Grid>
         <Grid item style={{ position: "relative", width: "80%" }}>
           <Grid container spacing={3}>
             {this.props.tiles.map(
