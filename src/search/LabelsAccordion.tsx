@@ -80,11 +80,11 @@ export default function LabelsAccordion({
               onClick={addDelLabel(label)}
               className={style.listItem}
             >
-              {(() => {
-                if (selectedLabels.includes(label))
-                  return <Label className={style.icon} />;
-                return <LabelOutlined className={style.icon} />;
-              })()}
+              {selectedLabels.includes(label) ? (
+                <Label className={style.icon} />
+              ) : (
+                <LabelOutlined className={style.icon} />
+              )}
               <ListItemText primary={label} className={style.text} />
             </ListItem>
           ))}
