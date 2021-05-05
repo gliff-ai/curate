@@ -1,8 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Metadata } from "@/index";
-import UserInterface from "@/index";
+import { UserInterface } from "@/ui";
 
 // load the sample images, construct an array of tiles:
 const loadImage = (filename: string): Promise<string> =>
@@ -31,27 +30,6 @@ for (let i = 0; i < 20; i += 1) {
   promises.push(loadImage(filename));
 }
 
-// construct dummy metadata:
-const metadata1: Metadata = {
-  size: "1k",
-  created: "28/04/2021",
-  numberOfDimensions: 2,
-  dimensions: "128x128",
-  numberOfChannels: 3,
-  imageLabels: ["cancer"],
-  fileMetaVersion: "0.0.1",
-};
-
-const metadata2: Metadata = {
-  size: "1k",
-  created: "29/04/2021",
-  numberOfDimensions: 2,
-  dimensions: "128x128",
-  numberOfChannels: 3,
-  imageLabels: ["notcancer"],
-  fileMetaVersion: "0.0.1",
-};
-
 // unwrap promises and pass to curate:
 Promise.all(promises)
   .then(
@@ -60,7 +38,7 @@ Promise.all(promises)
       const tiles = images.map((image: string, i) => ({
         id: String(i),
         name: `samples/sample${i}.png`,
-        metadata: i % 2 === 0 ? metadata1 : metadata2,
+        label: i % 2 ? "cancer" : "notcancer",
         thumbnail: image,
       }));
       // render main component:
