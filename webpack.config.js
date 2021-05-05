@@ -53,6 +53,10 @@ module.exports = {
           from: "examples/samples",
           to: "samples",
         },
+        {
+          from: "examples/metadata.json",
+          to: "metadata.json",
+        },
       ],
     }),
   ],

@@ -39,7 +39,7 @@ export class UserInterface extends Component<Props, State> {
   }
 
   componentDidMount = (): void => {
-    this.loadMeta("../examples/metadata.json", (data: Metadata): void => {
+    this.loadMeta("metadata.json", (data: Metadata): void => {
       // Load metadata from json file.
       if (data && data.length > 0) {
         this.setState({
