@@ -36,8 +36,16 @@ export function SortDropdown({
     });
     return initSort;
   };
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(initSortOrder());
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleSort = (value: string) => () => {
     if (inputKey === "") return;
@@ -47,16 +55,6 @@ export function SortDropdown({
   useEffect(() => {
     callback(inputKey, sortOrder[inputKey]);
   }, [sortOrder]);
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     <div className={style.root}>
