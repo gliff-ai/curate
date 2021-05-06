@@ -197,7 +197,14 @@ class UserInterface extends Component<Props, State> {
             {this.props.tiles.map(
               (tile, index) =>
                 this.isTileInSelectedImages(tile.name) && (
-                  <Grid item key={tile.id}>
+                  <Grid
+                    item
+                    key={tile.id}
+                    style={{
+                      backgroundColor:
+                        this.state.selected === index && "lightblue",
+                    }}
+                  >
                     <img
                       height={128}
                       src={`data:image/png;base64,${tile.thumbnail}`}
