@@ -1,8 +1,52 @@
 import React, { Component, ChangeEvent, ReactNode } from "react";
-import { AppBar, Toolbar, Grid, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  CssBaseline,
+  Toolbar,
+  Grid,
+  Typography,
+  Theme,
+  withStyles,
+  Drawer,
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+} from "@material-ui/core";
 import { Metadata, MetaItem } from "./search/interfaces";
 import ComboBox from "./search/ComboBox";
 import LabelsAccordion from "./search/LabelsAccordion";
+import MetadataDrawer from "./MetadataDrawer";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import InboxIcon from "@material-ui/icons/MoveToInbox";
+import MailIcon from "@material-ui/icons/Mail";
+
+const drawerWidth = 240;
+
+const styles = (theme: Theme) => ({
+  root: {
+    display: "flex",
+  },
+  appBar: {
+    // width: `calc(100% - ${drawerWidth}px)`,
+    width: `calc(100%)`,
+    // marginRight: drawerWidth,
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3),
+  },
+  drawer: {
+    width: drawerWidth, // it seems that this width is used for positioning and wrapping (increase it and the tiles will wrap as though the drawer was wider, but it won't render wider)
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth, // while this width is used for drawing the Drawer (increase it and the drawer will get wider but will draw over the tiles without wrapping them)
+  },
+});
 
 export interface Tile {
   id: string;
@@ -12,6 +56,7 @@ export interface Tile {
 }
 interface Props {
   tiles: Array<Tile>;
+  classes: any;
 }
 interface State {
   metadata: Metadata;
@@ -19,9 +64,10 @@ interface State {
   imageLabels: string[];
   imageNames: string[];
   expanded: string | boolean;
+  selected: number;
 }
 
-export class UserInterface extends Component<Props, State> {
+class UserInterface extends Component<Props, State> {
   private filteredMeta: Metadata;
 
   constructor(props: Props) {
@@ -33,6 +79,7 @@ export class UserInterface extends Component<Props, State> {
       imageLabels: [],
       imageNames: [],
       expanded: "labels-toolbox",
+      selected: null,
     };
 
     this.filteredMeta = [];
@@ -138,45 +185,59 @@ export class UserInterface extends Component<Props, State> {
       });
   };
 
-  render = (): ReactNode => (
-    <div style={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6">CURATE</Typography>
-          <ComboBox
-            metadata={this.state.metadata}
-            metadataKeys={this.state.metadataKeys}
-            callback={this.handleOnSearchSubmit}
-          />
-        </Toolbar>
-      </AppBar>
+  render = (): ReactNode => {
+    const { classes } = this.props;
+    return (
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
+        <CssBaseline />
+        <AppBar position="fixed" style={{ zIndex: 2000 }}>
+          <Toolbar>
+            <Typography variant="h6">CURATE</Typography>
+            <ComboBox
+              metadata={this.state.metadata}
+              metadataKeys={this.state.metadataKeys}
+              callback={this.handleOnSearchSubmit}
+            />
+          </Toolbar>
+        </AppBar>
 
-      <Grid container spacing={0} wrap="nowrap">
-        <Grid item style={{ position: "relative", width: "200px" }}>
+        <div>
+          <Toolbar />
           <LabelsAccordion
             expanded={this.state.expanded === "labels-toolbox"}
             handleToolboxChange={this.handleToolboxChange("labels-toolbox")}
             imageLabels={this.state.imageLabels}
             callback={this.handleOnLabelSelection}
           />
-        </Grid>
-        <Grid item style={{ position: "relative", width: "80%" }}>
-          <Grid container spacing={3}>
+        </div>
+
+        <Grid container style={{ position: "relative", width: "80%" }}>
+          <Toolbar />
+          <Grid container spacing={3} wrap="wrap">
             {this.props.tiles.map(
-              (tile) =>
+              (tile, index) =>
                 this.isTileInSelectedImages(tile.name) && (
-                  <Grid item xs={1} key={tile.id}>
+                  <Grid item key={tile.id}>
                     <img
                       height={128}
                       src={`data:image/png;base64,${tile.thumbnail}`}
                       alt={tile.name}
+                      onClick={() => {
+                        this.setState({ selected: index });
+                      }}
                     />
                   </Grid>
                 )
             )}
           </Grid>
         </Grid>
-      </Grid>
-    </div>
-  );
+
+        {this.state.selected !== null && (
+          <MetadataDrawer metadata={this.state.metadata[this.state.selected]} />
+        )}
+      </div>
+    );
+  };
 }
+
+export default withStyles(styles)(UserInterface);
