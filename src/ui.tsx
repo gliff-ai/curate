@@ -99,6 +99,10 @@ class UserInterface extends Component<Props, State> {
     });
   };
 
+  handleDrawerClose = () => {
+    this.setState({ selected: null });
+  };
+
   handleToolboxChange = (panel: string) => (
     event: ChangeEvent,
     isExpanded: boolean
@@ -223,7 +227,10 @@ class UserInterface extends Component<Props, State> {
         </Grid>
 
         {this.state.selected !== null && (
-          <MetadataDrawer metadata={this.state.metadata[this.state.selected]} />
+          <MetadataDrawer
+            metadata={this.state.metadata[this.state.selected]}
+            handleDrawerClose={this.handleDrawerClose}
+          />
         )}
       </div>
     );

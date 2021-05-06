@@ -6,10 +6,12 @@ import {
   List,
   Divider,
   Toolbar,
+  IconButton,
 } from "@material-ui/core";
 import { MetaItem } from "@/search/interfaces";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import React, { ReactElement } from "react";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 const drawerWidth = 240;
 
@@ -38,6 +40,7 @@ const metadataNameMap: MetadataNameMap = {
 
 interface Props {
   metadata: MetaItem;
+  handleDrawerClose: () => void;
 }
 
 export default function MetadataDrawer(props: Props): ReactElement {
@@ -55,8 +58,12 @@ export default function MetadataDrawer(props: Props): ReactElement {
       <Toolbar />
       {/* This empty toolbar pushes the drawer contents down by the same thickness of the AppBard, so that they don't render behind it */}
       {/* Moving the drawer itself down by placing a Toolbar above it seems not to work so instead we move its contents down and draw the AppBar on top of it */}
-      <ListItem>
+
+      <ListItem style={{ justifyContent: "space-between" }}>
         <Typography variant="h4">Metadata</Typography>
+        <IconButton onClick={props.handleDrawerClose}>
+          <ChevronRightIcon />
+        </IconButton>
       </ListItem>
       <Divider />
 
