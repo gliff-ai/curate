@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState, MouseEvent } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { IconButton, Menu, MenuItem } from "@material-ui/core";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import SortIcon from "@material-ui/icons/Sort";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,7 +63,7 @@ export function SortDropdown({
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <MoreVertIcon />
+        <SortIcon />
       </IconButton>
       <Menu
         id="simple-menu"

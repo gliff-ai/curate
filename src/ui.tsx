@@ -51,9 +51,8 @@ export class UserInterface extends Component<Props, State> {
 
   handleOnSearchSubmit = (inputKey: string, inputValue: string): void => {
     // Filter metadata based on inputKey and inputValue
-    if (inputKey === "" || inputValue === "") return;
 
-    if (inputValue === "All values") {
+    if (inputValue === "All values" || inputKey === "" || inputValue === "") {
       this.setState((prevState) => ({ filteredMeta: prevState.metadata }));
     } else {
       const filteredMeta: Metadata = [];
@@ -94,14 +93,13 @@ export class UserInterface extends Component<Props, State> {
 
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
     // Handle sort by any string or by date.
-    const sort = sortOrder === "asc" ? 1 : -1;
 
-    function compare(a: string | Date, b: string | Date): number {
+    function compare(a: string | Date, b: string | Date, sort: string): number {
       if (a < b) {
-        return -1;
+        return sort === "asc" ? -1 : 1;
       }
       if (a > b) {
-        return 1;
+        return sort === "asc" ? 1 : -1;
       }
       return 0;
     }
@@ -109,23 +107,23 @@ export class UserInterface extends Component<Props, State> {
     this.setState((prevState) => {
       if (key.toLowerCase().includes("date")) {
         // Sort by date
-        prevState.filteredMeta.sort(
-          (a: MetaItem, b: MetaItem): number =>
-            sort *
-            compare(new Date(a[key] as string), new Date(b[key] as string))
+        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
+          compare(
+            new Date(a[key] as string),
+            new Date(b[key] as string),
+            sortOrder
+          )
         );
       } else {
         // Sort by any string
-        prevState.filteredMeta.sort(
-          (a: MetaItem, b: MetaItem): number =>
-            sort *
-            compare(
-              (a[key] as string).toLowerCase(),
-              (b[key] as string).toLowerCase()
-            )
+        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
+          compare(
+            (a[key] as string).toLowerCase(),
+            (b[key] as string).toLowerCase(),
+            sortOrder
+          )
         );
       }
-      console.log(prevState.filteredMeta);
       return { filteredMeta: prevState.filteredMeta };
     });
   };
