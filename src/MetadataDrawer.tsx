@@ -25,6 +25,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+type MetadataNameMap = { [index: string]: string };
+const metadataNameMap: MetadataNameMap = {
+  imageName: "Name",
+  size: "Size",
+  created: "Created",
+  dimensions: "Dimensions",
+  numberOfDimensions: "Number Of Dimensions",
+  numberOfChannels: "Number Of Channels",
+  imageLabels: "Labels",
+};
+
 interface Props {
   metadata: MetaItem;
 }
@@ -50,11 +61,13 @@ export default function MetadataDrawer(props: Props): ReactElement {
       <Divider />
 
       <List>
-        {Object.entries(props.metadata).map(([key, value], index) => (
-          <ListItem key={index}>
-            <ListItemText>{`${key}: ${value}`}</ListItemText>
-          </ListItem>
-        ))}
+        {Object.entries(props.metadata)
+          .filter(([key, value]) => Object.keys(metadataNameMap).includes(key))
+          .map(([key, value], index) => (
+            <ListItem key={index}>
+              <ListItemText>{`${metadataNameMap[key]}: ${value}`}</ListItemText>
+            </ListItem>
+          ))}
       </List>
     </Drawer>
   );
