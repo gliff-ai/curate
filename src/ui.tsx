@@ -187,7 +187,10 @@ class UserInterface extends Component<Props, State> {
           />
         </div>
 
-        <Grid container style={{ position: "relative", width: "80%" }}>
+        <Grid
+          container
+          style={{ position: "relative", width: "80%", margin: "16px" }}
+        >
           <Toolbar />
           {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <Grid container spacing={3} wrap="wrap">
@@ -203,6 +206,9 @@ class UserInterface extends Component<Props, State> {
                         this.setState({ selected: index });
                       }}
                     />
+                    <Typography style={{ textAlign: "center" }}>
+                      {tile.name.split("/").pop()}
+                    </Typography>
                   </Grid>
                 )
             )}
