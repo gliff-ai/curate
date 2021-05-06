@@ -59,6 +59,7 @@ export default function ComboBox({
         options.add(value);
       }
     });
+    options.add("All values");
     setOptions(Array.from(options));
   };
 

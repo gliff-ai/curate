@@ -19,7 +19,6 @@ interface State {
   metadataKeys: string[];
   filteredMeta: Metadata;
   imageLabels: string[];
-  imageNames: string[];
   expanded: string | boolean;
 }
 
@@ -32,7 +31,6 @@ export class UserInterface extends Component<Props, State> {
       filteredMeta: [],
       metadataKeys: [],
       imageLabels: [],
-      imageNames: [],
       expanded: "labels-toolbox",
     };
   }
@@ -46,7 +44,6 @@ export class UserInterface extends Component<Props, State> {
           filteredMeta: data,
           metadataKeys: Object.keys(data[0]),
           imageLabels: this.getImageLabels(data),
-          imageNames: this.getImageNames(data),
         });
       }
     });
@@ -56,20 +53,21 @@ export class UserInterface extends Component<Props, State> {
     // Filter metadata based on inputKey and inputValue
     if (inputKey === "" || inputValue === "") return;
 
-    const filteredMeta: Metadata = [];
-    this.state.metadata.forEach((mitem: MetaItem) => {
-      const value = mitem[inputKey];
-      if (
-        (Array.isArray(value) && value.includes(inputValue)) ||
-        value === inputValue
-      ) {
-        filteredMeta.push(mitem);
-      }
-    });
-    this.setState({
-      filteredMeta,
-      imageNames: this.getImageNames(filteredMeta),
-    });
+    if (inputValue === "All values") {
+      this.setState((prevState) => ({ filteredMeta: prevState.metadata }));
+    } else {
+      const filteredMeta: Metadata = [];
+      this.state.metadata.forEach((mitem: MetaItem) => {
+        const value = mitem[inputKey];
+        if (
+          (Array.isArray(value) && value.includes(inputValue)) ||
+          value === inputValue
+        ) {
+          filteredMeta.push(mitem);
+        }
+      });
+      this.setState({ filteredMeta });
+    }
   };
 
   handleToolboxChange = (panel: string) => (
@@ -91,13 +89,13 @@ export class UserInterface extends Component<Props, State> {
       }
     });
 
-    this.setState({
-      filteredMeta,
-      imageNames: this.getImageNames(filteredMeta),
-    });
+    this.setState({ filteredMeta });
   };
 
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
+    // Handle sort by any string or by date.
+    const sort = sortOrder === "asc" ? 1 : -1;
+
     function compare(a: string | Date, b: string | Date): number {
       if (a < b) {
         return -1;
@@ -107,35 +105,29 @@ export class UserInterface extends Component<Props, State> {
       }
       return 0;
     }
-    const sortDates = (key: string, sortOrder: string) => (
-      a: MetaItem,
-      b: MetaItem
-    ): number => {
-      const res = compare(
-        new Date(a[key] as string),
-        new Date(b[key] as string)
-      );
-      return sortOrder === "asc" ? res : -res;
-    };
 
-    const sortStrings = (key: string, sortOrder: string) => (
-      a: MetaItem,
-      b: MetaItem
-    ): number => {
-      const res = compare(
-        (a[key] as string).toLowerCase(),
-        (b[key] as string).toLowerCase()
-      );
-      return sortOrder === "asc" ? res : -res;
-    };
-
-    const filteredMeta = [...this.state.filteredMeta];
-    if (key.toLowerCase().includes("date")) {
-      filteredMeta.sort(sortDates(key, sortOrder));
-    } else {
-      filteredMeta.sort(sortStrings(key, sortOrder));
-    }
-    this.setState({ filteredMeta });
+    this.setState((prevState) => {
+      if (key.toLowerCase().includes("date")) {
+        // Sort by date
+        prevState.filteredMeta.sort(
+          (a: MetaItem, b: MetaItem): number =>
+            sort *
+            compare(new Date(a[key] as string), new Date(b[key] as string))
+        );
+      } else {
+        // Sort by any string
+        prevState.filteredMeta.sort(
+          (a: MetaItem, b: MetaItem): number =>
+            sort *
+            compare(
+              (a[key] as string).toLowerCase(),
+              (b[key] as string).toLowerCase()
+            )
+        );
+      }
+      console.log(prevState.filteredMeta);
+      return { filteredMeta: prevState.filteredMeta };
+    });
   };
 
   getImageLabels = (data: Metadata): string[] => {
