@@ -37,7 +37,7 @@ interface Props {
   callbackSort: (key: string, sortOrder: string) => void;
 }
 
-export default function ComboBox({
+export default function SearchAndSortBar({
   metadata,
   metadataKeys,
   callbackSearch,

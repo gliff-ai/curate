@@ -1,9 +1,9 @@
 import React, { Component, ChangeEvent, ReactNode } from "react";
 import { AppBar, Toolbar, Grid, Typography } from "@material-ui/core";
-import { Metadata, MetaItem } from "./search/interfaces";
-import ComboBox from "./search/ComboBox";
-import LabelsAccordion from "./search/LabelsAccordion";
-import BaseDrawer from "./components/BaseDrawer";
+import { Metadata, MetaItem } from "./searchAndSort/interfaces";
+import ComboBox from "./searchAndSort/SearchAndSortBar";
+import LabelsAccordion from "./searchAndSort/LabelsAccordion";
+import LeftDrawer from "./components/LeftDrawer";
 
 export interface Tile {
   id: string;
@@ -167,7 +167,7 @@ export class UserInterface extends Component<Props, State> {
     <div style={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <BaseDrawer
+          <LeftDrawer
             drawerContent={
               <LabelsAccordion
                 expanded={this.state.expanded === "labels-toolbox"}

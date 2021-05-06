@@ -12,7 +12,7 @@ interface Props {
   drawerContent: ReactElement;
 }
 
-export default function BaseDrawer({ drawerContent }: Props): ReactElement {
+export default function LeftDrawer({ drawerContent }: Props): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDrawer = () => {
