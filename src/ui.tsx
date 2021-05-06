@@ -7,44 +7,19 @@ import {
   Typography,
   Theme,
   withStyles,
-  Drawer,
-  List,
-  ListItem,
-  Divider,
-  ListItemText,
 } from "@material-ui/core";
 import { Metadata, MetaItem } from "./search/interfaces";
 import ComboBox from "./search/ComboBox";
 import LabelsAccordion from "./search/LabelsAccordion";
 import MetadataDrawer from "./MetadataDrawer";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
-
-const drawerWidth = 240;
 
 const styles = (theme: Theme) => ({
   root: {
-    display: "flex",
+    display: "flex", // flex-box, see https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+    alignItems: "flex-start", // prevents image tiles rendering halfway vertically between the app bar and bottom of the labels accordion (see https://css-tricks.com/snippets/css/a-guide-to-flexbox/#align-items)
   },
   appBar: {
-    // width: `calc(100% - ${drawerWidth}px)`,
-    width: `calc(100%)`,
-    // marginRight: drawerWidth,
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
-  },
-  drawer: {
-    width: drawerWidth, // it seems that this width is used for positioning and wrapping (increase it and the tiles will wrap as though the drawer was wider, but it won't render wider)
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth, // while this width is used for drawing the Drawer (increase it and the drawer will get wider but will draw over the tiles without wrapping them)
+    zIndex: theme.zIndex.drawer + 1, // make sure the appbar renders over the metadata drawer, not the other way round
   },
 });
 
@@ -188,9 +163,9 @@ class UserInterface extends Component<Props, State> {
   render = (): ReactNode => {
     const { classes } = this.props;
     return (
-      <div style={{ display: "flex", alignItems: "flex-start" }}>
+      <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" style={{ zIndex: 2000 }}>
+        <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6">CURATE</Typography>
             <ComboBox
@@ -203,6 +178,7 @@ class UserInterface extends Component<Props, State> {
 
         <div>
           <Toolbar />
+          {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <LabelsAccordion
             expanded={this.state.expanded === "labels-toolbox"}
             handleToolboxChange={this.handleToolboxChange("labels-toolbox")}
@@ -213,6 +189,7 @@ class UserInterface extends Component<Props, State> {
 
         <Grid container style={{ position: "relative", width: "80%" }}>
           <Toolbar />
+          {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <Grid container spacing={3} wrap="wrap">
             {this.props.tiles.map(
               (tile, index) =>
