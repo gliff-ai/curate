@@ -4,6 +4,7 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { IconButton, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Search } from "@material-ui/icons";
+import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem } from "./interfaces";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,13 +33,15 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   metadata: Metadata;
   metadataKeys: string[];
-  callback: (key: string, value: string) => void;
+  callbackSearch: (key: string, value: string) => void;
+  callbackSort: (key: string, sortOrder: string) => void;
 }
 
 export default function ComboBox({
   metadata,
   metadataKeys,
-  callback,
+  callbackSearch,
+  callbackSort,
 }: Props): ReactElement {
   const style = useStyles();
   const [inputKey, setInputKey] = useState("");
@@ -68,7 +71,7 @@ export default function ComboBox({
     <Paper
       component="form"
       onSubmit={(e) => {
-        callback(inputKey, inputValue);
+        callbackSearch(inputKey, inputValue);
         e.preventDefault();
       }}
       className={style.root}
@@ -83,6 +86,12 @@ export default function ComboBox({
         options={metadataKeys}
         renderInput={(params: any) => <TextField {...params} label="Key" />}
       />
+      <SortDropdown
+        metadataKeys={metadataKeys}
+        inputKey={inputKey}
+        callback={callbackSort}
+      />
+
       <Autocomplete
         id="combobox-metadata-value"
         className={style.input}

@@ -17,26 +17,24 @@ interface Props {
 interface State {
   metadata: Metadata;
   metadataKeys: string[];
+  filteredMeta: Metadata;
   imageLabels: string[];
   imageNames: string[];
   expanded: string | boolean;
 }
 
 export class UserInterface extends Component<Props, State> {
-  private filteredMeta: Metadata;
-
   constructor(props: Props) {
     super(props);
 
     this.state = {
       metadata: [],
+      filteredMeta: [],
       metadataKeys: [],
       imageLabels: [],
       imageNames: [],
       expanded: "labels-toolbox",
     };
-
-    this.filteredMeta = [];
   }
 
   componentDidMount = (): void => {
@@ -45,35 +43,31 @@ export class UserInterface extends Component<Props, State> {
       if (data && data.length > 0) {
         this.setState({
           metadata: data,
+          filteredMeta: data,
           metadataKeys: Object.keys(data[0]),
           imageLabels: this.getImageLabels(data),
           imageNames: this.getImageNames(data),
         });
-        this.filteredMeta = data;
       }
     });
   };
 
   handleOnSearchSubmit = (inputKey: string, inputValue: string): void => {
+    // Filter metadata based on inputKey and inputValue
     if (inputKey === "" || inputValue === "") return;
 
-    // Filter metadata based on inputKey and inputValue
     const filteredMeta: Metadata = [];
     this.state.metadata.forEach((mitem: MetaItem) => {
-      for (const [key, value] of Object.entries(mitem)) {
-        if (key === inputKey) {
-          if (
-            (typeof value === "object" && value.includes(inputValue)) ||
-            value === inputValue
-          ) {
-            filteredMeta.push(mitem);
-            break;
-          }
-        }
+      const value = mitem[inputKey];
+      if (
+        (Array.isArray(value) && value.includes(inputValue)) ||
+        value === inputValue
+      ) {
+        filteredMeta.push(mitem);
       }
     });
-    this.filteredMeta = filteredMeta;
     this.setState({
+      filteredMeta,
       imageNames: this.getImageNames(filteredMeta),
     });
   };
@@ -97,9 +91,53 @@ export class UserInterface extends Component<Props, State> {
       }
     });
 
-    this.filteredMeta = filteredMeta;
     this.setState({
+      filteredMeta,
       imageNames: this.getImageNames(filteredMeta),
+    });
+  };
+
+  handleOnSortSubmit = (key: string, sortOrder: string): void => {
+    console.log(`${key}, ${sortOrder}`);
+    function compare(a: string | Date, b: string | Date): number {
+      if (a < b) {
+        return -1;
+      }
+      if (a > b) {
+        return 1;
+      }
+      return 0;
+    }
+    const sortDates = (key: string, sortOrder: string) => (
+      a: MetaItem,
+      b: MetaItem
+    ): number => {
+      const res = compare(
+        new Date(a[key] as string),
+        new Date(b[key] as string)
+      );
+      return sortOrder === "asc" ? res : -res;
+    };
+
+    const sortStrings = (key: string, sortOrder: string) => (
+      a: MetaItem,
+      b: MetaItem
+    ): number => {
+      const res = compare(
+        (a[key] as string).toLowerCase(),
+        (b[key] as string).toLowerCase()
+      );
+      return sortOrder === "asc" ? res : -res;
+    };
+
+    const filteredMeta = [...this.state.filteredMeta];
+    if (key.toLowerCase().includes("date")) {
+      filteredMeta.sort(sortDates(key, sortOrder));
+    } else {
+      filteredMeta.sort(sortStrings(key, sortOrder));
+    }
+    this.setState({ filteredMeta }, () => {
+      console.log(this.state.filteredMeta);
     });
   };
 
@@ -157,7 +195,8 @@ export class UserInterface extends Component<Props, State> {
           <ComboBox
             metadata={this.state.metadata}
             metadataKeys={this.state.metadataKeys}
-            callback={this.handleOnSearchSubmit}
+            callbackSearch={this.handleOnSearchSubmit}
+            callbackSort={this.handleOnSortSubmit}
           />
         </Toolbar>
       </AppBar>
