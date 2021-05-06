@@ -98,7 +98,6 @@ export class UserInterface extends Component<Props, State> {
   };
 
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
-    console.log(`${key}, ${sortOrder}`);
     function compare(a: string | Date, b: string | Date): number {
       if (a < b) {
         return -1;
@@ -136,9 +135,7 @@ export class UserInterface extends Component<Props, State> {
     } else {
       filteredMeta.sort(sortStrings(key, sortOrder));
     }
-    this.setState({ filteredMeta }, () => {
-      console.log(this.state.filteredMeta);
-    });
+    this.setState({ filteredMeta });
   };
 
   getImageLabels = (data: Metadata): string[] => {
@@ -152,15 +149,12 @@ export class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
-  isTileInSelectedImages = (tileFileName: string): boolean => {
-    const tileName = tileFileName
-      .split("\\")
-      .pop()
-      .split("/")
-      .pop()
-      .split(".")
-      .shift();
-    return this.state.imageNames.includes(tileName);
+  getTileFromImageName = (imageName: string): Tile => {
+    // Get tile from image name.
+    const tiles = this.props.tiles.filter((tile) =>
+      tile.name.includes(`/${imageName}.`)
+    );
+    return tiles[0];
   };
 
   loadMeta = (
@@ -204,18 +198,18 @@ export class UserInterface extends Component<Props, State> {
       <Grid container spacing={0} wrap="nowrap">
         <Grid item style={{ position: "relative", width: "80%" }}>
           <Grid container spacing={3}>
-            {this.props.tiles.map(
-              (tile) =>
-                this.isTileInSelectedImages(tile.name) && (
-                  <Grid item xs={1} key={tile.id}>
-                    <img
-                      height={128}
-                      src={`data:image/png;base64,${tile.thumbnail}`}
-                      alt={tile.name}
-                    />
-                  </Grid>
-                )
-            )}
+            {this.state.filteredMeta.map((mitem: MetaItem) => {
+              const tile = this.getTileFromImageName(mitem.imageName as string);
+              return (
+                <Grid item xs={1} key={tile.id}>
+                  <img
+                    height={128}
+                    src={`data:image/png;base64,${tile.thumbnail}`}
+                    alt={tile.name}
+                  />
+                </Grid>
+              );
+            })}
           </Grid>
         </Grid>
       </Grid>
