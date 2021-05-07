@@ -8,6 +8,7 @@ import {
   Theme,
   withStyles,
   WithStyles,
+  Button,
 } from "@material-ui/core";
 import { Metadata, MetaItem } from "./search/interfaces";
 import ComboBox from "./search/ComboBox";
@@ -209,14 +210,24 @@ class UserInterface extends Component<Props, State> {
                         this.state.selected === index && "lightblue",
                     }}
                   >
-                    <img
-                      height={128}
-                      src={`data:image/png;base64,${tile.thumbnail}`}
-                      alt={tile.name}
+                    <Button
                       onClick={() => {
                         this.setState({ selected: index });
                       }}
-                    />
+                      onKeyPress={(
+                        event: React.KeyboardEvent<HTMLButtonElement>
+                      ) => {
+                        if (event.code === "Enter") {
+                          this.setState({ selected: index });
+                        }
+                      }}
+                    >
+                      <img
+                        height={128}
+                        src={`data:image/png;base64,${tile.thumbnail}`}
+                        alt={tile.name}
+                      />
+                    </Button>
                     <Typography style={{ textAlign: "center" }}>
                       {tile.name.split("/").pop()}
                     </Typography>
