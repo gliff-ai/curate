@@ -2,7 +2,7 @@
     {   
         "imageName": "sample0",
         "size": "1260 bytes",
-        "created": "28/04/2021",
+        "dateCreated": "Apr 28 2021",
         "dimensions": "120 x 140",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
@@ -12,7 +12,7 @@
     {
         "imageName": "sample1",
         "size": "1260 bytes",
-        "created": "28/04/2021",
+        "dateCreated": "Apr 21 2021",
         "dimensions": "130 x 170",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
@@ -22,7 +22,7 @@
     {
         "imageName": "sample2",
         "size": "1260 bytes",
-        "created": "28/04/2021",
+        "dateCreated": "Apr 28 2021",
         "dimensions": "120 x 140",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
@@ -32,7 +32,7 @@
         {
         "imageName": "sample3",
         "size": "1260 bytes",
-        "created": "28/04/2021",
+        "dateCreated": "Apr 03 2021",
         "dimensions": "120 x 140",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
@@ -42,7 +42,7 @@
         {
         "imageName": "sample4",
         "size": "1260 bytes",
-        "created": "28/04/2021",
+        "dateCreated": "May 05 2021",
         "dimensions": "120 x 140",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
@@ -52,7 +52,7 @@
         {
         "imageName": "sample5",
         "size": "1260 bytes",
-        "created": "28/04/2021",
+        "dateCreated": "May 06 2021",
         "dimensions": "120 x 140",
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
