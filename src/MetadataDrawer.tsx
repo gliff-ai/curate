@@ -8,7 +8,7 @@ import {
   Toolbar,
   IconButton,
 } from "@material-ui/core";
-import { MetaItem } from "@/search/interfaces";
+import { MetaItem } from "@/searchAndSort/interfaces";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import React, { ReactElement } from "react";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
