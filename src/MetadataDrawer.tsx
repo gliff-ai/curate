@@ -68,13 +68,13 @@ export default function MetadataDrawer(props: Props): ReactElement {
       <Divider />
 
       <List>
-        {Object.entries(props.metadata)
-          .filter(([key, _]) => Object.keys(metadataNameMap).includes(key))
-          .map(([key, value]) => (
+        {Object.keys(props.metadata)
+          .filter((key) => Object.keys(metadataNameMap).includes(key))
+          .map((key) => (
             <ListItem key={key}>
-              <ListItemText>{`${
-                metadataNameMap[key]
-              }: ${value.toString()}`}</ListItemText>
+              <ListItemText>{`${metadataNameMap[key]}: ${props.metadata[
+                key
+              ].toString()}`}</ListItemText>
             </ListItem>
           ))}
       </List>
