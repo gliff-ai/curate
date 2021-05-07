@@ -1,8 +1,9 @@
 import React, { Component, ChangeEvent, ReactNode } from "react";
 import { AppBar, Toolbar, Grid, Typography } from "@material-ui/core";
-import { Metadata, MetaItem } from "./search/interfaces";
-import ComboBox from "./search/ComboBox";
-import LabelsAccordion from "./search/LabelsAccordion";
+import { Metadata, MetaItem } from "./searchAndSort/interfaces";
+import ComboBox from "./searchAndSort/SearchAndSortBar";
+import LabelsAccordion from "./searchAndSort/LabelsAccordion";
+import LeftDrawer from "./components/LeftDrawer";
 
 export interface Tile {
   id: string;
@@ -16,26 +17,22 @@ interface Props {
 interface State {
   metadata: Metadata;
   metadataKeys: string[];
+  filteredMeta: Metadata;
   imageLabels: string[];
-  imageNames: string[];
   expanded: string | boolean;
 }
 
 export class UserInterface extends Component<Props, State> {
-  private filteredMeta: Metadata;
-
   constructor(props: Props) {
     super(props);
 
     this.state = {
       metadata: [],
+      filteredMeta: [],
       metadataKeys: [],
       imageLabels: [],
-      imageNames: [],
       expanded: "labels-toolbox",
     };
-
-    this.filteredMeta = [];
   }
 
   componentDidMount = (): void => {
@@ -44,37 +41,32 @@ export class UserInterface extends Component<Props, State> {
       if (data && data.length > 0) {
         this.setState({
           metadata: data,
+          filteredMeta: data,
           metadataKeys: Object.keys(data[0]),
           imageLabels: this.getImageLabels(data),
-          imageNames: this.getImageNames(data),
         });
-        this.filteredMeta = data;
       }
     });
   };
 
   handleOnSearchSubmit = (inputKey: string, inputValue: string): void => {
-    if (inputKey === "" || inputValue === "") return;
-
     // Filter metadata based on inputKey and inputValue
-    const filteredMeta: Metadata = [];
-    this.state.metadata.forEach((mitem: MetaItem) => {
-      for (const [key, value] of Object.entries(mitem)) {
-        if (key === inputKey) {
-          if (
-            (typeof value === "object" && value.includes(inputValue)) ||
-            value === inputValue
-          ) {
-            filteredMeta.push(mitem);
-            break;
-          }
+
+    if (inputValue === "All values" || inputKey === "" || inputValue === "") {
+      this.setState((prevState) => ({ filteredMeta: prevState.metadata }));
+    } else {
+      const filteredMeta: Metadata = [];
+      this.state.metadata.forEach((mitem: MetaItem) => {
+        const value = mitem[inputKey];
+        if (
+          (Array.isArray(value) && value.includes(inputValue)) ||
+          value === inputValue
+        ) {
+          filteredMeta.push(mitem);
         }
-      }
-    });
-    this.filteredMeta = filteredMeta;
-    this.setState({
-      imageNames: this.getImageNames(filteredMeta),
-    });
+      });
+      this.setState({ filteredMeta });
+    }
   };
 
   handleToolboxChange = (panel: string) => (
@@ -96,9 +88,43 @@ export class UserInterface extends Component<Props, State> {
       }
     });
 
-    this.filteredMeta = filteredMeta;
-    this.setState({
-      imageNames: this.getImageNames(filteredMeta),
+    this.setState({ filteredMeta });
+  };
+
+  handleOnSortSubmit = (key: string, sortOrder: string): void => {
+    // Handle sort by any string or by date.
+
+    function compare(a: string | Date, b: string | Date, sort: string): number {
+      if (a < b) {
+        return sort === "asc" ? -1 : 1;
+      }
+      if (a > b) {
+        return sort === "asc" ? 1 : -1;
+      }
+      return 0;
+    }
+
+    this.setState((prevState) => {
+      if (key.toLowerCase().includes("date")) {
+        // Sort by date
+        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
+          compare(
+            new Date(a[key] as string),
+            new Date(b[key] as string),
+            sortOrder
+          )
+        );
+      } else {
+        // Sort by any string
+        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
+          compare(
+            (a[key] as string).toLowerCase(),
+            (b[key] as string).toLowerCase(),
+            sortOrder
+          )
+        );
+      }
+      return { filteredMeta: prevState.filteredMeta };
     });
   };
 
@@ -113,15 +139,12 @@ export class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
-  isTileInSelectedImages = (tileFileName: string): boolean => {
-    const tileName = tileFileName
-      .split("\\")
-      .pop()
-      .split("/")
-      .pop()
-      .split(".")
-      .shift();
-    return this.state.imageNames.includes(tileName);
+  getTileFromImageName = (imageName: string): Tile => {
+    // Get tile from image name.
+    const tiles = this.props.tiles.filter((tile) =>
+      tile.name.includes(`/${imageName}.`)
+    );
+    return tiles[0];
   };
 
   loadMeta = (
@@ -142,38 +165,41 @@ export class UserInterface extends Component<Props, State> {
     <div style={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+          <LeftDrawer
+            drawerContent={
+              <LabelsAccordion
+                expanded={this.state.expanded === "labels-toolbox"}
+                handleToolboxChange={this.handleToolboxChange("labels-toolbox")}
+                imageLabels={this.state.imageLabels}
+                callback={this.handleOnLabelSelection}
+              />
+            }
+          />
           <Typography variant="h6">CURATE</Typography>
           <ComboBox
             metadata={this.state.metadata}
             metadataKeys={this.state.metadataKeys}
-            callback={this.handleOnSearchSubmit}
+            callbackSearch={this.handleOnSearchSubmit}
+            callbackSort={this.handleOnSortSubmit}
           />
         </Toolbar>
       </AppBar>
 
       <Grid container spacing={0} wrap="nowrap">
-        <Grid item style={{ position: "relative", width: "200px" }}>
-          <LabelsAccordion
-            expanded={this.state.expanded === "labels-toolbox"}
-            handleToolboxChange={this.handleToolboxChange("labels-toolbox")}
-            imageLabels={this.state.imageLabels}
-            callback={this.handleOnLabelSelection}
-          />
-        </Grid>
         <Grid item style={{ position: "relative", width: "80%" }}>
           <Grid container spacing={3}>
-            {this.props.tiles.map(
-              (tile) =>
-                this.isTileInSelectedImages(tile.name) && (
-                  <Grid item xs={1} key={tile.id}>
-                    <img
-                      height={128}
-                      src={`data:image/png;base64,${tile.thumbnail}`}
-                      alt={tile.name}
-                    />
-                  </Grid>
-                )
-            )}
+            {this.state.filteredMeta.map((mitem: MetaItem) => {
+              const tile = this.getTileFromImageName(mitem.imageName as string);
+              return (
+                <Grid item xs={1} key={tile.id}>
+                  <img
+                    height={128}
+                    src={`data:image/png;base64,${tile.thumbnail}`}
+                    alt={tile.name}
+                  />
+                </Grid>
+              );
+            })}
           </Grid>
         </Grid>
       </Grid>
