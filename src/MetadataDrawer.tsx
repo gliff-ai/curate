@@ -31,7 +31,7 @@ type MetadataNameMap = { [index: string]: string };
 const metadataNameMap: MetadataNameMap = {
   imageName: "Name",
   size: "Size",
-  created: "Created",
+  dateCreated: "Created",
   dimensions: "Dimensions",
   numberOfDimensions: "Number Of Dimensions",
   numberOfChannels: "Number Of Channels",
