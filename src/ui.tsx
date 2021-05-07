@@ -7,6 +7,7 @@ import {
   Typography,
   Theme,
   withStyles,
+  WithStyles,
 } from "@material-ui/core";
 import { Metadata, MetaItem } from "./search/interfaces";
 import ComboBox from "./search/ComboBox";
@@ -29,9 +30,8 @@ export interface Tile {
   label: string;
   thumbnail: string; // base64
 }
-interface Props {
+interface Props extends WithStyles<typeof styles> {
   tiles: Array<Tile>;
-  classes: any;
 }
 interface State {
   metadata: Metadata;
