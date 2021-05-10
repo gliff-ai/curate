@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { UserInterface } from "@/ui";
+import UserInterface from "@/ui";
 
 // load the sample images, construct an array of tiles:
 const loadImage = (filename: string): Promise<string> =>
