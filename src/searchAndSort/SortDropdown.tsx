@@ -48,7 +48,7 @@ export function SortDropdown({
   };
 
   const handleSort = (value: string) => () => {
-    if (inputKey === "") return;
+    if (inputKey === "" || inputKey === "imageLabels") return;
     setSortOrder({ ...sortOrder, [inputKey]: value });
   };
 
