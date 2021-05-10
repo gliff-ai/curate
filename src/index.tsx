@@ -1,1 +1,3 @@
-export { UserInterface } from "./ui";
+import UserInterface from "./ui";
+
+export default UserInterface;

@@ -13,7 +13,7 @@
     "lint:ts": "npx eslint \"**/*.ts*\"",
     "serve": "webpack serve --config webpack.config.js",
     "test": "jest --coverage --passWithNoTests",
-    "prepare": "rm -r dist/; webpack --progress --config webpack.build.js"
+    "prePublishOnly": "rm -r dist/; webpack --progress --config webpack.build.js"
   },
   "license": "AGPL-3.0-only",
   "devDependencies": {
