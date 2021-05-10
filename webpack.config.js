@@ -47,6 +47,18 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "examples/index.html",
     }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "examples/samples",
+          to: "samples",
+        },
+        {
+          from: "examples/metadata.json",
+          to: "metadata.json",
+        },
+      ],
+    }),
   ],
   devServer: {
     host: "localhost",
