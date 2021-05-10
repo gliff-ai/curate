@@ -1,9 +1,31 @@
 import React, { Component, ChangeEvent, ReactNode } from "react";
-import { AppBar, Toolbar, Grid, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  CssBaseline,
+  Toolbar,
+  Grid,
+  Typography,
+  Theme,
+  withStyles,
+  WithStyles,
+  Button,
+} from "@material-ui/core";
+
+import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem } from "./searchAndSort/interfaces";
 import ComboBox from "./searchAndSort/SearchAndSortBar";
 import LabelsAccordion from "./searchAndSort/LabelsAccordion";
 import LeftDrawer from "./components/LeftDrawer";
+
+const styles = (theme: Theme) => ({
+  root: {
+    display: "flex", // flex-box, see https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+    alignItems: "flex-start", // prevents image tiles rendering halfway vertically between the app bar and bottom of the labels accordion (see https://css-tricks.com/snippets/css/a-guide-to-flexbox/#align-items)
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1, // make sure the appbar renders over the metadata drawer, not the other way round
+  },
+});
 
 export interface Tile {
   id: string;
@@ -11,7 +33,7 @@ export interface Tile {
   label: string;
   thumbnail: string; // base64
 }
-interface Props {
+interface Props extends WithStyles<typeof styles> {
   tiles: Array<Tile>;
 }
 interface State {
@@ -20,9 +42,10 @@ interface State {
   filteredMeta: Metadata;
   imageLabels: string[];
   expanded: string | boolean;
+  selected: number;
 }
 
-export class UserInterface extends Component<Props, State> {
+class UserInterface extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -32,6 +55,7 @@ export class UserInterface extends Component<Props, State> {
       metadataKeys: [],
       imageLabels: [],
       expanded: "labels-toolbox",
+      selected: null,
     };
   }
 
@@ -67,6 +91,10 @@ export class UserInterface extends Component<Props, State> {
       });
       this.setState({ filteredMeta });
     }
+  };
+
+  handleDrawerClose = () => {
+    this.setState({ selected: null });
   };
 
   handleToolboxChange = (panel: string) => (
@@ -161,48 +189,89 @@ export class UserInterface extends Component<Props, State> {
       });
   };
 
-  render = (): ReactNode => (
-    <div style={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <LeftDrawer
-            drawerContent={
-              <LabelsAccordion
-                expanded={this.state.expanded === "labels-toolbox"}
-                handleToolboxChange={this.handleToolboxChange("labels-toolbox")}
-                imageLabels={this.state.imageLabels}
-                callback={this.handleOnLabelSelection}
-              />
-            }
-          />
-          <Typography variant="h6">CURATE</Typography>
-          <ComboBox
-            metadata={this.state.metadata}
-            metadataKeys={this.state.metadataKeys}
-            callbackSearch={this.handleOnSearchSubmit}
-            callbackSort={this.handleOnSortSubmit}
-          />
-        </Toolbar>
-      </AppBar>
+  render = (): ReactNode => {
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar position="fixed" className={classes.appBar}>
+          <Toolbar>
+            <LeftDrawer
+              drawerContent={
+                <LabelsAccordion
+                  expanded={this.state.expanded === "labels-toolbox"}
+                  handleToolboxChange={this.handleToolboxChange(
+                    "labels-toolbox"
+                  )}
+                  imageLabels={this.state.imageLabels}
+                  callback={this.handleOnLabelSelection}
+                />
+              }
+            />
+            <Typography variant="h6">CURATE</Typography>
+            <ComboBox
+              metadata={this.state.metadata}
+              metadataKeys={this.state.metadataKeys}
+              callbackSearch={this.handleOnSearchSubmit}
+              callbackSort={this.handleOnSortSubmit}
+            />
+          </Toolbar>
+        </AppBar>
 
-      <Grid container spacing={0} wrap="nowrap">
-        <Grid item style={{ position: "relative", width: "80%" }}>
-          <Grid container spacing={3}>
-            {this.state.filteredMeta.map((mitem: MetaItem) => {
+        <Grid
+          container
+          style={{ position: "relative", width: "80%", margin: "16px" }}
+        >
+          <Toolbar />
+          {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
+          <Grid container spacing={3} wrap="wrap">
+            {this.state.filteredMeta.map((mitem: MetaItem, index) => {
               const tile = this.getTileFromImageName(mitem.imageName as string);
               return (
-                <Grid item xs={1} key={tile.id}>
-                  <img
-                    height={128}
-                    src={`data:image/png;base64,${tile.thumbnail}`}
-                    alt={tile.name}
-                  />
+                <Grid
+                  item
+                  key={tile.id}
+                  style={{
+                    backgroundColor:
+                      this.state.selected === index && "lightblue",
+                  }}
+                >
+                  <Button
+                    onClick={() => {
+                      this.setState({ selected: index });
+                    }}
+                    onKeyPress={(
+                      event: React.KeyboardEvent<HTMLButtonElement>
+                    ) => {
+                      if (event.code === "Enter") {
+                        this.setState({ selected: index });
+                      }
+                    }}
+                  >
+                    <img
+                      height={128}
+                      src={`data:image/png;base64,${tile.thumbnail}`}
+                      alt={tile.name}
+                    />
+                  </Button>
+                  <Typography style={{ textAlign: "center" }}>
+                    {tile.name.split("/").pop()}
+                  </Typography>
                 </Grid>
               );
             })}
           </Grid>
         </Grid>
-      </Grid>
-    </div>
-  );
+
+        {this.state.selected !== null && (
+          <MetadataDrawer
+            metadata={this.state.metadata[this.state.selected]}
+            handleDrawerClose={this.handleDrawerClose}
+          />
+        )}
+      </div>
+    );
+  };
 }
+
+export default withStyles(styles)(UserInterface);
