@@ -16,6 +16,11 @@ import { Metadata, MetaItem } from "./searchAndSort/interfaces";
 import ComboBox from "./searchAndSort/SearchAndSortBar";
 import LabelsAccordion from "./searchAndSort/LabelsAccordion";
 import LeftDrawer from "./components/LeftDrawer";
+import Tile from "./components/Tile";
+
+import { UploadImage } from "@gliff-ai/upload";
+
+import { Backup } from "@material-ui/icons";
 
 const styles = (theme: Theme) => ({
   root: {
@@ -27,15 +32,10 @@ const styles = (theme: Theme) => ({
   },
 });
 
-export interface Tile {
-  id: string;
-  name: string;
-  label: string;
-  thumbnail: string; // base64
-}
 interface Props extends WithStyles<typeof styles> {
-  tiles: Array<Tile>;
+  metadata: Metadata;
 }
+
 interface State {
   metadata: Metadata;
   metadataKeys: string[];
@@ -50,28 +50,14 @@ class UserInterface extends Component<Props, State> {
     super(props);
 
     this.state = {
-      metadata: [],
-      filteredMeta: [],
-      metadataKeys: [],
-      imageLabels: [],
+      metadata: this.props.metadata,
+      filteredMeta: this.props.metadata,
+      metadataKeys: Object.keys(this.props.metadata[0]),
+      imageLabels: this.getImageLabels(this.props.metadata),
       expanded: "labels-toolbox",
       selected: null,
     };
   }
-
-  componentDidMount = (): void => {
-    this.loadMeta("metadata.json", (data: Metadata): void => {
-      // Load metadata from json file.
-      if (data && data.length > 0) {
-        this.setState({
-          metadata: data,
-          filteredMeta: data,
-          metadataKeys: Object.keys(data[0]),
-          imageLabels: this.getImageLabels(data),
-        });
-      }
-    });
-  };
 
   handleOnSearchSubmit = (inputKey: string, inputValue: string): void => {
     // Filter metadata based on inputKey and inputValue
@@ -122,6 +108,8 @@ class UserInterface extends Component<Props, State> {
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
     // Handle sort by any string or by date.
 
+    if (key === "") return; // for some reason this function is being called on startup with an empty key
+
     function compare(a: string | Date, b: string | Date, sort: string): number {
       if (a < b) {
         return sort === "asc" ? -1 : 1;
@@ -144,13 +132,14 @@ class UserInterface extends Component<Props, State> {
         );
       } else {
         // Sort by any string
-        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
-          compare(
+        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number => {
+          console.log(a, key);
+          return compare(
             (a[key] as string).toLowerCase(),
             (b[key] as string).toLowerCase(),
             sortOrder
-          )
-        );
+          );
+        });
       }
       return { filteredMeta: prevState.filteredMeta };
     });
@@ -166,28 +155,6 @@ class UserInterface extends Component<Props, State> {
 
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
-
-  getTileFromImageName = (imageName: string): Tile => {
-    // Get tile from image name.
-    const tiles = this.props.tiles.filter((tile) =>
-      tile.name.includes(`/${imageName}.`)
-    );
-    return tiles[0];
-  };
-
-  loadMeta = (
-    jsonUrl: string,
-    onLoadCallback: (data: Metadata) => void
-  ): void => {
-    fetch(jsonUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        onLoadCallback(data);
-      })
-      .catch(() => {
-        console.log("Error while reading metadata.");
-      });
-  };
 
   render = (): ReactNode => {
     const { classes } = this.props;
@@ -209,6 +176,14 @@ class UserInterface extends Component<Props, State> {
               }
             />
             <Typography variant="h6">CURATE</Typography>
+            {/* <UploadImage
+              spanElement={
+                <Button aria-label="upload-picture" component="span">
+                  <Backup />
+                </Button>
+              }
+              multiple
+            /> */}
             <ComboBox
               metadata={this.state.metadata}
               metadataKeys={this.state.metadataKeys}
@@ -226,11 +201,10 @@ class UserInterface extends Component<Props, State> {
           {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <Grid container spacing={3} wrap="wrap">
             {this.state.filteredMeta.map((mitem: MetaItem, index) => {
-              const tile = this.getTileFromImageName(mitem.imageName as string);
               return (
                 <Grid
                   item
-                  key={tile.id}
+                  key={mitem.id as string}
                   style={{
                     backgroundColor:
                       this.state.selected === index && "lightblue",
@@ -248,14 +222,10 @@ class UserInterface extends Component<Props, State> {
                       }
                     }}
                   >
-                    <img
-                      height={128}
-                      src={`data:image/png;base64,${tile.thumbnail}`}
-                      alt={tile.name}
-                    />
+                    <Tile mitem={mitem} />
                   </Button>
                   <Typography style={{ textAlign: "center" }}>
-                    {tile.name.split("/").pop()}
+                    {(mitem.name as string).split("/").pop()}
                   </Typography>
                 </Grid>
               );

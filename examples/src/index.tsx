@@ -3,54 +3,48 @@ import * as ReactDOM from "react-dom";
 
 import UserInterface from "@/ui";
 
+import { Metadata, MetaItem } from "@/searchAndSort/interfaces";
+
 // load the sample images, construct an array of tiles:
-const loadImage = (filename: string): Promise<string> =>
+const loadImage = (filename: string): Promise<ImageBitmap> =>
   new Promise((resolve) => {
     const image = new Image();
     image.crossOrigin = "anonymous";
 
     image.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = image.width;
-      canvas.height = image.height;
-      ctx.drawImage(image, 0, 0);
-      let b64 = canvas.toDataURL("image/png");
-      b64 = b64.replace("data:image/png;base64,", "");
-
-      resolve(b64);
+      createImageBitmap(image).then((imageBitmap) => {
+        resolve(imageBitmap);
+      });
     };
     image.src = filename;
   });
 
 // get image promises:
-const promises: Array<Promise<string>> = [];
+const promises: Array<Promise<ImageBitmap>> = [];
 for (let i = 0; i < 20; i += 1) {
   const filename = `samples/sample${i}.png`;
   promises.push(loadImage(filename));
 }
 
-// unwrap promises and pass to curate:
-Promise.all(promises)
-  .then(
-    (images: string[]) => {
+fetch("metadata.json")
+  .then((response) => response.json())
+  .then((metadata: Metadata) => {
+    Promise.all(promises).then((images: Array<ImageBitmap>) => {
       // make tiles:
-      const tiles = images.map((image: string, i) => ({
+      const tiles = metadata.map((mitem: MetaItem, i) => ({
         id: String(i),
         name: `samples/sample${i}.png`,
-        label: i % 2 ? "cancer" : "notcancer",
-        thumbnail: image,
+        thumbnail: images[i],
+        ...mitem,
       }));
+
       // render main component:
       ReactDOM.render(
-        <UserInterface tiles={tiles} />,
+        <UserInterface metadata={tiles} />,
         document.getElementById("react-container")
       );
-    },
-    (e) => {
-      console.log(e);
-    }
-  )
-  .catch((e) => {
-    console.log(e);
+    });
+  })
+  .catch(() => {
+    console.log("Error while reading metadata.");
   });
