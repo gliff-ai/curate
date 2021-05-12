@@ -1,6 +1,6 @@
 [
     {
-        "imageName": "sample0",
+        "imageName": "sample0.png",
         "size": "1260 bytes",
         "dateCreated": "Apr 28 2021",
         "dimensions": "120 x 140",
@@ -10,7 +10,7 @@
         "fileMetaVersion": "1.0.0"
     },
     {
-        "imageName": "sample1",
+        "imageName": "sample1.png",
         "size": "1260 bytes",
         "dateCreated": "Apr 21 2021",
         "dimensions": "130 x 170",
@@ -20,7 +20,7 @@
         "fileMetaVersion": "1.0.0"
     },
     {
-        "imageName": "sample2",
+        "imageName": "sample2.png",
         "size": "1260 bytes",
         "dateCreated": "Apr 28 2021",
         "dimensions": "120 x 140",
@@ -30,7 +30,7 @@
         "fileMetaVersion": "1.0.0"
     },
         {
-        "imageName": "sample3",
+        "imageName": "sample3.png",
         "size": "1260 bytes",
         "dateCreated": "Apr 03 2021",
         "dimensions": "120 x 140",
@@ -40,7 +40,7 @@
         "fileMetaVersion": "1.0.0"
     },
         {
-        "imageName": "sample4",
+        "imageName": "sample4.png",
         "size": "1260 bytes",
         "dateCreated": "May 05 2021",
         "dimensions": "120 x 140",
@@ -50,7 +50,7 @@
         "fileMetaVersion": "1.0.0"
     },
         {
-        "imageName": "sample5",
+        "imageName": "sample5.png",
         "size": "1260 bytes",
         "dateCreated": "May 06 2021",
         "dimensions": "120 x 140",

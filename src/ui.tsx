@@ -132,7 +132,6 @@ class UserInterface extends Component<Props, State> {
       } else {
         // Sort by any string
         prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number => {
-          console.log(a, key);
           return compare(
             (a[key] as string).toLowerCase(),
             (b[key] as string).toLowerCase(),
@@ -155,6 +154,15 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
+  makeThumbnail = (image: Array<Array<ImageBitmap>>): Promise<ImageBitmap> => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image[0][0], 0, 0, 128, 128);
+    return createImageBitmap(canvas);
+  };
+
   addUploadedImage = (
     imageFileInfo: ImageFileInfo,
     images: Array<Array<ImageBitmap>>
@@ -169,16 +177,30 @@ class UserInterface extends Component<Props, State> {
       numberOfChannels: images[0].length.toString(),
       imageLabels: [] as Array<string>,
     };
+
     this.setState(
-      {
-        metadata: this.state.metadata.concat(metadata),
-        filteredMeta: this.state.metadata.concat(metadata),
-      },
+      // Use an updater function here, which will run with state fully flushed from previous setState calls. This should prevent race conditions.
+      (state, props) => ({
+        metadata: state.metadata.concat(metadata),
+        filteredMeta: state.metadata.concat(metadata),
+      }),
       () => {
-        console.log(this.state.metadata);
+        // making thumbnails is asynchronous thanks to createImageBitmap, so set up a callback
+        // also, we dispatch said callback (here) after state has updated with new metadata, to guarantee that
+        // the new metadata item will be present in state when the callback runs
+        this.makeThumbnail(images).then((thumbnail) => {
+          // got to iterate through all the metadata items to find the right one to update:
+          for (let i = 0; i < this.state.metadata.length; i += 1) {
+            if (this.state.metadata[i].id === imageFileInfo.fileID) {
+              let metadata = this.state.metadata;
+              metadata[i].thumbnail = thumbnail;
+              this.setState({ metadata });
+              break;
+            }
+          }
+        });
       }
     );
-    console.log(metadata);
   };
 
   render = (): ReactNode => {
