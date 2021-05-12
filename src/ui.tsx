@@ -11,15 +11,15 @@ import {
   Button,
 } from "@material-ui/core";
 
+import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
+import { Backup } from "@material-ui/icons";
+
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem } from "./searchAndSort/interfaces";
 import ComboBox from "./searchAndSort/SearchAndSortBar";
 import LabelsAccordion from "./searchAndSort/LabelsAccordion";
 import LeftDrawer from "./components/LeftDrawer";
 import Tile from "./components/Tile";
-
-import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { Backup } from "@material-ui/icons";
 
 const styles = (theme: Theme) => ({
   root: {
@@ -82,11 +82,12 @@ class UserInterface extends Component<Props, State> {
     this.setState({ selected: null });
   };
 
-  handleToolboxChange =
-    (panel: string) =>
-    (event: ChangeEvent, isExpanded: boolean): void => {
-      this.setState({ expanded: isExpanded ? panel : false });
-    };
+  handleToolboxChange = (panel: string) => (
+    event: ChangeEvent,
+    isExpanded: boolean
+  ): void => {
+    this.setState({ expanded: isExpanded ? panel : false });
+  };
 
   handleOnLabelSelection = (selectedLabels: string[]): void => {
     // Filter metadata based on selected labels.
@@ -130,13 +131,13 @@ class UserInterface extends Component<Props, State> {
         );
       } else {
         // Sort by any string
-        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number => {
-          return compare(
+        prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
+          compare(
             (a[key] as string).toLowerCase(),
             (b[key] as string).toLowerCase(),
             sortOrder
-          );
-        });
+          )
+        );
       }
       return { filteredMeta: prevState.filteredMeta };
     });
@@ -187,17 +188,22 @@ class UserInterface extends Component<Props, State> {
         // making thumbnails is asynchronous thanks to createImageBitmap, so set up a callback
         // also, we dispatch said callback (here) after state has updated with new metadata, to guarantee that
         // the new metadata item will be present in state when the callback runs
-        this.makeThumbnail(images).then((thumbnail) => {
-          // got to iterate through all the metadata items to find the right one to update:
-          for (let i = 0; i < this.state.metadata.length; i += 1) {
-            if (this.state.metadata[i].id === imageFileInfo.fileID) {
-              let metadata = this.state.metadata;
-              metadata[i].thumbnail = thumbnail;
-              this.setState({ metadata });
-              break;
+        this.makeThumbnail(images).then(
+          (thumbnail) => {
+            // got to iterate through all the metadata items to find the right one to update:
+            for (let i = 0; i < this.state.metadata.length; i += 1) {
+              if (this.state.metadata[i].id === imageFileInfo.fileID) {
+                const newMetadata = this.state.metadata;
+                newMetadata[i].thumbnail = thumbnail;
+                this.setState({ metadata: newMetadata });
+                break;
+              }
             }
+          },
+          () => {
+            console.log(`Error making thumbnail for ${imageFileInfo.fileName}`);
           }
-        });
+        );
       }
     );
   };
@@ -247,36 +253,33 @@ class UserInterface extends Component<Props, State> {
           <Toolbar />
           {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <Grid container spacing={3} wrap="wrap">
-            {this.state.filteredMeta.map((mitem: MetaItem, index) => {
-              return (
-                <Grid
-                  item
-                  key={mitem.id as string}
-                  style={{
-                    backgroundColor:
-                      this.state.selected === index && "lightblue",
+            {this.state.filteredMeta.map((mitem: MetaItem, index) => (
+              <Grid
+                item
+                key={mitem.id as string}
+                style={{
+                  backgroundColor: this.state.selected === index && "lightblue",
+                }}
+              >
+                <Button
+                  onClick={() => {
+                    this.setState({ selected: index });
+                  }}
+                  onKeyPress={(
+                    event: React.KeyboardEvent<HTMLButtonElement>
+                  ) => {
+                    if (event.code === "Enter") {
+                      this.setState({ selected: index });
+                    }
                   }}
                 >
-                  <Button
-                    onClick={() => {
-                      this.setState({ selected: index });
-                    }}
-                    onKeyPress={(
-                      event: React.KeyboardEvent<HTMLButtonElement>
-                    ) => {
-                      if (event.code === "Enter") {
-                        this.setState({ selected: index });
-                      }
-                    }}
-                  >
-                    <Tile mitem={mitem} />
-                  </Button>
-                  <Typography style={{ textAlign: "center" }}>
-                    {(mitem.imageName as string).split("/").pop()}
-                  </Typography>
-                </Grid>
-              );
-            })}
+                  <Tile mitem={mitem} />
+                </Button>
+                <Typography style={{ textAlign: "center" }}>
+                  {(mitem.imageName as string).split("/").pop()}
+                </Typography>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
 

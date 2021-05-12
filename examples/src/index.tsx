@@ -12,9 +12,14 @@ const loadImage = (filename: string): Promise<ImageBitmap> =>
     image.crossOrigin = "anonymous";
 
     image.onload = () => {
-      createImageBitmap(image).then((imageBitmap) => {
-        resolve(imageBitmap);
-      });
+      createImageBitmap(image).then(
+        (imageBitmap) => {
+          resolve(imageBitmap);
+        },
+        () => {
+          console.log("Error while creating ImageBitmap");
+        }
+      );
     };
     image.src = filename;
   });
@@ -29,21 +34,26 @@ for (let i = 0; i < 20; i += 1) {
 fetch("metadata.json")
   .then((response) => response.json())
   .then((metadata: Metadata) => {
-    Promise.all(promises).then((images: Array<ImageBitmap>) => {
-      // make tiles:
-      const tiles = metadata.map((mitem: MetaItem, i) => ({
-        id: String(i),
-        imageName: `samples/sample${i}.png`,
-        thumbnail: images[i],
-        ...mitem,
-      }));
+    Promise.all(promises).then(
+      (images: Array<ImageBitmap>) => {
+        // make tiles:
+        const tiles = metadata.map((mitem: MetaItem, i) => ({
+          id: String(i),
+          imageName: `samples/sample${i}.png`,
+          thumbnail: images[i],
+          ...mitem,
+        }));
 
-      // render main component:
-      ReactDOM.render(
-        <UserInterface metadata={tiles} />,
-        document.getElementById("react-container")
-      );
-    });
+        // render main component:
+        ReactDOM.render(
+          <UserInterface metadata={tiles} />,
+          document.getElementById("react-container")
+        );
+      },
+      () => {
+        console.log("Error while parsing JSON");
+      }
+    );
   })
   .catch(() => {
     console.log("Error while reading metadata.");
