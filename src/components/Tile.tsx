@@ -13,7 +13,9 @@ export default function Tile(props: { mitem: MetaItem }) {
 
           const canvasContext = canvas.getContext("2d");
 
-          canvasContext.drawImage(props.mitem.thumbnail as ImageBitmap, 0, 0);
+          if (props.mitem.thumbnail !== undefined) {
+            canvasContext.drawImage(props.mitem.thumbnail as ImageBitmap, 0, 0);
+          }
         }
       }}
     />

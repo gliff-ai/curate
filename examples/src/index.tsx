@@ -33,7 +33,7 @@ fetch("metadata.json")
       // make tiles:
       const tiles = metadata.map((mitem: MetaItem, i) => ({
         id: String(i),
-        name: `samples/sample${i}.png`,
+        imageName: `samples/sample${i}.png`,
         thumbnail: images[i],
         ...mitem,
       }));

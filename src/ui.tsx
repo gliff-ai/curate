@@ -18,8 +18,7 @@ import LabelsAccordion from "./searchAndSort/LabelsAccordion";
 import LeftDrawer from "./components/LeftDrawer";
 import Tile from "./components/Tile";
 
-import { UploadImage } from "@gliff-ai/upload";
-
+import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { Backup } from "@material-ui/icons";
 
 const styles = (theme: Theme) => ({
@@ -156,6 +155,32 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
+  addUploadedImage = (
+    imageFileInfo: ImageFileInfo,
+    images: Array<Array<ImageBitmap>>
+  ) => {
+    const today = new Date();
+    const metadata = {
+      imageName: imageFileInfo.fileName,
+      id: imageFileInfo.fileID,
+      dateCreated: today.toLocaleDateString("gb-EN"),
+      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
+      numberOfDimensions: images.length === 1 ? "2" : "3",
+      numberOfChannels: images[0].length.toString(),
+      imageLabels: [] as Array<string>,
+    };
+    this.setState(
+      {
+        metadata: this.state.metadata.concat(metadata),
+        filteredMeta: this.state.metadata.concat(metadata),
+      },
+      () => {
+        console.log(this.state.metadata);
+      }
+    );
+    console.log(metadata);
+  };
+
   render = (): ReactNode => {
     const { classes } = this.props;
     return (
@@ -176,14 +201,15 @@ class UserInterface extends Component<Props, State> {
               }
             />
             <Typography variant="h6">CURATE</Typography>
-            {/* <UploadImage
+            <UploadImage
               spanElement={
                 <Button aria-label="upload-picture" component="span">
                   <Backup />
                 </Button>
               }
               multiple
-            /> */}
+              setUploadedImage={this.addUploadedImage}
+            />
             <ComboBox
               metadata={this.state.metadata}
               metadataKeys={this.state.metadataKeys}
@@ -225,7 +251,7 @@ class UserInterface extends Component<Props, State> {
                     <Tile mitem={mitem} />
                   </Button>
                   <Typography style={{ textAlign: "center" }}>
-                    {(mitem.name as string).split("/").pop()}
+                    {(mitem.imageName as string).split("/").pop()}
                   </Typography>
                 </Grid>
               );
