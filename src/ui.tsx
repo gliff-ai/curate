@@ -167,43 +167,26 @@ class UserInterface extends Component<Props, State> {
     imageFileInfo: ImageFileInfo,
     images: Array<Array<ImageBitmap>>
   ) => {
-    const today = new Date();
-    const metadata = {
-      imageName: imageFileInfo.fileName,
-      id: imageFileInfo.fileID,
-      dateCreated: today.toLocaleDateString("gb-EN"),
-      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
-      numberOfDimensions: images.length === 1 ? "2" : "3",
-      numberOfChannels: images[0].length.toString(),
-      imageLabels: [] as Array<string>,
-    };
-
-    this.setState(
-      // Use an updater function here, which will run with state fully flushed from previous setState calls. This should prevent race conditions.
-      (state, props) => ({
-        metadata: state.metadata.concat(metadata),
-        filteredMeta: state.metadata.concat(metadata),
-      }),
-      () => {
-        // making thumbnails is asynchronous thanks to createImageBitmap, so set up a callback
-        // also, we dispatch said callback (here) after state has updated with new metadata, to guarantee that
-        // the new metadata item will be present in state when the callback runs
-        this.makeThumbnail(images).then(
-          (thumbnail) => {
-            // got to iterate through all the metadata items to find the right one to update:
-            for (let i = 0; i < this.state.metadata.length; i += 1) {
-              if (this.state.metadata[i].id === imageFileInfo.fileID) {
-                const newMetadata = this.state.metadata;
-                newMetadata[i].thumbnail = thumbnail;
-                this.setState({ metadata: newMetadata });
-                break;
-              }
-            }
-          },
-          () => {
-            console.log(`Error making thumbnail for ${imageFileInfo.fileName}`);
-          }
-        );
+    this.makeThumbnail(images).then(
+      (thumbnail) => {
+        const today = new Date();
+        const newMetadata = {
+          imageName: imageFileInfo.fileName,
+          id: imageFileInfo.fileID,
+          dateCreated: today.toLocaleDateString("gb-EN"),
+          dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
+          numberOfDimensions: images.length === 1 ? "2" : "3",
+          numberOfChannels: images[0].length.toString(),
+          imageLabels: [] as Array<string>,
+          thumbnail,
+        };
+        this.setState((state) => ({
+          metadata: state.metadata.concat(newMetadata),
+          filteredMeta: state.metadata.concat(newMetadata),
+        }));
+      },
+      (error) => {
+        console.log(error);
       }
     );
   };
