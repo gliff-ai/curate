@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { MetaItem } from "@/searchAndSort/interfaces";
 
 export default function Tile(props: { mitem: MetaItem }) {
