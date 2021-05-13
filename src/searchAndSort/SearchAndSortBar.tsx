@@ -56,7 +56,7 @@ export default function SearchAndSortBar({
       if (Array.isArray(value)) {
         value.forEach((v) => options.add(v));
       } else {
-        options.add(value);
+        options.add(value as string);
       }
     });
     options.add("All values");
