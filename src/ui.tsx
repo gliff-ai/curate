@@ -82,12 +82,11 @@ class UserInterface extends Component<Props, State> {
     this.setState({ selected: null });
   };
 
-  handleToolboxChange = (panel: string) => (
-    event: ChangeEvent,
-    isExpanded: boolean
-  ): void => {
-    this.setState({ expanded: isExpanded ? panel : false });
-  };
+  handleToolboxChange =
+    (panel: string) =>
+    (event: ChangeEvent, isExpanded: boolean): void => {
+      this.setState({ expanded: isExpanded ? panel : false });
+    };
 
   handleOnLabelSelection = (selectedLabels: string[]): void => {
     // Filter metadata based on selected labels.
