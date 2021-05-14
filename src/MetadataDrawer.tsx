@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type MetadataNameMap = { [index: string]: string };
-const metadataNameMap: MetadataNameMap = {
+export const metadataNameMap: MetadataNameMap = {
   imageName: "Name",
   size: "Size",
   dateCreated: "Created",

@@ -6,6 +6,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Search } from "@material-ui/icons";
 import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem } from "./interfaces";
+import { metadataNameMap } from "../MetadataDrawer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,11 +49,24 @@ export default function SearchAndSortBar({
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
+  const prettyToUgly = (pretty: string): string => {
+    // map backwards from pretty name to metadata key (e.g. "Number Of Dimensions" -> "numberOfDimensions")
+    let key;
+    Object.entries(metadataNameMap).forEach(([_key, value]) => {
+      if (value === pretty) {
+        key = _key;
+      }
+    });
+    return key;
+  };
+
   const updateOptions = (): void => {
-    if (!metadataKeys.includes(inputKey)) return;
+    const key = prettyToUgly(inputKey);
+    console.log(key);
+    if (key === undefined) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
-      const value = mitem[inputKey];
+      const value = mitem[key];
       if (Array.isArray(value)) {
         value.forEach((v) => options.add(v));
       } else {
@@ -72,7 +86,7 @@ export default function SearchAndSortBar({
     <Paper
       component="form"
       onSubmit={(e) => {
-        callbackSearch(inputKey, inputValue);
+        callbackSearch(prettyToUgly(inputKey), inputValue);
         e.preventDefault();
       }}
       className={style.root}
@@ -84,7 +98,7 @@ export default function SearchAndSortBar({
         onInputChange={(e: ChangeEvent, newInputKey: string) => {
           setInputKey(newInputKey);
         }}
-        options={metadataKeys}
+        options={Object.values(metadataNameMap)}
         renderInput={(params: any) => <TextField {...params} label="Key" />}
       />
       <SortDropdown
