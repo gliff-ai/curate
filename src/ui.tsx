@@ -119,7 +119,7 @@ class UserInterface extends Component<Props, State> {
     }
 
     this.setState((prevState) => {
-      if (key.toLowerCase().includes("date")) {
+      if (key?.toLowerCase().includes("date")) {
         // Sort by date
         prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
           compare(

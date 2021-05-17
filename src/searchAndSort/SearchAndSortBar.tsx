@@ -50,7 +50,7 @@ export default function SearchAndSortBar({
   callbackSort,
 }: Props): ReactElement {
   const style = useStyles();
-  const [inputKey, setInputKey] = useState("");
+  const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
@@ -66,10 +66,10 @@ export default function SearchAndSortBar({
   }, [] as MetadataLabel[] );
 
   const updateOptions = (): void => {
-    if (!metadataKeys.includes(inputKey)) return;
+    if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
-      const value = mitem[inputKey];
+      const value = mitem[inputKey.key];
       if (Array.isArray(value)) {
         value.forEach((v) => options.add(v));
       } else {
@@ -89,7 +89,7 @@ export default function SearchAndSortBar({
     <Paper
       component="form"
       onSubmit={(e) => {
-        callbackSearch(inputKey, inputValue);
+        callbackSearch(inputKey.key, inputValue);
         e.preventDefault();
       }}
       className={style.root}
@@ -97,14 +97,14 @@ export default function SearchAndSortBar({
       <Autocomplete
         id="combobox-metadata-key"
         className={style.input}
-        inputValue={inputKey}
+        // inputValue={inputKey.key}
         getOptionLabel={(option: MetadataLabel) => option.label}
         getOptionSelected={(option, value) => option.label === value.label}
         onInputChange={(e: ChangeEvent, newInputKey: string) => {
             // Match the text with the actual key we want
             const metaLabel = metadataLabels.filter(({label}) => label === newInputKey)
-            const key = metaLabel?.[0]?.key || "";
-            setInputKey(key);
+            // const key = metaLabel?.[0]?.key || "";
+            setInputKey(metaLabel?.[0]);
 
         }}
         options={metadataLabels}
@@ -113,7 +113,7 @@ export default function SearchAndSortBar({
 
       <SortDropdown
         metadataKeys={metadataKeys}
-        inputKey={inputKey}
+        inputKey={inputKey?.key || ""}
         callback={callbackSort}
       />
 
