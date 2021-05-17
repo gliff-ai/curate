@@ -103,7 +103,6 @@ export default function SearchAndSortBar({
         onInputChange={(e: ChangeEvent, newInputKey: string) => {
             // Match the text with the actual key we want
             const metaLabel = metadataLabels.filter(({label}) => label === newInputKey)
-            // const key = metaLabel?.[0]?.key || "";
             setInputKey(metaLabel?.[0]);
 
         }}
