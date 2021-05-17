@@ -174,6 +174,7 @@ class UserInterface extends Component<Props, State> {
           imageName: imageFileInfo.fileName,
           id: imageFileInfo.fileID,
           dateCreated: today.toLocaleDateString("gb-EN"),
+          size: imageFileInfo.size.toString(),
           dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
           numberOfDimensions: images.length === 1 ? "2" : "3",
           numberOfChannels: images[0].length.toString(),
