@@ -41,7 +41,7 @@ interface Props {
 type MetadataLabel = {
   key: string;
   label: string;
-}
+};
 
 export default function SearchAndSortBar({
   metadata,
@@ -54,16 +54,19 @@ export default function SearchAndSortBar({
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
-  const metadataLabels = metadataKeys.reduce((acc: Array<MetadataLabel>, key) => {
-    if(["fileMetaVersion"].includes(key)) return acc; // Just an example of how to exclude metadata from the list if we need
+  const metadataLabels = metadataKeys.reduce(
+    (acc: Array<MetadataLabel>, key) => {
+      if (["fileMetaVersion", "id", "thumbnail"].includes(key)) return acc; // Just an example of how to exclude metadata from the list if we need
 
-    const label = metadataNameMap[key] || key;
-    acc.push({
-      label,
-      key
-    })
-    return acc;
-  }, [] as MetadataLabel[] );
+      const label = metadataNameMap[key] || key;
+      acc.push({
+        label,
+        key,
+      });
+      return acc;
+    },
+    [] as MetadataLabel[]
+  );
 
   const updateOptions = (): void => {
     if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
@@ -101,11 +104,12 @@ export default function SearchAndSortBar({
         getOptionLabel={(option: MetadataLabel) => option.label}
         getOptionSelected={(option, value) => option.label === value.label}
         onInputChange={(e: ChangeEvent, newInputKey: string) => {
-            // Match the text with the actual key we want
-            const metaLabel = metadataLabels.filter(({label}) => label === newInputKey)
-            // const key = metaLabel?.[0]?.key || "";
-            setInputKey(metaLabel?.[0]);
-
+          // Match the text with the actual key we want
+          const metaLabel = metadataLabels.filter(
+            ({ label }) => label === newInputKey
+          );
+          // const key = metaLabel?.[0]?.key || "";
+          setInputKey(metaLabel?.[0]);
         }}
         options={metadataLabels}
         renderInput={(params: any) => <TextField {...params} label="Key" />}
