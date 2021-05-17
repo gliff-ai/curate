@@ -9,9 +9,10 @@
   ],
   "scripts": {
     "build": "webpack --progress --config webpack.config.js",
-    "format": "npx prettier --write **/*.tsx",
-    "lint": "npm run lint:ts",
-    "lint:ts": "npx eslint \"**/*.ts*\"",
+    "format": "./node_modules/prettier/bin-prettier.js --write src/{**,.}/*.ts*",
+    "prettier": "npx prettier --no-install -c src/{**,.}/*.ts*",
+    "lint": "npm run lint:ts && npm run prettier",
+    "lint:ts": "npx eslint src/{**,.}/*.ts*",
     "serve": "webpack serve --config webpack.config.js",
     "test": "jest --coverage --passWithNoTests",
     "prePublishOnly": "rm -r dist/; webpack --progress --config webpack.build.js"
