@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "webpack --progress --config webpack.config.js",
-    "format": "./node_modules/prettier/bin-prettier.js --write src/{**,.}/*.ts*",
+    "format": "npx prettier --no-install --write src/{**,.}/*.ts*",
     "prettier": "npx prettier --no-install -c src/{**,.}/*.ts*",
     "lint": "npm run lint:ts && npm run prettier",
     "lint:ts": "npx eslint src/{**,.}/*.ts*",
