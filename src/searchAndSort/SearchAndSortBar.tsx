@@ -108,7 +108,7 @@ export default function SearchAndSortBar({
           const metaLabel = metadataLabels.filter(
             ({ label }) => label === newInputKey
           );
-          // const key = metaLabel?.[0]?.key || "";
+
           setInputKey(metaLabel?.[0]);
         }}
         options={metadataLabels}
