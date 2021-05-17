@@ -11,11 +11,15 @@ import {
   Button,
 } from "@material-ui/core";
 
+import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
+import { Backup } from "@material-ui/icons";
+
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem } from "./searchAndSort/interfaces";
 import ComboBox from "./searchAndSort/SearchAndSortBar";
 import LabelsAccordion from "./searchAndSort/LabelsAccordion";
 import LeftDrawer from "./components/LeftDrawer";
+import Tile from "./components/Tile";
 
 const styles = (theme: Theme) => ({
   root: {
@@ -27,15 +31,10 @@ const styles = (theme: Theme) => ({
   },
 });
 
-export interface Tile {
-  id: string;
-  name: string;
-  label: string;
-  thumbnail: string; // base64
-}
 interface Props extends WithStyles<typeof styles> {
-  tiles: Array<Tile>;
+  metadata: Metadata;
 }
+
 interface State {
   metadata: Metadata;
   metadataKeys: string[];
@@ -50,28 +49,14 @@ class UserInterface extends Component<Props, State> {
     super(props);
 
     this.state = {
-      metadata: [],
-      filteredMeta: [],
-      metadataKeys: [],
-      imageLabels: [],
+      metadata: this.props.metadata,
+      filteredMeta: this.props.metadata,
+      metadataKeys: Object.keys(this.props.metadata[0]),
+      imageLabels: this.getImageLabels(this.props.metadata),
       expanded: "labels-toolbox",
       selected: null,
     };
   }
-
-  componentDidMount = (): void => {
-    this.loadMeta("metadata.json", (data: Metadata): void => {
-      // Load metadata from json file.
-      if (data && data.length > 0) {
-        this.setState({
-          metadata: data,
-          filteredMeta: data,
-          metadataKeys: Object.keys(data[0]),
-          imageLabels: this.getImageLabels(data),
-        });
-      }
-    });
-  };
 
   handleOnSearchSubmit = (inputKey: string, inputValue: string): void => {
     // Filter metadata based on inputKey and inputValue
@@ -121,6 +106,8 @@ class UserInterface extends Component<Props, State> {
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
     // Handle sort by any string or by date.
 
+    if (key === "") return; // for some reason this function is being called on startup with an empty key
+
     function compare(a: string | Date, b: string | Date, sort: string): number {
       if (a < b) {
         return sort === "asc" ? -1 : 1;
@@ -166,26 +153,41 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
-  getTileFromImageName = (imageName: string): Tile => {
-    // Get tile from image name.
-    const tiles = this.props.tiles.filter((tile) =>
-      tile.name.includes(`/${imageName}.`)
-    );
-    return tiles[0];
+  makeThumbnail = (image: Array<Array<ImageBitmap>>): Promise<ImageBitmap> => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image[0][0], 0, 0, 128, 128);
+    return createImageBitmap(canvas);
   };
 
-  loadMeta = (
-    jsonUrl: string,
-    onLoadCallback: (data: Metadata) => void
-  ): void => {
-    fetch(jsonUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        onLoadCallback(data);
-      })
-      .catch(() => {
-        console.log("Error while reading metadata.");
-      });
+  addUploadedImage = (
+    imageFileInfo: ImageFileInfo,
+    images: Array<Array<ImageBitmap>>
+  ) => {
+    this.makeThumbnail(images).then(
+      (thumbnail) => {
+        const today = new Date();
+        const newMetadata = {
+          imageName: imageFileInfo.fileName,
+          id: imageFileInfo.fileID,
+          dateCreated: today.toLocaleDateString("gb-EN"),
+          dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
+          numberOfDimensions: images.length === 1 ? "2" : "3",
+          numberOfChannels: images[0].length.toString(),
+          imageLabels: [] as Array<string>,
+          thumbnail,
+        };
+        this.setState((state) => ({
+          metadata: state.metadata.concat(newMetadata),
+          filteredMeta: state.metadata.concat(newMetadata),
+        }));
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   render = (): ReactNode => {
@@ -208,6 +210,15 @@ class UserInterface extends Component<Props, State> {
               }
             />
             <Typography variant="h6">CURATE</Typography>
+            <UploadImage
+              spanElement={
+                <Button aria-label="upload-picture" component="span">
+                  <Backup />
+                </Button>
+              }
+              multiple
+              setUploadedImage={this.addUploadedImage}
+            />
             <ComboBox
               metadata={this.state.metadata}
               metadataKeys={this.state.metadataKeys}
@@ -224,41 +235,33 @@ class UserInterface extends Component<Props, State> {
           <Toolbar />
           {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <Grid container spacing={3} wrap="wrap">
-            {this.state.filteredMeta.map((mitem: MetaItem, index) => {
-              const tile = this.getTileFromImageName(mitem.imageName as string);
-              return (
-                <Grid
-                  item
-                  key={tile.id}
-                  style={{
-                    backgroundColor:
-                      this.state.selected === index && "lightblue",
+            {this.state.filteredMeta.map((mitem: MetaItem, index) => (
+              <Grid
+                item
+                key={mitem.id as string}
+                style={{
+                  backgroundColor: this.state.selected === index && "lightblue",
+                }}
+              >
+                <Button
+                  onClick={() => {
+                    this.setState({ selected: index });
+                  }}
+                  onKeyPress={(
+                    event: React.KeyboardEvent<HTMLButtonElement>
+                  ) => {
+                    if (event.code === "Enter") {
+                      this.setState({ selected: index });
+                    }
                   }}
                 >
-                  <Button
-                    onClick={() => {
-                      this.setState({ selected: index });
-                    }}
-                    onKeyPress={(
-                      event: React.KeyboardEvent<HTMLButtonElement>
-                    ) => {
-                      if (event.code === "Enter") {
-                        this.setState({ selected: index });
-                      }
-                    }}
-                  >
-                    <img
-                      height={128}
-                      src={`data:image/png;base64,${tile.thumbnail}`}
-                      alt={tile.name}
-                    />
-                  </Button>
-                  <Typography style={{ textAlign: "center" }}>
-                    {tile.name.split("/").pop()}
-                  </Typography>
-                </Grid>
-              );
-            })}
+                  <Tile mitem={mitem} />
+                </Button>
+                <Typography style={{ textAlign: "center" }}>
+                  {(mitem.imageName as string).split("/").pop()}
+                </Typography>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
 
