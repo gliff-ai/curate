@@ -6,6 +6,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Search } from "@material-ui/icons";
 import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem } from "./interfaces";
+import { metadataNameMap } from "../MetadataDrawer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,6 +38,11 @@ interface Props {
   callbackSort: (key: string, sortOrder: string) => void;
 }
 
+type MetadataLabel = {
+  key: string;
+  label: string;
+}
+
 export default function SearchAndSortBar({
   metadata,
   metadataKeys,
@@ -47,6 +53,17 @@ export default function SearchAndSortBar({
   const [inputKey, setInputKey] = useState("");
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
+
+  const metadataLabels = metadataKeys.reduce((acc: Array<MetadataLabel>, key) => {
+    if(["fileMetaVersion"].includes(key)) return acc; // Just an example of how to exclude metadata from the list if we need
+
+    const label = metadataNameMap[key] || key;
+    acc.push({
+      label,
+      key
+    })
+    return acc;
+  }, [] as MetadataLabel[] );
 
   const updateOptions = (): void => {
     if (!metadataKeys.includes(inputKey)) return;
@@ -81,12 +98,19 @@ export default function SearchAndSortBar({
         id="combobox-metadata-key"
         className={style.input}
         inputValue={inputKey}
+        getOptionLabel={(option: MetadataLabel) => option.label}
+        getOptionSelected={(option, value) => option.label === value.label}
         onInputChange={(e: ChangeEvent, newInputKey: string) => {
-          setInputKey(newInputKey);
+            // Match the text with the actual key we want
+            const metaLabel = metadataLabels.filter(({label}) => label === newInputKey)
+            const key = metaLabel?.[0]?.key || "";
+            setInputKey(key);
+
         }}
-        options={metadataKeys}
+        options={metadataLabels}
         renderInput={(params: any) => <TextField {...params} label="Key" />}
       />
+
       <SortDropdown
         metadataKeys={metadataKeys}
         inputKey={inputKey}
