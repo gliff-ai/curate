@@ -41,7 +41,7 @@ interface State {
   filteredMeta: Metadata;
   imageLabels: string[];
   expanded: string | boolean;
-  selected: number;
+  selected: string; // id of selected MetaItem
 }
 
 class UserInterface extends Component<Props, State> {
@@ -119,7 +119,7 @@ class UserInterface extends Component<Props, State> {
     }
 
     this.setState((prevState) => {
-      if (key.toLowerCase().includes("date")) {
+      if (key?.toLowerCase().includes("date")) {
         // Sort by date
         prevState.filteredMeta.sort((a: MetaItem, b: MetaItem): number =>
           compare(
@@ -173,6 +173,7 @@ class UserInterface extends Component<Props, State> {
           imageName: imageFileInfo.fileName,
           id: imageFileInfo.fileID,
           dateCreated: today.toLocaleDateString("gb-EN"),
+          size: imageFileInfo.size.toString(),
           dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
           numberOfDimensions: images.length === 1 ? "2" : "3",
           numberOfChannels: images[0].length.toString(),
@@ -235,23 +236,24 @@ class UserInterface extends Component<Props, State> {
           <Toolbar />
           {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <Grid container spacing={3} wrap="wrap">
-            {this.state.filteredMeta.map((mitem: MetaItem, index) => (
+            {this.state.filteredMeta.map((mitem: MetaItem) => (
               <Grid
                 item
                 key={mitem.id as string}
                 style={{
-                  backgroundColor: this.state.selected === index && "lightblue",
+                  backgroundColor:
+                    this.state.selected === mitem.id && "lightblue",
                 }}
               >
                 <Button
                   onClick={() => {
-                    this.setState({ selected: index });
+                    this.setState({ selected: mitem.id as string });
                   }}
                   onKeyPress={(
                     event: React.KeyboardEvent<HTMLButtonElement>
                   ) => {
                     if (event.code === "Enter") {
-                      this.setState({ selected: index });
+                      this.setState({ selected: mitem.id as string });
                     }
                   }}
                 >
@@ -267,7 +269,11 @@ class UserInterface extends Component<Props, State> {
 
         {this.state.selected !== null && (
           <MetadataDrawer
-            metadata={this.state.metadata[this.state.selected]}
+            metadata={
+              this.state.metadata.filter(
+                (mitem) => mitem.id === this.state.selected
+              )[0]
+            }
             handleDrawerClose={this.handleDrawerClose}
           />
         )}
