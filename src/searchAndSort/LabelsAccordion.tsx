@@ -48,7 +48,7 @@ export default function LabelsAccordion({
   const style = useStyles();
   const [selectedLabels, setSelectedLabels] = useState(imageLabels);
 
-  const addDelLabel = (label: string) => (): void => {
+  const toggleLabelSelection = (label: string) => (): void => {
     // Add label to list of selectedLabels if not present,
     // delete from it, if present.
     setSelectedLabels((prevState) => {
@@ -61,6 +61,19 @@ export default function LabelsAccordion({
       return prevLabels;
     });
   };
+
+  const toggleLabelAndSelectAll = (label: string) => (): void => {
+    // Select label if not selected and deselect every other label (and vice versa).
+    let newSelectedLabels = [];
+    if (selectedLabels.includes(label)) {
+      newSelectedLabels = imageLabels.filter((l) => l !== label);
+    } else {
+      newSelectedLabels.push(label);
+    }
+
+    setSelectedLabels(newSelectedLabels);
+  };
+
   useEffect(() => {
     callback(selectedLabels);
   }, [selectedLabels]);
@@ -81,7 +94,8 @@ export default function LabelsAccordion({
               key={label}
               dense
               button
-              onClick={addDelLabel(label)}
+              onDoubleClick={toggleLabelAndSelectAll(label)}
+              onClick={toggleLabelSelection(label)}
               className={style.listItem}
             >
               {selectedLabels.includes(label) ? (
