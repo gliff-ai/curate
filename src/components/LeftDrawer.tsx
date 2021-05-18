@@ -33,6 +33,7 @@ export default function LeftDrawer({ drawerContent }: Props): ReactElement {
         open={isOpen}
         onClose={toggleDrawer}
         onOpen={toggleDrawer}
+        keepMounted
       >
         <AppBar position="static">
           <Toolbar>
