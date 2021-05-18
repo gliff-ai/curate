@@ -8,26 +8,47 @@ import {
   List,
   ListItem,
   ListItemText,
+  IconButton,
 } from "@material-ui/core";
-import { ExpandMore, Label, LabelOutlined } from "@material-ui/icons";
+import {
+  ExpandMore,
+  Label,
+  LabelOutlined,
+  LibraryAddCheckOutlined,
+  HighlightOffOutlined,
+} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      width: "100%",
+    accordionDetails: {
+      display: "block",
       maxWidth: 300,
     },
     title: {
       paddingLeft: theme.spacing(1),
     },
-    listItem: {
-      paddingLeft: theme.spacing(1),
+    labelsList: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
+    labelsListItem: {
+      paddingLeft: theme.spacing(2),
+      width: "auto",
     },
-    text: {
-      paddingLeft: theme.spacing(4),
-    },
-    icon: {
+    labelIcon: {
       color: theme.palette.primary.dark,
+    },
+    labelText: {
+      paddingLeft: theme.spacing(2),
+    },
+    buttonsList: { display: "flex", flexDirection: "row", flexWrap: "nowrap" },
+    buttonsListItem: {
+      padding: theme.spacing(1),
+      width: "auto",
+    },
+    iconButton: {
+      color: theme.palette.primary.dark,
+    },
+    infoOnHover: {
+      color: theme.palette.primary.light,
+      fontStyle: "italic",
     },
   })
 );
@@ -47,6 +68,7 @@ export default function LabelsAccordion({
 }: Props): ReactElement {
   const style = useStyles();
   const [selectedLabels, setSelectedLabels] = useState(imageLabels);
+  const [infoOnHover, setInfoOnHover] = useState("");
 
   const toggleLabelSelection = (label: string) => (): void => {
     // Add label to list of selectedLabels if not present,
@@ -74,12 +96,20 @@ export default function LabelsAccordion({
     setSelectedLabels(newSelectedLabels);
   };
 
+  const selectAllLabels = () => {
+    setSelectedLabels(imageLabels);
+  };
+
+  const deselectAllLabels = () => {
+    setSelectedLabels([]);
+  };
+
   useEffect(() => {
     callback(selectedLabels);
   }, [selectedLabels]);
 
   useEffect(() => {
-    setSelectedLabels(imageLabels);
+    selectAllLabels();
   }, [imageLabels]);
 
   return (
@@ -87,8 +117,8 @@ export default function LabelsAccordion({
       <AccordionSummary expandIcon={<ExpandMore />} id="labels-toolbox">
         <Typography className={style.title}>Image labels</Typography>
       </AccordionSummary>
-      <AccordionDetails>
-        <List component="div" disablePadding className={style.root}>
+      <AccordionDetails className={style.accordionDetails}>
+        <List component="div" disablePadding className={style.labelsList}>
           {imageLabels.map((label) => (
             <ListItem
               key={label}
@@ -96,16 +126,38 @@ export default function LabelsAccordion({
               button
               onDoubleClick={toggleLabelAndSelectAll(label)}
               onClick={toggleLabelSelection(label)}
-              className={style.listItem}
+              className={style.labelsListItem}
             >
               {selectedLabels.includes(label) ? (
-                <Label className={style.icon} />
+                <Label className={style.labelIcon} />
               ) : (
-                <LabelOutlined className={style.icon} />
+                <LabelOutlined className={style.labelIcon} />
               )}
-              <ListItemText primary={label} className={style.text} />
+              <ListItemText primary={label} className={style.labelText} />
             </ListItem>
           ))}
+        </List>
+        <List component="span" disablePadding className={style.buttonsList}>
+          <ListItem className={style.buttonsListItem}>
+            <IconButton
+              className={style.iconButton}
+              onClick={() => setSelectedLabels(imageLabels)}
+              onMouseOver={() => setInfoOnHover("Select All labels")}
+              onMouseOut={() => setInfoOnHover("")}
+            >
+              <LibraryAddCheckOutlined />
+            </IconButton>
+
+            <IconButton
+              className={style.iconButton}
+              onClick={deselectAllLabels}
+              onMouseOver={() => setInfoOnHover("Deselect All labels")}
+              onMouseOut={() => setInfoOnHover("")}
+            >
+              <HighlightOffOutlined />
+            </IconButton>
+          </ListItem>
+          <ListItem className={style.infoOnHover}>{infoOnHover}</ListItem>
         </List>
       </AccordionDetails>
     </Accordion>
