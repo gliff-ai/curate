@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function LeftDrawer({ drawerContent }: Props): ReactElement {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const toggleDrawer = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
@@ -29,11 +29,11 @@ export default function LeftDrawer({ drawerContent }: Props): ReactElement {
     <>
       {menuIcon}
       <SwipeableDrawer
+        variant="persistent"
         anchor="left"
         open={isOpen}
         onClose={toggleDrawer}
         onOpen={toggleDrawer}
-        keepMounted
       >
         <AppBar position="static">
           <Toolbar>
