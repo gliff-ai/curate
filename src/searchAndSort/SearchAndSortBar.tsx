@@ -5,7 +5,7 @@ import { IconButton, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Search } from "@material-ui/icons";
 import { SortDropdown } from "./SortDropdown";
-import { Metadata, MetaItem } from "./interfaces";
+import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   metadata: Metadata;
   metadataKeys: string[];
-  callbackSearch: (key: string, value: string) => void;
+  callbackSearch: (filter: Filter) => void;
   callbackSort: (key: string, sortOrder: string) => void;
 }
 
@@ -72,11 +72,13 @@ export default function SearchAndSortBar({
     if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
-      const value = mitem[inputKey.key];
-      if (Array.isArray(value)) {
-        value.forEach((v) => options.add(v));
-      } else {
-        options.add(value as string);
+      if (mitem.selected) {
+        const value = mitem[inputKey.key];
+        if (Array.isArray(value)) {
+          value.forEach((v) => options.add(v));
+        } else {
+          options.add(value as string);
+        }
       }
     });
     options.add("All values");
@@ -92,7 +94,7 @@ export default function SearchAndSortBar({
     <Paper
       component="form"
       onSubmit={(e) => {
-        callbackSearch(inputKey.key, inputValue);
+        callbackSearch({ key: inputKey.key, value: inputValue });
         e.preventDefault();
       }}
       className={style.root}
