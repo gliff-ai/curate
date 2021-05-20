@@ -45,22 +45,23 @@ interface State {
   expanded: string | boolean;
   selected: string; // id of selected MetaItem
 }
-
 class UserInterface extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
     this.state = {
-      metadata: this.addSelectedFieldToMetadata(this.props.metadata),
+      metadata: this.addFieldSelectedToMetadata(this.props.metadata),
       metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
       imageLabels: this.getImageLabels(this.props.metadata),
-      expanded: "labels-toolbox",
+      expanded: "labels-filter-toolbox",
       selected: null,
       activeFilters: [],
     };
   }
 
-  addSelectedFieldToMetadata = (metadata: Metadata): Metadata => {
+  addFieldSelectedToMetadata = (metadata: Metadata): Metadata => {
+    // Add field "selected" to metdata; this field is used to define which
+    // metadata items are displayed on the dashboard.
     metadata.forEach((mitem) => {
       mitem.selected = true;
     });
@@ -77,13 +78,13 @@ class UserInterface extends Component<Props, State> {
       this.setState({ expanded: isExpanded ? panel : false });
     };
 
-  hasFilter = (activeFilters: Filter[], filter: Filter): boolean =>
-    // Check in filter in active filters
+  hasSearchFilter = (activeFilters: Filter[], filter: Filter): boolean =>
+    // Check whether active filters includes filter.
     activeFilters.some(
       (filt) => filt.key === filter.key && filt.value === filter.value
     );
 
-  removeAllFilters = () => {
+  resetSearchFilters = () => {
     // Select all items and empty active filters array.
     this.setState((prevState) => {
       prevState.metadata.forEach((mitem) => {
@@ -97,7 +98,7 @@ class UserInterface extends Component<Props, State> {
     // Add or remove filter from the list of active filters
     this.setState(
       (prevState) => {
-        if (this.hasFilter(prevState.activeFilters, filter)) {
+        if (this.hasSearchFilter(prevState.activeFilters, filter)) {
           prevState.activeFilters.splice(
             prevState.activeFilters.indexOf(filter),
             1
@@ -108,12 +109,12 @@ class UserInterface extends Component<Props, State> {
         return { activeFilters: prevState.activeFilters };
       },
       () => {
-        this.applyFiltersToMetadata();
+        this.applySearchFiltersToMetadata();
       }
     );
   };
 
-  applyFiltersToMetadata = (): void => {
+  applySearchFiltersToMetadata = (): void => {
     this.setState(
       ({ metadata, activeFilters }) => {
         if (activeFilters.length > 0) {
@@ -163,13 +164,20 @@ class UserInterface extends Component<Props, State> {
 
   handleOnSearchSubmit = (filter: Filter): void => {
     // Filter metadata based on filter's key-value pairs
+
+    // Open search-filters-toolbox, if closed
+    if (this.state.expanded !== "search-filter-toolbox") {
+      this.setState({ expanded: "search-filter-toolbox" });
+    }
+
+    // Add new filter
     if (
       filter.value === "All values" ||
       filter.key === "" ||
       filter.value === ""
     ) {
-      this.removeAllFilters();
-    } else if (!this.hasFilter(this.state.activeFilters, filter)) {
+      this.resetSearchFilters();
+    } else if (!this.hasSearchFilter(this.state.activeFilters, filter)) {
       // Apply new filter if not present already in the list of active filters
       this.setActiveFilter(filter);
     }
@@ -282,17 +290,18 @@ class UserInterface extends Component<Props, State> {
               drawerContent={
                 <>
                   <LabelsAccordion
-                    expanded={this.state.expanded === "labels-toolbox"}
+                    expanded={this.state.expanded === "labels-filter-toolbox"}
                     handleToolboxChange={this.handleToolboxChange(
-                      "labels-toolbox"
+                      "labels-filter-toolbox"
                     )}
-                    imageLabels={this.state.imageLabels}
-                    callback={this.handleOnLabelSelection}
+                    allLabels={this.state.imageLabels}
+                    callbackOnLabelSelection={this.handleOnLabelSelection}
+                    callbackOnAccordionExpanded={this.resetSearchFilters}
                   />
                   <ActiveFiltersAccordion
-                    expanded={this.state.expanded === "active-filter-toolbox"}
+                    expanded={this.state.expanded === "search-filter-toolbox"}
                     handleToolboxChange={this.handleToolboxChange(
-                      "active-filter-toolbox"
+                      "search-filter-toolbox"
                     )}
                     activeFilters={this.state.activeFilters}
                     callback={this.handleOnActiveFiltersChange}

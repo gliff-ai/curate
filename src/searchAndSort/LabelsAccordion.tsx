@@ -56,24 +56,19 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   expanded: boolean;
   handleToolboxChange: (event: ChangeEvent, isExpanded: boolean) => void;
-  imageLabels: string[];
-  callback: (selectedLabels: string[]) => void;
+  allLabels: string[];
+  callbackOnLabelSelection: (selectedLabels: string[]) => void;
+  callbackOnAccordionExpanded: () => void;
 }
 
-export default function LabelsAccordion({
-  expanded,
-  handleToolboxChange,
-  imageLabels,
-  callback,
-}: Props): ReactElement {
+export default function LabelsAccordion(props: Props): ReactElement {
   const style = useStyles();
-  const [selectedLabels, setSelectedLabels] = useState(imageLabels);
+  const [labels, setLabels] = useState(props.allLabels);
   const [infoOnHover, setInfoOnHover] = useState("");
 
   const toggleLabelSelection = (label: string) => (): void => {
-    // Add label to list of selectedLabels if not present,
-    // delete from it, if present.
-    setSelectedLabels((prevState) => {
+    // Add label to labels if it is not included, otherwise remove it.
+    setLabels((prevState) => {
       const prevLabels = [...prevState];
       if (prevLabels.includes(label)) {
         prevLabels.splice(prevLabels.indexOf(label), 1);
@@ -84,51 +79,52 @@ export default function LabelsAccordion({
     });
   };
 
-  const toggleLabelAndSelectAll = (label: string) => (): void => {
-    // Select label if not selected and deselect every other label (and vice versa).
+  const SelectDeselectAllButOne = (label: string) => (): void => {
+    // If label deselected, select it and deselect every other label (and vice versa).
     let newSelectedLabels = [];
-    if (selectedLabels.includes(label)) {
-      newSelectedLabels = imageLabels.filter((l) => l !== label);
+    if (labels.includes(label)) {
+      newSelectedLabels = props.allLabels.filter((l) => l !== label);
     } else {
       newSelectedLabels.push(label);
     }
 
-    setSelectedLabels(newSelectedLabels);
+    setLabels(newSelectedLabels);
   };
 
-  const selectAllLabels = () => {
-    setSelectedLabels(imageLabels);
-  };
-
-  const deselectAllLabels = () => {
-    setSelectedLabels([]);
-  };
+  const selectAll = () => setLabels(props.allLabels);
 
   useEffect(() => {
-    callback(selectedLabels);
-  }, [selectedLabels]);
+    props.callbackOnLabelSelection(labels);
+  }, [labels]);
 
   useEffect(() => {
-    selectAllLabels();
-  }, [imageLabels]);
+    if (props.expanded) {
+      selectAll();
+      props.callbackOnAccordionExpanded();
+    }
+  }, [props.expanded]);
+
+  useEffect(() => {
+    selectAll();
+  }, [props.allLabels]);
 
   return (
-    <Accordion expanded={expanded} onChange={handleToolboxChange}>
-      <AccordionSummary expandIcon={<ExpandMore />} id="labels-toolbox">
+    <Accordion expanded={props.expanded} onChange={props.handleToolboxChange}>
+      <AccordionSummary expandIcon={<ExpandMore />} id="labels-filter-toolbox">
         <Typography className={style.title}>Image labels</Typography>
       </AccordionSummary>
       <AccordionDetails className={style.accordionDetails}>
         <List component="div" disablePadding className={style.labelsList}>
-          {imageLabels.map((label) => (
+          {props.allLabels.map((label) => (
             <ListItem
               key={label}
               dense
               button
-              onDoubleClick={toggleLabelAndSelectAll(label)}
+              onDoubleClick={SelectDeselectAllButOne(label)}
               onClick={toggleLabelSelection(label)}
               className={style.labelsListItem}
             >
-              {selectedLabels.includes(label) ? (
+              {labels.includes(label) ? (
                 <Label className={style.labelIcon} />
               ) : (
                 <LabelOutlined className={style.labelIcon} />
@@ -141,7 +137,7 @@ export default function LabelsAccordion({
           <ListItem className={style.buttonsListItem}>
             <IconButton
               className={style.iconButton}
-              onClick={() => setSelectedLabels(imageLabels)}
+              onClick={selectAll}
               onMouseOver={() => setInfoOnHover("Select All labels")}
               onMouseOut={() => setInfoOnHover("")}
             >
@@ -150,7 +146,7 @@ export default function LabelsAccordion({
 
             <IconButton
               className={style.iconButton}
-              onClick={deselectAllLabels}
+              onClick={() => setLabels([])}
               onMouseOver={() => setInfoOnHover("Deselect All labels")}
               onMouseOut={() => setInfoOnHover("")}
             >

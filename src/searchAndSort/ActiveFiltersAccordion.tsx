@@ -63,7 +63,7 @@ export default function ActiveFiltersAccordion({
       onChange={handleToolboxChange}
       className={style.root}
     >
-      <AccordionSummary expandIcon={<ExpandMore />} id="active-filter-toolbox">
+      <AccordionSummary expandIcon={<ExpandMore />} id="search-filter-toolbox">
         <Typography className={style.title}>Active Search Filters</Typography>
       </AccordionSummary>
       <AccordionDetails>
