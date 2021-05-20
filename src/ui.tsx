@@ -115,37 +115,32 @@ class UserInterface extends Component<Props, State> {
   };
 
   applySearchFiltersToMetadata = (): void => {
-    this.setState(
-      ({ metadata, activeFilters }) => {
-        if (activeFilters.length > 0) {
-          metadata.forEach((mitem) => {
-            activeFilters.forEach((filter, fi) => {
-              const value = mitem[filter.key];
-              // Selection for current filter
-              const currentSel =
-                (Array.isArray(value) && value.includes(filter.value)) ||
-                value === filter.value
-                  ? 1
-                  : 0;
+    this.setState(({ metadata, activeFilters }) => {
+      if (activeFilters.length > 0) {
+        metadata.forEach((mitem) => {
+          activeFilters.forEach((filter, fi) => {
+            const value = mitem[filter.key];
+            // Selection for current filter
+            const currentSel =
+              (Array.isArray(value) && value.includes(filter.value)) ||
+              value === filter.value
+                ? 1
+                : 0;
 
-              // Selection for all filter up to current
-              const prevSel = fi === 0 ? 1 : Number(mitem.selected);
+            // Selection for all filter up to current
+            const prevSel = fi === 0 ? 1 : Number(mitem.selected);
 
-              // Update value for selected
-              mitem.selected = Boolean(prevSel * currentSel);
-            });
+            // Update value for selected
+            mitem.selected = Boolean(prevSel * currentSel);
           });
-        } else {
-          metadata.forEach((mitem) => {
-            mitem.selected = true;
-          });
-        }
-        return { metadata };
-      },
-      () => {
-        console.log(this.state.metadata.filter((i) => i.selected));
+        });
+      } else {
+        metadata.forEach((mitem) => {
+          mitem.selected = true;
+        });
       }
-    );
+      return { metadata };
+    });
   };
 
   handleOnLabelSelection = (selectedLabels: string[]): void => {
