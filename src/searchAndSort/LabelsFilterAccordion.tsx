@@ -61,7 +61,7 @@ interface Props {
   callbackOnAccordionExpanded: () => void;
 }
 
-export default function LabelsAccordion(props: Props): ReactElement {
+export default function LabelsFilterAccordion(props: Props): ReactElement {
   const style = useStyles();
   const [labels, setLabels] = useState(props.allLabels);
   const [infoOnHover, setInfoOnHover] = useState("");

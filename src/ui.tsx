@@ -18,8 +18,8 @@ import { Backup } from "@material-ui/icons";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
-import LabelsAccordion from "./searchAndSort/LabelsAccordion";
-import ActiveFiltersAccordion from "./searchAndSort/ActiveFiltersAccordion";
+import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
+import SearchFilterAccordion from "./searchAndSort/SearchFilterAccordion";
 import LeftDrawer from "./components/LeftDrawer";
 import Tile from "./components/Tile";
 
@@ -289,7 +289,7 @@ class UserInterface extends Component<Props, State> {
             <LeftDrawer
               drawerContent={
                 <>
-                  <LabelsAccordion
+                  <LabelsFilterAccordion
                     expanded={this.state.expanded === "labels-filter-toolbox"}
                     handleToolboxChange={this.handleToolboxChange(
                       "labels-filter-toolbox"
@@ -298,7 +298,7 @@ class UserInterface extends Component<Props, State> {
                     callbackOnLabelSelection={this.handleOnLabelSelection}
                     callbackOnAccordionExpanded={this.resetSearchFilters}
                   />
-                  <ActiveFiltersAccordion
+                  <SearchFilterAccordion
                     expanded={this.state.expanded === "search-filter-toolbox"}
                     handleToolboxChange={this.handleToolboxChange(
                       "search-filter-toolbox"

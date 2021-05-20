@@ -49,7 +49,7 @@ interface Props {
   callback: (filter: Filter) => void;
 }
 
-export default function ActiveFiltersAccordion({
+export default function SearchFilterAccordion({
   expanded,
   handleToolboxChange,
   activeFilters,
