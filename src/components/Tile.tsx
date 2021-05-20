@@ -1,7 +1,7 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { MetaItem } from "@/searchAndSort/interfaces";
 
-export default function Tile(props: { mitem: MetaItem }) {
+export default function Tile(props: { mitem: MetaItem }): ReactElement {
   return (
     <canvas
       width={128}

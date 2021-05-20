@@ -1,3 +1,4 @@
+/* eslint-disable  no-param-reassign */
 import React, { Component, ChangeEvent, ReactNode } from "react";
 import {
   AppBar,
@@ -51,7 +52,7 @@ class UserInterface extends Component<Props, State> {
 
     this.state = {
       metadata: this.addSelectedFieldToMetadata(this.props.metadata),
-      metadataKeys: Object.keys(this.props.metadata[0]),
+      metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
       imageLabels: this.getImageLabels(this.props.metadata),
       expanded: "labels-toolbox",
       selected: null,
@@ -76,45 +77,24 @@ class UserInterface extends Component<Props, State> {
       this.setState({ expanded: isExpanded ? panel : false });
     };
 
-  handleOnSearchSubmit = (filter: Filter): void => {
-    // Filter metadata based on inputKey and inputValue
+  hasFilter = (activeFilters: Filter[], filter: Filter): boolean =>
+    // Check in filter in active filters
+    activeFilters.some(
+      (filt) => filt.key === filter.key && filt.value === filter.value
+    );
 
-    if (
-      filter.value === "All values" ||
-      filter.key === "" ||
-      filter.value === ""
-    ) {
-      // All items selected and no filter
-      this.setState((prevState) => {
-        prevState.metadata.forEach((mitem) => {
-          mitem.selected = true;
-        });
-        return { activeFilters: [], metadata: prevState.metadata };
-      });
-    } else if (!this.hasFilter(this.state.activeFilters, filter)) {
-      this.setActiveFilter(filter);
-    }
-  };
-
-  handleOnLabelSelection = (selectedLabels: string[]): void => {
-    // Filter metadata based on selected labels.
-
+  removeAllFilters = () => {
+    // Select all items and empty active filters array.
     this.setState((prevState) => {
       prevState.metadata.forEach((mitem) => {
-        const intersection = (mitem.imageLabels as string[]).filter((l) =>
-          selectedLabels.includes(l)
-        );
-        mitem.selected = Boolean(intersection.length);
+        mitem.selected = true;
       });
-      return { metadata: prevState.metadata };
+      return { activeFilters: [], metadata: prevState.metadata };
     });
   };
 
-  handleOnActiveFiltersChange = (filter: Filter) => {
-    this.setActiveFilter(filter);
-  };
-
   setActiveFilter = (filter: Filter): void => {
+    // Add or remove filter from the list of active filters
     this.setState(
       (prevState) => {
         if (this.hasFilter(prevState.activeFilters, filter)) {
@@ -128,18 +108,12 @@ class UserInterface extends Component<Props, State> {
         return { activeFilters: prevState.activeFilters };
       },
       () => {
-        this.applyFiltersOnMetadata();
+        this.applyFiltersToMetadata();
       }
     );
   };
 
-  hasFilter = (activeFilters: Filter[], filter: Filter): boolean =>
-    // Check in filter in active filters
-    activeFilters.some(
-      (filt) => filt.key === filter.key && filt.value === filter.value
-    );
-
-  applyFiltersOnMetadata = (): void => {
+  applyFiltersToMetadata = (): void => {
     this.setState(
       ({ metadata, activeFilters }) => {
         if (activeFilters.length > 0) {
@@ -171,6 +145,39 @@ class UserInterface extends Component<Props, State> {
         console.log(this.state.metadata.filter((i) => i.selected));
       }
     );
+  };
+
+  handleOnLabelSelection = (selectedLabels: string[]): void => {
+    // Filter metadata based on selected labels.
+
+    this.setState((prevState) => {
+      prevState.metadata.forEach((mitem) => {
+        const intersection = (mitem.imageLabels as string[]).filter((l) =>
+          selectedLabels.includes(l)
+        );
+        mitem.selected = Boolean(intersection.length);
+      });
+      return { metadata: prevState.metadata };
+    });
+  };
+
+  handleOnSearchSubmit = (filter: Filter): void => {
+    // Filter metadata based on filter's key-value pairs
+    if (
+      filter.value === "All values" ||
+      filter.key === "" ||
+      filter.value === ""
+    ) {
+      this.removeAllFilters();
+    } else if (!this.hasFilter(this.state.activeFilters, filter)) {
+      // Apply new filter if not present already in the list of active filters
+      this.setActiveFilter(filter);
+    }
+  };
+
+  handleOnActiveFiltersChange = (filter: Filter) => {
+    // If a filter is removed, update list of active filters and metadata selection.
+    this.setActiveFilter(filter);
   };
 
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
@@ -212,13 +219,16 @@ class UserInterface extends Component<Props, State> {
     });
   };
 
-  getImageLabels = (data: Metadata): string[] => {
+  getImageLabels = (metadata: Metadata): string[] => {
     const labels: Set<string> = new Set();
-    data.forEach((mitem: MetaItem): void => {
+    metadata.forEach((mitem) => {
       (mitem.imageLabels as string[]).forEach((l) => labels.add(l));
     });
     return Array.from(labels);
   };
+
+  getMetadataKeys = (mitem: MetaItem): string[] =>
+    Object.keys(mitem).filter((k) => k !== "selected");
 
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
