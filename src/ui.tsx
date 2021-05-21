@@ -10,10 +10,11 @@ import {
   withStyles,
   WithStyles,
   Button,
+  IconButton,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { Backup } from "@material-ui/icons";
+import { Backup, Menu } from "@material-ui/icons";
 
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
@@ -31,6 +32,11 @@ const styles = (theme: Theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1, // make sure the appbar renders over the metadata drawer, not the other way round
   },
+  imagesContainer: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "flex-start",
+  },
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -44,6 +50,7 @@ interface State {
   imageLabels: string[];
   expanded: string | boolean;
   selected: string; // id of selected MetaItem
+  isLeftDrawerOpen: boolean;
 }
 class UserInterface extends Component<Props, State> {
   constructor(props: Props) {
@@ -56,6 +63,7 @@ class UserInterface extends Component<Props, State> {
       expanded: "labels-filter-toolbox",
       selected: null,
       activeFilters: [],
+      isLeftDrawerOpen: true,
     };
   }
 
@@ -70,6 +78,12 @@ class UserInterface extends Component<Props, State> {
 
   handleDrawerClose = () => {
     this.setState({ selected: null });
+  };
+
+  toggleLeftDrawer = () => {
+    this.setState((prevState) => ({
+      isLeftDrawerOpen: !prevState.isLeftDrawerOpen,
+    }));
   };
 
   handleToolboxChange =
@@ -281,29 +295,9 @@ class UserInterface extends Component<Props, State> {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            <LeftDrawer
-              drawerContent={
-                <>
-                  <LabelsFilterAccordion
-                    expanded={this.state.expanded === "labels-filter-toolbox"}
-                    handleToolboxChange={this.handleToolboxChange(
-                      "labels-filter-toolbox"
-                    )}
-                    allLabels={this.state.imageLabels}
-                    callbackOnLabelSelection={this.handleOnLabelSelection}
-                    callbackOnAccordionExpanded={this.resetSearchFilters}
-                  />
-                  <SearchFilterAccordion
-                    expanded={this.state.expanded === "search-filter-toolbox"}
-                    handleToolboxChange={this.handleToolboxChange(
-                      "search-filter-toolbox"
-                    )}
-                    activeFilters={this.state.activeFilters}
-                    callback={this.handleOnActiveFiltersChange}
-                  />
-                </>
-              }
-            />
+            <IconButton aria-label="Menu" onClick={this.toggleLeftDrawer}>
+              <Menu fontSize="large" />
+            </IconButton>
             <Typography variant="h6">CURATE</Typography>
             <UploadImage
               spanElement={
@@ -323,10 +317,35 @@ class UserInterface extends Component<Props, State> {
           </Toolbar>
         </AppBar>
 
-        <Grid
-          container
-          style={{ position: "relative", width: "80%", margin: "16px" }}
-        >
+        {this.state.isLeftDrawerOpen && (
+          <LeftDrawer
+            isOpen={this.state.isLeftDrawerOpen}
+            handleDrawerClose={this.toggleLeftDrawer}
+            drawerContent={
+              <>
+                <LabelsFilterAccordion
+                  expanded={this.state.expanded === "labels-filter-toolbox"}
+                  handleToolboxChange={this.handleToolboxChange(
+                    "labels-filter-toolbox"
+                  )}
+                  allLabels={this.state.imageLabels}
+                  callbackOnLabelSelection={this.handleOnLabelSelection}
+                  callbackOnAccordionExpanded={this.resetSearchFilters}
+                />
+                <SearchFilterAccordion
+                  expanded={this.state.expanded === "search-filter-toolbox"}
+                  handleToolboxChange={this.handleToolboxChange(
+                    "search-filter-toolbox"
+                  )}
+                  activeFilters={this.state.activeFilters}
+                  callback={this.handleOnActiveFiltersChange}
+                />
+              </>
+            }
+          />
+        )}
+
+        <Grid container className={classes.imagesContainer}>
           <Toolbar />
           {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
           <Grid container spacing={3} wrap="wrap">
@@ -371,6 +390,7 @@ class UserInterface extends Component<Props, State> {
               )[0]
             }
             handleDrawerClose={this.handleDrawerClose}
+            isOpen={this.state.selected ? 1 : 0}
           />
         )}
       </div>
