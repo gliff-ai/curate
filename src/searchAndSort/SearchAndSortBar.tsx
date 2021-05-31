@@ -5,7 +5,8 @@ import { IconButton, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Search } from "@material-ui/icons";
 import { SortDropdown } from "./SortDropdown";
-import { Metadata, MetaItem } from "./interfaces";
+import { Metadata, MetaItem, Filter } from "./interfaces";
+import { metadataNameMap } from "../MetadataDrawer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,9 +34,14 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   metadata: Metadata;
   metadataKeys: string[];
-  callbackSearch: (key: string, value: string) => void;
+  callbackSearch: (filter: Filter) => void;
   callbackSort: (key: string, sortOrder: string) => void;
 }
+
+type MetadataLabel = {
+  key: string;
+  label: string;
+};
 
 export default function SearchAndSortBar({
   metadata,
@@ -44,19 +50,35 @@ export default function SearchAndSortBar({
   callbackSort,
 }: Props): ReactElement {
   const style = useStyles();
-  const [inputKey, setInputKey] = useState("");
+  const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
 
+  const metadataLabels = metadataKeys.reduce(
+    (acc: Array<MetadataLabel>, key) => {
+      if (["fileMetaVersion", "id", "thumbnail"].includes(key)) return acc; // Just an example of how to exclude metadata from the list if we need
+
+      const label = metadataNameMap[key] || key;
+      acc.push({
+        label,
+        key,
+      });
+      return acc;
+    },
+    [] as MetadataLabel[]
+  );
+
   const updateOptions = (): void => {
-    if (!metadataKeys.includes(inputKey)) return;
+    if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
-      const value = mitem[inputKey];
-      if (Array.isArray(value)) {
-        value.forEach((v) => options.add(v));
-      } else {
-        options.add(value as string);
+      if (mitem.selected) {
+        const value = mitem[inputKey.key];
+        if (Array.isArray(value)) {
+          value.forEach((v) => options.add(v));
+        } else {
+          options.add(value as string);
+        }
       }
     });
     options.add("All values");
@@ -72,7 +94,7 @@ export default function SearchAndSortBar({
     <Paper
       component="form"
       onSubmit={(e) => {
-        callbackSearch(inputKey, inputValue);
+        callbackSearch({ key: inputKey.key, value: inputValue });
         e.preventDefault();
       }}
       className={style.root}
@@ -80,16 +102,24 @@ export default function SearchAndSortBar({
       <Autocomplete
         id="combobox-metadata-key"
         className={style.input}
-        inputValue={inputKey}
+        // inputValue={inputKey.key}
+        getOptionLabel={(option: MetadataLabel) => option.label}
+        getOptionSelected={(option, value) => option.label === value.label}
         onInputChange={(e: ChangeEvent, newInputKey: string) => {
-          setInputKey(newInputKey);
+          // Match the text with the actual key we want
+          const metaLabel = metadataLabels.filter(
+            ({ label }) => label === newInputKey
+          );
+
+          setInputKey(metaLabel?.[0]);
         }}
-        options={metadataKeys}
+        options={metadataLabels}
         renderInput={(params: any) => <TextField {...params} label="Key" />}
       />
+
       <SortDropdown
         metadataKeys={metadataKeys}
-        inputKey={inputKey}
+        inputKey={inputKey?.key || ""}
         callback={callbackSort}
       />
 
