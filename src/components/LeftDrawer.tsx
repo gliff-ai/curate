@@ -1,48 +1,50 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement } from "react";
 import {
   AppBar,
   IconButton,
   Toolbar,
   Typography,
-  SwipeableDrawer,
+  Drawer,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Menu } from "@material-ui/icons";
 
+const drawerWidth = 300;
+
+const useStyles = makeStyles({
+  drawer: {
+    width: (props: Props) => Number(props.isOpen) * drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+});
 interface Props {
+  isOpen: boolean;
+  handleDrawerClose: () => void;
   drawerContent: ReactElement;
 }
 
-export default function LeftDrawer({ drawerContent }: Props): ReactElement {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDrawer = () => {
-    setIsOpen((prevIsOpen) => !prevIsOpen);
-  };
-
-  const menuIcon = (
-    <IconButton aria-label="Menu" onClick={toggleDrawer}>
-      <Menu fontSize="large" />
-    </IconButton>
-  );
+export default function LeftDrawer(props: Props): ReactElement {
+  const { drawer, drawerPaper } = useStyles(props);
 
   return (
-    <>
-      {menuIcon}
-      <SwipeableDrawer
-        anchor="left"
-        open={isOpen}
-        onClose={toggleDrawer}
-        onOpen={toggleDrawer}
-        keepMounted
-      >
-        <AppBar position="static">
-          <Toolbar>
-            {menuIcon}
-            <Typography variant="h6">CURATE</Typography>
-          </Toolbar>
-        </AppBar>
-        {drawerContent}
-      </SwipeableDrawer>
-    </>
+    <Drawer
+      variant="persistent"
+      anchor="left"
+      open={props.isOpen}
+      className={`${drawer} ${drawerPaper}`}
+    >
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton aria-label="Menu" onClick={props.handleDrawerClose}>
+            <Menu fontSize="large" />
+          </IconButton>
+          <Typography variant="h6">CURATE</Typography>
+        </Toolbar>
+      </AppBar>
+      {props.drawerContent}
+    </Drawer>
   );
 }

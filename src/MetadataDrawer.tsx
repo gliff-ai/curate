@@ -9,23 +9,21 @@ import {
   IconButton,
 } from "@material-ui/core";
 import { MetaItem } from "@/searchAndSort/interfaces";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { ReactElement } from "react";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    drawer: {
-      width: drawerWidth, // it seems that this width is used for positioning and wrapping (increase it and the tiles will wrap as though the drawer was wider, but it won't render wider)
-      flexShrink: 0,
-    },
-    drawerPaper: {
-      width: drawerWidth, // while this width is used for drawing the Drawer (increase it and the drawer will get wider but will draw over the tiles without wrapping them)
-    },
-  })
-);
+const useStyles = makeStyles({
+  drawer: {
+    width: (props: Props) => props.isOpen * drawerWidth, // it seems that this width is used for positioning and wrapping (increase it and the tiles will wrap as though the drawer was wider, but it won't render wider)
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth, // while this width is used for drawing the Drawer (increase it and the drawer will get wider but will draw over the tiles without wrapping them)
+  },
+});
 
 type MetadataNameMap = { [index: string]: string };
 
@@ -42,19 +40,18 @@ export const metadataNameMap: MetadataNameMap = {
 interface Props {
   metadata: MetaItem;
   handleDrawerClose: () => void;
+  isOpen: number;
 }
 
 export default function MetadataDrawer(props: Props): ReactElement {
-  const classes = useStyles();
+  const { drawer, drawerPaper } = useStyles(props);
 
   return (
     <Drawer
-      variant="permanent"
+      variant="persistent"
       anchor="right"
-      className={classes.drawer}
-      classes={{
-        paper: classes.drawerPaper,
-      }}
+      open={Boolean(props.isOpen)}
+      className={`${drawer} ${drawerPaper}`}
     >
       <Toolbar />
       {/* This empty toolbar pushes the drawer contents down by the same thickness of the AppBard, so that they don't render behind it */}
