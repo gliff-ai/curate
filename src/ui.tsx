@@ -41,6 +41,10 @@ const styles = (theme: Theme) => ({
 
 interface Props extends WithStyles<typeof styles> {
   metadata?: Metadata;
+  saveImageCallback?: (
+    imageFileInfo: ImageFileInfo,
+    image: ImageBitmap[][]
+  ) => void;
 }
 
 interface State {
@@ -265,7 +269,7 @@ class UserInterface extends Component<Props, State> {
 
   addUploadedImage = (
     imageFileInfo: ImageFileInfo,
-    images: Array<Array<ImageBitmap>>
+    images: ImageBitmap[][]
   ) => {
     this.makeThumbnail(images).then(
       (thumbnail) => {
@@ -297,6 +301,10 @@ class UserInterface extends Component<Props, State> {
         console.log(error);
       }
     );
+    // Store uploaded image in etebase
+    if (this.props.saveImageCallback) {
+      this.props.saveImageCallback(imageFileInfo, images);
+    }
   };
 
   render = (): ReactNode => {
