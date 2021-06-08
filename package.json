@@ -4,6 +4,8 @@
   "description": "gliff.ai CURATE",
   "repository": "git://github.com/gliff-ai/curate.git",
   "main": "dist/main.js",
+  "module": "dist/src/index.jsx", 
+  "types": "dist/src/index.d.ts", 
   "files": [
     "dist/*"
   ],
