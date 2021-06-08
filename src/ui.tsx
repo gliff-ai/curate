@@ -40,7 +40,7 @@ const styles = (theme: Theme) => ({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  metadata: Metadata;
+  metadata?: Metadata;
 }
 
 interface State {
@@ -58,7 +58,9 @@ class UserInterface extends Component<Props, State> {
 
     this.state = {
       metadata: this.addFieldSelectedToMetadata(this.props.metadata),
-      metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
+      metadataKeys: this.props.metadata
+        ? this.getMetadataKeys(this.props.metadata[0])
+        : [],
       imageLabels: this.getImageLabels(this.props.metadata),
       expanded: "labels-filter-toolbox",
       selected: null,
@@ -70,6 +72,7 @@ class UserInterface extends Component<Props, State> {
   addFieldSelectedToMetadata = (metadata: Metadata): Metadata => {
     // Add field "selected" to metdata; this field is used to define which
     // metadata items are displayed on the dashboard.
+    if (!metadata) return [];
     metadata.forEach((mitem) => {
       mitem.selected = true;
     });
@@ -237,6 +240,7 @@ class UserInterface extends Component<Props, State> {
   };
 
   getImageLabels = (metadata: Metadata): string[] => {
+    if (!metadata) return [];
     const labels: Set<string> = new Set();
     metadata.forEach((mitem) => {
       (mitem.imageLabels as string[]).forEach((l) => labels.add(l));
@@ -278,9 +282,16 @@ class UserInterface extends Component<Props, State> {
           thumbnail,
           selected: true,
         };
-        this.setState((state) => ({
-          metadata: state.metadata.concat(newMetadata),
-        }));
+        this.setState((state) => {
+          const metaKeys =
+            state.metadataKeys.length === 0
+              ? this.getMetadataKeys(newMetadata)
+              : state.metadataKeys;
+          return {
+            metadata: state.metadata.concat(newMetadata),
+            metadataKeys: metaKeys,
+          };
+        });
       },
       (error) => {
         console.log(error);
