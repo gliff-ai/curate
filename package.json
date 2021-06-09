@@ -4,13 +4,13 @@
   "description": "gliff.ai CURATE",
   "repository": "git://github.com/gliff-ai/curate.git",
   "main": "dist/main.js",
-  "module": "dist/src/index.jsx", 
-  "types": "dist/src/index.d.ts", 
+  "module": "dist/src/index.tsx", 
+  "typings": "dist/src/index.d.ts", 
   "files": [
     "dist/*"
   ],
   "scripts": {
-    "build": "webpack --progress --config webpack.config.js",
+    "build": "webpack --progress --config webpack.build.js",
     "format": "npx --no-install prettier --write src/{**,.}/*.ts*",
     "prettier": "npx --no-install prettier -c src/{**,.}/*.ts*",
     "lint": "npm run lint:ts && npm run prettier",
