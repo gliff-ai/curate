@@ -15,7 +15,7 @@ import {
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { Backup, Menu } from "@material-ui/icons";
-
+import { LabelsPopover } from "@/components/LabelsPopover";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
@@ -307,6 +307,15 @@ class UserInterface extends Component<Props, State> {
     }
   };
 
+  updateLabels =
+    (itemIndex: number) =>
+    (newLabels: string[]): void => {
+      this.setState((state) => {
+        state.metadata[itemIndex].imageLabels = newLabels;
+        return { metadata: state.metadata };
+      });
+    };
+
   render = (): ReactNode => {
     const { classes } = this.props;
     return (
@@ -370,7 +379,7 @@ class UserInterface extends Component<Props, State> {
           <Grid container spacing={3} wrap="wrap">
             {this.state.metadata
               .filter((mitem) => mitem.selected)
-              .map((mitem: MetaItem) => (
+              .map((mitem: MetaItem, itemIndex) => (
                 <Grid
                   item
                   key={mitem.id as string}
@@ -379,22 +388,39 @@ class UserInterface extends Component<Props, State> {
                       this.state.selected === mitem.id && "lightblue",
                   }}
                 >
-                  <Button
-                    onClick={() => {
-                      this.setState({ selected: mitem.id as string });
-                    }}
-                    onKeyPress={(
-                      event: React.KeyboardEvent<HTMLButtonElement>
-                    ) => {
-                      if (event.code === "Enter") {
+                  <div style={{ position: "relative" }}>
+                    <Button
+                      onClick={() => {
                         this.setState({ selected: mitem.id as string });
-                      }
+                      }}
+                      onKeyPress={(
+                        event: React.KeyboardEvent<HTMLButtonElement>
+                      ) => {
+                        if (event.code === "Enter") {
+                          this.setState({ selected: mitem.id as string });
+                        }
+                      }}
+                    >
+                      <Tile mitem={mitem} />
+                    </Button>
+                    <LabelsPopover
+                      id={mitem.id as string}
+                      labels={mitem.imageLabels as string[]}
+                      updateLabels={this.updateLabels(itemIndex)}
+                      imageName={mitem.imageName as string}
+                    />
+                  </div>
+                  <Typography
+                    style={{
+                      textAlign: "center",
+                      fontSize: 14,
                     }}
                   >
-                    <Tile mitem={mitem} />
-                  </Button>
-                  <Typography style={{ textAlign: "center" }}>
-                    {(mitem.imageName as string).split("/").pop()}
+                    {(mitem.imageName as string)
+                      .split("/")
+                      .pop()
+                      .split(".")
+                      .shift()}
                   </Typography>
                 </Grid>
               ))}
