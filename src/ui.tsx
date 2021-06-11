@@ -312,7 +312,10 @@ class UserInterface extends Component<Props, State> {
     (newLabels: string[]): void => {
       this.setState((state) => {
         state.metadata[itemIndex].imageLabels = newLabels;
-        return { metadata: state.metadata };
+        return {
+          metadata: state.metadata,
+          imageLabels: this.getImageLabels(state.metadata),
+        };
       });
     };
 
