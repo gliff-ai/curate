@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, ReactElement } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import {
   InputBase,
@@ -58,7 +58,7 @@ interface Props {
   updateLabels: (newLables: string[]) => void;
 }
 
-export function LabelsPopover(props: Props) {
+export function LabelsPopover(props: Props): ReactElement {
   const styles = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [newLabel, setNewLabel] = useState("");
@@ -88,9 +88,6 @@ export function LabelsPopover(props: Props) {
     setNewLabel("");
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? props.id : undefined;
-
   return (
     <>
       <Tooltip title="Update image labels" aria-label="label-image">
@@ -105,7 +102,7 @@ export function LabelsPopover(props: Props) {
       <Popover
         key={`popover-${props.id}`}
         id={props.id}
-        open={open}
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
