@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable  no-param-reassign */
 import React, { Component, ChangeEvent, ReactNode } from "react";
 import {
@@ -6,15 +8,17 @@ import {
   Toolbar,
   Grid,
   Typography,
-  Theme,
   withStyles,
   WithStyles,
   Button,
+  Container,
   IconButton,
+  Paper,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { Backup, Menu } from "@material-ui/icons";
+import { ThemeProvider, theme } from "@/theme";
 
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
@@ -24,18 +28,33 @@ import SearchFilterAccordion from "./searchAndSort/SearchFilterAccordion";
 import LeftDrawer from "./components/LeftDrawer";
 import Tile from "./components/Tile";
 
-const styles = (theme: Theme) => ({
+const styles = () => ({
+  // display: "flex", // flex-box, see https://css-tricks.com/snippets/css/a-guide-to-flexbox/
   root: {
-    display: "flex", // flex-box, see https://css-tricks.com/snippets/css/a-guide-to-flexbox/
-    alignItems: "flex-start", // prevents image tiles rendering halfway vertically between the app bar and bottom of the labels accordion (see https://css-tricks.com/snippets/css/a-guide-to-flexbox/#align-items)
+    flexGrow: 1,
+    marginTop: "108px",
   },
+
+  paper: {
+    padding: theme.spacing(2),
+    color: theme.palette.text.secondary,
+  },
+
   appBar: {
     zIndex: theme.zIndex.drawer + 1, // make sure the appbar renders over the metadata drawer, not the other way round
+    backgroundColor: "#fafafa",
+    height: "90px",
+    paddingTop: "9px",
   },
+
   imagesContainer: {
     display: "flex",
     width: "100%",
     justifyContent: "flex-start",
+  },
+  logo: {
+    marginBottom: "5px",
+    marginTop: "7px",
   },
 });
 
@@ -310,38 +329,46 @@ class UserInterface extends Component<Props, State> {
   render = (): ReactNode => {
     const { classes } = this.props;
     return (
-      <div className={classes.root}>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <IconButton aria-label="Menu" onClick={this.toggleLeftDrawer}>
-              <Menu fontSize="large" />
-            </IconButton>
-            <Typography variant="h6">CURATE</Typography>
-            <UploadImage
-              spanElement={
-                <Button aria-label="upload-picture" component="span">
-                  <Backup />
-                </Button>
-              }
-              multiple
-              setUploadedImage={this.addUploadedImage}
-            />
-            <SearchAndSortBar
-              metadata={this.state.metadata}
-              metadataKeys={this.state.metadataKeys}
-              callbackSearch={this.handleOnSearchSubmit}
-              callbackSort={this.handleOnSortSubmit}
-            />
-          </Toolbar>
-        </AppBar>
+        <Container maxWidth={false}>
+          <AppBar position="fixed" className={classes.appBar} elevation={0}>
+            <Toolbar>
+              <Grid container direction="row">
+                <Grid item className={classes.logo}>
+                  <img
+                    src="src/assets/gliff-master-black.svg"
+                    width="79px"
+                    height="60px"
+                    alt="gliff logo"
+                  />
+                </Grid>
+              </Grid>
 
-        {this.state.isLeftDrawerOpen && (
-          <LeftDrawer
-            isOpen={this.state.isLeftDrawerOpen}
-            handleDrawerClose={this.toggleLeftDrawer}
-            drawerContent={
-              <>
+              <Grid item>
+                <UploadImage
+                  setUploadedImage={this.addUploadedImage}
+                  spanElement={
+                    /* eslint-disable react/jsx-wrap-multilines */
+                    <Button aria-label="upload-picture" component="span">
+                      <img src="src/assets/upload-icon.svg" alt="Upload Icon" />
+                    </Button>
+                  }
+                  multiple={false}
+                />
+              </Grid>
+            </Toolbar>
+          </AppBar>
+
+          <div className={classes.root}>
+            <Grid container spacing={3}>
+              <Grid item xs={2}>
+                <SearchAndSortBar
+                  metadata={this.state.metadata}
+                  metadataKeys={this.state.metadataKeys}
+                  callbackSearch={this.handleOnSearchSubmit}
+                  callbackSort={this.handleOnSortSubmit}
+                />
                 <LabelsFilterAccordion
                   expanded={this.state.expanded === "labels-filter-toolbox"}
                   handleToolboxChange={this.handleToolboxChange(
@@ -359,60 +386,61 @@ class UserInterface extends Component<Props, State> {
                   activeFilters={this.state.activeFilters}
                   callback={this.handleOnActiveFiltersChange}
                 />
-              </>
-            }
-          />
-        )}
+              </Grid>
+              <Grid
+                item
+                xs={10}
+                spacing={3}
+                wrap="wrap"
+                className={classes.imagesContainer}
+              >
+                {this.state.metadata
+                  .filter((mitem) => mitem.selected)
+                  .map((mitem: MetaItem) => (
+                    <Grid
+                      item
+                      key={mitem.id as string}
+                      style={{
+                        backgroundColor:
+                          this.state.selected === mitem.id && "lightblue",
+                      }}
+                    >
+                      <Button
+                        onClick={() => {
+                          this.setState({ selected: mitem.id as string });
+                        }}
+                        onKeyPress={(
+                          event: React.KeyboardEvent<HTMLButtonElement>
+                        ) => {
+                          if (event.code === "Enter") {
+                            this.setState({ selected: mitem.id as string });
+                          }
+                        }}
+                      >
+                        <Tile mitem={mitem} />
+                      </Button>
+                      <Typography style={{ textAlign: "center" }}>
+                        {(mitem.imageName as string).split("/").pop()}
+                      </Typography>
+                    </Grid>
+                  ))}
+              </Grid>
+            </Grid>
+          </div>
 
-        <Grid container className={classes.imagesContainer}>
-          <Toolbar />
-          {/* empty Toolbar element pushes the next element down by the same width as the appbar, preventing it rendering behind the appbar when position="fixed" (see https://material-ui.com/components/app-bar/#fixed-placement) */}
-          <Grid container spacing={3} wrap="wrap">
-            {this.state.metadata
-              .filter((mitem) => mitem.selected)
-              .map((mitem: MetaItem) => (
-                <Grid
-                  item
-                  key={mitem.id as string}
-                  style={{
-                    backgroundColor:
-                      this.state.selected === mitem.id && "lightblue",
-                  }}
-                >
-                  <Button
-                    onClick={() => {
-                      this.setState({ selected: mitem.id as string });
-                    }}
-                    onKeyPress={(
-                      event: React.KeyboardEvent<HTMLButtonElement>
-                    ) => {
-                      if (event.code === "Enter") {
-                        this.setState({ selected: mitem.id as string });
-                      }
-                    }}
-                  >
-                    <Tile mitem={mitem} />
-                  </Button>
-                  <Typography style={{ textAlign: "center" }}>
-                    {(mitem.imageName as string).split("/").pop()}
-                  </Typography>
-                </Grid>
-              ))}
-          </Grid>
-        </Grid>
-
-        {this.state.selected !== null && (
-          <MetadataDrawer
-            metadata={
-              this.state.metadata.filter(
-                (mitem) => mitem.id === this.state.selected
-              )[0]
-            }
-            handleDrawerClose={this.handleDrawerClose}
-            isOpen={this.state.selected ? 1 : 0}
-          />
-        )}
-      </div>
+          {this.state.selected !== null && (
+            <MetadataDrawer
+              metadata={
+                this.state.metadata.filter(
+                  (mitem) => mitem.id === this.state.selected
+                )[0]
+              }
+              handleDrawerClose={this.handleDrawerClose}
+              isOpen={this.state.selected ? 1 : 0}
+            />
+          )}
+        </Container>
+      </ThemeProvider>
     );
   };
 }
