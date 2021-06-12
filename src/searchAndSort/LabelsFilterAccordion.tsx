@@ -20,10 +20,6 @@ import {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    accordionDetails: {
-      display: "block",
-      maxWidth: 300,
-    },
     title: {
       paddingLeft: theme.spacing(1),
     },
@@ -115,7 +111,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
       <AccordionSummary expandIcon={<ExpandMore />} id="labels-filter-toolbox">
         <Typography className={style.title}>Image labels</Typography>
       </AccordionSummary>
-      <AccordionDetails className={style.accordionDetails}>
+      <AccordionDetails>
         <List component="div" disablePadding className={style.labelsList}>
           {props.allLabels.map((label) => (
             <ListItem
