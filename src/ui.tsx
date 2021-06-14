@@ -333,7 +333,7 @@ class UserInterface extends Component<Props, State> {
               <Grid container direction="row">
                 <Grid item className={classes.logo}>
                   <img
-                    src="src/assets/gliff-master-black.svg"
+                    src={require(`./assets/gliff-master-black.svg`) as string}
                     width="79px"
                     height="60px"
                     alt="gliff logo"
@@ -347,7 +347,10 @@ class UserInterface extends Component<Props, State> {
                   spanElement={
                     /* eslint-disable react/jsx-wrap-multilines */
                     <Button aria-label="upload-picture" component="span">
-                      <img src="src/assets/upload-icon.svg" alt="Upload Icon" />
+                      <img
+                        src={require(`./assets/upload-icon.svg`) as string}
+                        alt="Upload Icon"
+                      />
                     </Button>
                   }
                   multiple={false}
@@ -362,21 +365,21 @@ class UserInterface extends Component<Props, State> {
                 <div>
                   <IconButton size="small">
                     <SVG
-                      src="src/assets/large-image-grid.svg"
+                      src={require(`./assets/large-image-grid.svg`) as string}
                       width="15%"
                       height="auto"
                     />
                   </IconButton>
                   <IconButton size="small">
                     <SVG
-                      src="src/assets/medium-image-grid.svg"
+                      src={require(`./assets/medium-image-grid.svg`) as string}
                       width="15%"
                       height="auto"
                     />
                   </IconButton>
                   <IconButton size="small">
                     <SVG
-                      src="src/assets/small-image-grid.svg"
+                      src={require(`./assets/small-image-grid.svg`) as string}
                       width="15%"
                       height="auto"
                     />
@@ -386,14 +389,16 @@ class UserInterface extends Component<Props, State> {
                   <div>
                     <IconButton size="small">
                       <SVG
-                        src="src/assets/small-image-grid.svg"
-                        width="20%"
+                        src={require(`./assets/search-filter.svg`) as string}
+                        width="50%"
                         height="auto"
                       />
                     </IconButton>
                     <IconButton size="small">
                       <SVG
-                        src="src/assets/small-image-grid.svg"
+                        src={
+                          require(`./assets/multiple-image-selection.svg`) as string
+                        }
                         width="20%"
                         height="auto"
                       />
