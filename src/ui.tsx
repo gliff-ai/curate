@@ -272,49 +272,34 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
-  makeThumbnail = (image: Array<Array<ImageBitmap>>): Promise<ImageBitmap> => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 128;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(image[0][0], 0, 0, 128, 128);
-    return createImageBitmap(canvas);
-  };
-
   addUploadedImage = (
     imageFileInfo: ImageFileInfo,
     images: ImageBitmap[][]
   ) => {
-    this.makeThumbnail(images).then(
-      (thumbnail) => {
-        const today = new Date();
-        const newMetadata = {
-          imageName: imageFileInfo.fileName,
-          id: imageFileInfo.fileID,
-          dateCreated: today.toLocaleDateString("gb-EN"),
-          size: imageFileInfo.size.toString(),
-          dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
-          numberOfDimensions: images.length === 1 ? "2" : "3",
-          numberOfChannels: images[0].length.toString(),
-          imageLabels: [] as Array<string>,
-          thumbnail,
-          selected: true,
-        };
-        this.setState((state) => {
-          const metaKeys =
-            state.metadataKeys.length === 0
-              ? this.getMetadataKeys(newMetadata)
-              : state.metadataKeys;
-          return {
-            metadata: state.metadata.concat(newMetadata),
-            metadataKeys: metaKeys,
-          };
-        });
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    const today = new Date();
+    const newMetadata = {
+      imageName: imageFileInfo.fileName,
+      id: imageFileInfo.fileID,
+      dateCreated: today.toLocaleDateString("gb-EN"),
+      size: imageFileInfo.size.toString(),
+      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
+      numberOfDimensions: images.length === 1 ? "2" : "3",
+      numberOfChannels: images[0].length.toString(),
+      imageLabels: [] as Array<string>,
+      thumbnail: images[0][0],
+      selected: true,
+    };
+    this.setState((state) => {
+      const metaKeys =
+        state.metadataKeys.length === 0
+          ? this.getMetadataKeys(newMetadata)
+          : state.metadataKeys;
+      return {
+        metadata: state.metadata.concat(newMetadata),
+        metadataKeys: metaKeys,
+      };
+    });
+
     // Store uploaded image in etebase
     if (this.props.saveImageCallback) {
       this.props.saveImageCallback(imageFileInfo, images);
