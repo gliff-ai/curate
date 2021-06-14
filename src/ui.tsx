@@ -451,7 +451,7 @@ class UserInterface extends Component<Props, State> {
                     onClick={(e: MouseEvent) => {
                       const itemUid = mitem.id as string;
 
-                      if (e.metaKey) {
+                      if (e.metaKey || e.ctrlKey) {
                         // Select clicked item if unselected; deselect if already selected
                         this.setState((state) => {
                           if (state.selectedImagesUid.includes(itemUid)) {
