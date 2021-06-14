@@ -345,6 +345,7 @@ class UserInterface extends Component<Props, State> {
     }
     return null;
   };
+
   updateLabels =
     (itemIndex: number) =>
     (newLabels: string[]): void => {
