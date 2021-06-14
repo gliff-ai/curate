@@ -1,5 +1,11 @@
 /* eslint-disable  no-param-reassign */
-import React, { Component, ChangeEvent, ReactNode, KeyboardEvent } from "react";
+import React, {
+  Component,
+  ChangeEvent,
+  ReactNode,
+  KeyboardEvent,
+  MouseEvent,
+} from "react";
 import {
   AppBar,
   CssBaseline,
@@ -328,15 +334,14 @@ class UserInterface extends Component<Props, State> {
       };
     });
 
-    // TODO: add here callback for deleting images
+    // TODO: add dominated callback deleting images from store.
   };
 
-  getNextSelectedUid = (forward = true): number | null => {
+  getItemUidNextToLastSelected = (forward = true): number | null => {
     const inc = forward ? 1 : -1;
     let index: number;
     for (let i = 0; i < this.state.metadata.length; i += 1) {
       index = i + inc;
-      console.log(index);
       if (
         this.state.metadata[i].id ===
           this.state.selectedImagesUid.slice(-1).pop() &&
@@ -443,38 +448,56 @@ class UserInterface extends Component<Props, State> {
                   }}
                 >
                   <Button
-                    onClick={() => {
-                      this.setState({
-                        selectedImagesUid: [mitem.id as string],
-                      });
+                    onClick={(e: MouseEvent) => {
+                      const itemUid = mitem.id as string;
+
+                      if (e.metaKey) {
+                        // Select clicked item if unselected; deselect if already selected
+                        this.setState((state) => {
+                          if (state.selectedImagesUid.includes(itemUid)) {
+                            state.selectedImagesUid.splice(
+                              state.selectedImagesUid.indexOf(itemUid),
+                              1
+                            );
+                          } else {
+                            state.selectedImagesUid.push(itemUid);
+                          }
+                          return {
+                            selectedImagesUid: state.selectedImagesUid,
+                          };
+                        });
+                      } else {
+                        // Select only clicked item
+                        this.setState({ selectedImagesUid: [itemUid] });
+                      }
                     }}
                     onDoubleClick={this.handleMetaDrawerOpen(
                       mitem.id as string
                     )}
-                    onKeyUp={(event: KeyboardEvent) => {
+                    onKeyDown={(e: KeyboardEvent) => {
                       if (
-                        event.key === "ArrowLeft" ||
-                        event.key === "ArrowRight"
+                        e.shiftKey &&
+                        (e.key === "ArrowLeft" || e.key === "ArrowRight")
                       ) {
-                        const index = this.getNextSelectedUid(
-                          event.key === "ArrowRight"
+                        // Select consecutive items to the left or to the right of the clicked item
+                        const index = this.getItemUidNextToLastSelected(
+                          e.key === "ArrowRight"
                         );
                         if (index !== null) {
                           this.setState((state) => {
-                            console.log(index);
-                            console.log(state.metadata);
-                            const uid = state.metadata[index].id as string;
-                            if (state.selectedImagesUid.includes(uid)) {
+                            const itemUid = state.metadata[index].id as string;
+                            if (state.selectedImagesUid.includes(itemUid)) {
                               state.selectedImagesUid.pop();
                             } else {
-                              state.selectedImagesUid.push(uid);
+                              state.selectedImagesUid.push(itemUid);
                             }
                             return {
                               selectedImagesUid: state.selectedImagesUid,
                             };
                           });
                         }
-                      } else if (event.key === "Escape") {
+                      } else if (e.key === "Escape") {
+                        // Remove any selection
                         this.setState({ selectedImagesUid: [] });
                       }
                     }}
