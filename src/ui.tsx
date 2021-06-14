@@ -339,6 +339,13 @@ class UserInterface extends Component<Props, State> {
     return null;
   };
 
+  getIndexFromUid = (uid: string): number | null => {
+    for (let i = 0; i < this.state.metadata.length; i += 1) {
+      if (this.state.metadata[i].id === uid) return i;
+    }
+    return null;
+  };
+
   render = (): ReactNode => {
     const { classes } = this.props;
     return (
@@ -434,26 +441,52 @@ class UserInterface extends Component<Props, State> {
                 >
                   <Button
                     onClick={(e: MouseEvent) => {
-                      const itemUid = mitem.id as string;
+                      const imageUid = mitem.id as string;
 
                       if (e.metaKey || e.ctrlKey) {
-                        // Select clicked item if unselected; deselect if already selected
+                        // Add clicked image to the selection if unselected; remove it if already selected
                         this.setState((state) => {
-                          if (state.selectedImagesUid.includes(itemUid)) {
+                          if (state.selectedImagesUid.includes(imageUid)) {
                             state.selectedImagesUid.splice(
-                              state.selectedImagesUid.indexOf(itemUid),
+                              state.selectedImagesUid.indexOf(imageUid),
                               1
                             );
                           } else {
-                            state.selectedImagesUid.push(itemUid);
+                            state.selectedImagesUid.push(imageUid);
                           }
                           return {
                             selectedImagesUid: state.selectedImagesUid,
                           };
                         });
+                      } else if (
+                        e.shiftKey &&
+                        this.state.selectedImagesUid.length > 0
+                      ) {
+                        // Selected all images between a pair of clicked images.
+                        this.setState((state) => {
+                          const currIdx = this.getIndexFromUid(imageUid);
+                          const prevIdx = this.getIndexFromUid(
+                            state.selectedImagesUid[0]
+                          );
+                          // first element added to the selection remains one end of the range
+                          const selectedImagesUid = [
+                            state.selectedImagesUid[0],
+                          ];
+
+                          const startIdx =
+                            prevIdx < currIdx ? prevIdx : currIdx;
+                          const endIdx = prevIdx < currIdx ? currIdx : prevIdx;
+
+                          for (let i = startIdx; i <= endIdx; i += 1) {
+                            selectedImagesUid.push(
+                              state.metadata[i].id as string
+                            );
+                          }
+                          return { selectedImagesUid };
+                        });
                       } else {
-                        // Select only clicked item
-                        this.setState({ selectedImagesUid: [itemUid] });
+                        // Select single item
+                        this.setState({ selectedImagesUid: [imageUid] });
                       }
                     }}
                     onDoubleClick={this.handleMetaDrawerOpen(
@@ -464,17 +497,17 @@ class UserInterface extends Component<Props, State> {
                         e.shiftKey &&
                         (e.key === "ArrowLeft" || e.key === "ArrowRight")
                       ) {
-                        // Select consecutive items to the left or to the right of the clicked item
+                        // Select consecutive images to the left or to the right of the clicked image.
                         const index = this.getItemUidNextToLastSelected(
                           e.key === "ArrowRight"
                         );
                         if (index !== null) {
                           this.setState((state) => {
-                            const itemUid = state.metadata[index].id as string;
-                            if (state.selectedImagesUid.includes(itemUid)) {
+                            const uid = state.metadata[index].id as string;
+                            if (state.selectedImagesUid.includes(uid)) {
                               state.selectedImagesUid.pop();
                             } else {
-                              state.selectedImagesUid.push(itemUid);
+                              state.selectedImagesUid.push(uid);
                             }
                             return {
                               selectedImagesUid: state.selectedImagesUid,
@@ -482,7 +515,7 @@ class UserInterface extends Component<Props, State> {
                           });
                         }
                       } else if (e.key === "Escape") {
-                        // Remove any selection
+                        // Deselect all
                         this.setState({ selectedImagesUid: [] });
                       }
                     }}
