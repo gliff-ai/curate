@@ -12,10 +12,15 @@ import {
   WithStyles,
   Button,
   Container,
+  Paper,
+  IconButton,
+  Card,
+  ButtonGroup,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { ThemeProvider, theme } from "@/theme";
+import SVG from "react-inlinesvg";
 
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
@@ -354,6 +359,48 @@ class UserInterface extends Component<Props, State> {
           <div className={classes.root}>
             <Grid container spacing={3}>
               <Grid item xs={2}>
+                <div>
+                  <IconButton size="small">
+                    <SVG
+                      src="src/assets/large-image-grid.svg"
+                      width="15%"
+                      height="auto"
+                    />
+                  </IconButton>
+                  <IconButton size="small">
+                    <SVG
+                      src="src/assets/medium-image-grid.svg"
+                      width="15%"
+                      height="auto"
+                    />
+                  </IconButton>
+                  <IconButton size="small">
+                    <SVG
+                      src="src/assets/small-image-grid.svg"
+                      width="15%"
+                      height="auto"
+                    />
+                  </IconButton>
+                </div>
+                <Grid item xs={5}>
+                  <div>
+                    <IconButton size="small">
+                      <SVG
+                        src="src/assets/small-image-grid.svg"
+                        width="20%"
+                        height="auto"
+                      />
+                    </IconButton>
+                    <IconButton size="small">
+                      <SVG
+                        src="src/assets/small-image-grid.svg"
+                        width="20%"
+                        height="auto"
+                      />
+                    </IconButton>
+                  </div>
+                </Grid>
+
                 <SearchAndSortBar
                   metadata={this.state.metadata}
                   metadataKeys={this.state.metadataKeys}
@@ -378,6 +425,7 @@ class UserInterface extends Component<Props, State> {
                   callback={this.handleOnActiveFiltersChange}
                 />
               </Grid>
+
               <Grid
                 item
                 xs={10}
