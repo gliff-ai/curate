@@ -102,7 +102,6 @@ export default function SearchAndSortBar({
       <Autocomplete
         id="combobox-metadata-key"
         className={style.input}
-        // inputValue={inputKey.key}
         getOptionLabel={(option: MetadataLabel) => option.label}
         getOptionSelected={(option, value) => option.label === value.label}
         onInputChange={(e: ChangeEvent, newInputKey: string) => {
@@ -138,6 +137,11 @@ export default function SearchAndSortBar({
         type="submit"
         aria-label="search"
         className={style.iconButton}
+        onClick={(e) => {
+          if (!inputKey) {
+            e.preventDefault();
+          }
+        }}
       >
         <Search />
       </IconButton>

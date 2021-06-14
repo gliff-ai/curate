@@ -127,9 +127,6 @@ export function LabelsPopover(props: Props): ReactElement {
           <CardHeader
             className={styles.labelsCardHeader}
             title={props.imageName}
-            // classess={{
-            //   title: { fontSize: 11 },
-            // }}
           />
           <CardContent>
             <Grid container className={styles.labelsGrid}>
