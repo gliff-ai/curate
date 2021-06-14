@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardContent,
 } from "@material-ui/core";
-import { AddCircleOutline, Close, Add } from "@material-ui/icons";
+import { Label, Close, Add } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,9 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 5,
     },
     labelsCardHeader: {
-      backgroundColor: theme.palette.primary.light,
+      backgroundColor: theme.palette.primary.dark,
       color: "#ffffff",
-      fontSize: 14,
     },
     labelsGrid: {
       width: 300,
@@ -36,17 +35,19 @@ const useStyles = makeStyles((theme: Theme) =>
     labelsChip: {
       margin: 5,
     },
-    inputGrid: { width: "100%" },
+    inputGrid: {
+      width: "100%",
+    },
     input: {
-      borderBottom: `1px solid ${theme.palette.primary.dark}`,
-      color: theme.palette.primary.dark,
+      borderBottom: "1px solid rgba(0, 0, 0, 0.26)",
       fontSize: 14,
+      width: "250px",
     },
     addLabelButton: {
-      color: theme.palette.primary.dark,
+      color: "#ffffff",
       position: "absolute",
       bottom: theme.spacing(1),
-      right: theme.spacing(1),
+      left: theme.spacing(1),
     },
   })
 );
@@ -96,7 +97,7 @@ export function LabelsPopover(props: Props): ReactElement {
           onClick={handleClick}
           className={styles.addLabelButton}
         >
-          <AddCircleOutline />
+          <Label />
         </IconButton>
       </Tooltip>
       <Popover
@@ -107,11 +108,11 @@ export function LabelsPopover(props: Props): ReactElement {
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "center",
+          horizontal: "left",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "center",
+          horizontal: "left",
         }}
       >
         <Card className={styles.labelsCard}>
@@ -119,22 +120,23 @@ export function LabelsPopover(props: Props): ReactElement {
             key={`button-close-${props.id}`}
             className={styles.cross}
             onClick={handleClose}
-            color="primary"
             edge="end"
           >
             <Close />
           </IconButton>
           <CardHeader
             className={styles.labelsCardHeader}
-            title="Update image labels"
-            subheader={props.imageName}
+            title={props.imageName}
+            // classess={{
+            //   title: { fontSize: 11 },
+            // }}
           />
           <CardContent>
             <Grid container className={styles.labelsGrid}>
               <Grid item className={styles.inputGrid}>
                 <InputBase
                   key={`input-${props.id}`}
-                  placeholder="Enter New Label"
+                  placeholder="New label"
                   value={newLabel}
                   onChange={handleNewLabelChange}
                   inputProps={{
@@ -145,7 +147,6 @@ export function LabelsPopover(props: Props): ReactElement {
                   key={`button-add-${props.id}`}
                   type="submit"
                   onClick={handleAddLabel(newLabel)}
-                  color="primary"
                 >
                   <Add />
                 </IconButton>
@@ -158,7 +159,6 @@ export function LabelsPopover(props: Props): ReactElement {
                     label={label}
                     onDelete={handleDeleteLabel(label)}
                     deleteIcon={<Close />}
-                    color="primary"
                     variant="outlined"
                   />
                 ))}

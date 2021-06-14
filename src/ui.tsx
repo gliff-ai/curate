@@ -419,11 +419,7 @@ class UserInterface extends Component<Props, State> {
                       fontSize: 14,
                     }}
                   >
-                    {(mitem.imageName as string)
-                      .split("/")
-                      .pop()
-                      .split(".")
-                      .shift()}
+                    {(mitem.imageName as string).split("/").pop()}
                   </Typography>
                 </Grid>
               ))}
