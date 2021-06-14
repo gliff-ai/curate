@@ -12,12 +12,9 @@ import {
   WithStyles,
   Button,
   Container,
-  IconButton,
-  Paper,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { Backup, Menu } from "@material-ui/icons";
 import { ThemeProvider, theme } from "@/theme";
 
 import MetadataDrawer from "./MetadataDrawer";
@@ -25,7 +22,6 @@ import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterAccordion from "./searchAndSort/SearchFilterAccordion";
-import LeftDrawer from "./components/LeftDrawer";
 import Tile from "./components/Tile";
 
 const styles = () => ({
@@ -33,11 +29,6 @@ const styles = () => ({
   root: {
     flexGrow: 1,
     marginTop: "108px",
-  },
-
-  paper: {
-    padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
   },
 
   appBar: {
@@ -390,9 +381,8 @@ class UserInterface extends Component<Props, State> {
               <Grid
                 item
                 xs={10}
-                spacing={3}
-                wrap="wrap"
                 className={classes.imagesContainer}
+                style={{ flexWrap: "wrap" }}
               >
                 {this.state.metadata
                   .filter((mitem) => mitem.selected)

@@ -40,14 +40,6 @@ const theme: Theme = createMuiTheme({
       },
     },
 
-    MuiCheckbox: {
-      colorSecondary: {
-        color: "#000",
-      },
-      checked: {
-        fill: "#02FFAD",
-      },
-    },
 
     MuiSlider: {
       root: {
