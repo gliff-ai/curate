@@ -25,8 +25,6 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { Backup, Menu, Delete } from "@material-ui/icons";
-import { LabelsPopover } from "@/components/LabelsPopover";
 import { Backup, Menu } from "@material-ui/icons";
 import { ThemeProvider, theme } from "@/theme";
 
@@ -495,9 +493,8 @@ class UserInterface extends Component<Props, State> {
               <Grid
                 item
                 xs={10}
-                spacing={3}
-                wrap="wrap"
                 className={classes.imagesContainer}
+                style={{ flexWrap: "wrap" }}
               >
                 {this.state.metadata
                   .filter((mitem) => mitem.selected)
