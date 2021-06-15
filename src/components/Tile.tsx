@@ -1,11 +1,15 @@
 import React, { ReactElement } from "react";
 import { MetaItem } from "@/searchAndSort/interfaces";
 
-export default function Tile(props: { mitem: MetaItem }): ReactElement {
+export default function Tile(props: {
+  mitem: MetaItem;
+  width: number;
+  height: number;
+}): ReactElement {
   return (
     <canvas
-      width={128}
-      height={128}
+      width={props.width}
+      height={props.height}
       ref={(canvas) => {
         if (canvas) {
           // Keep this as it is initially null
