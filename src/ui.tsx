@@ -56,13 +56,14 @@ interface State {
   selected: string; // id of selected MetaItem
   isLeftDrawerOpen: boolean;
 }
+
 class UserInterface extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
     this.state = {
       metadata: this.addFieldSelectedToMetadata(this.props.metadata),
-      metadataKeys: this.props.metadata
+      metadataKeys: this.props.metadata?.length
         ? this.getMetadataKeys(this.props.metadata[0])
         : [],
       imageLabels: this.getImageLabels(this.props.metadata),
@@ -72,6 +73,19 @@ class UserInterface extends Component<Props, State> {
       isLeftDrawerOpen: true,
     };
   }
+
+  /* eslint-disable no-did-update-set-state */
+  // TODO: remove state.metadata, just use props.metadata
+  componentDidUpdate = (prevProps: Props) => {
+    if (
+      JSON.stringify(this.props.metadata) !== JSON.stringify(prevProps.metadata)
+    ) {
+      this.setState({
+        metadata: this.addFieldSelectedToMetadata(this.props.metadata),
+      });
+    }
+  };
+  /* eslint-enable no-did-update-set-state */
 
   addFieldSelectedToMetadata = (metadata: Metadata): Metadata => {
     // Add field "selected" to metdata; this field is used to define which
@@ -271,36 +285,6 @@ class UserInterface extends Component<Props, State> {
     imageFileInfo: ImageFileInfo,
     images: ImageBitmap[][]
   ) => {
-    this.makeThumbnail(images).then(
-      (thumbnail) => {
-        const today = new Date();
-        const newMetadata = {
-          imageName: imageFileInfo.fileName,
-          id: imageFileInfo.fileID,
-          dateCreated: today.toLocaleDateString("gb-EN"),
-          size: imageFileInfo.size.toString(),
-          dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
-          numberOfDimensions: images.length === 1 ? "2" : "3",
-          numberOfChannels: images[0].length.toString(),
-          imageLabels: [] as Array<string>,
-          thumbnail,
-          selected: true,
-        };
-        this.setState((state) => {
-          const metaKeys =
-            state.metadataKeys.length === 0
-              ? this.getMetadataKeys(newMetadata)
-              : state.metadataKeys;
-          return {
-            metadata: state.metadata.concat(newMetadata),
-            metadataKeys: metaKeys,
-          };
-        });
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
     // Store uploaded image in etebase
     if (this.props.saveImageCallback) {
       this.props.saveImageCallback(imageFileInfo, images);
