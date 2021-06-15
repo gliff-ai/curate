@@ -74,7 +74,7 @@ class UserInterface extends Component<Props, State> {
     };
   }
 
-  /* eslint-disable no-did-update-set-state */
+  /* eslint-disable react/no-did-update-set-state */
   // TODO: remove state.metadata, just use props.metadata
   componentDidUpdate = (prevProps: Props) => {
     if (
@@ -85,7 +85,7 @@ class UserInterface extends Component<Props, State> {
       });
     }
   };
-  /* eslint-enable no-did-update-set-state */
+  /* eslint-enable react/no-did-update-set-state */
 
   addFieldSelectedToMetadata = (metadata: Metadata): Metadata => {
     // Add field "selected" to metdata; this field is used to define which
