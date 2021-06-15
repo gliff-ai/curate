@@ -90,7 +90,9 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
   const selectAll = () => setLabels(props.allLabels);
 
   useEffect(() => {
-    props.callbackOnLabelSelection(labels);
+    if (props.expanded) {
+      props.callbackOnLabelSelection(labels);
+    }
   }, [labels]);
 
   useEffect(() => {
