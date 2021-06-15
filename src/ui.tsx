@@ -1,5 +1,11 @@
 /* eslint-disable  no-param-reassign */
-import React, { Component, ChangeEvent, ReactNode } from "react";
+import React, {
+  Component,
+  ChangeEvent,
+  ReactNode,
+  KeyboardEvent,
+  MouseEvent,
+} from "react";
 import {
   AppBar,
   CssBaseline,
@@ -9,12 +15,14 @@ import {
   Theme,
   withStyles,
   WithStyles,
+  List,
+  ListItem,
   Button,
   IconButton,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { Backup, Menu } from "@material-ui/icons";
+import { Backup, Menu, Delete } from "@material-ui/icons";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
@@ -53,7 +61,8 @@ interface State {
   activeFilters: Filter[];
   imageLabels: string[];
   expanded: string | boolean;
-  selected: string; // id of selected MetaItem
+  openImageUid: string; // Uid for the image whose metadata is shown in the drawer
+  selectedImagesUid: string[]; // Uids for selected images
   isLeftDrawerOpen: boolean;
 }
 class UserInterface extends Component<Props, State> {
@@ -67,7 +76,8 @@ class UserInterface extends Component<Props, State> {
         : [],
       imageLabels: this.getImageLabels(this.props.metadata),
       expanded: "labels-filter-toolbox",
-      selected: null,
+      openImageUid: null,
+      selectedImagesUid: [],
       activeFilters: [],
       isLeftDrawerOpen: true,
     };
@@ -83,8 +93,12 @@ class UserInterface extends Component<Props, State> {
     return metadata;
   };
 
-  handleDrawerClose = () => {
-    this.setState({ selected: null });
+  handleMetaDrawerClose = (): void => {
+    this.setState({ openImageUid: null });
+  };
+
+  handleMetaDrawerOpen = (imageUid: string) => (): void => {
+    this.setState({ openImageUid: imageUid });
   };
 
   toggleLeftDrawer = () => {
@@ -258,53 +272,78 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
-  makeThumbnail = (image: Array<Array<ImageBitmap>>): Promise<ImageBitmap> => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 128;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(image[0][0], 0, 0, 128, 128);
-    return createImageBitmap(canvas);
-  };
-
   addUploadedImage = (
     imageFileInfo: ImageFileInfo,
     images: ImageBitmap[][]
   ) => {
-    this.makeThumbnail(images).then(
-      (thumbnail) => {
-        const today = new Date();
-        const newMetadata = {
-          imageName: imageFileInfo.fileName,
-          id: imageFileInfo.fileID,
-          dateCreated: today.toLocaleDateString("gb-EN"),
-          size: imageFileInfo.size.toString(),
-          dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
-          numberOfDimensions: images.length === 1 ? "2" : "3",
-          numberOfChannels: images[0].length.toString(),
-          imageLabels: [] as Array<string>,
-          thumbnail,
-          selected: true,
-        };
-        this.setState((state) => {
-          const metaKeys =
-            state.metadataKeys.length === 0
-              ? this.getMetadataKeys(newMetadata)
-              : state.metadataKeys;
-          return {
-            metadata: state.metadata.concat(newMetadata),
-            metadataKeys: metaKeys,
-          };
-        });
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    const today = new Date();
+    const newMetadata = {
+      imageName: imageFileInfo.fileName,
+      id: imageFileInfo.fileID,
+      dateCreated: today.toLocaleDateString("gb-EN"),
+      size: imageFileInfo.size.toString(),
+      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
+      numberOfDimensions: images.length === 1 ? "2" : "3",
+      numberOfChannels: images[0].length.toString(),
+      imageLabels: [] as Array<string>,
+      thumbnail: images[0][0],
+      selected: true,
+    };
+    this.setState((state) => {
+      const metaKeys =
+        state.metadataKeys.length === 0
+          ? this.getMetadataKeys(newMetadata)
+          : state.metadataKeys;
+      return {
+        metadata: state.metadata.concat(newMetadata),
+        metadataKeys: metaKeys,
+      };
+    });
+
     // Store uploaded image in etebase
     if (this.props.saveImageCallback) {
       this.props.saveImageCallback(imageFileInfo, images);
     }
+  };
+
+  deleteSelectedImages = (): void => {
+    if (!this.state.selectedImagesUid) return;
+    this.setState((state) => {
+      const metadata: Metadata = state.metadata.filter(
+        (mitem) => !state.selectedImagesUid.includes(mitem.id as string)
+      );
+      return {
+        selectedImagesUid: [],
+        metadata,
+        imageLabels: this.getImageLabels(metadata),
+      };
+    });
+
+    // TODO: add dominated callback deleting images from store.
+  };
+
+  getItemUidNextToLastSelected = (forward = true): number | null => {
+    const inc = forward ? 1 : -1;
+    let index: number;
+    for (let i = 0; i < this.state.metadata.length; i += 1) {
+      index = i + inc;
+      if (
+        this.state.metadata[i].id ===
+          this.state.selectedImagesUid.slice(-1).pop() &&
+        index < this.state.metadata.length &&
+        index >= 0
+      ) {
+        return index;
+      }
+    }
+    return null;
+  };
+
+  getIndexFromUid = (uid: string): number | null => {
+    for (let i = 0; i < this.state.metadata.length; i += 1) {
+      if (this.state.metadata[i].id === uid) return i;
+    }
+    return null;
   };
 
   updateLabels =
@@ -354,6 +393,25 @@ class UserInterface extends Component<Props, State> {
             handleDrawerClose={this.toggleLeftDrawer}
             drawerContent={
               <>
+                <List
+                  component="span"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                  }}
+                >
+                  <ListItem
+                    style={{ width: "auto" }}
+                  >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
+                  <ListItem style={{ width: "auto" }}>
+                    <IconButton
+                      aria-label="Delete"
+                      onClick={this.deleteSelectedImages}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </ListItem>
+                </List>
                 <LabelsFilterAccordion
                   expanded={this.state.expanded === "labels-filter-toolbox"}
                   handleToolboxChange={this.handleToolboxChange(
@@ -388,19 +446,91 @@ class UserInterface extends Component<Props, State> {
                   key={mitem.id as string}
                   style={{
                     backgroundColor:
-                      this.state.selected === mitem.id && "lightblue",
+                      this.state.selectedImagesUid.includes(
+                        mitem.id as string
+                      ) && "lightblue",
                   }}
                 >
                   <div style={{ position: "relative" }}>
                     <Button
-                      onClick={() => {
-                        this.setState({ selected: mitem.id as string });
+                      onClick={(e: MouseEvent) => {
+                        const imageUid = mitem.id as string;
+
+                        if (e.metaKey || e.ctrlKey) {
+                          // Add clicked image to the selection if unselected; remove it if already selected
+                          this.setState((state) => {
+                            if (state.selectedImagesUid.includes(imageUid)) {
+                              state.selectedImagesUid.splice(
+                                state.selectedImagesUid.indexOf(imageUid),
+                                1
+                              );
+                            } else {
+                              state.selectedImagesUid.push(imageUid);
+                            }
+                            return {
+                              selectedImagesUid: state.selectedImagesUid,
+                            };
+                          });
+                        } else if (
+                          e.shiftKey &&
+                          this.state.selectedImagesUid.length > 0
+                        ) {
+                          // Selected all images between a pair of clicked images.
+                          this.setState((state) => {
+                            const currIdx = this.getIndexFromUid(imageUid);
+                            const prevIdx = this.getIndexFromUid(
+                              state.selectedImagesUid[0]
+                            );
+                            // first element added to the selection remains one end of the range
+                            const selectedImagesUid = [
+                              state.selectedImagesUid[0],
+                            ];
+
+                            const startIdx =
+                              prevIdx < currIdx ? prevIdx : currIdx;
+                            const endIdx =
+                              prevIdx < currIdx ? currIdx : prevIdx;
+
+                            for (let i = startIdx; i <= endIdx; i += 1) {
+                              selectedImagesUid.push(
+                                state.metadata[i].id as string
+                              );
+                            }
+                            return { selectedImagesUid };
+                          });
+                        } else {
+                          // Select single item
+                          this.setState({ selectedImagesUid: [imageUid] });
+                        }
                       }}
-                      onKeyPress={(
-                        event: React.KeyboardEvent<HTMLButtonElement>
-                      ) => {
-                        if (event.code === "Enter") {
-                          this.setState({ selected: mitem.id as string });
+                      onDoubleClick={this.handleMetaDrawerOpen(
+                        mitem.id as string
+                      )}
+                      onKeyDown={(e: KeyboardEvent) => {
+                        if (
+                          e.shiftKey &&
+                          (e.key === "ArrowLeft" || e.key === "ArrowRight")
+                        ) {
+                          // Select consecutive images to the left or to the right of the clicked image.
+                          const index = this.getItemUidNextToLastSelected(
+                            e.key === "ArrowRight"
+                          );
+                          if (index !== null) {
+                            this.setState((state) => {
+                              const uid = state.metadata[index].id as string;
+                              if (state.selectedImagesUid.includes(uid)) {
+                                state.selectedImagesUid.pop();
+                              } else {
+                                state.selectedImagesUid.push(uid);
+                              }
+                              return {
+                                selectedImagesUid: state.selectedImagesUid,
+                              };
+                            });
+                          }
+                        } else if (e.key === "Escape") {
+                          // Deselect all
+                          this.setState({ selectedImagesUid: [] });
                         }
                       }}
                     >
@@ -426,15 +556,15 @@ class UserInterface extends Component<Props, State> {
           </Grid>
         </Grid>
 
-        {this.state.selected !== null && (
+        {this.state.openImageUid !== null && (
           <MetadataDrawer
             metadata={
               this.state.metadata.filter(
-                (mitem) => mitem.id === this.state.selected
+                (mitem) => mitem.id === this.state.openImageUid
               )[0]
             }
-            handleDrawerClose={this.handleDrawerClose}
-            isOpen={this.state.selected ? 1 : 0}
+            handleDrawerClose={this.handleMetaDrawerClose}
+            isOpen={this.state.openImageUid ? 1 : 0}
           />
         )}
       </div>
