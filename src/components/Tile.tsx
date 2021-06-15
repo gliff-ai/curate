@@ -9,9 +9,29 @@ export default function Tile(props: { mitem: MetaItem }): ReactElement {
       ref={(canvas) => {
         if (canvas) {
           // Keep this as it is initially null
-          const canvasContext = canvas.getContext("2d");
           if (props.mitem.thumbnail !== undefined) {
-            canvasContext.drawImage(props.mitem.thumbnail as ImageBitmap, 0, 0);
+            const canvasContext = canvas.getContext("2d");
+            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+            const image = props.mitem.thumbnail as ImageBitmap;
+
+            // Draw image fitting it to the canvas
+            const imageWidth = image.width;
+            const imageHeight = image.height;
+            const ratio = Math.min(
+              canvas.width / imageWidth,
+              canvas.height / imageHeight
+            );
+            canvasContext.drawImage(
+              image,
+              0,
+              0,
+              imageWidth,
+              imageHeight,
+              (canvas.width - imageWidth * ratio) / 2,
+              (canvas.height - imageHeight * ratio) / 2,
+              imageWidth * ratio,
+              imageHeight * ratio
+            );
           }
         }
       }}
