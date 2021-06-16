@@ -1,7 +1,7 @@
 export type Metadata = Array<MetaItem>;
 
 export type MetaItem = {
-  [index: string]: string | string[] | ImageBitmap | boolean | number;
+  [index: string]: string | string[] | boolean | number;
 };
 
 export type Filter = {
