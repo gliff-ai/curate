@@ -290,8 +290,24 @@ class UserInterface extends Component<Props, State> {
     const canvas = document.createElement("canvas");
     canvas.width = 128;
     canvas.height = 128;
+    const imageWidth = image[0][0].width;
+    const imageHeight = image[0][0].height;
+    const ratio = Math.min(
+      canvas.width / imageWidth,
+      canvas.height / imageHeight
+    );
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(image[0][0], 0, 0, 128, 128);
+    ctx.drawImage(
+      image[0][0],
+      0,
+      0,
+      imageWidth,
+      imageHeight,
+      (canvas.width - imageWidth * ratio) / 2,
+      (canvas.height - imageHeight * ratio) / 2,
+      imageWidth * ratio,
+      imageHeight * ratio
+    );
     return canvas.toDataURL();
   };
 
