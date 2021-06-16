@@ -286,13 +286,49 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
+  makeThumbnail = (image: Array<Array<ImageBitmap>>): string => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image[0][0], 0, 0, 128, 128);
+    return canvas.toDataURL();
+  };
+
   addUploadedImage = (
     imageFileInfo: ImageFileInfo,
     images: ImageBitmap[][]
   ) => {
-    // Store uploaded image in etebase
+    const thumbnail = this.makeThumbnail(images);
+    const today = new Date();
+    const newMetadata = {
+      imageName: imageFileInfo.fileName,
+      id: imageFileInfo.fileID,
+      dateCreated: today.toLocaleDateString("gb-EN"),
+      size: imageFileInfo.size.toString(),
+      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
+      numberOfDimensions: images.length === 1 ? "2" : "3",
+      numberOfChannels: images[0].length.toString(),
+      imageLabels: [] as Array<string>,
+      thumbnail: thumbnail,
+      selected: true,
+    };
+
     if (this.props.saveImageCallback) {
+      // Store uploaded image in etebase
       this.props.saveImageCallback(imageFileInfo, images);
+    } else {
+      // add the uploaded image directly to state.metadata
+      this.setState((state) => {
+        const metaKeys =
+          state.metadataKeys.length === 0
+            ? this.getMetadataKeys(newMetadata)
+            : state.metadataKeys;
+        return {
+          metadata: state.metadata.concat(newMetadata),
+          metadataKeys: metaKeys,
+        };
+      });
     }
   };
 
