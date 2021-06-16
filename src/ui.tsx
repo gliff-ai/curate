@@ -310,7 +310,7 @@ class UserInterface extends Component<Props, State> {
       numberOfDimensions: images.length === 1 ? "2" : "3",
       numberOfChannels: images[0].length.toString(),
       imageLabels: [] as Array<string>,
-      thumbnail: thumbnail,
+      thumbnail,
       selected: true,
     };
 
