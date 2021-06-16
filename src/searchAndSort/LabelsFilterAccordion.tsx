@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
 import React, { ChangeEvent, useEffect, useState, ReactElement } from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import {
@@ -9,6 +11,8 @@ import {
   ListItem,
   ListItemText,
   IconButton,
+  Paper,
+  Avatar,
 } from "@material-ui/core";
 import {
   ExpandMore,
@@ -17,6 +21,7 @@ import {
   LibraryAddCheckOutlined,
   HighlightOffOutlined,
 } from "@material-ui/icons";
+import SVG from "react-inlinesvg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,25 +32,47 @@ const useStyles = makeStyles((theme: Theme) =>
     labelsListItem: {
       paddingLeft: theme.spacing(2),
       width: "auto",
+      display: "flex",
     },
     labelIcon: {
       color: theme.palette.primary.dark,
     },
     labelText: {
-      paddingLeft: theme.spacing(2),
+      paddingLeft: theme.spacing(1),
+      marginRight: theme.spacing(6),
     },
-    buttonsList: { display: "flex", flexDirection: "row", flexWrap: "nowrap" },
+    buttonsList: {
+      display: "flex",
+      flexDirection: "row",
+      flexWrap: "nowrap",
+      marginBottom: "-28px",
+    },
     buttonsListItem: {
       padding: theme.spacing(1),
       width: "auto",
     },
     iconButton: {
-      color: theme.palette.primary.dark,
+      marginRight: "-22px",
+      marginLeft: "-10px",
     },
     infoOnHover: {
-      color: theme.palette.primary.light,
+      color: theme.palette.text.secondary,
       fontStyle: "italic",
+      fontSize: "12px",
+      marginLeft: "20px",
     },
+    paper: {
+      backgroundColor: theme.palette.primary.main,
+      borderRadius: "inherit",
+      height: "49px",
+    },
+    accordionDetails: {
+      display: "inline",
+    },
+    accordionTypography: {
+      fontWeight: 500,
+    },
+    svgLarge: { width: "55%", height: "100%" },
   })
 );
 
@@ -58,7 +85,7 @@ interface Props {
 }
 
 export default function LabelsFilterAccordion(props: Props): ReactElement {
-  const style = useStyles();
+  const classes = useStyles();
   const [labels, setLabels] = useState(props.allLabels);
   const [infoOnHover, setInfoOnHover] = useState("");
 
@@ -107,53 +134,82 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
   }, [props.allLabels]);
 
   return (
-    <Accordion expanded={props.expanded} onChange={props.handleToolboxChange}>
-      <AccordionSummary expandIcon={<ExpandMore />} id="labels-filter-toolbox">
-        <Typography className={style.title}>Image labels</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <List component="div" disablePadding className={style.labelsList}>
-          {props.allLabels.map((label) => (
-            <ListItem
-              key={label}
-              dense
-              button
-              onDoubleClick={SelectDeselectAllButOne(label)}
-              onClick={toggleLabelSelection(label)}
-              className={style.labelsListItem}
-            >
-              {labels.includes(label) ? (
-                <Label className={style.labelIcon} />
-              ) : (
-                <LabelOutlined className={style.labelIcon} />
-              )}
-              <ListItemText primary={label} className={style.labelText} />
-            </ListItem>
-          ))}
-        </List>
-        <List component="span" disablePadding className={style.buttonsList}>
-          <ListItem className={style.buttonsListItem}>
-            <IconButton
-              className={style.iconButton}
-              onClick={selectAll}
-              onMouseOver={() => setInfoOnHover("Select All labels")}
-              onMouseOut={() => setInfoOnHover("")}
-            >
-              <LibraryAddCheckOutlined />
-            </IconButton>
+    <div>
+      <Accordion expanded={props.expanded} onChange={props.handleToolboxChange}>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          id="labels-filter-toolbox"
+          className={classes.paper}
+        >
+          <Typography className={classes.accordionTypography}>
+            Annotation Labels
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails className={classes.accordionDetails}>
+          <List component="div" disablePadding className={classes.labelsList}>
+            {props.allLabels.map((label) => (
+              <ListItem
+                key={label}
+                dense
+                button
+                onDoubleClick={SelectDeselectAllButOne(label)}
+                onClick={toggleLabelSelection(label)}
+                className={classes.labelsListItem}
+              >
+                {labels.includes(label) ? (
+                  <>
+                    <SVG
+                      src={
+                        require("../assets/active-annotation-label-search-filter.svg") as string
+                      }
+                      className={classes.labelIcon}
+                    />
+                  </>
+                ) : (
+                  <SVG
+                    src={
+                      require("../assets/non-active-annotation-label-search-filter.svg") as string
+                    }
+                    className={classes.labelIcon}
+                  />
+                )}
+                <ListItemText primary={label} className={classes.labelText} />
+              </ListItem>
+            ))}
+          </List>
+          <List component="span" disablePadding className={classes.buttonsList}>
+            <ListItem className={classes.buttonsListItem}>
+              <IconButton
+                className={classes.iconButton}
+                onClick={selectAll}
+                onMouseOver={() => setInfoOnHover("Select All labels")}
+                onMouseOut={() => setInfoOnHover("")}
+              >
+                <Avatar>
+                  <SVG
+                    className={classes.svgLarge}
+                    src={require("../assets/select-all.svg") as string}
+                  />
+                </Avatar>
+              </IconButton>
 
-            <IconButton
-              className={style.iconButton}
-              onClick={() => setLabels([])}
-              onMouseOver={() => setInfoOnHover("Deselect All labels")}
-              onMouseOut={() => setInfoOnHover("")}
-            >
-              <HighlightOffOutlined />
-            </IconButton>
-          </ListItem>
-          <ListItem className={style.infoOnHover}>{infoOnHover}</ListItem>
-        </List>
-      </AccordionDetails>
-    </Accordion>
+              <IconButton
+                onClick={() => setLabels([])}
+                onMouseOver={() => setInfoOnHover("Deselect All labels")}
+                onMouseOut={() => setInfoOnHover("")}
+              >
+                <Avatar>
+                  <SVG
+                    className={classes.svgLarge}
+                    src={require("../assets/deselect-all.svg") as string}
+                  />
+                </Avatar>
+              </IconButton>
+            </ListItem>
+            <ListItem className={classes.infoOnHover}>{infoOnHover}</ListItem>
+          </List>
+        </AccordionDetails>
+      </Accordion>
+    </div>
   );
 }

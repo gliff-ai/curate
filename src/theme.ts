@@ -8,6 +8,10 @@ const theme: Theme = createMuiTheme({
     secondary: {
       main: "#AE79FF",
     },
+     text: {
+      primary: "#2B2F3A",
+      secondary:"#A1A1A1"
+    },
   },
   typography: {
     fontFamily: "Roboto",
@@ -28,9 +32,10 @@ const theme: Theme = createMuiTheme({
 
     MuiPaper:{
           root:{
-
-  backgroundColor: "transparent"          }
+          backgroundColor: "transparent" 
+        }
     },
+
 
     MuiIconButton: {
       root: {
@@ -40,6 +45,21 @@ const theme: Theme = createMuiTheme({
       },
     },
 
+      MuiListItem: {
+      button: {
+      "&:hover": {
+          backgroundColor: "transparent",
+        },
+      }
+    },
+
+    MuiList: {
+      root: {
+        "&:hover": {
+          backgroundColor: "transparent",
+        },
+      },
+    },
 
     MuiSlider: {
       root: {
@@ -77,7 +97,7 @@ const theme: Theme = createMuiTheme({
 
     MuiAvatar: {
       colorDefault: {
-        backgroundColor: "#fff",
+        backgroundColor: "transparent",
         "&:hover": {
           backgroundColor: "#02FFAD",
         },
@@ -95,6 +115,10 @@ const theme: Theme = createMuiTheme({
       variant: "outlined",
       disableRipple: true,
     },
+
+    MuiButtonBase: {
+         disableRipple: true
+      },
 
     MuiPopover: {
       anchorOrigin: {
