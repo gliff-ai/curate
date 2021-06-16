@@ -22,7 +22,6 @@ import {
   Container,
   IconButton,
   Paper,
-  Box,
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
@@ -418,11 +417,11 @@ class UserInterface extends Component<Props, State> {
             <Grid container spacing={3}>
               <Grid item xs={2}>
                 <div>
-                  <Paper>
+                  <Paper style={{ display: "inline" }}>
                     <SVG
                       src={require(`./assets/large-image-grid.svg`) as string}
                       width="15%"
-                      height="auto"
+                      height="100%"
                       onClick={() => {
                         this.setState({
                           thumbnailHeight: 298,
@@ -433,7 +432,7 @@ class UserInterface extends Component<Props, State> {
                     <SVG
                       src={require(`./assets/medium-image-grid.svg`) as string}
                       width="15%"
-                      height="auto"
+                      height="100%"
                       onClick={() => {
                         this.setState({
                           thumbnailHeight: 211,
@@ -444,7 +443,7 @@ class UserInterface extends Component<Props, State> {
                     <SVG
                       src={require(`./assets/small-image-grid.svg`) as string}
                       width="15%"
-                      height="auto"
+                      height="100%"
                       onClick={() => {
                         this.setState({
                           thumbnailHeight: 132,
@@ -456,14 +455,14 @@ class UserInterface extends Component<Props, State> {
                     <SVG
                       src={require(`./assets/search-filter.svg`) as string}
                       width="20%"
-                      height="auto"
+                      height="100%"
                     />
                     <SVG
                       src={
                         require(`./assets/multiple-image-selection.svg`) as string
                       }
                       width="20%"
-                      height="auto"
+                      height="100%"
                     />
                   </Paper>
                 </div>
@@ -511,6 +510,26 @@ class UserInterface extends Component<Props, State> {
                   activeFilters={this.state.activeFilters}
                   callback={this.handleOnActiveFiltersChange}
                 />
+
+                <div
+                  style={{
+                    left: "18px",
+                    top: "80px",
+                    marginTop: "30px",
+                    zIndex: 100,
+                  }}
+                >
+                  {this.state.openImageUid !== null && (
+                    <MetadataDrawer
+                      metadata={
+                        this.state.metadata.filter(
+                          (mitem) => mitem.id === this.state.openImageUid
+                        )[0]
+                      }
+                      handleDrawerClose={this.handleMetaDrawerClose}
+                    />
+                  )}
+                </div>
               </Grid>
 
               <Grid
@@ -643,18 +662,6 @@ class UserInterface extends Component<Props, State> {
                   ))}
               </Grid>
             </Grid>
-
-            {this.state.openImageUid !== null && (
-              <MetadataDrawer
-                metadata={
-                  this.state.metadata.filter(
-                    (mitem) => mitem.id === this.state.openImageUid
-                  )[0]
-                }
-                handleDrawerClose={this.handleMetaDrawerClose}
-                isOpen={this.state.openImageUid ? 1 : 0}
-              />
-            )}
           </div>
         </Container>
       </ThemeProvider>
