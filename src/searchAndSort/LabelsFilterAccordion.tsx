@@ -73,6 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 500,
     },
     svgLarge: { width: "55%", height: "100%" },
+    svgMedium: { width: "20%", height: "20%" },
   })
 );
 

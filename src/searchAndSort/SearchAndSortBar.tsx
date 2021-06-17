@@ -1,9 +1,16 @@
+/* eslint-disable global-require */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { ChangeEvent, useState, useEffect, ReactElement } from "react";
+import SVG from "react-inlinesvg";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import { Card, CardContent, IconButton, TextField } from "@material-ui/core";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  IconButton,
+  TextField,
+} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { Search } from "@material-ui/icons";
 import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
@@ -35,6 +42,7 @@ const useStyles = makeStyles(() =>
     iconButton: {
       padding: "10px",
     },
+    svgSmall: { width: "22px", height: "100%" },
   })
 );
 
@@ -136,18 +144,26 @@ export default function SearchAndSortBar({
           options={inputOptions}
           renderInput={(params: any) => <TextField {...params} label="..." />}
         />
-        <IconButton
-          type="submit"
-          aria-label="search"
-          className={classes.iconButton}
-          onClick={(e) => {
-            if (!inputKey) {
-              e.preventDefault();
-            }
-          }}
-        >
-          <Search />
-        </IconButton>
+        <Avatar variant="rounded">
+          <IconButton
+            type="submit"
+            aria-label="search"
+            className={classes.iconButton}
+            onClick={(e) => {
+              if (!inputKey) {
+                e.preventDefault();
+              }
+            }}
+          >
+            <SVG
+              src={
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                require("../assets/search.svg") as string
+              }
+              className={classes.svgSmall}
+            />
+          </IconButton>
+        </Avatar>
       </CardContent>
 
       {/* <SortDropdown
