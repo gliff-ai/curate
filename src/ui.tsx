@@ -365,8 +365,6 @@ class UserInterface extends Component<Props, State> {
         imageLabels: this.getImageLabels(metadata),
       };
     });
-
-    // TODO: add dominated callback deleting images from store.
   };
 
   getItemUidNextToLastSelected = (forward = true): number | null => {
