@@ -53,6 +53,7 @@ interface Props extends WithStyles<typeof styles> {
     imageFileInfo: ImageFileInfo,
     image: ImageBitmap[][]
   ) => void;
+  saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
 }
 
 interface State {
@@ -393,6 +394,12 @@ class UserInterface extends Component<Props, State> {
     (newLabels: string[]): void => {
       this.setState((state) => {
         state.metadata[itemIndex].imageLabels = newLabels;
+        if (this.props.saveLabelsCallback) {
+          this.props.saveLabelsCallback(
+            state.metadata[itemIndex].id as string,
+            newLabels
+          );
+        }
         return {
           metadata: state.metadata,
           imageLabels: this.getImageLabels(state.metadata),
