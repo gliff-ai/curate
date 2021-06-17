@@ -113,7 +113,15 @@ const theme: Theme = createMuiTheme({
           backgroundColor: "#02FFAD",
         },
       },
+      rounded: {
+        backgroundColor: "transparent",
+        "&:hover": {
+          backgroundColor: "transparent",
+        },
+        display: "contents",
+      },
     },
+  
   },
 
   props: {
