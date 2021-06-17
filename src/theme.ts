@@ -30,12 +30,23 @@ const theme: Theme = createMuiTheme({
       },
     },
 
+    MuiCollapse:{
+      container:{
+        backgroundColor: "#ffffff"
+      }
+    },
+
     MuiPaper:{
           root:{
           backgroundColor: "transparent" 
         }
     },
 
+    MuiFormControl:{
+      root:{
+        display: "flex"
+      }
+    },
 
     MuiIconButton: {
       root: {

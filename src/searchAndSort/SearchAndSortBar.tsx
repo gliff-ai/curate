@@ -1,21 +1,33 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { ChangeEvent, useState, useEffect, ReactElement } from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { IconButton, Paper, TextField } from "@material-ui/core";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { Card, CardContent, IconButton, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Search } from "@material-ui/icons";
 import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      display: "flex",
+      display: "inline",
     },
-    input: {
+    cardContent: {
+      backgroundColor: "#fff",
+      borderRadius: "9px",
+      marginTop: "12px",
+      height: "110px",
+      padding: "inherit",
+    },
+    input1: {
       paddingLeft: "10px",
-      width: "250px",
+      width: "90%",
+    },
+    input2: {
+      paddingLeft: "10px",
+      width: "80%",
+      display: "inline-block",
     },
     inputField: {
       fontSize: "11px",
@@ -44,7 +56,7 @@ export default function SearchAndSortBar({
   callbackSearch,
   callbackSort,
 }: Props): ReactElement {
-  const style = useStyles();
+  const classes = useStyles();
   const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -86,60 +98,63 @@ export default function SearchAndSortBar({
   }, [inputKey]);
 
   return (
-    <Paper
+    <Card
       component="form"
       onSubmit={(e) => {
         callbackSearch({ key: inputKey.key, value: inputValue });
         e.preventDefault();
       }}
-      className={style.root}
+      className={classes.root}
     >
-      <Autocomplete
-        id="combobox-metadata-key"
-        className={style.input}
-        getOptionLabel={(option: MetadataLabel) => option.label}
-        getOptionSelected={(option, value) => option.label === value.label}
-        onInputChange={(e: ChangeEvent, newInputKey: string) => {
-          // Match the text with the actual key we want
-          const metaLabel = metadataLabels.filter(
-            ({ label }) => label === newInputKey
-          );
+      <CardContent className={classes.cardContent}>
+        <Autocomplete
+          id="combobox-metadata-key"
+          className={classes.input1}
+          getOptionLabel={(option: MetadataLabel) => option.label}
+          getOptionSelected={(option, value) => option.label === value.label}
+          onInputChange={(e: ChangeEvent, newInputKey: string) => {
+            // Match the text with the actual key we want
+            const metaLabel = metadataLabels.filter(
+              ({ label }) => label === newInputKey
+            );
 
-          setInputKey(metaLabel?.[0]);
-        }}
-        options={metadataLabels}
-        renderInput={(params: any) => <TextField {...params} label="Key" />}
-      />
+            setInputKey(metaLabel?.[0]);
+          }}
+          options={metadataLabels}
+          renderInput={(params: any) => (
+            <TextField {...params} label="Search Category" />
+          )}
+        />
+        <Autocomplete
+          id="combobox-metadata-value"
+          className={classes.input2}
+          inputValue={inputValue}
+          freeSolo
+          onInputChange={(e: ChangeEvent, newInputValue: string) => {
+            setInputValue(newInputValue);
+          }}
+          options={inputOptions}
+          renderInput={(params: any) => <TextField {...params} label="..." />}
+        />
+        <IconButton
+          type="submit"
+          aria-label="search"
+          className={classes.iconButton}
+          onClick={(e) => {
+            if (!inputKey) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <Search />
+        </IconButton>
+      </CardContent>
 
-      <SortDropdown
+      {/* <SortDropdown
         metadataKeys={metadataKeys}
         inputKey={inputKey?.key || ""}
         callback={callbackSort}
-      />
-
-      <Autocomplete
-        id="combobox-metadata-value"
-        className={style.input}
-        inputValue={inputValue}
-        freeSolo
-        onInputChange={(e: ChangeEvent, newInputValue: string) => {
-          setInputValue(newInputValue);
-        }}
-        options={inputOptions}
-        renderInput={(params: any) => <TextField {...params} label="Value" />}
-      />
-      <IconButton
-        type="submit"
-        aria-label="search"
-        className={style.iconButton}
-        onClick={(e) => {
-          if (!inputKey) {
-            e.preventDefault();
-          }
-        }}
-      >
-        <Search />
-      </IconButton>
-    </Paper>
+      /> */}
+    </Card>
   );
 }
