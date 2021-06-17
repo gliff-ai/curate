@@ -54,6 +54,7 @@ interface Props extends WithStyles<typeof styles> {
     image: ImageBitmap[][]
   ) => void;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
+  deleteImagesCallback?: (imageUids: string[]) => void;
 }
 
 interface State {
@@ -355,6 +356,9 @@ class UserInterface extends Component<Props, State> {
       const metadata: Metadata = state.metadata.filter(
         (mitem) => !state.selectedImagesUid.includes(mitem.id as string)
       );
+      if (this.props.deleteImagesCallback) {
+        this.props.deleteImagesCallback(state.selectedImagesUid);
+      }
       return {
         selectedImagesUid: [],
         metadata,
