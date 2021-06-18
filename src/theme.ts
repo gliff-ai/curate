@@ -67,7 +67,7 @@ const theme: Theme = createMuiTheme({
     MuiList: {
       root: {
         "&:hover": {
-          backgroundColor: "transparent",
+          backgroundColor: "#ffffff",
         },
       },
     },
