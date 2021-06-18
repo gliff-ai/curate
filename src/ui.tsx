@@ -21,6 +21,8 @@ import {
   Button,
   Container,
   IconButton,
+  Card,
+  Avatar,
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
@@ -32,6 +34,7 @@ import MetadataDrawer from "./MetadataDrawer";
 import SizeThumbnails from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
+import { SortDropdown } from "./searchAndSort/SortDropdown";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterAccordion from "./searchAndSort/SearchFilterAccordion";
 import Tile from "./components/Tile";
@@ -60,7 +63,7 @@ const styles = () => ({
     marginBottom: "5px",
     marginTop: "7px",
   },
-  svgSmall: { width: "25px", height: "100%" },
+  svgSmall: { width: "22px", height: "100%" },
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -439,25 +442,62 @@ class UserInterface extends Component<Props, State> {
           <div className={classes.root}>
             <Grid container spacing={3}>
               <Grid item xs={2}>
-                <div>
+                <div style={{ display: "flex" }}>
                   <SizeThumbnails
                     largeThumbnails={this.handleLargeThumbnailSize}
                     mediumThumbnails={this.handleMediumThumbnailSize}
                     smallThumbnails={this.handleSmallThumbnailSize}
                   />
-                  <SVG
-                    src={require(`./assets/search-filter.svg`) as string}
-                    width="20%"
-                    height="100%"
-                  />
-                  <SVG
-                    src={
-                      require(`./assets/multiple-image-selection.svg`) as string
-                    }
-                    width="20%"
-                    height="100%"
-                  />
+
+                  <Card
+                    style={{
+                      height: "48px",
+                      backgroundColor: "white",
+                      paddingTop: "1px",
+                      marginLeft: "10px",
+                      width: "80px",
+                    }}
+                  >
+                    <Avatar variant="rounded">
+                      <IconButton>
+                        <SVG
+                          src={require(`./assets/search-filter.svg`) as string}
+                          className={classes.svgSmall}
+                          fill={theme.palette.primary.main}
+                        />
+                      </IconButton>
+                    </Avatar>
+                  </Card>
+
+                  <Card
+                    style={{
+                      height: "48px",
+                      backgroundColor: "white",
+                      paddingTop: "1px",
+                      paddingLeft: "3px",
+                      marginLeft: "10px",
+                      width: "80px",
+                    }}
+                  >
+                    <Avatar variant="rounded">
+                      <IconButton>
+                        <SVG
+                          src={
+                            require(`./assets/multiple-image-selection.svg`) as string
+                          }
+                          className={classes.svgSmall}
+                          fill={theme.palette.primary.main}
+                        />
+                      </IconButton>
+                    </Avatar>
+                  </Card>
                 </div>
+
+                {/* <SortDropdown
+                  metadataKeys={metadataKeys}
+                  inputKey={inputKey?.key || ""}
+                  callback={callbackSort}
+                /> */}
 
                 <SearchAndSortBar
                   metadata={this.state.metadata}
