@@ -55,6 +55,7 @@ interface Props extends WithStyles<typeof styles> {
   ) => void;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
+  annotateCallback?: (id: string) => void;
 }
 
 interface State {
@@ -554,9 +555,9 @@ class UserInterface extends Component<Props, State> {
                           this.setState({ selectedImagesUid: [imageUid] });
                         }
                       }}
-                      onDoubleClick={this.handleMetaDrawerOpen(
-                        mitem.id as string
-                      )}
+                      onDoubleClick={() => {
+                        this.props.annotateCallback(mitem.id as string);
+                      }}
                       onKeyDown={(e: KeyboardEvent) => {
                         if (
                           e.shiftKey &&
