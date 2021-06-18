@@ -63,6 +63,21 @@ const styles = () => ({
     marginBottom: "5px",
     marginTop: "7px",
   },
+  searchFilterCard: {
+    height: "48px",
+    backgroundColor: "white",
+    paddingTop: "1px",
+    marginLeft: "10px",
+    width: "80px",
+  },
+  selectMultipleImageCard: {
+    height: "48px",
+    backgroundColor: "white",
+    paddingTop: "1px",
+    paddingLeft: "3px",
+    marginLeft: "10px",
+    width: "80px",
+  },
   svgSmall: { width: "22px", height: "100%" },
 });
 
@@ -449,15 +464,7 @@ class UserInterface extends Component<Props, State> {
                     smallThumbnails={this.handleSmallThumbnailSize}
                   />
 
-                  <Card
-                    style={{
-                      height: "48px",
-                      backgroundColor: "white",
-                      paddingTop: "1px",
-                      marginLeft: "10px",
-                      width: "80px",
-                    }}
-                  >
+                  <Card className={classes.searchFilterCard}>
                     <Avatar variant="rounded">
                       <IconButton>
                         <SVG
@@ -469,16 +476,7 @@ class UserInterface extends Component<Props, State> {
                     </Avatar>
                   </Card>
 
-                  <Card
-                    style={{
-                      height: "48px",
-                      backgroundColor: "white",
-                      paddingTop: "1px",
-                      paddingLeft: "3px",
-                      marginLeft: "10px",
-                      width: "80px",
-                    }}
-                  >
+                  <Card className={classes.selectMultipleImageCard}>
                     <Avatar variant="rounded">
                       <IconButton>
                         <SVG
