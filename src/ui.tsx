@@ -21,7 +21,6 @@ import {
   Button,
   Container,
   IconButton,
-  Paper,
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
@@ -30,6 +29,7 @@ import { ThemeProvider, theme } from "@/theme";
 import SVG from "react-inlinesvg";
 
 import MetadataDrawer from "./MetadataDrawer";
+import SizeThumbnails from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
@@ -54,11 +54,13 @@ const styles = () => ({
     display: "flex",
     width: "100%",
     justifyContent: "flex-start",
+    marginBottom: "auto",
   },
   logo: {
     marginBottom: "5px",
     marginTop: "7px",
   },
+  svgSmall: { width: "25px", height: "100%" },
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -229,6 +231,27 @@ class UserInterface extends Component<Props, State> {
       // Apply new filter if not present already in the list of active filters
       this.setActiveFilter(filter);
     }
+  };
+
+  handleLargeThumbnailSize = () => {
+    this.setState({
+      thumbnailHeight: 298,
+      thumbnailWidth: 298,
+    });
+  };
+
+  handleMediumThumbnailSize = () => {
+    this.setState({
+      thumbnailHeight: 211,
+      thumbnailWidth: 211,
+    });
+  };
+
+  handleSmallThumbnailSize = () => {
+    this.setState({
+      thumbnailHeight: 132,
+      thumbnailWidth: 132,
+    });
   };
 
   handleOnActiveFiltersChange = (filter: Filter) => {
@@ -417,54 +440,23 @@ class UserInterface extends Component<Props, State> {
             <Grid container spacing={3}>
               <Grid item xs={2}>
                 <div>
-                  <Paper style={{ display: "inline" }}>
-                    <SVG
-                      src={require(`./assets/large-image-grid.svg`) as string}
-                      width="15%"
-                      height="100%"
-                      onClick={() => {
-                        this.setState({
-                          thumbnailHeight: 298,
-                          thumbnailWidth: 298,
-                        });
-                      }}
-                    />
-                    <SVG
-                      src={require(`./assets/medium-image-grid.svg`) as string}
-                      width="15%"
-                      height="100%"
-                      onClick={() => {
-                        this.setState({
-                          thumbnailHeight: 211,
-                          thumbnailWidth: 211,
-                        });
-                      }}
-                    />
-                    <SVG
-                      src={require(`./assets/small-image-grid.svg`) as string}
-                      width="15%"
-                      height="100%"
-                      onClick={() => {
-                        this.setState({
-                          thumbnailHeight: 132,
-                          thumbnailWidth: 132,
-                        });
-                      }}
-                    />
-
-                    <SVG
-                      src={require(`./assets/search-filter.svg`) as string}
-                      width="20%"
-                      height="100%"
-                    />
-                    <SVG
-                      src={
-                        require(`./assets/multiple-image-selection.svg`) as string
-                      }
-                      width="20%"
-                      height="100%"
-                    />
-                  </Paper>
+                  <SizeThumbnails
+                    largeThumbnails={this.handleLargeThumbnailSize}
+                    mediumThumbnails={this.handleMediumThumbnailSize}
+                    smallThumbnails={this.handleSmallThumbnailSize}
+                  />
+                  <SVG
+                    src={require(`./assets/search-filter.svg`) as string}
+                    width="20%"
+                    height="100%"
+                  />
+                  <SVG
+                    src={
+                      require(`./assets/multiple-image-selection.svg`) as string
+                    }
+                    width="20%"
+                    height="100%"
+                  />
                 </div>
 
                 <SearchAndSortBar
