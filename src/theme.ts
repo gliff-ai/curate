@@ -1,4 +1,5 @@
 import { ThemeProvider, createMuiTheme, Theme } from "@material-ui/core";
+import type {} from "@material-ui/lab/themeAugmentation"
 
 const theme: Theme = createMuiTheme({
   palette: {
@@ -16,6 +17,7 @@ const theme: Theme = createMuiTheme({
   typography: {
     fontFamily: "Roboto",
   },
+
   shape: {
     borderRadius: 6,
   },
@@ -30,12 +32,21 @@ const theme: Theme = createMuiTheme({
       },
     },
 
+     MuiAutocomplete: {
+      option: {
+        '&[data-focus="true"]': {
+          backgroundColor: "#02FFAD",
+        },
+      },
+    },
+
     MuiCollapse:{
       container:{
         backgroundColor: "#ffffff"
       }
     },
 
+    
     MuiPaper:{
           root:{
           backgroundColor: "transparent" 
@@ -135,6 +146,7 @@ const theme: Theme = createMuiTheme({
       disableRipple: true,
     },
 
+   
     MuiButtonBase: {
          disableRipple: true
       },
