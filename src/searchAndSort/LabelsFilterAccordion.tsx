@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 import React, { ChangeEvent, useEffect, useState, ReactElement } from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Accordion,
   AccordionSummary,
@@ -11,19 +11,13 @@ import {
   ListItem,
   ListItemText,
   IconButton,
-  Paper,
   Avatar,
 } from "@material-ui/core";
-import {
-  ExpandMore,
-  Label,
-  LabelOutlined,
-  LibraryAddCheckOutlined,
-  HighlightOffOutlined,
-} from "@material-ui/icons";
-import SVG from "react-inlinesvg";
 
-const useStyles = makeStyles((theme: Theme) =>
+import SVG from "react-inlinesvg";
+import { theme } from "@/theme";
+
+const useStyles = makeStyles(() =>
   createStyles({
     title: {
       paddingLeft: theme.spacing(1),
@@ -62,9 +56,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: "20px",
     },
     paper: {
-      backgroundColor: theme.palette.primary.main,
       borderRadius: "inherit",
       height: "49px",
+      backgroundColor: (accordionOpened) =>
+        accordionOpened && theme.palette.primary.main,
     },
     accordionDetails: {
       display: "inline",
@@ -72,8 +67,14 @@ const useStyles = makeStyles((theme: Theme) =>
     accordionTypography: {
       fontWeight: 500,
     },
+    avatar: {
+      backgroundColor: (accordionOpened) =>
+        accordionOpened ? "white" : "transparent",
+      width: "30px",
+      height: "30px",
+    },
     svgLarge: { width: "55%", height: "100%" },
-    svgMedium: { width: "20%", height: "20%" },
+    svgSmall: { width: "15px", height: "100%" },
   })
 );
 
@@ -86,7 +87,8 @@ interface Props {
 }
 
 export default function LabelsFilterAccordion(props: Props): ReactElement {
-  const classes = useStyles();
+  const accordionOpened = props.expanded;
+  const classes = useStyles(accordionOpened);
   const [labels, setLabels] = useState(props.allLabels);
   const [infoOnHover, setInfoOnHover] = useState("");
 
@@ -138,7 +140,15 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
     <div>
       <Accordion expanded={props.expanded} onChange={props.handleToolboxChange}>
         <AccordionSummary
-          expandIcon={<ExpandMore />}
+          expandIcon={
+            <Avatar className={classes.avatar}>
+              <SVG
+                src={require("../assets/down-arrow.svg") as string}
+                className={classes.svgSmall}
+                fill={accordionOpened && theme.palette.primary.main}
+              />
+            </Avatar>
+          }
           id="labels-filter-toolbox"
           className={classes.paper}
         >
@@ -186,7 +196,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 onMouseOver={() => setInfoOnHover("Select All labels")}
                 onMouseOut={() => setInfoOnHover("")}
               >
-                <Avatar>
+                <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
                     src={require("../assets/select-all.svg") as string}
@@ -199,7 +209,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 onMouseOver={() => setInfoOnHover("Deselect All labels")}
                 onMouseOut={() => setInfoOnHover("")}
               >
-                <Avatar>
+                <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
                     src={require("../assets/deselect-all.svg") as string}
