@@ -78,6 +78,22 @@ const styles = () => ({
     marginLeft: "10px",
     width: "80px",
   },
+  deleteImageCard: {
+    backgroundColor: "white",
+    marginTop: "15px",
+    height: "50px",
+    marginBottom: "15px",
+  },
+  deleteImageList: {
+    display: "flex",
+    justifyContent: "space-around",
+    marginTop: "-15px",
+  },
+  deleteImageListItem: {
+    width: "auto",
+    marginRight: "-10px",
+  },
+
   svgSmall: { width: "22px", height: "100%" },
 });
 
@@ -491,6 +507,25 @@ class UserInterface extends Component<Props, State> {
                   </Card>
                 </div>
 
+                <Card className={classes.deleteImageCard}>
+                  <List component="span" className={classes.deleteImageList}>
+                    <ListItem
+                      style={{ fontWeight: 500 }}
+                    >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
+                    <ListItem className={classes.deleteImageListItem}>
+                      <IconButton
+                        aria-label="Delete"
+                        onClick={this.deleteSelectedImages}
+                      >
+                        <SVG
+                          src={require(`./assets/delete.svg`) as string}
+                          className={classes.svgSmall}
+                        />
+                      </IconButton>
+                    </ListItem>
+                  </List>
+                </Card>
+
                 {/* <SortDropdown
                   metadataKeys={metadataKeys}
                   inputKey={inputKey?.key || ""}
@@ -504,25 +539,6 @@ class UserInterface extends Component<Props, State> {
                   callbackSort={this.handleOnSortSubmit}
                 />
 
-                <List
-                  component="span"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <ListItem
-                    style={{ width: "auto" }}
-                  >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-                  <ListItem style={{ width: "auto" }}>
-                    <IconButton
-                      aria-label="Delete"
-                      onClick={this.deleteSelectedImages}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </ListItem>
-                </List>
                 <LabelsFilterAccordion
                   expanded={this.state.expanded === "labels-filter-toolbox"}
                   handleToolboxChange={this.handleToolboxChange(
