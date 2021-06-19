@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   IconButton,
+  Paper,
   TextField,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -57,6 +58,11 @@ type MetadataLabel = {
   key: string;
   label: string;
 };
+
+// To be able to style the dropdown list
+const CustomPaper = (props: any) => (
+  <Paper elevation={8} {...props} style={{ backgroundColor: "white" }} />
+);
 
 export default function SearchAndSortBar({
   metadata,
@@ -132,6 +138,7 @@ export default function SearchAndSortBar({
           renderInput={(params: any) => (
             <TextField {...params} label="Search Category" />
           )}
+          PaperComponent={CustomPaper}
         />
         <Autocomplete
           id="combobox-metadata-value"
@@ -143,6 +150,7 @@ export default function SearchAndSortBar({
           }}
           options={inputOptions}
           renderInput={(params: any) => <TextField {...params} label="..." />}
+          PaperComponent={CustomPaper}
         />
         <Avatar variant="rounded">
           <IconButton
