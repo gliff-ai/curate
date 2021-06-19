@@ -608,7 +608,7 @@ class UserInterface extends Component<Props, State> {
                         backgroundColor:
                           this.state.selectedImagesUid.includes(
                             mitem.id as string
-                          ) && "lightblue",
+                          ) && theme.palette.primary.main,
                       }}
                     >
                       <div style={{ position: "relative" }}>
@@ -710,14 +710,6 @@ class UserInterface extends Component<Props, State> {
                           imageName={mitem.imageName as string}
                         />
                       </div>
-                      <Typography
-                        style={{
-                          textAlign: "center",
-                          fontSize: 14,
-                        }}
-                      >
-                        {(mitem.imageName as string).split("/").pop()}
-                      </Typography>
                     </Grid>
                   ))}
               </Grid>

@@ -24,9 +24,10 @@ const useStyles = makeStyles(() =>
     cardContent: {
       backgroundColor: "#fff",
       borderRadius: "9px",
-      marginTop: "12px",
+      marginTop: "15px",
       height: "110px",
       padding: "inherit",
+      marginBottom: "15px",
     },
     input1: {
       paddingLeft: "10px",
