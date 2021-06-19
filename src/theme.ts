@@ -1,5 +1,5 @@
 import { ThemeProvider, createMuiTheme, Theme } from "@material-ui/core";
-import type {} from "@material-ui/lab/themeAugmentation"
+import type {} from "@material-ui/lab/themeAugmentation";
 
 const theme: Theme = createMuiTheme({
   palette: {
@@ -9,9 +9,9 @@ const theme: Theme = createMuiTheme({
     secondary: {
       main: "#AE79FF",
     },
-     text: {
+    text: {
       primary: "#2B2F3A",
-      secondary:"#A1A1A1"
+      secondary: "#A1A1A1",
     },
   },
   typography: {
@@ -32,7 +32,15 @@ const theme: Theme = createMuiTheme({
       },
     },
 
-     MuiAutocomplete: {
+    MuiAccordionSummary: {
+      root: {
+        "&$expanded": {
+          minHeight: "4px",
+        },
+      },
+    },
+
+    MuiAutocomplete: {
       option: {
         '&[data-focus="true"]': {
           backgroundColor: "#02FFAD",
@@ -40,23 +48,22 @@ const theme: Theme = createMuiTheme({
       },
     },
 
-    MuiCollapse:{
-      container:{
-        backgroundColor: "#ffffff"
-      }
+    MuiCollapse: {
+      container: {
+        backgroundColor: "#ffffff",
+      },
     },
 
-    
-    MuiPaper:{
-          root:{
-          backgroundColor: "transparent" 
-        }
+    MuiPaper: {
+      root: {
+        backgroundColor: "transparent",
+      },
     },
 
-    MuiFormControl:{
-      root:{
-        display: "flex"
-      }
+    MuiFormControl: {
+      root: {
+        display: "flex",
+      },
     },
 
     MuiIconButton: {
@@ -67,12 +74,12 @@ const theme: Theme = createMuiTheme({
       },
     },
 
-      MuiListItem: {
+    MuiListItem: {
       button: {
-      "&:hover": {
+        "&:hover": {
           backgroundColor: "transparent",
         },
-      }
+      },
     },
 
     MuiList: {
@@ -118,21 +125,19 @@ const theme: Theme = createMuiTheme({
     },
 
     MuiAvatar: {
-      colorDefault: {
-        backgroundColor: "transparent",
-        "&:hover": {
-          backgroundColor: "#02FFAD",
-        },
-      },
       rounded: {
-        backgroundColor: "transparent",
         "&:hover": {
           backgroundColor: "transparent",
         },
         display: "contents",
       },
+      circular: {
+        backgroundColor: "transparent",
+        "&:hover": {
+          backgroundColor: "#02FFAD",
+        },
+      },
     },
-  
   },
 
   props: {
@@ -146,10 +151,9 @@ const theme: Theme = createMuiTheme({
       disableRipple: true,
     },
 
-   
     MuiButtonBase: {
-         disableRipple: true
-      },
+      disableRipple: true,
+    },
 
     MuiPopover: {
       anchorOrigin: {
