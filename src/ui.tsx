@@ -24,7 +24,6 @@ import {
   Card,
   Avatar,
 } from "@material-ui/core";
-import { Delete } from "@material-ui/icons";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { ThemeProvider, theme } from "@/theme";
@@ -116,6 +115,7 @@ interface State {
   isLeftDrawerOpen: boolean;
   thumbnailWidth: number;
   thumbnailHeight: number;
+  selectMultipleImagesMode: boolean;
 }
 class UserInterface extends Component<Props, State> {
   constructor(props: Props) {
@@ -134,6 +134,7 @@ class UserInterface extends Component<Props, State> {
       isLeftDrawerOpen: true,
       thumbnailWidth: 128,
       thumbnailHeight: 128,
+      selectMultipleImagesMode: false,
     };
   }
 
@@ -494,37 +495,50 @@ class UserInterface extends Component<Props, State> {
 
                   <Card className={classes.selectMultipleImageCard}>
                     <Avatar variant="rounded">
-                      <IconButton>
+                      <IconButton
+                        onClick={() => {
+                          this.setState((prevState) => ({
+                            selectMultipleImagesMode:
+                              !prevState.selectMultipleImagesMode,
+                          }));
+                        }}
+                      >
                         <SVG
                           src={
                             require(`./assets/multiple-image-selection.svg`) as string
                           }
                           className={classes.svgSmall}
-                          fill={theme.palette.primary.main}
+                          fill={
+                            this.state.selectMultipleImagesMode
+                              ? theme.palette.primary.main
+                              : null
+                          }
                         />
                       </IconButton>
                     </Avatar>
                   </Card>
                 </div>
 
-                <Card className={classes.deleteImageCard}>
-                  <List component="span" className={classes.deleteImageList}>
-                    <ListItem
-                      style={{ fontWeight: 500 }}
-                    >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-                    <ListItem className={classes.deleteImageListItem}>
-                      <IconButton
-                        aria-label="Delete"
-                        onClick={this.deleteSelectedImages}
-                      >
-                        <SVG
-                          src={require(`./assets/delete.svg`) as string}
-                          className={classes.svgSmall}
-                        />
-                      </IconButton>
-                    </ListItem>
-                  </List>
-                </Card>
+                {this.state.selectMultipleImagesMode && (
+                  <Card className={classes.deleteImageCard}>
+                    <List component="span" className={classes.deleteImageList}>
+                      <ListItem
+                        style={{ fontWeight: 500 }}
+                      >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
+                      <ListItem className={classes.deleteImageListItem}>
+                        <IconButton
+                          aria-label="Delete"
+                          onClick={this.deleteSelectedImages}
+                        >
+                          <SVG
+                            src={require(`./assets/delete.svg`) as string}
+                            className={classes.svgSmall}
+                          />
+                        </IconButton>
+                      </ListItem>
+                    </List>
+                  </Card>
+                )}
 
                 {/* <SortDropdown
                   metadataKeys={metadataKeys}
