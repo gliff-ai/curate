@@ -35,7 +35,7 @@ import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import { SortDropdown } from "./searchAndSort/SortDropdown";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
-import SearchFilterAccordion from "./searchAndSort/SearchFilterAccordion";
+import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
 import { LabelsPopover } from "./components/LabelsPopover";
 
@@ -553,6 +553,11 @@ class UserInterface extends Component<Props, State> {
                   callbackSort={this.handleOnSortSubmit}
                 />
 
+                <SearchFilterCard
+                  activeFilters={this.state.activeFilters}
+                  callback={this.handleOnActiveFiltersChange}
+                />
+
                 <LabelsFilterAccordion
                   expanded={this.state.expanded === "labels-filter-toolbox"}
                   handleToolboxChange={this.handleToolboxChange(
@@ -561,14 +566,6 @@ class UserInterface extends Component<Props, State> {
                   allLabels={this.state.imageLabels}
                   callbackOnLabelSelection={this.handleOnLabelSelection}
                   callbackOnAccordionExpanded={this.resetSearchFilters}
-                />
-                <SearchFilterAccordion
-                  expanded={this.state.expanded === "search-filter-toolbox"}
-                  handleToolboxChange={this.handleToolboxChange(
-                    "search-filter-toolbox"
-                  )}
-                  activeFilters={this.state.activeFilters}
-                  callback={this.handleOnActiveFiltersChange}
                 />
 
                 <div

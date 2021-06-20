@@ -59,7 +59,7 @@ const useStyles = makeStyles(() =>
       borderRadius: "inherit",
       height: "49px",
       backgroundColor: (accordionOpened) =>
-        accordionOpened && theme.palette.primary.main,
+        accordionOpened ? theme.palette.primary.main : "white",
     },
     accordionDetails: {
       display: "inline",
@@ -145,7 +145,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
               <SVG
                 src={require("../assets/down-arrow.svg") as string}
                 className={classes.svgSmall}
-                fill={accordionOpened && theme.palette.primary.main}
+                fill={accordionOpened ? theme.palette.primary.main : null}
               />
             </Avatar>
           }
