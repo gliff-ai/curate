@@ -12,7 +12,7 @@ const useStyles = makeStyles(() =>
     svgSmall: { width: "22px", height: "100%" },
     card: {
       height: "48px",
-      backgroundColor: "white",
+      backgroundColor: theme.palette.primary.light,
       width: "150px",
       paddingLeft: "5px",
       paddingTop: "1px",

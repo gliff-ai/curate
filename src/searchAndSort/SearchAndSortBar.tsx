@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { theme } from "@/theme";
 import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
@@ -22,7 +23,7 @@ const useStyles = makeStyles(() =>
       display: "inline",
     },
     cardContent: {
-      backgroundColor: "#fff",
+      backgroundColor: theme.palette.primary.light,
       borderRadius: "9px",
       marginTop: "15px",
       height: "110px",
@@ -62,7 +63,11 @@ type MetadataLabel = {
 
 // To be able to style the dropdown list
 const CustomPaper = (props: any) => (
-  <Paper elevation={8} {...props} style={{ backgroundColor: "white" }} />
+  <Paper
+    elevation={8}
+    {...props}
+    style={{ backgroundColor: theme.palette.primary.light }}
+  />
 );
 
 export default function SearchAndSortBar({
