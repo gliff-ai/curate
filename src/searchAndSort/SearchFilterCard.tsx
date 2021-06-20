@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       height: "auto",
       marginBottom: "15px",
-      backgroundColor: "white",
+      backgroundColor: theme.palette.primary.light,
     },
 
     list: {
