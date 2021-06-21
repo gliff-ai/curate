@@ -59,7 +59,9 @@ const useStyles = makeStyles(() =>
       borderRadius: "inherit",
       height: "49px",
       backgroundColor: (accordionOpened) =>
-        accordionOpened ? theme.palette.primary.main : "white",
+        accordionOpened
+          ? theme.palette.primary.main
+          : theme.palette.primary.light,
     },
     accordionDetails: {
       display: "inline",
@@ -69,7 +71,7 @@ const useStyles = makeStyles(() =>
     },
     avatar: {
       backgroundColor: (accordionOpened) =>
-        accordionOpened ? "white" : "transparent",
+        accordionOpened ? theme.palette.primary.light : "transparent",
       width: "30px",
       height: "30px",
     },

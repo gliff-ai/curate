@@ -487,7 +487,6 @@ class UserInterface extends Component<Props, State> {
                         <SVG
                           src={require(`./assets/search-filter.svg`) as string}
                           className={classes.svgSmall}
-                          fill={theme.palette.primary.main}
                         />
                       </IconButton>
                     </Avatar>
