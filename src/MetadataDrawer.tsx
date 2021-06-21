@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
+import React, { ReactElement, useState } from "react";
 import {
   ListItem,
   Typography,
   ListItemText,
   List,
-  Divider,
   IconButton,
   Paper,
   Card,
@@ -13,25 +15,26 @@ import {
 } from "@material-ui/core";
 import { MetaItem } from "@/searchAndSort/interfaces";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import React, { ReactElement } from "react";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { theme } from "@/theme";
 import SVG from "react-inlinesvg";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 type MetadataNameMap = { [index: string]: string };
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       backgroundColor: theme.palette.primary.main,
       paddingLeft: "18px",
       width: "334px",
       height: "44px",
+      paddingTop: "5px",
     },
     typography: {
       display: "inline",
-      marginRight: "60px",
+      marginRight: "147px",
       marginLeftt: "10px",
+      fontWeight: 500,
     },
     mainbox: {
       display: "flex",
@@ -45,25 +48,30 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "30px",
     },
     closeAvatar: {
-      backgroundColor: "fff",
-      color: "#2B2F3A",
+      display: "inline-flex",
       width: "30px",
       height: "30px",
-      display: "inline",
     },
     avatarFontSize: {
       fontSize: "11px",
       fontWeight: 600,
     },
+    card: {
+      backgroundColor: theme.palette.primary.light,
+    },
+    metadata: {
+      fontWeight: 500,
+    },
+    svgSmall: { width: "12px", height: "100%" },
   })
 );
 
 const HtmlTooltip = withStyles((t: Theme) => ({
   tooltip: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.palette.primary.light,
     fontSize: t.typography.pxToRem(12),
     border: "1px solid #dadde9",
-    color: "#2B2F3A",
+    color: theme.palette.text.primary,
   },
 }))(Tooltip);
 
@@ -84,10 +92,11 @@ interface Props {
 
 export default function MetadataDrawer(props: Props): ReactElement {
   const classes = useStyles();
+  const [hover, sethover] = useState(false);
 
   return (
     <>
-      <Card>
+      <Card className={classes.card}>
         <Paper elevation={0} variant="outlined" className={classes.paper}>
           <Typography className={classes.typography}>Metadata</Typography>
           <HtmlTooltip
@@ -106,9 +115,26 @@ export default function MetadataDrawer(props: Props): ReactElement {
             }
             placement="right"
           >
-            <Avatar className={classes.closeAvatar}>
+            <Avatar
+              variant="circular"
+              className={classes.closeAvatar}
+              onMouseOut={() => {
+                sethover(false);
+              }}
+              onMouseOver={() => {
+                sethover(true);
+              }}
+            >
               <IconButton onClick={props.handleDrawerClose}>
-                <ChevronRightIcon />
+                <SVG
+                  src={require("./assets/close.svg") as string}
+                  className={classes.svgSmall}
+                  fill={
+                    hover
+                      ? theme.palette.primary.main
+                      : theme.palette.text.primary
+                  }
+                />
               </IconButton>
             </Avatar>
           </HtmlTooltip>
@@ -119,9 +145,16 @@ export default function MetadataDrawer(props: Props): ReactElement {
               .filter((key) => Object.keys(metadataNameMap).includes(key))
               .map((key) => (
                 <ListItem key={key}>
-                  <ListItemText>{`${metadataNameMap[key]}: ${props.metadata[
-                    key
-                  ].toString()}`}</ListItemText>
+                  <ListItemText>
+                    <Typography
+                      className={classes.metadata}
+                    >{`${metadataNameMap[key]}:`}</Typography>
+                  </ListItemText>
+                  <ListItemText>
+                    {key === "imageLabels"
+                      ? (props.metadata[key] as string[]).join(", ")
+                      : props.metadata[key].toString()}
+                  </ListItemText>
                 </ListItem>
               ))}
           </List>

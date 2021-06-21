@@ -135,7 +135,7 @@ const theme: Theme = createMuiTheme({
       circular: {
         backgroundColor: "transparent",
         "&:hover": {
-          backgroundColor: "#02FFAD",
+          backgroundColor: "#fff",
         },
       },
     },
