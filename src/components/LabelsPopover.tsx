@@ -1,5 +1,14 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
 import React, { useState, ReactElement } from "react";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { theme } from "@/theme";
+
+import {
+  makeStyles,
+  createStyles,
+  Theme,
+  withStyles,
+} from "@material-ui/core/styles";
 import {
   InputBase,
   IconButton,
@@ -7,50 +16,72 @@ import {
   Chip,
   Popover,
   Card,
-  Grid,
   CardHeader,
   CardContent,
+  Divider,
+  Avatar,
+  Typography,
 } from "@material-ui/core";
 import { Label, Close, Add } from "@material-ui/icons";
+import SVG from "react-inlinesvg";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     cross: {
       position: "absolute",
-      top: theme.spacing(1),
       right: theme.spacing(1),
-      color: "#ffffff",
+      color: theme.palette.text.primary,
+    },
+    cardContent: {
+      padding: "0px",
     },
     labelsCard: {
-      borderRadius: 5,
+      borderRadius: "9px",
+      backgroundColor: theme.palette.primary.light,
+      width: "271px",
     },
     labelsCardHeader: {
-      backgroundColor: theme.palette.primary.dark,
-      color: "#ffffff",
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.text.primary,
+      height: "44px",
     },
-    labelsGrid: {
-      width: 300,
-      height: "auto",
+    cardHeaderTypography: {
+      fontSize: "21px",
     },
+
     labelsChip: {
-      margin: 5,
+      margin: "5px",
+      marginLeft: "10px",
+      borderRadius: "9px",
+      color: theme.palette.text.secondary,
     },
     inputGrid: {
       width: "100%",
     },
     input: {
-      borderBottom: "1px solid rgba(0, 0, 0, 0.26)",
       fontSize: 14,
-      width: "250px",
+      marginRight: "65px",
+      marginLeft: "12px",
+      marginBottom: "13px",
     },
     addLabelButton: {
-      color: "#ffffff",
+      color: theme.palette.primary.light,
       position: "absolute",
       bottom: theme.spacing(1),
       left: theme.spacing(1),
     },
+    svgSmall: { width: "10px", height: "100%" },
   })
 );
+
+const HtmlTooltip = withStyles((t: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.primary.light,
+    fontSize: t.typography.pxToRem(12),
+    border: "1px solid #dadde9",
+    color: theme.palette.text.primary,
+  },
+}))(Tooltip);
 
 interface Props {
   id: string;
@@ -60,8 +91,8 @@ interface Props {
 }
 
 export function LabelsPopover(props: Props): ReactElement {
-  const styles = useStyles();
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const classes = useStyles();
+  const [anchorElement, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [newLabel, setNewLabel] = useState("");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -91,20 +122,21 @@ export function LabelsPopover(props: Props): ReactElement {
 
   return (
     <>
-      <Tooltip title="Update image labels" aria-label="label-image">
+      <HtmlTooltip title="Update image labels" placement="top-start">
         <IconButton
           aria-describedby={props.id}
           onClick={handleClick}
-          className={styles.addLabelButton}
+          className={classes.addLabelButton}
         >
           <Label />
         </IconButton>
-      </Tooltip>
+      </HtmlTooltip>
+
       <Popover
         key={`popover-${props.id}`}
         id={props.id}
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
+        open={Boolean(anchorElement)}
+        anchorEl={anchorElement}
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
@@ -115,52 +147,62 @@ export function LabelsPopover(props: Props): ReactElement {
           horizontal: "left",
         }}
       >
-        <Card className={styles.labelsCard}>
+        <Card className={classes.labelsCard}>
           <IconButton
             key={`button-close-${props.id}`}
-            className={styles.cross}
+            className={classes.cross}
             onClick={handleClose}
             edge="end"
           >
             <Close />
           </IconButton>
           <CardHeader
-            className={styles.labelsCardHeader}
-            title={props.imageName}
+            className={classes.labelsCardHeader}
+            title={
+              <Typography className={classes.cardHeaderTypography}>
+                {props.imageName}
+              </Typography>
+            }
           />
-          <CardContent>
-            <Grid container className={styles.labelsGrid}>
-              <Grid item className={styles.inputGrid}>
-                <InputBase
-                  key={`input-${props.id}`}
-                  placeholder="New label"
-                  value={newLabel}
-                  onChange={handleNewLabelChange}
-                  inputProps={{
-                    className: styles.input,
-                  }}
-                />
-                <IconButton
-                  key={`button-add-${props.id}`}
-                  type="submit"
-                  onClick={handleAddLabel(newLabel)}
-                >
-                  <Add />
-                </IconButton>
-              </Grid>
-              <Grid item>
-                {props.labels.map((label) => (
-                  <Chip
-                    key={`chip-add-${label}`}
-                    className={styles.labelsChip}
-                    label={label}
-                    onDelete={handleDeleteLabel(label)}
-                    deleteIcon={<Close />}
-                    variant="outlined"
-                  />
-                ))}
-              </Grid>
-            </Grid>
+          <CardContent className={classes.cardContent}>
+            <InputBase
+              key={`input-${props.id}`}
+              placeholder="New label"
+              value={newLabel}
+              onChange={handleNewLabelChange}
+              inputProps={{
+                className: classes.input,
+              }}
+            />
+            <IconButton
+              key={`button-add-${props.id}`}
+              type="submit"
+              onClick={handleAddLabel(newLabel)}
+            >
+              <Add />
+            </IconButton>
+            <Divider />
+            {props.labels.map((label) => (
+              <Chip
+                key={`chip-add-${label}`}
+                avatar={
+                  <Avatar
+                    variant="circular"
+                    style={{ cursor: "pointer" }}
+                    onClick={handleDeleteLabel(label)}
+                  >
+                    <SVG
+                      src={require("../assets/close.svg") as string}
+                      className={classes.svgSmall}
+                      fill={theme.palette.text.secondary}
+                    />
+                  </Avatar>
+                }
+                className={classes.labelsChip}
+                label={label}
+                variant="outlined"
+              />
+            ))}
           </CardContent>
         </Card>
       </Popover>
