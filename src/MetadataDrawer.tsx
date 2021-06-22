@@ -87,7 +87,7 @@ export const metadataNameMap: MetadataNameMap = {
 
 interface Props {
   metadata: MetaItem;
-  handleDrawerClose: () => void;
+  handleMetadataHide: () => void;
 }
 
 export default function MetadataDrawer(props: Props): ReactElement {
@@ -125,7 +125,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                 sethover(true);
               }}
             >
-              <IconButton onClick={props.handleDrawerClose}>
+              <IconButton onClick={props.handleMetadataHide}>
                 <SVG
                   src={require("./assets/close.svg") as string}
                   className={classes.svgSmall}
