@@ -90,7 +90,7 @@ interface Props {
   handleMetadataHide: () => void;
 }
 
-export default function MetadataDrawer(props: Props): ReactElement {
+export default function MetadataCard(props: Props): ReactElement {
   const classes = useStyles();
   const [hover, sethover] = useState(false);
 

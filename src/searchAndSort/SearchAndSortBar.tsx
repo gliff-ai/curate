@@ -15,7 +15,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
 import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem, Filter } from "./interfaces";
-import { metadataNameMap } from "../MetadataDrawer";
+import { metadataNameMap } from "../MetadataCard";
 
 const useStyles = makeStyles(() =>
   createStyles({
