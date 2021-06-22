@@ -120,7 +120,6 @@ interface State {
   expanded: string | boolean;
   openImageUid: string; // Uid for the image whose metadata is shown in the drawer
   selectedImagesUid: string[]; // Uids for selected images
-  isLeftDrawerOpen: boolean;
   thumbnailWidth: number;
   thumbnailHeight: number;
   selectMultipleImagesMode: boolean;
@@ -144,7 +143,6 @@ class UserInterface extends Component<Props, State> {
       openImageUid: null,
       selectedImagesUid: [],
       activeFilters: [],
-      isLeftDrawerOpen: true,
       thumbnailWidth: 128,
       thumbnailHeight: 128,
       selectMultipleImagesMode: false,
@@ -174,18 +172,12 @@ class UserInterface extends Component<Props, State> {
     return metadata;
   };
 
-  handleMetaDrawerClose = (): void => {
+  handleMetadataHide = (): void => {
     this.setState({ openImageUid: null });
   };
 
-  handleMetaDrawerOpen = (imageUid: string) => (): void => {
+  handleMetadataShow = (imageUid: string): void => {
     this.setState({ openImageUid: imageUid });
-  };
-
-  toggleLeftDrawer = () => {
-    this.setState((prevState) => ({
-      isLeftDrawerOpen: !prevState.isLeftDrawerOpen,
-    }));
   };
 
   handleToolboxChange =
@@ -569,6 +561,7 @@ class UserInterface extends Component<Props, State> {
                           this.setState((prevState) => ({
                             selectMultipleImagesMode:
                               !prevState.selectMultipleImagesMode,
+                            openImageUid: null,
                           }));
                         }}
                       >
@@ -609,6 +602,7 @@ class UserInterface extends Component<Props, State> {
                   </Card>
                 )}
 
+                {/* TO DO: Sort button */}
                 {/* <SortDropdown
                   metadataKeys={metadataKeys}
                   inputKey={inputKey?.key || ""}
@@ -645,16 +639,17 @@ class UserInterface extends Component<Props, State> {
                     zIndex: 100,
                   }}
                 >
-                  {this.state.openImageUid !== null && (
-                    <MetadataDrawer
-                      metadata={
-                        this.state.metadata.filter(
-                          (mitem) => mitem.id === this.state.openImageUid
-                        )[0]
-                      }
-                      handleDrawerClose={this.handleMetaDrawerClose}
-                    />
-                  )}
+                  {this.state.openImageUid !== null &&
+                    !this.state.selectMultipleImagesMode && (
+                      <MetadataDrawer
+                        metadata={
+                          this.state.metadata.filter(
+                            (mitem) => mitem.id === this.state.openImageUid
+                          )[0]
+                        }
+                        handleMetadataHide={this.handleMetadataHide}
+                      />
+                    )}
                 </div>
               </Grid>
 
@@ -681,6 +676,7 @@ class UserInterface extends Component<Props, State> {
                         <Button
                           onClick={(e: MouseEvent) => {
                             const imageUid = mitem.id as string;
+                            this.handleMetadataShow(imageUid);
 
                             if (e.metaKey || e.ctrlKey) {
                               // Add clicked image to the selection if unselected; remove it if already selected
