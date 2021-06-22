@@ -29,11 +29,12 @@ const useStyles = makeStyles(() =>
   createStyles({
     cross: {
       position: "absolute",
-      right: theme.spacing(1),
+      marginLeft: "223px",
       color: theme.palette.text.primary,
     },
     cardContent: {
-      padding: "0px",
+      paddingBottom: "18px",
+      padding: 0,
     },
     labelsCard: {
       borderRadius: "9px",
@@ -60,7 +61,7 @@ const useStyles = makeStyles(() =>
     },
     input: {
       fontSize: 14,
-      marginRight: "65px",
+      marginRight: "60px",
       marginLeft: "12px",
       marginBottom: "13px",
     },
@@ -152,7 +153,6 @@ export function LabelsPopover(props: Props): ReactElement {
             key={`button-close-${props.id}`}
             className={classes.cross}
             onClick={handleClose}
-            edge="end"
           >
             <Close />
           </IconButton>

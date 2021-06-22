@@ -41,6 +41,15 @@ const theme: Theme = createMuiTheme({
       },
     },
 
+
+    MuiCardContent:{
+      root:{
+        "&:last-child":{
+          paddingBottom: "18px",
+        }
+      }
+    },
+
     MuiAutocomplete: {
       option: {
         '&[data-focus="true"]': {
@@ -133,6 +142,12 @@ const theme: Theme = createMuiTheme({
         display: "contents",
       },
       circular: {
+        backgroundColor: "transparent",
+        "&:hover": {
+          backgroundColor: "#02FFAD",
+        },
+      },
+      circle: {
         backgroundColor: "transparent",
         "&:hover": {
           backgroundColor: "#fff",
