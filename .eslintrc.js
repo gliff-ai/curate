@@ -38,6 +38,7 @@ module.exports = {
               "`with` is disallowed in strict mode because it makes code impossible to predict and optimize.",
           },
         ],
+        "react/static-property-placement": [2, "static public field"],
       },
     },
     {
