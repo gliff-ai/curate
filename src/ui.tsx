@@ -42,7 +42,7 @@ import { LabelsPopover } from "./components/LabelsPopover";
 const styles = () => ({
   root: {
     flexGrow: 1,
-    marginTop: "108px",
+    marginTop: "108px", // We shouldn't need this even if there is an app bar!
   },
 
   appBar: {
@@ -52,6 +52,10 @@ const styles = () => ({
     paddingTop: "9px",
   },
 
+  uploadButton: {
+    bottom: "18px",
+    right: "18px",
+  },
   imagesContainer: {
     display: "flex",
     width: "100%",
@@ -102,6 +106,7 @@ interface Props extends WithStyles<typeof styles> {
     imageFileInfo: ImageFileInfo,
     image: ImageBitmap[][]
   ) => void;
+  showAppBar: boolean;
 }
 
 interface State {
@@ -118,6 +123,10 @@ interface State {
   selectMultipleImagesMode: boolean;
 }
 class UserInterface extends Component<Props, State> {
+  static defaultProps = {
+    showAppBar: true,
+  } as Pick<Props, "showAppBar">;
+
   constructor(props: Props) {
     super(props);
 
@@ -435,43 +444,52 @@ class UserInterface extends Component<Props, State> {
     };
 
   render = (): ReactNode => {
-    const { classes } = this.props;
+    const { classes, showAppBar } = this.props;
+
+    const upload = (
+      <UploadImage
+        setUploadedImage={this.addUploadedImage}
+        spanElement={
+          <Button aria-label="upload-picture" component="span">
+            <img
+              src={require(`./assets/upload-icon.svg`) as string}
+              alt="Upload Icon"
+            />
+          </Button>
+        }
+        multiple={false}
+      />
+    );
+
+    const appBar = !showAppBar ? (
+      <div className={classes.uploadButton} style={{ position: "fixed" }}>
+        {upload}
+      </div>
+    ) : (
+      <AppBar position="fixed" className={classes.appBar} elevation={0}>
+        <Toolbar>
+          <Grid container direction="row">
+            <Grid item className={classes.logo}>
+              <img
+                src={require(`./assets/gliff-master-black.svg`) as string}
+                width="79px"
+                height="60px"
+                alt="gliff logo"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid item>{upload}</Grid>
+        </Toolbar>
+      </AppBar>
+    );
+
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Container maxWidth={false}>
-          <AppBar position="fixed" className={classes.appBar} elevation={0}>
-            <Toolbar>
-              <Grid container direction="row">
-                <Grid item className={classes.logo}>
-                  <img
-                    src={require(`./assets/gliff-master-black.svg`) as string}
-                    width="79px"
-                    height="60px"
-                    alt="gliff logo"
-                  />
-                </Grid>
-              </Grid>
-
-              <Grid item>
-                <UploadImage
-                  setUploadedImage={this.addUploadedImage}
-                  spanElement={
-                    /* eslint-disable react/jsx-wrap-multilines */
-                    <Button aria-label="upload-picture" component="span">
-                      <img
-                        src={require(`./assets/upload-icon.svg`) as string}
-                        alt="Upload Icon"
-                      />
-                    </Button>
-                  }
-                  multiple={false}
-                />
-              </Grid>
-            </Toolbar>
-          </AppBar>
-
-          <div className={classes.root}>
+          {appBar}
+          <div className={showAppBar ? "" : classes.root}>
             <Grid container spacing={3}>
               <Grid item xs={2}>
                 <div style={{ display: "flex" }}>
