@@ -32,7 +32,7 @@ const useStyles = makeStyles(() =>
     },
     typography: {
       display: "inline",
-      marginRight: "120px",
+      marginRight: "135px",
       marginLeftt: "10px",
       fontWeight: 500,
     },
