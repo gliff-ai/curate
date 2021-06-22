@@ -489,7 +489,7 @@ class UserInterface extends Component<Props, State> {
         <CssBaseline />
         <Container maxWidth={false}>
           {appBar}
-          <div className={showAppBar ? "" : classes.root}>
+          <div className={showAppBar ? classes.root : ""}>
             <Grid container spacing={3}>
               <Grid item xs={2}>
                 <div style={{ display: "flex" }}>
