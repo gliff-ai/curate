@@ -53,7 +53,6 @@ const useStyles = makeStyles(() =>
       color: theme.palette.text.secondary,
       fontStyle: "italic",
       fontSize: "12px",
-      marginLeft: "20px",
     },
     paper: {
       borderRadius: "inherit",

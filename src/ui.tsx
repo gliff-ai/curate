@@ -72,14 +72,15 @@ const styles = () => ({
     paddingTop: "1px",
     marginLeft: "10px",
     width: "80px",
+    paddingRight: "8px",
   },
   selectMultipleImageCard: {
     height: "48px",
     backgroundColor: theme.palette.primary.light,
     paddingTop: "1px",
-    paddingLeft: "3px",
     marginLeft: "10px",
     width: "80px",
+    paddingRight: "9px",
   },
   deleteImageCard: {
     backgroundColor: theme.palette.primary.light,
@@ -97,7 +98,7 @@ const styles = () => ({
     marginRight: "-10px",
   },
 
-  svgSmall: { width: "22px", height: "100%" },
+  svgSmall: { width: "22px", height: "100%", marginLeft: "-4px" },
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -633,10 +634,7 @@ class UserInterface extends Component<Props, State> {
 
                 <div
                   style={{
-                    left: "18px",
-                    top: "80px",
                     marginTop: "30px",
-                    zIndex: 100,
                   }}
                 >
                   {this.state.openImageUid !== null &&

@@ -32,7 +32,7 @@ const useStyles = makeStyles(() =>
     },
     typography: {
       display: "inline",
-      marginRight: "147px",
+      marginRight: "120px",
       marginLeftt: "10px",
       fontWeight: 500,
     },
@@ -116,7 +116,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
             placement="right"
           >
             <Avatar
-              variant="circular"
+              variant="circle"
               className={classes.closeAvatar}
               onMouseOut={() => {
                 sethover(false);
