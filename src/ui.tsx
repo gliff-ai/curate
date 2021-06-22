@@ -107,6 +107,9 @@ interface Props extends WithStyles<typeof styles> {
     image: ImageBitmap[][]
   ) => void;
   showAppBar: boolean;
+  saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
+  deleteImagesCallback?: (imageUids: string[]) => void;
+  annotateCallback?: (id: string) => void;
 }
 
 interface State {
@@ -122,6 +125,7 @@ interface State {
   thumbnailHeight: number;
   selectMultipleImagesMode: boolean;
 }
+
 class UserInterface extends Component<Props, State> {
   static defaultProps = {
     showAppBar: true,
@@ -132,7 +136,7 @@ class UserInterface extends Component<Props, State> {
 
     this.state = {
       metadata: this.addFieldSelectedToMetadata(this.props.metadata),
-      metadataKeys: this.props.metadata
+      metadataKeys: this.props.metadata?.length
         ? this.getMetadataKeys(this.props.metadata[0])
         : [],
       imageLabels: this.getImageLabels(this.props.metadata),
@@ -146,6 +150,19 @@ class UserInterface extends Component<Props, State> {
       selectMultipleImagesMode: false,
     };
   }
+
+  /* eslint-disable react/no-did-update-set-state */
+  // TODO: remove state.metadata, just use props.metadata
+  componentDidUpdate = (prevProps: Props) => {
+    if (
+      JSON.stringify(this.props.metadata) !== JSON.stringify(prevProps.metadata)
+    ) {
+      this.setState({
+        metadata: this.addFieldSelectedToMetadata(this.props.metadata),
+      });
+    }
+  };
+  /* eslint-enable react/no-did-update-set-state */
 
   addFieldSelectedToMetadata = (metadata: Metadata): Metadata => {
     // Add field "selected" to metdata; this field is used to define which
@@ -357,10 +374,36 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName as string);
 
+  makeThumbnail = (image: Array<Array<ImageBitmap>>): string => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const imageWidth = image[0][0].width;
+    const imageHeight = image[0][0].height;
+    const ratio = Math.min(
+      canvas.width / imageWidth,
+      canvas.height / imageHeight
+    );
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(
+      image[0][0],
+      0,
+      0,
+      imageWidth,
+      imageHeight,
+      (canvas.width - imageWidth * ratio) / 2,
+      (canvas.height - imageHeight * ratio) / 2,
+      imageWidth * ratio,
+      imageHeight * ratio
+    );
+    return canvas.toDataURL();
+  };
+
   addUploadedImage = (
     imageFileInfo: ImageFileInfo,
     images: ImageBitmap[][]
   ) => {
+    const thumbnail = this.makeThumbnail(images);
     const today = new Date();
     const newMetadata = {
       imageName: imageFileInfo.fileName,
@@ -371,23 +414,25 @@ class UserInterface extends Component<Props, State> {
       numberOfDimensions: images.length === 1 ? "2" : "3",
       numberOfChannels: images[0].length.toString(),
       imageLabels: [] as Array<string>,
-      thumbnail: images[0][0],
+      thumbnail,
       selected: true,
     };
-    this.setState((state) => {
-      const metaKeys =
-        state.metadataKeys.length === 0
-          ? this.getMetadataKeys(newMetadata)
-          : state.metadataKeys;
-      return {
-        metadata: state.metadata.concat(newMetadata),
-        metadataKeys: metaKeys,
-      };
-    });
 
-    // Store uploaded image in etebase
     if (this.props.saveImageCallback) {
+      // Store uploaded image in etebase
       this.props.saveImageCallback(imageFileInfo, images);
+    } else {
+      // add the uploaded image directly to state.metadata
+      this.setState((state) => {
+        const metaKeys =
+          state.metadataKeys.length === 0
+            ? this.getMetadataKeys(newMetadata)
+            : state.metadataKeys;
+        return {
+          metadata: state.metadata.concat(newMetadata),
+          metadataKeys: metaKeys,
+        };
+      });
     }
   };
 
@@ -397,14 +442,15 @@ class UserInterface extends Component<Props, State> {
       const metadata: Metadata = state.metadata.filter(
         (mitem) => !state.selectedImagesUid.includes(mitem.id as string)
       );
+      if (this.props.deleteImagesCallback) {
+        this.props.deleteImagesCallback(state.selectedImagesUid);
+      }
       return {
         selectedImagesUid: [],
         metadata,
         imageLabels: this.getImageLabels(metadata),
       };
     });
-
-    // TODO: add dominated callback deleting images from store.
   };
 
   getItemUidNextToLastSelected = (forward = true): number | null => {
@@ -436,6 +482,12 @@ class UserInterface extends Component<Props, State> {
     (newLabels: string[]): void => {
       this.setState((state) => {
         state.metadata[itemIndex].imageLabels = newLabels;
+        if (this.props.saveLabelsCallback) {
+          this.props.saveLabelsCallback(
+            state.metadata[itemIndex].id as string,
+            newLabels
+          );
+        }
         return {
           metadata: state.metadata,
           imageLabels: this.getImageLabels(state.metadata),
@@ -679,9 +731,9 @@ class UserInterface extends Component<Props, State> {
                               this.setState({ selectedImagesUid: [imageUid] });
                             }
                           }}
-                          onDoubleClick={this.handleMetaDrawerOpen(
-                            mitem.id as string
-                          )}
+                          onDoubleClick={() => {
+                            this.props.annotateCallback(mitem.id as string);
+                          }}
                           onKeyDown={(e: KeyboardEvent) => {
                             if (
                               e.shiftKey &&
