@@ -24,7 +24,7 @@ const useStyles = makeStyles(() =>
     },
     labelsList: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
     labelsListItem: {
-      paddingLeft: theme.spacing(2),
+      paddingLeft: "12px",
       width: "auto",
       display: "flex",
     },

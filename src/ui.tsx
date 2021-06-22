@@ -13,7 +13,6 @@ import {
   CssBaseline,
   Toolbar,
   Grid,
-  Typography,
   withStyles,
   WithStyles,
   List,
@@ -33,7 +32,6 @@ import MetadataDrawer from "./MetadataDrawer";
 import SizeThumbnails from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
-import { SortDropdown } from "./searchAndSort/SortDropdown";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
@@ -46,8 +44,7 @@ const styles = () => ({
   },
 
   appBar: {
-    zIndex: theme.zIndex.drawer + 1, // make sure the appbar renders over the metadata drawer, not the other way round
-    backgroundColor: "#fafafa",
+    backgroundColor: theme.palette.secondary.light,
     height: "90px",
     paddingTop: "9px",
   },
@@ -535,53 +532,56 @@ class UserInterface extends Component<Props, State> {
         <Container maxWidth={false}>
           {appBar}
           <div className={showAppBar ? classes.root : ""}>
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               <Grid item xs={2}>
-                <div style={{ display: "flex" }}>
-                  <SizeThumbnails
-                    largeThumbnails={this.handleLargeThumbnailSize}
-                    mediumThumbnails={this.handleMediumThumbnailSize}
-                    smallThumbnails={this.handleSmallThumbnailSize}
-                  />
+                {this.state.openImageUid == null && (
+                  <div style={{ display: "flex" }}>
+                    <SizeThumbnails
+                      largeThumbnails={this.handleLargeThumbnailSize}
+                      mediumThumbnails={this.handleMediumThumbnailSize}
+                      smallThumbnails={this.handleSmallThumbnailSize}
+                    />
 
-                  <Card className={classes.searchFilterCard}>
-                    <Avatar variant="rounded">
-                      <IconButton>
-                        <SVG
-                          src={require(`./assets/search-filter.svg`) as string}
-                          className={classes.svgSmall}
-                        />
-                      </IconButton>
-                    </Avatar>
-                  </Card>
+                    <Card className={classes.searchFilterCard}>
+                      <Avatar variant="rounded">
+                        <IconButton>
+                          <SVG
+                            src={
+                              require(`./assets/search-filter.svg`) as string
+                            }
+                            className={classes.svgSmall}
+                          />
+                        </IconButton>
+                      </Avatar>
+                    </Card>
 
-                  <Card className={classes.selectMultipleImageCard}>
-                    <Avatar variant="rounded">
-                      <IconButton
-                        onClick={() => {
-                          this.setState((prevState) => ({
-                            selectMultipleImagesMode:
-                              !prevState.selectMultipleImagesMode,
-                            openImageUid: null,
-                          }));
-                        }}
-                      >
-                        <SVG
-                          src={
-                            require(`./assets/multiple-image-selection.svg`) as string
-                          }
-                          className={classes.svgSmall}
-                          fill={
-                            this.state.selectMultipleImagesMode
-                              ? theme.palette.primary.main
-                              : null
-                          }
-                        />
-                      </IconButton>
-                    </Avatar>
-                  </Card>
-                </div>
-
+                    <Card className={classes.selectMultipleImageCard}>
+                      <Avatar variant="rounded">
+                        <IconButton
+                          onClick={() => {
+                            this.setState((prevState) => ({
+                              selectMultipleImagesMode:
+                                !prevState.selectMultipleImagesMode,
+                              openImageUid: null,
+                            }));
+                          }}
+                        >
+                          <SVG
+                            src={
+                              require(`./assets/multiple-image-selection.svg`) as string
+                            }
+                            className={classes.svgSmall}
+                            fill={
+                              this.state.selectMultipleImagesMode
+                                ? theme.palette.primary.main
+                                : null
+                            }
+                          />
+                        </IconButton>
+                      </Avatar>
+                    </Card>
+                  </div>
+                )}
                 {this.state.selectMultipleImagesMode && (
                   <Card className={classes.deleteImageCard}>
                     <List component="span" className={classes.deleteImageList}>
@@ -602,41 +602,37 @@ class UserInterface extends Component<Props, State> {
                     </List>
                   </Card>
                 )}
-
                 {/* TO DO: Sort button */}
                 {/* <SortDropdown
                   metadataKeys={metadataKeys}
                   inputKey={inputKey?.key || ""}
                   callback={callbackSort}
                 /> */}
+                {this.state.openImageUid == null && (
+                  <>
+                    <SearchAndSortBar
+                      metadata={this.state.metadata}
+                      metadataKeys={this.state.metadataKeys}
+                      callbackSearch={this.handleOnSearchSubmit}
+                      callbackSort={this.handleOnSortSubmit}
+                    />
+                    <SearchFilterCard
+                      activeFilters={this.state.activeFilters}
+                      callback={this.handleOnActiveFiltersChange}
+                    />
+                    <LabelsFilterAccordion
+                      expanded={this.state.expanded === "labels-filter-toolbox"}
+                      handleToolboxChange={this.handleToolboxChange(
+                        "labels-filter-toolbox"
+                      )}
+                      allLabels={this.state.imageLabels}
+                      callbackOnLabelSelection={this.handleOnLabelSelection}
+                      callbackOnAccordionExpanded={this.resetSearchFilters}
+                    />{" "}
+                  </>
+                )}
 
-                <SearchAndSortBar
-                  metadata={this.state.metadata}
-                  metadataKeys={this.state.metadataKeys}
-                  callbackSearch={this.handleOnSearchSubmit}
-                  callbackSort={this.handleOnSortSubmit}
-                />
-
-                <SearchFilterCard
-                  activeFilters={this.state.activeFilters}
-                  callback={this.handleOnActiveFiltersChange}
-                />
-
-                <LabelsFilterAccordion
-                  expanded={this.state.expanded === "labels-filter-toolbox"}
-                  handleToolboxChange={this.handleToolboxChange(
-                    "labels-filter-toolbox"
-                  )}
-                  allLabels={this.state.imageLabels}
-                  callbackOnLabelSelection={this.handleOnLabelSelection}
-                  callbackOnAccordionExpanded={this.resetSearchFilters}
-                />
-
-                <div
-                  style={{
-                    marginTop: "30px",
-                  }}
-                >
+                <div>
                   {this.state.openImageUid !== null &&
                     !this.state.selectMultipleImagesMode && (
                       <MetadataDrawer
