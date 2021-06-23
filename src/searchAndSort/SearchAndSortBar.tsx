@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
-import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
 
@@ -73,7 +72,6 @@ export default function SearchAndSortBar({
   metadata,
   metadataKeys,
   callbackSearch,
-  callbackSort,
 }: Props): ReactElement {
   const classes = useStyles();
   const [inputKey, setInputKey] = useState<MetadataLabel>();
