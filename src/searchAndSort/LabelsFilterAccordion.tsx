@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 import React, { ChangeEvent, useEffect, useState, ReactElement } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
@@ -39,7 +37,7 @@ const useStyles = makeStyles(() =>
       display: "flex",
       flexDirection: "row",
       flexWrap: "nowrap",
-      marginBottom: "-28px",
+      marginBottom: "-18px",
     },
     buttonsListItem: {
       padding: theme.spacing(1),

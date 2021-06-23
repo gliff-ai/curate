@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 import React, { ReactElement, useState } from "react";
 import {
   ListItem,
@@ -43,7 +41,7 @@ const useStyles = makeStyles(() =>
     },
     popoverAvatar: {
       backgroundColor: theme.palette.primary.main,
-      color: "#2B2F3A",
+      color: theme.palette.text.primary,
       width: "30px",
       height: "30px",
     },

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 /* eslint-disable no-param-reassign */
 import React, {
   Component,
@@ -39,7 +37,6 @@ import { LabelsPopover } from "./components/LabelsPopover";
 
 const styles = () => ({
   root: {
-    flexGrow: 1,
     marginTop: "108px", // We shouldn't need this even if there is an app bar!
   },
 
@@ -95,7 +92,40 @@ const styles = () => ({
     marginRight: "-10px",
   },
 
-  svgSmall: { width: "22px", height: "100%", marginLeft: "-4px" },
+  upload: {
+    height: "53px",
+    backgroundColor: theme.palette.primary.light,
+    paddingTop: "1px",
+    marginLeft: "10px",
+    width: "61px",
+    paddingRight: "9px",
+    bottom: "18px",
+    left: "95px",
+  },
+
+  collectionViewer: {
+    height: "53px",
+    backgroundColor: theme.palette.primary.light,
+    paddingTop: "1px",
+    marginLeft: "10px",
+    width: "61px",
+    paddingRight: "9px",
+    bottom: "18px",
+    left: "15px",
+  },
+
+  image: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "9px",
+    width: "24px",
+  },
+
+  svgSmall: {
+    width: "22px",
+    height: "100%",
+    marginLeft: "-1px",
+  },
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -488,26 +518,7 @@ class UserInterface extends Component<Props, State> {
   render = (): ReactNode => {
     const { classes, showAppBar } = this.props;
 
-    const upload = (
-      <UploadImage
-        setUploadedImage={this.addUploadedImage}
-        spanElement={
-          <Button aria-label="upload-picture" component="span">
-            <img
-              src={require(`./assets/upload-icon.svg`) as string}
-              alt="Upload Icon"
-            />
-          </Button>
-        }
-        multiple={false}
-      />
-    );
-
-    const appBar = !showAppBar ? (
-      <div className={classes.uploadButton} style={{ position: "fixed" }}>
-        {upload}
-      </div>
-    ) : (
+    const appBar = !showAppBar ? null : (
       <AppBar position="fixed" className={classes.appBar} elevation={0}>
         <Toolbar>
           <Grid container direction="row">
@@ -520,8 +531,6 @@ class UserInterface extends Component<Props, State> {
               />
             </Grid>
           </Grid>
-
-          <Grid item>{upload}</Grid>
         </Toolbar>
       </AppBar>
     );
@@ -602,6 +611,34 @@ class UserInterface extends Component<Props, State> {
                     </List>
                   </Card>
                 )}
+
+                <Card
+                  className={classes.collectionViewer}
+                  style={{ position: "fixed" }}
+                >
+                  <Button aria-label="collection viewer" component="span">
+                    <img
+                      src={require(`./assets/collections-viewer.svg`) as string}
+                      alt="Collection Viewer Icon"
+                      className={classes.image}
+                    />
+                  </Button>
+                </Card>
+                <Card className={classes.upload} style={{ position: "fixed" }}>
+                  <UploadImage
+                    setUploadedImage={this.addUploadedImage}
+                    spanElement={
+                      <Button aria-label="upload-picture" component="span">
+                        <img
+                          src={require(`./assets/upload-icon.svg`) as string}
+                          alt="Upload Icon"
+                          className={classes.image}
+                        />
+                      </Button>
+                    }
+                    multiple={false}
+                  />
+                </Card>
                 {/* TO DO: Sort button */}
                 {/* <SortDropdown
                   metadataKeys={metadataKeys}

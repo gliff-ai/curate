@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { ReactElement, useState, useEffect } from "react";
 import { theme } from "@/theme";
 
@@ -68,11 +66,7 @@ export default function SizeThumbnails(props: Props): ReactElement {
       <Card className={classes.card}>
         {thumbnailSizes.map((thumbnailSize: ThumbnailSizes) => (
           <Avatar variant="rounded" key={thumbnailSize.name}>
-            <IconButton
-              onClick={(event: React.MouseEvent) =>
-                setButtonClicked(thumbnailSize.name)
-              }
-            >
+            <IconButton onClick={() => setButtonClicked(thumbnailSize.name)}>
               <SVG
                 src={thumbnailSize.icon}
                 className={classes.svgSmall}

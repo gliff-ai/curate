@@ -5,11 +5,11 @@ const theme: Theme = createMuiTheme({
   palette: {
     primary: {
       main: "#02FFAD",
-      light: "#FFFFFF"
+      light: "#FFFFFF",
     },
     secondary: {
       main: "#AE79FF",
-      light: "#fafafa"
+      light: "#fafafa",
     },
     text: {
       primary: "#2B2F3A",
@@ -42,13 +42,12 @@ const theme: Theme = createMuiTheme({
       },
     },
 
-
-    MuiCardContent:{
-      root:{
-        "&:last-child":{
+    MuiCardContent: {
+      root: {
+        "&:last-child": {
           paddingBottom: "18px",
-        }
-      }
+        },
+      },
     },
 
     MuiAutocomplete: {
