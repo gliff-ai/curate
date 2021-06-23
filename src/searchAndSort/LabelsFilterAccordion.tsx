@@ -39,7 +39,7 @@ const useStyles = makeStyles(() =>
       display: "flex",
       flexDirection: "row",
       flexWrap: "nowrap",
-      marginBottom: "-28px",
+      marginBottom: "-20px",
     },
     buttonsListItem: {
       padding: theme.spacing(1),
