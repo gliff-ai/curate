@@ -24,6 +24,7 @@ import {
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { Backup, Menu, Delete } from "@material-ui/icons";
 import { LabelsPopover } from "@/components/LabelsPopover";
+import { SortPopover } from "@/sort/SortPopover";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
@@ -430,6 +431,10 @@ class UserInterface extends Component<Props, State> {
               }
               multiple
               setUploadedImage={this.addUploadedImage}
+            />
+            <SortPopover
+              metadataKeys={this.state.metadataKeys}
+              callbackSort={this.handleOnSortSubmit}
             />
             <SearchAndSortBar
               metadata={this.state.metadata}
