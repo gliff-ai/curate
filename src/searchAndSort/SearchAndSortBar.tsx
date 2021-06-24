@@ -4,7 +4,6 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { IconButton, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Search } from "@material-ui/icons";
-import { SortDropdown } from "./SortDropdown";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
 
@@ -38,16 +37,30 @@ interface Props {
   callbackSort: (key: string, sortOrder: string) => void;
 }
 
-type MetadataLabel = {
+export type MetadataLabel = {
   key: string;
   label: string;
+};
+
+export const getLabelsFromKeys = (
+  acc: MetadataLabel[],
+  key: string
+): MetadataLabel[] => {
+  // Just an example of how to exclude metadata from the list if we need
+  if (["fileMetaVersion", "id", "thumbnail"].includes(key)) return acc;
+
+  const label = metadataNameMap[key] || key;
+  acc.push({
+    label,
+    key,
+  });
+  return acc;
 };
 
 export default function SearchAndSortBar({
   metadata,
   metadataKeys,
   callbackSearch,
-  callbackSort,
 }: Props): ReactElement {
   const style = useStyles();
   const [inputKey, setInputKey] = useState<MetadataLabel>();
@@ -55,16 +68,7 @@ export default function SearchAndSortBar({
   const [inputValue, setInputValue] = useState("");
 
   const metadataLabels = metadataKeys.reduce(
-    (acc: Array<MetadataLabel>, key) => {
-      if (["fileMetaVersion", "id", "thumbnail"].includes(key)) return acc; // Just an example of how to exclude metadata from the list if we need
-
-      const label = metadataNameMap[key] || key;
-      acc.push({
-        label,
-        key,
-      });
-      return acc;
-    },
+    getLabelsFromKeys,
     [] as MetadataLabel[]
   );
 
@@ -114,12 +118,6 @@ export default function SearchAndSortBar({
         }}
         options={metadataLabels}
         renderInput={(params: any) => <TextField {...params} label="Key" />}
-      />
-
-      <SortDropdown
-        metadataKeys={metadataKeys}
-        inputKey={inputKey?.key || ""}
-        callback={callbackSort}
       />
 
       <Autocomplete
