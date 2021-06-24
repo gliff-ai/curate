@@ -66,11 +66,7 @@ export default function SearchAndSortBar({
   const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
-
-  const metadataLabels = metadataKeys.reduce(
-    getLabelsFromKeys,
-    [] as MetadataLabel[]
-  );
+  const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
 
   const updateOptions = (): void => {
     if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
@@ -93,6 +89,15 @@ export default function SearchAndSortBar({
     if (inputValue !== "") setInputValue("");
     updateOptions();
   }, [inputKey]);
+
+  useEffect(() => {
+    if (!metadataKeys || metadataKeys.length === 0) return;
+    const labels = metadataKeys.reduce(
+      getLabelsFromKeys,
+      [] as MetadataLabel[]
+    );
+    setMetadataLabels(labels);
+  }, [metadataKeys]);
 
   return (
     <Paper
