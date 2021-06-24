@@ -31,6 +31,7 @@ import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterAccordion from "./searchAndSort/SearchFilterAccordion";
 import LeftDrawer from "./components/LeftDrawer";
 import Tile from "./components/Tile";
+import { SortPopover } from "@/sort/SortPopover";
 
 const styles = (theme: Theme) => ({
   root: {
@@ -429,6 +430,10 @@ class UserInterface extends Component<Props, State> {
               }
               multiple
               setUploadedImage={this.addUploadedImage}
+            />
+            <SortPopover
+              metadataKeys={this.state.metadataKeys}
+              callbackSort={this.handleOnSortSubmit}
             />
             <SearchAndSortBar
               metadata={this.state.metadata}
