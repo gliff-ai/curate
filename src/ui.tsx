@@ -24,6 +24,7 @@ import {
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { Backup, Menu, Delete } from "@material-ui/icons";
 import { LabelsPopover } from "@/components/LabelsPopover";
+import { SortPopover } from "@/sort/SortPopover";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
@@ -31,7 +32,6 @@ import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterAccordion from "./searchAndSort/SearchFilterAccordion";
 import LeftDrawer from "./components/LeftDrawer";
 import Tile from "./components/Tile";
-import { SortPopover } from "@/sort/SortPopover";
 
 const styles = (theme: Theme) => ({
   root: {

@@ -14,14 +14,13 @@ import {
   TextField,
   MenuItem,
   Tooltip,
+  IconButton,
 } from "@material-ui/core";
-import SortIcon from "@material-ui/icons/Sort";
+import { Sort as SortIcon, Close } from "@material-ui/icons";
 import {
   getLabelsFromKeys,
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
-import { IconButton } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -82,7 +81,10 @@ export const SortPopover = ({
 }: Props): ReactElement => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [key, setKey] = useState<MetadataLabel>({ key: "", label: "" });
+  const [inputKey, setInputKey] = useState<MetadataLabel>({
+    key: "",
+    label: "",
+  });
   const [sortOrder, setSortOrder] = useState("");
   const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
 
@@ -106,7 +108,7 @@ export const SortPopover = ({
     const metaLabel = metadataLabels.filter(
       ({ label }) => label === selectedLabel
     );
-    setKey(metaLabel?.[0]);
+    setInputKey(metaLabel?.[0]);
   };
 
   useEffect(() => {
@@ -166,7 +168,7 @@ export const SortPopover = ({
               <TextField
                 id="select-metadata-key"
                 select
-                value={key.label}
+                value={inputKey.label}
                 onChange={handleChange(updateKey)}
                 helperText="Please select a metadata field"
               >
@@ -208,8 +210,9 @@ export const SortPopover = ({
             <Button
               className={classes.sortButton}
               onClick={() => {
-                if (key.key === "" || key.key === "imageLabels") return;
-                callbackSort(key.key, sortOrder);
+                const { key } = inputKey;
+                if (key === "" || key === "imageLabels") return;
+                callbackSort(key, sortOrder);
               }}
             >
               Sort
