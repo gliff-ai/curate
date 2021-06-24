@@ -95,6 +95,7 @@ class UserInterface extends Component<Props, State> {
     ) {
       this.setState({
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
+        imageLabels: this.getImageLabels(this.props.metadata),
       });
     }
   };
@@ -203,7 +204,7 @@ class UserInterface extends Component<Props, State> {
         const intersection = (mitem.imageLabels as string[]).filter((l) =>
           selectedLabels.includes(l)
         );
-        mitem.selected = Boolean(intersection.length);
+        mitem.selected = intersection.length === selectedLabels.length;
       });
       return { metadata: prevState.metadata };
     });

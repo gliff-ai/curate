@@ -106,10 +106,6 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
     }
   }, [props.expanded]);
 
-  useEffect(() => {
-    selectAll();
-  }, [props.allLabels]);
-
   return (
     <Accordion expanded={props.expanded} onChange={props.handleToolboxChange}>
       <AccordionSummary expandIcon={<ExpandMore />} id="labels-filter-toolbox">
