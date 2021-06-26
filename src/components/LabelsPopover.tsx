@@ -121,7 +121,10 @@ export function LabelsPopover(props: Props): ReactElement {
 
   return (
     <>
-      <HtmlTooltip title="Update image labels" placement="top-start">
+      <HtmlTooltip
+        title={<Typography>Update image labels</Typography>}
+        placement="top-start"
+      >
         <IconButton
           aria-describedby={props.id}
           onClick={handleClick}

@@ -1,9 +1,20 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { theme } from "@/theme";
 
-import { Avatar, Card, IconButton } from "@material-ui/core";
+import {
+  Avatar,
+  Card,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import SVG from "react-inlinesvg";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import {
+  makeStyles,
+  createStyles,
+  withStyles,
+  Theme,
+} from "@material-ui/core/styles";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,6 +28,14 @@ const useStyles = makeStyles(() =>
     },
   })
 );
+const HtmlTooltip = withStyles((t: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.primary.light,
+    fontSize: t.typography.pxToRem(12),
+    border: "1px solid #dadde9",
+    color: theme.palette.text.primary,
+  },
+}))(Tooltip);
 
 interface ThumbnailSizes {
   name: string;
@@ -31,16 +50,16 @@ interface Props {
 
 const thumbnailSizes: ThumbnailSizes[] = [
   {
-    name: "Large",
+    name: "Large Thumbnails",
     icon: require(`../assets/large-image-grid.svg`) as string,
   },
 
   {
-    name: "Medium",
+    name: "Medium Thumbnails",
     icon: require(`../assets/medium-image-grid.svg`) as string,
   },
   {
-    name: "Small",
+    name: "Small Thumbnails",
     icon: require(`../assets/small-image-grid.svg`) as string,
   },
 ];
@@ -66,17 +85,24 @@ export default function SizeThumbnails(props: Props): ReactElement {
       <Card className={classes.card}>
         {thumbnailSizes.map((thumbnailSize: ThumbnailSizes) => (
           <Avatar variant="rounded" key={thumbnailSize.name}>
-            <IconButton onClick={() => setButtonClicked(thumbnailSize.name)}>
-              <SVG
-                src={thumbnailSize.icon}
-                className={classes.svgSmall}
-                fill={
-                  buttonClicked === thumbnailSize.name
-                    ? theme.palette.primary.main
-                    : null
-                }
-              />
-            </IconButton>
+            <HtmlTooltip
+              title={
+                <Typography color="inherit">{thumbnailSize.name} </Typography>
+              }
+              placement="top"
+            >
+              <IconButton onClick={() => setButtonClicked(thumbnailSize.name)}>
+                <SVG
+                  src={thumbnailSize.icon}
+                  className={classes.svgSmall}
+                  fill={
+                    buttonClicked === thumbnailSize.name
+                      ? theme.palette.primary.main
+                      : null
+                  }
+                />
+              </IconButton>
+            </HtmlTooltip>
           </Avatar>
         ))}
       </Card>

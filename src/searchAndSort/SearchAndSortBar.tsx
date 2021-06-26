@@ -167,10 +167,7 @@ export default function SearchAndSortBar({
             }}
           >
             <SVG
-              src={
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                require("../assets/search.svg") as string
-              }
+              src={require("../assets/search.svg") as string}
               className={classes.svgSmall}
             />
           </IconButton>

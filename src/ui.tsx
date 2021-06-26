@@ -20,6 +20,9 @@ import {
   IconButton,
   Card,
   Avatar,
+  Theme,
+  Tooltip,
+  Typography,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
@@ -152,6 +155,15 @@ interface State {
   thumbnailHeight: number;
   selectMultipleImagesMode: boolean;
 }
+
+const HtmlTooltip = withStyles((t: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.primary.light,
+    fontSize: t.typography.pxToRem(12),
+    border: "1px solid #dadde9",
+    color: theme.palette.text.primary,
+  },
+}))(Tooltip);
 
 class UserInterface extends Component<Props, State> {
   static defaultProps = {
@@ -553,40 +565,52 @@ class UserInterface extends Component<Props, State> {
 
                     <Card className={classes.searchFilterCard}>
                       <Avatar variant="rounded">
-                        <IconButton>
-                          <SVG
-                            src={
-                              require(`./assets/search-filter.svg`) as string
-                            }
-                            className={classes.svgSmall}
-                          />
-                        </IconButton>
+                        <HtmlTooltip
+                          title={<Typography color="inherit">Sort</Typography>}
+                          placement="top"
+                        >
+                          <IconButton>
+                            <SVG
+                              src={
+                                require(`./assets/search-filter.svg`) as string
+                              }
+                              className={classes.svgSmall}
+                            />
+                          </IconButton>
+                        </HtmlTooltip>
                       </Avatar>
                     </Card>
 
                     <Card className={classes.selectMultipleImageCard}>
                       <Avatar variant="rounded">
-                        <IconButton
-                          onClick={() => {
-                            this.setState((prevState) => ({
-                              selectMultipleImagesMode:
-                                !prevState.selectMultipleImagesMode,
-                              openImageUid: null,
-                            }));
-                          }}
+                        <HtmlTooltip
+                          title={
+                            <Typography>Select Multiple Images</Typography>
+                          }
+                          placement="top"
                         >
-                          <SVG
-                            src={
-                              require(`./assets/multiple-image-selection.svg`) as string
-                            }
-                            className={classes.svgSmall}
-                            fill={
-                              this.state.selectMultipleImagesMode
-                                ? theme.palette.primary.main
-                                : null
-                            }
-                          />
-                        </IconButton>
+                          <IconButton
+                            onClick={() => {
+                              this.setState((prevState) => ({
+                                selectMultipleImagesMode:
+                                  !prevState.selectMultipleImagesMode,
+                                openImageUid: null,
+                              }));
+                            }}
+                          >
+                            <SVG
+                              src={
+                                require(`./assets/multiple-image-selection.svg`) as string
+                              }
+                              className={classes.svgSmall}
+                              fill={
+                                this.state.selectMultipleImagesMode
+                                  ? theme.palette.primary.main
+                                  : null
+                              }
+                            />
+                          </IconButton>
+                        </HtmlTooltip>
                       </Avatar>
                     </Card>
                   </div>
@@ -598,15 +622,22 @@ class UserInterface extends Component<Props, State> {
                         style={{ fontWeight: 500 }}
                       >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
                       <ListItem className={classes.deleteImageListItem}>
-                        <IconButton
-                          aria-label="Delete"
-                          onClick={this.deleteSelectedImages}
+                        <HtmlTooltip
+                          title={
+                            <Typography color="inherit">Delete </Typography>
+                          }
+                          placement="top"
                         >
-                          <SVG
-                            src={require(`./assets/delete.svg`) as string}
-                            className={classes.svgSmall}
-                          />
-                        </IconButton>
+                          <IconButton
+                            aria-label="Delete"
+                            onClick={this.deleteSelectedImages}
+                          >
+                            <SVG
+                              src={require(`./assets/delete.svg`) as string}
+                              className={classes.svgSmall}
+                            />
+                          </IconButton>
+                        </HtmlTooltip>
                       </ListItem>
                     </List>
                   </Card>
@@ -616,25 +647,39 @@ class UserInterface extends Component<Props, State> {
                   className={classes.collectionViewer}
                   style={{ position: "fixed" }}
                 >
-                  <Button aria-label="collection viewer" component="span">
-                    <img
-                      src={require(`./assets/collections-viewer.svg`) as string}
-                      alt="Collection Viewer Icon"
-                      className={classes.image}
-                    />
-                  </Button>
+                  <HtmlTooltip
+                    title={
+                      <Typography color="inherit">View Collection </Typography>
+                    }
+                  >
+                    <Button aria-label="collection viewer" component="span">
+                      <img
+                        src={
+                          require(`./assets/collections-viewer.svg`) as string
+                        }
+                        alt="Collection Viewer Icon"
+                        className={classes.image}
+                      />
+                    </Button>
+                  </HtmlTooltip>
                 </Card>
                 <Card className={classes.upload} style={{ position: "fixed" }}>
                   <UploadImage
                     setUploadedImage={this.addUploadedImage}
                     spanElement={
-                      <Button aria-label="upload-picture" component="span">
-                        <img
-                          src={require(`./assets/upload-icon.svg`) as string}
-                          alt="Upload Icon"
-                          className={classes.image}
-                        />
-                      </Button>
+                      <HtmlTooltip
+                        title={
+                          <Typography color="inherit">Upload Image </Typography>
+                        }
+                      >
+                        <Button aria-label="upload-picture" component="span">
+                          <img
+                            src={require(`./assets/upload-icon.svg`) as string}
+                            alt="Upload Icon"
+                            className={classes.image}
+                          />
+                        </Button>
+                      </HtmlTooltip>
                     }
                     multiple={false}
                   />
