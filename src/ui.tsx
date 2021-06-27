@@ -29,7 +29,6 @@ import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { ThemeProvider, theme } from "@/theme";
 import SVG from "react-inlinesvg";
 
-import { Backup, Menu, Delete } from "@material-ui/icons";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
 import MetadataDrawer from "./MetadataDrawer";

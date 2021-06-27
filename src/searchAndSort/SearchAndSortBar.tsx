@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
-import { Search } from "@material-ui/icons";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
 

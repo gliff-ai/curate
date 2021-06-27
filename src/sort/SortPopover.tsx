@@ -127,6 +127,7 @@ export const SortPopover = ({
         classes={{
           tooltip: classes.tooltip,
         }}
+        placement="top"
       >
         <Button aria-describedby="sort-button" onClick={handleClick}>
           <SortIcon />
