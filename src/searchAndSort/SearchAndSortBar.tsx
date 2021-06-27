@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
+import { Search } from "@material-ui/icons";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
 
@@ -54,7 +55,7 @@ interface Props {
   callbackSort: (key: string, sortOrder: string) => void;
 }
 
-type MetadataLabel = {
+export type MetadataLabel = {
   key: string;
   label: string;
 };
@@ -67,6 +68,20 @@ const CustomPaper = (props: any) => (
     style={{ backgroundColor: theme.palette.primary.light }}
   />
 );
+export const getLabelsFromKeys = (
+  acc: MetadataLabel[],
+  key: string
+): MetadataLabel[] => {
+  // Just an example of how to exclude metadata from the list if we need
+  if (["fileMetaVersion", "id", "thumbnail"].includes(key)) return acc;
+
+  const label = metadataNameMap[key] || key;
+  acc.push({
+    label,
+    key,
+  });
+  return acc;
+};
 
 export default function SearchAndSortBar({
   metadata,
@@ -77,20 +92,7 @@ export default function SearchAndSortBar({
   const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
-
-  const metadataLabels = metadataKeys.reduce(
-    (acc: Array<MetadataLabel>, key) => {
-      if (["fileMetaVersion", "id", "thumbnail"].includes(key)) return acc; // Just an example of how to exclude metadata from the list if we need
-
-      const label = metadataNameMap[key] || key;
-      acc.push({
-        label,
-        key,
-      });
-      return acc;
-    },
-    [] as MetadataLabel[]
-  );
+  const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
 
   const updateOptions = (): void => {
     if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
@@ -113,6 +115,15 @@ export default function SearchAndSortBar({
     if (inputValue !== "") setInputValue("");
     updateOptions();
   }, [inputKey]);
+
+  useEffect(() => {
+    if (!metadataKeys || metadataKeys.length === 0) return;
+    const labels = metadataKeys.reduce(
+      getLabelsFromKeys,
+      [] as MetadataLabel[]
+    );
+    setMetadataLabels(labels);
+  }, [metadataKeys]);
 
   return (
     <Card
@@ -173,12 +184,6 @@ export default function SearchAndSortBar({
           </IconButton>
         </Avatar>
       </CardContent>
-
-      {/* <SortDropdown
-        metadataKeys={metadataKeys}
-        inputKey={inputKey?.key || ""}
-        callback={callbackSort}
-      /> */}
     </Card>
   );
 }

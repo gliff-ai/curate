@@ -29,6 +29,9 @@ import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { ThemeProvider, theme } from "@/theme";
 import SVG from "react-inlinesvg";
 
+import { Backup, Menu, Delete } from "@material-ui/icons";
+import { LabelsPopover } from "@/components/LabelsPopover";
+import { SortPopover } from "@/sort/SortPopover";
 import MetadataDrawer from "./MetadataDrawer";
 import SizeThumbnails from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
@@ -36,7 +39,6 @@ import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
-import { LabelsPopover } from "./components/LabelsPopover";
 
 const styles = () => ({
   root: {
@@ -197,6 +199,7 @@ class UserInterface extends Component<Props, State> {
     ) {
       this.setState({
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
+        imageLabels: this.getImageLabels(this.props.metadata),
       });
     }
   };
@@ -299,7 +302,7 @@ class UserInterface extends Component<Props, State> {
         const intersection = (mitem.imageLabels as string[]).filter((l) =>
           selectedLabels.includes(l)
         );
-        mitem.selected = Boolean(intersection.length);
+        mitem.selected = intersection.length === selectedLabels.length;
       });
       return { metadata: prevState.metadata };
     });
@@ -564,7 +567,7 @@ class UserInterface extends Component<Props, State> {
                     />
 
                     <Card className={classes.searchFilterCard}>
-                      <Avatar variant="rounded">
+                      {/* <Avatar variant="rounded">
                         <HtmlTooltip
                           title={<Typography color="inherit">Sort</Typography>}
                           placement="top"
@@ -578,7 +581,11 @@ class UserInterface extends Component<Props, State> {
                             />
                           </IconButton>
                         </HtmlTooltip>
-                      </Avatar>
+                      </Avatar> */}
+                      <SortPopover
+                        metadataKeys={this.state.metadataKeys}
+                        callbackSort={this.handleOnSortSubmit}
+                      />
                     </Card>
 
                     <Card className={classes.selectMultipleImageCard}>
