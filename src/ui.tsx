@@ -566,21 +566,6 @@ class UserInterface extends Component<Props, State> {
                     />
 
                     <Card className={classes.searchFilterCard}>
-                      {/* <Avatar variant="rounded">
-                        <HtmlTooltip
-                          title={<Typography color="inherit">Sort</Typography>}
-                          placement="top"
-                        >
-                          <IconButton>
-                            <SVG
-                              src={
-                                require(`./assets/search-filter.svg`) as string
-                              }
-                              className={classes.svgSmall}
-                            />
-                          </IconButton>
-                        </HtmlTooltip>
-                      </Avatar> */}
                       <SortPopover
                         metadataKeys={this.state.metadataKeys}
                         callbackSort={this.handleOnSortSubmit}

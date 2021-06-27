@@ -15,6 +15,8 @@ import {
   MenuItem,
   Tooltip,
   IconButton,
+  Avatar,
+  withStyles,
 } from "@material-ui/core";
 import { Sort as SortIcon, Close } from "@material-ui/icons";
 import {
@@ -22,10 +24,15 @@ import {
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
 
-const useStyles = makeStyles((theme: Theme) => ({
+import { theme } from "@/theme";
+
+import SVG from "react-inlinesvg";
+
+const useStyles = makeStyles(() => ({
   card: {
     width: "250px",
     height: "300px",
+    backgroundColor: theme.palette.primary.light,
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -68,7 +75,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     right: theme.spacing(1),
     color: "#FFFFFF",
   },
+  svgSmall: {
+    width: "22px",
+    height: "100%",
+    marginLeft: "-1px",
+  },
 }));
+
+const HtmlTooltip = withStyles((t: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.primary.light,
+    fontSize: t.typography.pxToRem(12),
+    border: "1px solid #dadde9",
+    color: theme.palette.text.primary,
+  },
+}))(Tooltip);
 
 interface Props {
   metadataKeys: string[];
@@ -122,17 +143,20 @@ export const SortPopover = ({
 
   return (
     <>
-      <Tooltip
-        title="Sort"
-        classes={{
-          tooltip: classes.tooltip,
-        }}
-        placement="top"
-      >
-        <Button aria-describedby="sort-button" onClick={handleClick}>
-          <SortIcon />
-        </Button>
-      </Tooltip>
+      <Avatar variant="rounded">
+        <HtmlTooltip
+          title={<Typography color="inherit">Sort</Typography>}
+          placement="top"
+        >
+          <IconButton onClick={handleClick}>
+            <SVG
+              src={require(`../assets/search-filter.svg`) as string}
+              className={classes.svgSmall}
+            />
+          </IconButton>
+        </HtmlTooltip>
+      </Avatar>
+
       <Popover
         id="sort-popover"
         open={Boolean(anchorEl)}
