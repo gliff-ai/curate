@@ -30,9 +30,9 @@ import SVG from "react-inlinesvg";
 
 const useStyles = makeStyles(() => ({
   card: {
-    width: "250px",
-    height: "300px",
     backgroundColor: theme.palette.primary.light,
+    width: "250px",
+    height: "300px"
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,

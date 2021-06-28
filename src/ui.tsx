@@ -672,7 +672,7 @@ class UserInterface extends Component<Props, State> {
                         </Button>
                       </HtmlTooltip>
                     }
-                    multiple={false}
+                    multiple={true}
                   />
                 </Card>
                 {/* TO DO: Sort button */}
