@@ -18,7 +18,6 @@ import {
   Avatar,
   withStyles,
 } from "@material-ui/core";
-import { Sort as SortIcon, Close } from "@material-ui/icons";
 import {
   getLabelsFromKeys,
   MetadataLabel,
@@ -27,12 +26,13 @@ import {
 import { theme } from "@/theme";
 
 import SVG from "react-inlinesvg";
+import { Close } from "@material-ui/icons";
 
 const useStyles = makeStyles(() => ({
   card: {
     backgroundColor: theme.palette.primary.light,
     width: "250px",
-    height: "300px"
+    height: "300px",
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,
