@@ -79,7 +79,7 @@ const useStyles = makeStyles(() => ({
     padding: "0px",
     paddingTop: "4px",
     marginRight: "4px",
-    marginLeft: "1.5px",
+    marginLeft: "8px",
   },
   svgSmall: {
     width: "22px",

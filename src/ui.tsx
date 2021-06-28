@@ -68,7 +68,7 @@ const styles = () => ({
     padding: "0px",
     paddingTop: "4px",
     marginRight: "4px",
-    marginLeft: "2px",
+    marginLeft: "10px",
   },
   searchFilterCard: {
     height: "48px",
@@ -562,7 +562,7 @@ class UserInterface extends Component<Props, State> {
           {appBar}
           <div className={showAppBar ? classes.root : ""}>
             <Grid container spacing={1}>
-              <Grid item xs={2}>
+              <Grid item xs={2} md={2} sm={6}>
                 {(this.state.openImageUid === null ||
                   this.state.selectMultipleImagesMode) && (
                   <div style={{ display: "flex" }}>
@@ -730,6 +730,8 @@ class UserInterface extends Component<Props, State> {
               <Grid
                 item
                 xs={10}
+                sm={12}
+                md={10}
                 className={classes.imagesContainer}
                 style={{ flexWrap: "wrap" }}
               >
