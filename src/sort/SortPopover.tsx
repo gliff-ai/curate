@@ -26,7 +26,6 @@ import {
 import { theme } from "@/theme";
 
 import SVG from "react-inlinesvg";
-import { Close } from "@material-ui/icons";
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -45,35 +44,25 @@ const useStyles = makeStyles(() => ({
     marginLeft: "15px",
   },
   typography: {
-    color: "#FFFFFF",
+    color: theme.palette.text.primary,
     display: "inline",
     fontSize: "21px",
     marginLeft: "15px",
   },
-  tooltip: {
-    backgroundColor: "#FFFFFF",
-    border: "1px solid #dadde9",
-    opacity: "1",
-    marginTop: "30px",
-    marginLeft: "0px",
-    fontSize: "17px",
-    letterSpacing: 0,
-    color: "#2B2F3A",
-    fontWeight: 400,
-  },
+
   sortButton: {
     position: "absolute",
-    bottom: "30px",
-    left: "35px",
+    bottom: "18px",
+    left: "85px",
+    backgroundColor: theme.palette.primary.main,
   },
   sortLabel: {
     fontSize: "17px",
   },
   cross: {
     position: "absolute",
-    top: theme.spacing(1),
+    top: "-5px",
     right: theme.spacing(1),
-    color: "#FFFFFF",
   },
   iconButton: {
     padding: "0px",
@@ -81,10 +70,18 @@ const useStyles = makeStyles(() => ({
     marginRight: "4px",
     marginLeft: "8px",
   },
-  svgSmall: {
+  closeAvatar: {
+    width: "30px",
+    height: "30px",
+  },
+  svgMedium: {
     width: "22px",
     height: "100%",
     marginLeft: "-1px",
+  },
+  svgSmall: {
+    width: "12px",
+    height: "100%",
   },
 }));
 
@@ -112,6 +109,8 @@ export const SortPopover = ({
     key: "",
     label: "",
   });
+  const [hover, sethover] = useState(false);
+
   const [sortOrder, setSortOrder] = useState("");
   const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
 
@@ -157,7 +156,7 @@ export const SortPopover = ({
           <Avatar variant="circular">
             <SVG
               src={require(`../assets/search-filter.svg`) as string}
-              className={classes.svgSmall}
+              className={classes.svgMedium}
             />
           </Avatar>
         </IconButton>
@@ -183,7 +182,26 @@ export const SortPopover = ({
             onClick={handleClose}
             edge="end"
           >
-            <Close />
+            <Avatar
+              variant="circle"
+              onMouseOut={() => {
+                sethover(false);
+              }}
+              onMouseOver={() => {
+                sethover(true);
+              }}
+              className={classes.closeAvatar}
+            >
+              <SVG
+                src={require("../assets/close.svg") as string}
+                className={classes.svgSmall}
+                fill={
+                  hover
+                    ? theme.palette.primary.main
+                    : theme.palette.text.primary
+                }
+              />
+            </Avatar>
           </IconButton>
           <Paper
             elevation={0}
@@ -239,6 +257,7 @@ export const SortPopover = ({
               </RadioGroup>
             </FormControl>
             <Button
+              variant="outlined"
               className={classes.sortButton}
               onClick={() => {
                 const { key } = inputKey;
