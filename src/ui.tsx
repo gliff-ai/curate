@@ -64,6 +64,12 @@ const styles = () => ({
     marginBottom: "5px",
     marginTop: "7px",
   },
+  iconButton: {
+    padding: "0px",
+    paddingTop: "4px",
+    marginRight: "4px",
+    marginLeft: "2px",
+  },
   searchFilterCard: {
     height: "48px",
     backgroundColor: theme.palette.primary.light,
@@ -118,11 +124,11 @@ const styles = () => ({
     left: "15px",
   },
 
-  image: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: "9px",
-    width: "24px",
+  bottomIconButtons: {
+    padding: "0px",
+    paddingTop: "5px",
+    marginRight: "6px",
+    marginLeft: "11px",
   },
 
   svgSmall: {
@@ -574,22 +580,21 @@ class UserInterface extends Component<Props, State> {
                     </Card>
 
                     <Card className={classes.selectMultipleImageCard}>
-                      <Avatar variant="rounded">
-                        <HtmlTooltip
-                          title={
-                            <Typography>Select Multiple Images</Typography>
-                          }
-                          placement="top"
+                      <HtmlTooltip
+                        title={<Typography>Select Multiple Images</Typography>}
+                        placement="top"
+                      >
+                        <IconButton
+                          className={classes.iconButton}
+                          onClick={() => {
+                            this.setState((prevState) => ({
+                              selectMultipleImagesMode:
+                                !prevState.selectMultipleImagesMode,
+                              openImageUid: null,
+                            }));
+                          }}
                         >
-                          <IconButton
-                            onClick={() => {
-                              this.setState((prevState) => ({
-                                selectMultipleImagesMode:
-                                  !prevState.selectMultipleImagesMode,
-                                openImageUid: null,
-                              }));
-                            }}
-                          >
+                          <Avatar variant="circular">
                             <SVG
                               src={
                                 require(`./assets/multiple-image-selection.svg`) as string
@@ -601,9 +606,9 @@ class UserInterface extends Component<Props, State> {
                                   : null
                               }
                             />
-                          </IconButton>
-                        </HtmlTooltip>
-                      </Avatar>
+                          </Avatar>
+                        </IconButton>
+                      </HtmlTooltip>
                     </Card>
                   </div>
                 )}
@@ -645,15 +650,16 @@ class UserInterface extends Component<Props, State> {
                       <Typography color="inherit">View Collection </Typography>
                     }
                   >
-                    <Button aria-label="collection viewer" component="span">
-                      <img
-                        src={
-                          require(`./assets/collections-viewer.svg`) as string
-                        }
-                        alt="Collection Viewer Icon"
-                        className={classes.image}
-                      />
-                    </Button>
+                    <IconButton className={classes.bottomIconButtons}>
+                      <Avatar variant="circular">
+                        <SVG
+                          src={
+                            require(`./assets/collections-viewer.svg`) as string
+                          }
+                          className={classes.svgSmall}
+                        />
+                      </Avatar>
+                    </IconButton>
                   </HtmlTooltip>
                 </Card>
                 <Card className={classes.upload} style={{ position: "fixed" }}>
@@ -665,13 +671,16 @@ class UserInterface extends Component<Props, State> {
                           <Typography color="inherit">Upload Image </Typography>
                         }
                       >
-                        <Button aria-label="upload-picture" component="span">
-                          <img
-                            src={require(`./assets/upload-icon.svg`) as string}
-                            alt="Upload Icon"
-                            className={classes.image}
-                          />
-                        </Button>
+                        <IconButton className={classes.bottomIconButtons}>
+                          <Avatar variant="circular">
+                            <SVG
+                              src={
+                                require(`./assets/upload-icon.svg`) as string
+                              }
+                              className={classes.svgSmall}
+                            />
+                          </Avatar>
+                        </IconButton>
                       </HtmlTooltip>
                     }
                     multiple

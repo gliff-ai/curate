@@ -23,8 +23,13 @@ const useStyles = makeStyles(() =>
       height: "48px",
       backgroundColor: theme.palette.primary.light,
       width: "150px",
-      paddingLeft: "5px",
+      paddingLeft: "10px",
       paddingTop: "1px",
+    },
+    iconButton: {
+      padding: "0px",
+      paddingTop: "4px",
+      marginRight: "4px",
     },
   })
 );
@@ -82,14 +87,18 @@ export default function SizeThumbnails(props: Props): ReactElement {
     <div>
       <Card className={classes.card}>
         {thumbnailSizes.map((thumbnailSize: ThumbnailSizes) => (
-          <Avatar variant="rounded" key={thumbnailSize.name}>
-            <HtmlTooltip
-              title={
-                <Typography color="inherit">{thumbnailSize.name} </Typography>
-              }
-              placement="top"
+          <HtmlTooltip
+            title={
+              <Typography color="inherit">{thumbnailSize.name} </Typography>
+            }
+            placement="top"
+            key={thumbnailSize.name}
+          >
+            <IconButton
+              className={classes.iconButton}
+              onClick={() => setButtonClicked(thumbnailSize.name)}
             >
-              <IconButton onClick={() => setButtonClicked(thumbnailSize.name)}>
+              <Avatar variant="circular">
                 <SVG
                   src={thumbnailSize.icon}
                   className={classes.svgSmall}
@@ -99,9 +108,9 @@ export default function SizeThumbnails(props: Props): ReactElement {
                       : null
                   }
                 />
-              </IconButton>
-            </HtmlTooltip>
-          </Avatar>
+              </Avatar>
+            </IconButton>
+          </HtmlTooltip>
         ))}
       </Card>
     </div>

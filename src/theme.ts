@@ -154,6 +154,8 @@ const theme: Theme = createMuiTheme({
       },
       circular: {
         backgroundColor: "transparent",
+        width: "40px",
+        height: "40px",
         "&:hover": {
           backgroundColor: "#02FFAD",
         },

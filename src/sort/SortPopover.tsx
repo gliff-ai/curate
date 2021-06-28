@@ -75,6 +75,12 @@ const useStyles = makeStyles(() => ({
     right: theme.spacing(1),
     color: "#FFFFFF",
   },
+  iconButton: {
+    padding: "0px",
+    paddingTop: "4px",
+    marginRight: "4px",
+    marginLeft: "1.5px",
+  },
   svgSmall: {
     width: "22px",
     height: "100%",
@@ -143,19 +149,19 @@ export const SortPopover = ({
 
   return (
     <>
-      <Avatar variant="rounded">
-        <HtmlTooltip
-          title={<Typography color="inherit">Sort</Typography>}
-          placement="top"
-        >
-          <IconButton onClick={handleClick}>
+      <HtmlTooltip
+        title={<Typography color="inherit">Sort</Typography>}
+        placement="top"
+      >
+        <IconButton onClick={handleClick} className={classes.iconButton}>
+          <Avatar variant="circular">
             <SVG
               src={require(`../assets/search-filter.svg`) as string}
               className={classes.svgSmall}
             />
-          </IconButton>
-        </HtmlTooltip>
-      </Avatar>
+          </Avatar>
+        </IconButton>
+      </HtmlTooltip>
 
       <Popover
         id="sort-popover"

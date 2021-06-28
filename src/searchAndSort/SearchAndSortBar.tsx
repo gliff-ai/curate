@@ -41,8 +41,11 @@ const useStyles = makeStyles(() =>
       fontSize: "11px",
     },
     iconButton: {
-      padding: "10px",
+      padding: "0px",
+      paddingTop: "4px",
+      marginRight: "4px",
     },
+
     svgSmall: { width: "22px", height: "100%" },
   })
 );
@@ -165,23 +168,23 @@ export default function SearchAndSortBar({
           renderInput={(params: any) => <TextField {...params} label="..." />}
           PaperComponent={CustomPaper}
         />
-        <Avatar variant="rounded">
-          <IconButton
-            type="submit"
-            aria-label="search"
-            className={classes.iconButton}
-            onClick={(e) => {
-              if (!inputKey) {
-                e.preventDefault();
-              }
-            }}
-          >
+        <IconButton
+          type="submit"
+          aria-label="search"
+          className={classes.iconButton}
+          onClick={(e) => {
+            if (!inputKey) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <Avatar variant="circular">
             <SVG
               src={require("../assets/search.svg") as string}
               className={classes.svgSmall}
             />
-          </IconButton>
-        </Avatar>
+          </Avatar>
+        </IconButton>
       </CardContent>
     </Card>
   );
