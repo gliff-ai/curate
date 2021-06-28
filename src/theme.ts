@@ -34,6 +34,17 @@ const theme: Theme = createMuiTheme({
       },
     },
 
+    MuiCssBaseline: {
+      "@global": {
+        body: {
+          backgroundColor: "#F2F2F2",
+        },
+        "#react-container": {
+          height: "100%",
+        },
+      },
+    },
+
     MuiAccordionSummary: {
       root: {
         "&$expanded": {

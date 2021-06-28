@@ -71,11 +71,9 @@ export default function SizeThumbnails(props: Props): ReactElement {
   useEffect(() => {
     if (buttonClicked === "Large Thumbnails") {
       props.largeThumbnails();
-    }
-    if (buttonClicked === "Medium Thumbnails") {
+    } else if (buttonClicked === "Medium Thumbnails") {
       props.mediumThumbnails();
-    }
-    if (buttonClicked === "Small Thumbnails") {
+    } else if (buttonClicked === "Small Thumbnails") {
       props.smallThumbnails();
     }
   }, [buttonClicked]);
