@@ -675,12 +675,7 @@ class UserInterface extends Component<Props, State> {
                     multiple
                   />
                 </Card>
-                {/* TO DO: Sort button */}
-                {/* <SortDropdown
-                  metadataKeys={metadataKeys}
-                  inputKey={inputKey?.key || ""}
-                  callback={callbackSort}
-                /> */}
+
                 {this.state.openImageUid == null && (
                   <>
                     <SearchAndSortBar
@@ -701,7 +696,7 @@ class UserInterface extends Component<Props, State> {
                       allLabels={this.state.imageLabels}
                       callbackOnLabelSelection={this.handleOnLabelSelection}
                       callbackOnAccordionExpanded={this.resetSearchFilters}
-                    />{" "}
+                    />
                   </>
                 )}
 
