@@ -557,7 +557,8 @@ class UserInterface extends Component<Props, State> {
           <div className={showAppBar ? classes.root : ""}>
             <Grid container spacing={1}>
               <Grid item xs={2}>
-                {this.state.openImageUid == null && (
+                {(this.state.openImageUid === null ||
+                  this.state.selectMultipleImagesMode) && (
                   <div style={{ display: "flex" }}>
                     <SizeThumbnails
                       largeThumbnails={this.handleLargeThumbnailSize}
@@ -606,6 +607,7 @@ class UserInterface extends Component<Props, State> {
                     </Card>
                   </div>
                 )}
+
                 {this.state.selectMultipleImagesMode && (
                   <Card className={classes.deleteImageCard}>
                     <List component="span" className={classes.deleteImageList}>
@@ -676,7 +678,8 @@ class UserInterface extends Component<Props, State> {
                   />
                 </Card>
 
-                {this.state.openImageUid == null && (
+                {(this.state.openImageUid == null ||
+                  this.state.selectMultipleImagesMode) && (
                   <>
                     <SearchAndSortBar
                       metadata={this.state.metadata}
