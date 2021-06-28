@@ -781,9 +781,15 @@ class UserInterface extends Component<Props, State> {
                                   prevIdx < currIdx ? currIdx : prevIdx;
 
                                 for (let i = startIdx; i <= endIdx; i += 1) {
-                                  selectedImagesUid.push(
-                                    state.metadata[i].id as string
-                                  );
+                                  if (
+                                    !selectedImagesUid.includes(
+                                      state.metadata[i].id as string
+                                    )
+                                  ) {
+                                    selectedImagesUid.push(
+                                      state.metadata[i].id as string
+                                    );
+                                  }
                                 }
                                 return { selectedImagesUid };
                               });
