@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import React, {
   Component,
   ChangeEvent,
@@ -6,6 +5,7 @@ import React, {
   KeyboardEvent,
   MouseEvent,
 } from "react";
+
 import {
   AppBar,
   CssBaseline,
@@ -38,6 +38,9 @@ import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
+
+// eslint-disable-next-line import/no-dynamic-require
+const svgSrc = (src: string) => require(`./assets/${src}.svg`) as string;
 
 const styles = () => ({
   root: {
@@ -212,7 +215,7 @@ class UserInterface extends Component<Props, State> {
   /* eslint-enable react/no-did-update-set-state */
 
   addFieldSelectedToMetadata = (metadata: Metadata): Metadata => {
-    // Add field "selected" to metdata; this field is used to define which
+    // Add field "selected" to metadata; this field is used to define which
     // metadata items are displayed on the dashboard.
     if (!metadata) return [];
     metadata.forEach((mitem) => {
@@ -545,7 +548,7 @@ class UserInterface extends Component<Props, State> {
           <Grid container direction="row">
             <Grid item className={classes.logo}>
               <img
-                src={require(`./assets/gliff-master-black.svg`) as string}
+                src={svgSrc("gliff-master-black")}
                 width="79px"
                 height="60px"
                 alt="gliff logo"
@@ -598,7 +601,7 @@ class UserInterface extends Component<Props, State> {
                           <Avatar variant="circular">
                             <SVG
                               src={
-                                require(`./assets/multiple-image-selection.svg`) as string
+                                svgSrc("multiple-image-selection")
                               }
                               className={classes.svgSmall}
                               fill={
@@ -638,7 +641,7 @@ class UserInterface extends Component<Props, State> {
                               className={classes.iconButton}
                             >
                               <SVG
-                                src={require(`./assets/delete.svg`) as string}
+                                src={svgSrc("delete")}
                                 className={classes.svgSmall}
                               />
                             </Avatar>
@@ -662,7 +665,7 @@ class UserInterface extends Component<Props, State> {
                       <Avatar variant="circular">
                         <SVG
                           src={
-                            require(`./assets/collections-viewer.svg`) as string
+                            svgSrc("collections-viewer")
                           }
                           className={classes.svgSmall}
                         />
@@ -683,7 +686,7 @@ class UserInterface extends Component<Props, State> {
                           <Avatar variant="circular">
                             <SVG
                               src={
-                                require(`./assets/upload-icon.svg`) as string
+                                svgSrc("upload-icon")
                               }
                               className={classes.svgSmall}
                             />
