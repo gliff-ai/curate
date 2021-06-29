@@ -6,6 +6,8 @@ import React, {
   MouseEvent,
 } from "react";
 
+import SVG from "react-inlinesvg";
+
 import {
   AppBar,
   CssBaseline,
@@ -23,11 +25,12 @@ import {
   Theme,
   Tooltip,
   Typography,
+  Box,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { ThemeProvider, theme } from "@/theme";
-import SVG from "react-inlinesvg";
+import { svgSrc } from "@/helpers";
 
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
@@ -38,9 +41,6 @@ import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
-
-// eslint-disable-next-line import/no-dynamic-require
-const svgSrc = (src: string) => require(`./assets/${src}.svg`) as string;
 
 const styles = () => ({
   root: {
@@ -53,41 +53,34 @@ const styles = () => ({
     paddingTop: "9px",
   },
 
+  sideBar: {
+    width: "290px",
+  },
+
+  imagesContainer: {
+    display: "flex",
+    width: "calc(100% - 290px)",
+    justifyContent: "flex-start",
+    marginBottom: "auto",
+    // flexWrap: "wrap",
+  },
+
   uploadButton: {
     bottom: "18px",
     right: "18px",
   },
-  imagesContainer: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "flex-start",
-    marginBottom: "auto",
-  },
+
   logo: {
     marginBottom: "5px",
     marginTop: "7px",
   },
   iconButton: {
-    padding: "0px",
-    paddingTop: "4px",
-    marginRight: "4px",
-    marginLeft: "10px",
+    padding: "4px",
   },
-  searchFilterCard: {
-    height: "48px",
+  smallButton: {
     backgroundColor: theme.palette.primary.light,
-    paddingTop: "1px",
-    marginLeft: "10px",
-    width: "80px",
-    paddingRight: "8px",
-  },
-  selectMultipleImageCard: {
     height: "48px",
-    backgroundColor: theme.palette.primary.light,
-    paddingTop: "1px",
-    marginLeft: "10px",
-    width: "80px",
-    paddingRight: "9px",
+    width: "48px",
   },
   deleteImageCard: {
     backgroundColor: theme.palette.primary.light,
@@ -214,15 +207,10 @@ class UserInterface extends Component<Props, State> {
   };
   /* eslint-enable react/no-did-update-set-state */
 
-  addFieldSelectedToMetadata = (metadata: Metadata): Metadata => {
-    // Add field "selected" to metadata; this field is used to define which
-    // metadata items are displayed on the dashboard.
-    if (!metadata) return [];
-    metadata.forEach((mitem) => {
-      mitem.selected = true;
-    });
-    return metadata;
-  };
+  // Add field "selected" to metadata; this field is used to define which
+  // metadata items are displayed on the dashboard.
+  addFieldSelectedToMetadata = (metadata: Metadata = []): Metadata =>
+    metadata.map((mitem) => ({ ...mitem, selected: true }));
 
   handleMetadataHide = (): void => {
     this.setState({ openImageUid: null });
@@ -463,7 +451,7 @@ class UserInterface extends Component<Props, State> {
     };
 
     if (this.props.saveImageCallback) {
-      // Store uploaded image in etebase
+      // Store uploaded image
       this.props.saveImageCallback(imageFileInfo, images);
     } else {
       // add the uploaded image directly to state.metadata
@@ -486,9 +474,9 @@ class UserInterface extends Component<Props, State> {
       const metadata: Metadata = state.metadata.filter(
         (mitem) => !state.selectedImagesUid.includes(mitem.id as string)
       );
-      if (this.props.deleteImagesCallback) {
-        this.props.deleteImagesCallback(state.selectedImagesUid);
-      }
+
+      this.props.deleteImagesCallback?.(state.selectedImagesUid);
+
       return {
         selectedImagesUid: [],
         metadata,
@@ -559,98 +547,93 @@ class UserInterface extends Component<Props, State> {
       </AppBar>
     );
 
+    const toolBoxCard =
+      this.state.openImageUid === null ||
+      this.state.selectMultipleImagesMode ? (
+        <Box display="flex" justifyContent="space-between">
+          <SizeThumbnails
+            largeThumbnails={this.handleLargeThumbnailSize}
+            mediumThumbnails={this.handleMediumThumbnailSize}
+            smallThumbnails={this.handleSmallThumbnailSize}
+          />
+
+          <Card className={classes.smallButton}>
+            <SortPopover
+              metadataKeys={this.state.metadataKeys}
+              callbackSort={this.handleOnSortSubmit}
+            />
+          </Card>
+
+          <Card className={classes.smallButton}>
+            <HtmlTooltip
+              title={<Typography>Select Multiple Images</Typography>}
+              placement="top"
+            >
+              <IconButton
+                className={classes.iconButton}
+                onClick={() => {
+                  this.setState((prevState) => ({
+                    selectMultipleImagesMode:
+                      !prevState.selectMultipleImagesMode,
+                    openImageUid: null,
+                  }));
+                }}
+              >
+                <Avatar variant="circular">
+                  <SVG
+                    src={svgSrc("multiple-image-selection")}
+                    className={classes.svgSmall}
+                    fill={
+                      this.state.selectMultipleImagesMode
+                        ? theme.palette.primary.main
+                        : null
+                    }
+                  />
+                </Avatar>
+              </IconButton>
+            </HtmlTooltip>
+          </Card>
+        </Box>
+      ) : null;
+
+    const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
+      <Card className={classes.deleteImageCard}>
+        <List component="span" className={classes.deleteImageList}>
+          <ListItem
+            style={{ fontWeight: 500 }}
+          >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
+          <ListItem className={classes.deleteImageListItem}>
+            <HtmlTooltip
+              title={<Typography color="inherit">Delete Images</Typography>}
+              placement="top"
+            >
+              <IconButton
+                aria-label="Delete"
+                onClick={this.deleteSelectedImages}
+              >
+                <Avatar variant="circular" className={classes.iconButton}>
+                  <SVG src={svgSrc("delete")} className={classes.svgSmall} />
+                </Avatar>
+              </IconButton>
+            </HtmlTooltip>
+          </ListItem>
+        </List>
+      </Card>
+    );
+
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
+
         <Container maxWidth={false}>
           {appBar}
+
           <div className={showAppBar ? classes.root : ""}>
             <Grid container spacing={1}>
-              <Grid item xs={2} md={2} sm={6}>
-                {(this.state.openImageUid === null ||
-                  this.state.selectMultipleImagesMode) && (
-                  <div style={{ display: "flex" }}>
-                    <SizeThumbnails
-                      largeThumbnails={this.handleLargeThumbnailSize}
-                      mediumThumbnails={this.handleMediumThumbnailSize}
-                      smallThumbnails={this.handleSmallThumbnailSize}
-                    />
+              <Grid item className={classes.sideBar}>
+                {toolBoxCard}
 
-                    <Card className={classes.searchFilterCard}>
-                      <SortPopover
-                        metadataKeys={this.state.metadataKeys}
-                        callbackSort={this.handleOnSortSubmit}
-                      />
-                    </Card>
-
-                    <Card className={classes.selectMultipleImageCard}>
-                      <HtmlTooltip
-                        title={<Typography>Select Multiple Images</Typography>}
-                        placement="top"
-                      >
-                        <IconButton
-                          className={classes.iconButton}
-                          onClick={() => {
-                            this.setState((prevState) => ({
-                              selectMultipleImagesMode:
-                                !prevState.selectMultipleImagesMode,
-                              openImageUid: null,
-                            }));
-                          }}
-                        >
-                          <Avatar variant="circular">
-                            <SVG
-                              src={
-                                svgSrc("multiple-image-selection")
-                              }
-                              className={classes.svgSmall}
-                              fill={
-                                this.state.selectMultipleImagesMode
-                                  ? theme.palette.primary.main
-                                  : null
-                              }
-                            />
-                          </Avatar>
-                        </IconButton>
-                      </HtmlTooltip>
-                    </Card>
-                  </div>
-                )}
-
-                {this.state.selectMultipleImagesMode && (
-                  <Card className={classes.deleteImageCard}>
-                    <List component="span" className={classes.deleteImageList}>
-                      <ListItem
-                        style={{ fontWeight: 500 }}
-                      >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-                      <ListItem className={classes.deleteImageListItem}>
-                        <HtmlTooltip
-                          title={
-                            <Typography color="inherit">
-                              Delete Images
-                            </Typography>
-                          }
-                          placement="top"
-                        >
-                          <IconButton
-                            aria-label="Delete"
-                            onClick={this.deleteSelectedImages}
-                          >
-                            <Avatar
-                              variant="circular"
-                              className={classes.iconButton}
-                            >
-                              <SVG
-                                src={svgSrc("delete")}
-                                className={classes.svgSmall}
-                              />
-                            </Avatar>
-                          </IconButton>
-                        </HtmlTooltip>
-                      </ListItem>
-                    </List>
-                  </Card>
-                )}
+                {deleteImageCard}
 
                 <Card
                   className={classes.collectionViewer}
@@ -664,9 +647,7 @@ class UserInterface extends Component<Props, State> {
                     <IconButton className={classes.bottomIconButtons}>
                       <Avatar variant="circular">
                         <SVG
-                          src={
-                            svgSrc("collections-viewer")
-                          }
+                          src={svgSrc("collections-viewer")}
                           className={classes.svgSmall}
                         />
                       </Avatar>
@@ -685,9 +666,7 @@ class UserInterface extends Component<Props, State> {
                         <IconButton className={classes.bottomIconButtons}>
                           <Avatar variant="circular">
                             <SVG
-                              src={
-                                svgSrc("upload-icon")
-                              }
+                              src={svgSrc("upload-icon")}
                               className={classes.svgSmall}
                             />
                           </Avatar>
@@ -740,9 +719,6 @@ class UserInterface extends Component<Props, State> {
 
               <Grid
                 item
-                xs={10}
-                sm={12}
-                md={10}
                 className={classes.imagesContainer}
                 style={{ flexWrap: "wrap" }}
               >
@@ -821,7 +797,7 @@ class UserInterface extends Component<Props, State> {
                             }
                           }}
                           onDoubleClick={() => {
-                            this.props.annotateCallback(mitem.id as string);
+                            this.props.annotateCallback?.(mitem.id as string);
                           }}
                           onKeyDown={(e: KeyboardEvent) => {
                             if (

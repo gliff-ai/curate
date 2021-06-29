@@ -18,7 +18,7 @@ module.exports = {
       files: ["*.ts", "*.tsx"],
       rules: {
         "global-require": 0,
-        "@typescript-eslint/no-var-requires": 0,        
+        "@typescript-eslint/no-var-requires": 0,
         "react/destructuring-assignment": "off", // This would be nice, but we call a lot of methods on props we pass down which rules it out
         "import/prefer-default-export": "off", // Most of the internet agrees this should be off
         "no-restricted-syntax": [
@@ -41,6 +41,7 @@ module.exports = {
           },
         ],
         "react/static-property-placement": [2, "static public field"],
+        "no-param-reassign": [2, { "props": false }],
       },
     },
     {

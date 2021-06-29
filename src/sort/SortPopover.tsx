@@ -1,4 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
+
+import SVG from "react-inlinesvg";
+
 import {
   Popover,
   Typography,
@@ -24,8 +27,7 @@ import {
 } from "@/searchAndSort/SearchAndSortBar";
 
 import { theme } from "@/theme";
-
-import SVG from "react-inlinesvg";
+import { svgSrc } from "@/helpers";
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -65,10 +67,7 @@ const useStyles = makeStyles(() => ({
     right: theme.spacing(1),
   },
   iconButton: {
-    padding: "0px",
-    paddingTop: "4px",
-    marginRight: "4px",
-    marginLeft: "8px",
+    padding: "4px",
   },
   closeAvatar: {
     width: "30px",
@@ -154,10 +153,7 @@ export const SortPopover = ({
       >
         <IconButton onClick={handleClick} className={classes.iconButton}>
           <Avatar variant="circular">
-            <SVG
-              src={require(`../assets/search-filter.svg`) as string}
-              className={classes.svgMedium}
-            />
+            <SVG src={svgSrc("search-filter")} className={classes.svgMedium} />
           </Avatar>
         </IconButton>
       </HtmlTooltip>
@@ -193,7 +189,7 @@ export const SortPopover = ({
               className={classes.closeAvatar}
             >
               <SVG
-                src={require("../assets/close.svg") as string}
+                src={svgSrc("close")}
                 className={classes.svgSmall}
                 fill={
                   hover
