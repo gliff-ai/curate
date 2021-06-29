@@ -95,11 +95,12 @@ const styles = () => ({
   deleteImageList: {
     display: "flex",
     justifyContent: "space-around",
-    marginTop: "-15px",
+    marginTop: "-24px",
   },
   deleteImageListItem: {
     width: "auto",
     marginRight: "-10px",
+    marginBottom: "-10ox",
   },
 
   upload: {
@@ -622,7 +623,9 @@ class UserInterface extends Component<Props, State> {
                       <ListItem className={classes.deleteImageListItem}>
                         <HtmlTooltip
                           title={
-                            <Typography color="inherit">Delete </Typography>
+                            <Typography color="inherit">
+                              Delete Images
+                            </Typography>
                           }
                           placement="top"
                         >
@@ -630,10 +633,15 @@ class UserInterface extends Component<Props, State> {
                             aria-label="Delete"
                             onClick={this.deleteSelectedImages}
                           >
-                            <SVG
-                              src={require(`./assets/delete.svg`) as string}
-                              className={classes.svgSmall}
-                            />
+                            <Avatar
+                              variant="circular"
+                              className={classes.iconButton}
+                            >
+                              <SVG
+                                src={require(`./assets/delete.svg`) as string}
+                                className={classes.svgSmall}
+                              />
+                            </Avatar>
                           </IconButton>
                         </HtmlTooltip>
                       </ListItem>
