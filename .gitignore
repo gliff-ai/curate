@@ -2,3 +2,5 @@ node_modules
 dist/
 coverage
 .vscode
+src/.DS_Store
+src/assets/.DS_Store

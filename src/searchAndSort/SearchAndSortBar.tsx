@@ -1,32 +1,52 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { ChangeEvent, useState, useEffect, ReactElement } from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { IconButton, Paper, TextField } from "@material-ui/core";
+import SVG from "react-inlinesvg";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  IconButton,
+  Paper,
+  TextField,
+} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { Search } from "@material-ui/icons";
+import { theme } from "@/theme";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { metadataNameMap } from "../MetadataDrawer";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      position: "absolute",
-      right: "10px",
-      height: "85%",
+      display: "inline",
     },
-    input: {
+    cardContent: {
+      backgroundColor: theme.palette.primary.light,
+      borderRadius: "9px",
+      marginTop: "15px",
+      height: "110px",
+      padding: "inherit",
+      marginBottom: "15px",
+    },
+    input1: {
       paddingLeft: "10px",
-      width: "250px",
+      width: "90%",
+    },
+    input2: {
+      paddingLeft: "10px",
+      width: "80%",
+      display: "inline-block",
     },
     inputField: {
       fontSize: "11px",
     },
     iconButton: {
-      padding: "10px",
+      padding: "0px",
+      paddingTop: "4px",
+      marginRight: "4px",
     },
+
+    svgSmall: { width: "22px", height: "100%" },
   })
 );
 
@@ -42,6 +62,14 @@ export type MetadataLabel = {
   label: string;
 };
 
+// To be able to style the dropdown list
+const CustomPaper = (props: any) => (
+  <Paper
+    elevation={8}
+    {...props}
+    style={{ backgroundColor: theme.palette.primary.light }}
+  />
+);
 export const getLabelsFromKeys = (
   acc: MetadataLabel[],
   key: string
@@ -62,7 +90,7 @@ export default function SearchAndSortBar({
   metadataKeys,
   callbackSearch,
 }: Props): ReactElement {
-  const style = useStyles();
+  const classes = useStyles();
   const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -100,54 +128,64 @@ export default function SearchAndSortBar({
   }, [metadataKeys]);
 
   return (
-    <Paper
+    <Card
       component="form"
       onSubmit={(e) => {
         callbackSearch({ key: inputKey.key, value: inputValue });
         e.preventDefault();
       }}
-      className={style.root}
+      className={classes.root}
     >
-      <Autocomplete
-        id="combobox-metadata-key"
-        className={style.input}
-        getOptionLabel={(option: MetadataLabel) => option.label}
-        getOptionSelected={(option, value) => option.label === value.label}
-        onInputChange={(e: ChangeEvent, newInputKey: string) => {
-          // Match the text with the actual key we want
-          const metaLabel = metadataLabels.filter(
-            ({ label }) => label === newInputKey
-          );
+      <CardContent className={classes.cardContent}>
+        <Autocomplete
+          id="combobox-metadata-key"
+          className={classes.input1}
+          getOptionLabel={(option: MetadataLabel) => option.label}
+          getOptionSelected={(option, value) => option.label === value.label}
+          onInputChange={(e: ChangeEvent, newInputKey: string) => {
+            // Match the text with the actual key we want
+            const metaLabel = metadataLabels.filter(
+              ({ label }) => label === newInputKey
+            );
 
-          setInputKey(metaLabel?.[0]);
-        }}
-        options={metadataLabels}
-        renderInput={(params: any) => <TextField {...params} label="Key" />}
-      />
-
-      <Autocomplete
-        id="combobox-metadata-value"
-        className={style.input}
-        inputValue={inputValue}
-        freeSolo
-        onInputChange={(e: ChangeEvent, newInputValue: string) => {
-          setInputValue(newInputValue);
-        }}
-        options={inputOptions}
-        renderInput={(params: any) => <TextField {...params} label="Value" />}
-      />
-      <IconButton
-        type="submit"
-        aria-label="search"
-        className={style.iconButton}
-        onClick={(e) => {
-          if (!inputKey) {
-            e.preventDefault();
-          }
-        }}
-      >
-        <Search />
-      </IconButton>
-    </Paper>
+            setInputKey(metaLabel?.[0]);
+          }}
+          options={metadataLabels}
+          renderInput={(params: any) => (
+            <TextField {...params} label="Search Category" />
+          )}
+          PaperComponent={CustomPaper}
+        />
+        <Autocomplete
+          id="combobox-metadata-value"
+          className={classes.input2}
+          inputValue={inputValue}
+          freeSolo
+          onInputChange={(e: ChangeEvent, newInputValue: string) => {
+            setInputValue(newInputValue);
+          }}
+          options={inputOptions}
+          renderInput={(params: any) => <TextField {...params} label="..." />}
+          PaperComponent={CustomPaper}
+        />
+        <IconButton
+          type="submit"
+          aria-label="search"
+          className={classes.iconButton}
+          onClick={(e) => {
+            if (!inputKey) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <Avatar variant="circular">
+            <SVG
+              src={require("../assets/search.svg") as string}
+              className={classes.svgSmall}
+            />
+          </Avatar>
+        </IconButton>
+      </CardContent>
+    </Card>
   );
 }
