@@ -19,7 +19,7 @@ interface Props {
 
 const useStyles = makeStyles({
   iconButton: {
-    padding: ({ size }: Props) => {
+    padding: ({ size }: Partial<Props>) => {
       if (size === "small") return "4px";
       if (size === "large") return "5px 11px";
 
@@ -30,25 +30,20 @@ const useStyles = makeStyles({
     width: "22px",
     height: "100%",
     marginLeft: "-1px",
-    fill: ({ isActive }: Props) =>
+    fill: ({ isActive }: Partial<Props>) =>
       isActive ? theme.palette.primary.main : "inherit",
   },
 });
 
 export default function TooltipButton(props: Props): ReactElement {
-  const classes = useStyles(props);
+  const { size, isActive, type, tooltip, svgSrc: src, onClick } = props;
+  const classes = useStyles({ size, isActive });
 
   return (
-    <HtmlTooltip
-      title={<Typography color="inherit">{props.tooltip}</Typography>}
-    >
-      <IconButton
-        type={props.type}
-        className={classes.iconButton}
-        onClick={props.onClick}
-      >
+    <HtmlTooltip title={<Typography color="inherit">{tooltip}</Typography>}>
+      <IconButton type={type} className={classes.iconButton} onClick={onClick}>
         <Avatar variant="circular">
-          <SVG src={svgSrc(props.svgSrc)} className={classes.svg} />
+          <SVG src={svgSrc(src)} className={classes.svg} />
         </Avatar>
       </IconButton>
     </HtmlTooltip>

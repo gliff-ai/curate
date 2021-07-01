@@ -4,9 +4,9 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
+import TooltipButton from "@/components/TooltipButton";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
-import TooltipButton from "@/components/TooltipButton";
 
 const useStyles = makeStyles(() =>
   createStyles({
