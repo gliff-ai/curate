@@ -33,6 +33,10 @@ const useStyles = makeStyles({
     fill: ({ isActive }: Partial<Props>) =>
       isActive ? theme.palette.primary.main : "inherit",
   },
+  avatar: {
+    "&:hover": { backgroundColor: theme.palette.primary.main },
+    "&:hover > svg": { fill: "#000" },
+  },
 });
 
 export default function TooltipButton(props: Props): ReactElement {
@@ -42,7 +46,7 @@ export default function TooltipButton(props: Props): ReactElement {
   return (
     <HtmlTooltip title={<Typography color="inherit">{tooltip}</Typography>}>
       <IconButton type={type} className={classes.iconButton} onClick={onClick}>
-        <Avatar variant="circular">
+        <Avatar variant="circular" className={classes.avatar}>
           <SVG src={svgSrc(src)} className={classes.svg} />
         </Avatar>
       </IconButton>
