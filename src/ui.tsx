@@ -35,7 +35,7 @@ import { svgSrc } from "@/helpers";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
 import MetadataDrawer from "./MetadataDrawer";
-import SizeThumbnails from "./components/SizeThumbnails";
+import SizeThumbnails, { thumbnailSizes } from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
@@ -187,8 +187,8 @@ class UserInterface extends Component<Props, State> {
       openImageUid: null,
       selectedImagesUid: [],
       activeFilters: [],
-      thumbnailWidth: 128,
-      thumbnailHeight: 128,
+      thumbnailWidth: thumbnailSizes[2].size,
+      thumbnailHeight: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
     };
   }

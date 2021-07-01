@@ -53,13 +53,12 @@ interface Props {
   resizeThumbnails: (size: number) => void;
 }
 
-const thumbnailSizes: ThumbnailSizes[] = [
+export const thumbnailSizes: ThumbnailSizes[] = [
   {
     name: "Large Thumbnails",
     icon: svgSrc("large-image-grid"),
     size: 298,
   },
-
   {
     name: "Medium Thumbnails",
     icon: svgSrc("medium-image-grid"),
@@ -76,7 +75,7 @@ export default function SizeThumbnails({
   resizeThumbnails,
 }: Props): ReactElement {
   const classes = useStyles();
-  const [buttonClicked, setButtonClicked] = useState("");
+  const [buttonClicked, setButtonClicked] = useState("Small Thumbnails");
 
   useEffect(() => {
     thumbnailSizes.forEach((thumb) => {
