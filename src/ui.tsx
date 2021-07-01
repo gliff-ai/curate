@@ -326,24 +326,10 @@ class UserInterface extends Component<Props, State> {
     }
   };
 
-  handleLargeThumbnailSize = () => {
+  resizeThumbnails = (size: number) => {
     this.setState({
-      thumbnailHeight: 298,
-      thumbnailWidth: 298,
-    });
-  };
-
-  handleMediumThumbnailSize = () => {
-    this.setState({
-      thumbnailHeight: 211,
-      thumbnailWidth: 211,
-    });
-  };
-
-  handleSmallThumbnailSize = () => {
-    this.setState({
-      thumbnailHeight: 132,
-      thumbnailWidth: 132,
+      thumbnailHeight: size,
+      thumbnailWidth: size,
     });
   };
 
@@ -551,11 +537,7 @@ class UserInterface extends Component<Props, State> {
       this.state.openImageUid === null ||
       this.state.selectMultipleImagesMode ? (
         <Box display="flex" justifyContent="space-between">
-          <SizeThumbnails
-            largeThumbnails={this.handleLargeThumbnailSize}
-            mediumThumbnails={this.handleMediumThumbnailSize}
-            smallThumbnails={this.handleSmallThumbnailSize}
-          />
+          <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
 
           <Card className={classes.smallButton}>
             <SortPopover

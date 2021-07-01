@@ -1,5 +1,6 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { theme } from "@/theme";
+import { svgSrc } from "@/helpers";
 
 import {
   Avatar,
@@ -45,42 +46,40 @@ const HtmlTooltip = withStyles((t: Theme) => ({
 interface ThumbnailSizes {
   name: string;
   icon: string;
+  size: number;
 }
 
 interface Props {
-  largeThumbnails: () => void;
-  mediumThumbnails: () => void;
-  smallThumbnails: () => void;
+  resizeThumbnails: (size: number) => void;
 }
 
 const thumbnailSizes: ThumbnailSizes[] = [
   {
     name: "Large Thumbnails",
-    icon: require(`../assets/large-image-grid.svg`) as string,
+    icon: svgSrc("large-image-grid"),
+    size: 298,
   },
 
   {
     name: "Medium Thumbnails",
-    icon: require(`../assets/medium-image-grid.svg`) as string,
+    icon: svgSrc("medium-image-grid"),
+    size: 211,
   },
   {
     name: "Small Thumbnails",
-    icon: require(`../assets/small-image-grid.svg`) as string,
+    icon: svgSrc("small-image-grid"),
+    size: 132
   },
 ];
 
-export default function SizeThumbnails(props: Props): ReactElement {
+export default function SizeThumbnails({resizeThumbnails}: Props): ReactElement {
   const classes = useStyles();
   const [buttonClicked, setButtonClicked] = useState("");
 
   useEffect(() => {
-    if (buttonClicked === "Large Thumbnails") {
-      props.largeThumbnails();
-    } else if (buttonClicked === "Medium Thumbnails") {
-      props.mediumThumbnails();
-    } else if (buttonClicked === "Small Thumbnails") {
-      props.smallThumbnails();
-    }
+    thumbnailSizes.forEach(thumb => {
+      if(thumb.name === buttonClicked) resizeThumbnails(thumb.size)
+    })
   }, [buttonClicked]);
 
   return (
