@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
@@ -48,7 +48,7 @@ export type MetadataLabel = {
 };
 
 // To be able to style the dropdown list
-const CustomPaper = (props: any) => (
+const CustomPaper = (props: unknown) => (
   <Paper
     elevation={8}
     {...props}
@@ -136,7 +136,7 @@ export default function SearchAndSortBar({
             setInputKey(metaLabel?.[0]);
           }}
           options={metadataLabels}
-          renderInput={(params: any) => (
+          renderInput={(params: unknown) => (
             <TextField {...params} label="Search Category" />
           )}
           PaperComponent={CustomPaper}
@@ -150,7 +150,9 @@ export default function SearchAndSortBar({
             setInputValue(newInputValue);
           }}
           options={inputOptions}
-          renderInput={(params: any) => <TextField {...params} label="..." />}
+          renderInput={(params: unknown) => (
+            <TextField {...params} label="..." />
+          )}
           PaperComponent={CustomPaper}
         />
         <TooltipButton

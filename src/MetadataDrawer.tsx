@@ -7,12 +7,11 @@ import {
   IconButton,
   Paper,
   Card,
-  Tooltip,
   Avatar,
   Box,
 } from "@material-ui/core";
 import { MetaItem } from "@/searchAndSort/interfaces";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { theme } from "@/theme";
 import SVG from "react-inlinesvg";
 

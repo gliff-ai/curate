@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { List, ListItem, ListItemText, Card } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
 import { Filter } from "@/searchAndSort/interfaces";
