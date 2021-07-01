@@ -22,16 +22,16 @@ import {
   IconButton,
   Card,
   Avatar,
-  Theme,
-  Tooltip,
   Typography,
   Box,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { ThemeProvider, theme } from "@/theme";
+import { HtmlTooltip } from "@/components/HtmlTooltip";
 import { svgSrc } from "@/helpers";
 
+import FloatingButton from "@/components/FloatingButton";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
 import MetadataDrawer from "./MetadataDrawer";
@@ -121,13 +121,6 @@ const styles = () => ({
     left: "15px",
   },
 
-  bottomIconButtons: {
-    padding: "0px",
-    paddingTop: "5px",
-    marginRight: "6px",
-    marginLeft: "11px",
-  },
-
   svgSmall: {
     width: "22px",
     height: "100%",
@@ -159,15 +152,6 @@ interface State {
   thumbnailHeight: number;
   selectMultipleImagesMode: boolean;
 }
-
-const HtmlTooltip = withStyles((t: Theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.primary.light,
-    fontSize: t.typography.pxToRem(12),
-    border: "1px solid #dadde9",
-    color: theme.palette.text.primary,
-  },
-}))(Tooltip);
 
 class UserInterface extends Component<Props, State> {
   static defaultProps = {
@@ -547,54 +531,36 @@ class UserInterface extends Component<Props, State> {
       </AppBar>
     );
 
-    const toolBoxCard =
-      this.state.openImageUid === null ||
-      this.state.selectMultipleImagesMode ? (
-        <Box display="flex" justifyContent="space-between">
-          <SizeThumbnails
-            largeThumbnails={this.handleLargeThumbnailSize}
-            mediumThumbnails={this.handleMediumThumbnailSize}
-            smallThumbnails={this.handleSmallThumbnailSize}
+    const toolBoxCard = (
+      <Box display="flex" justifyContent="space-between">
+        <SizeThumbnails
+          largeThumbnails={this.handleLargeThumbnailSize}
+          mediumThumbnails={this.handleMediumThumbnailSize}
+          smallThumbnails={this.handleSmallThumbnailSize}
+        />
+
+        <Card className={classes.smallButton}>
+          <SortPopover
+            metadataKeys={this.state.metadataKeys}
+            callbackSort={this.handleOnSortSubmit}
           />
+        </Card>
 
-          <Card className={classes.smallButton}>
-            <SortPopover
-              metadataKeys={this.state.metadataKeys}
-              callbackSort={this.handleOnSortSubmit}
-            />
-          </Card>
-
-          <Card className={classes.smallButton}>
-            <HtmlTooltip
-              title={<Typography>Select Multiple Images</Typography>}
-              placement="top"
-            >
-              <IconButton
-                className={classes.iconButton}
-                onClick={() => {
-                  this.setState((prevState) => ({
-                    selectMultipleImagesMode:
-                      !prevState.selectMultipleImagesMode,
-                    openImageUid: null,
-                  }));
-                }}
-              >
-                <Avatar variant="circular">
-                  <SVG
-                    src={svgSrc("multiple-image-selection")}
-                    className={classes.svgSmall}
-                    fill={
-                      this.state.selectMultipleImagesMode
-                        ? theme.palette.primary.main
-                        : null
-                    }
-                  />
-                </Avatar>
-              </IconButton>
-            </HtmlTooltip>
-          </Card>
-        </Box>
-      ) : null;
+        <Card className={classes.smallButton}>
+          <FloatingButton
+            tooltip="Select Multiple Images"
+            svgSrc="multiple-image-selection"
+            isActive={this.state.selectMultipleImagesMode}
+            onClick={() => {
+              this.setState((prevState) => ({
+                selectMultipleImagesMode: !prevState.selectMultipleImagesMode,
+                openImageUid: null,
+              }));
+            }}
+          />
+        </Card>
+      </Box>
+    );
 
     const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
       <Card className={classes.deleteImageCard}>
@@ -639,41 +605,23 @@ class UserInterface extends Component<Props, State> {
                   className={classes.collectionViewer}
                   style={{ position: "fixed" }}
                 >
-                  <HtmlTooltip
-                    title={
-                      <Typography color="inherit">View Collection </Typography>
-                    }
-                  >
-                    <IconButton className={classes.bottomIconButtons}>
-                      <Avatar variant="circular">
-                        <SVG
-                          src={svgSrc("collections-viewer")}
-                          className={classes.svgSmall}
-                        />
-                      </Avatar>
-                    </IconButton>
-                  </HtmlTooltip>
+                  <FloatingButton
+                    tooltip="View Collection"
+                    svgSrc="collections-viewer"
+                    size="large"
+                  />
                 </Card>
                 <Card className={classes.upload} style={{ position: "fixed" }}>
                   <UploadImage
                     setUploadedImage={this.addUploadedImage}
-                    spanElement={
-                      <HtmlTooltip
-                        title={
-                          <Typography color="inherit">Upload Image </Typography>
-                        }
-                      >
-                        <IconButton className={classes.bottomIconButtons}>
-                          <Avatar variant="circular">
-                            <SVG
-                              src={svgSrc("upload-icon")}
-                              className={classes.svgSmall}
-                            />
-                          </Avatar>
-                        </IconButton>
-                      </HtmlTooltip>
-                    }
                     multiple
+                    spanElement={
+                      <FloatingButton
+                        tooltip="Upload Image"
+                        svgSrc="upload-icon"
+                        size="large"
+                      />
+                    }
                   />
                 </Card>
 
