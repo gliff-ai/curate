@@ -1,5 +1,7 @@
 import { ChangeEvent, useEffect, useState, ReactElement } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import SVG from "react-inlinesvg";
+
 import { svgSrc } from "@/helpers";
 import {
   Accordion,
@@ -13,70 +15,67 @@ import {
   Avatar,
 } from "@material-ui/core";
 
-import SVG from "react-inlinesvg";
 import { theme } from "@/theme";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    title: {
-      paddingLeft: theme.spacing(1),
-    },
-    labelsList: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
-    labelsListItem: {
-      paddingLeft: "12px",
-      width: "auto",
-      display: "flex",
-    },
-    labelIcon: {
-      color: theme.palette.primary.dark,
-    },
-    labelText: {
-      paddingLeft: theme.spacing(1),
-      marginRight: theme.spacing(6),
-    },
-    buttonsList: {
-      display: "flex",
-      flexDirection: "row",
-      flexWrap: "nowrap",
-      marginBottom: "-18px",
-    },
-    buttonsListItem: {
-      padding: theme.spacing(1),
-      width: "auto",
-    },
-    iconButton: {
-      marginRight: "-22px",
-      marginLeft: "-10px",
-    },
-    infoOnHover: {
-      color: theme.palette.text.secondary,
-      fontStyle: "italic",
-      fontSize: "12px",
-    },
-    paper: {
-      borderRadius: "inherit",
-      height: "49px",
-      backgroundColor: (accordionOpened) =>
-        accordionOpened
-          ? theme.palette.primary.main
-          : theme.palette.primary.light,
-    },
-    accordionDetails: {
-      display: "inline",
-    },
-    accordionTypography: {
-      fontWeight: 500,
-    },
-    avatar: {
-      backgroundColor: (accordionOpened) =>
-        accordionOpened ? theme.palette.primary.light : "transparent",
-      width: "30px",
-      height: "30px",
-    },
-    svgLarge: { width: "55%", height: "100%" },
-    svgSmall: { width: "15px", height: "100%" },
-  })
-);
+const useStyles = makeStyles({
+  title: {
+    paddingLeft: theme.spacing(1),
+  },
+  labelsList: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
+  labelsListItem: {
+    paddingLeft: "12px",
+    width: "auto",
+    display: "flex",
+  },
+  labelIcon: {
+    color: theme.palette.primary.dark,
+  },
+  labelText: {
+    paddingLeft: theme.spacing(1),
+    marginRight: theme.spacing(6),
+  },
+  buttonsList: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    marginBottom: "-18px",
+  },
+  buttonsListItem: {
+    padding: theme.spacing(1),
+    width: "auto",
+  },
+  iconButton: {
+    marginRight: "-22px",
+    marginLeft: "-10px",
+  },
+  infoOnHover: {
+    color: theme.palette.text.secondary,
+    fontStyle: "italic",
+    fontSize: "12px",
+  },
+  paper: {
+    borderRadius: "inherit",
+    height: "49px",
+    backgroundColor: (accordionOpened) =>
+      accordionOpened
+        ? theme.palette.primary.main
+        : theme.palette.primary.light,
+  },
+  accordionDetails: {
+    display: "inline",
+  },
+  accordionTypography: {
+    fontWeight: 500,
+  },
+  avatar: {
+    backgroundColor: (accordionOpened) =>
+      accordionOpened ? theme.palette.primary.light : "transparent",
+    width: "30px",
+    height: "30px",
+  },
+  svgLarge: { width: "55%", height: "100%" },
+  svgSmall: { width: "15px", height: "100%" },
+});
 
 interface Props {
   expanded: boolean;

@@ -1,17 +1,10 @@
-import { useState, ReactElement } from "react";
-import * as React from "react";
-import { theme } from "@/theme";
+import { useState, ReactElement, MouseEvent, ChangeEvent } from "react";
+import SVG from "react-inlinesvg";
 
-import {
-  makeStyles,
-  createStyles,
-  Theme,
-  withStyles,
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   InputBase,
   IconButton,
-  Tooltip,
   Chip,
   Popover,
   Card,
@@ -22,66 +15,56 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Label, Close, Add } from "@material-ui/icons";
-import SVG from "react-inlinesvg";
+import { theme } from "@/theme";
+import { HtmlTooltip } from "@/components/HtmlTooltip";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    cross: {
-      position: "absolute",
-      marginLeft: "223px",
-      color: theme.palette.text.primary,
-    },
-    cardContent: {
-      paddingBottom: "18px",
-      padding: 0,
-    },
-    labelsCard: {
-      borderRadius: "9px",
-      backgroundColor: theme.palette.primary.light,
-      width: "271px",
-    },
-    labelsCardHeader: {
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.text.primary,
-      height: "44px",
-    },
-    cardHeaderTypography: {
-      fontSize: "21px",
-    },
-
-    labelsChip: {
-      margin: "5px",
-      marginLeft: "10px",
-      borderRadius: "9px",
-      color: theme.palette.text.secondary,
-    },
-    inputGrid: {
-      width: "100%",
-    },
-    input: {
-      fontSize: 14,
-      marginRight: "60px",
-      marginLeft: "12px",
-      marginBottom: "13px",
-    },
-    addLabelButton: {
-      color: theme.palette.primary.light,
-      position: "absolute",
-      bottom: theme.spacing(1),
-      left: theme.spacing(1),
-    },
-    svgSmall: { width: "10px", height: "100%" },
-  })
-);
-
-const HtmlTooltip = withStyles((t: Theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.primary.light,
-    fontSize: t.typography.pxToRem(12),
-    border: "1px solid #dadde9",
+const useStyles = makeStyles({
+  cross: {
+    position: "absolute",
+    marginLeft: "223px",
     color: theme.palette.text.primary,
   },
-}))(Tooltip);
+  cardContent: {
+    paddingBottom: "18px",
+    padding: 0,
+  },
+  labelsCard: {
+    borderRadius: "9px",
+    backgroundColor: theme.palette.primary.light,
+    width: "271px",
+  },
+  labelsCardHeader: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.text.primary,
+    height: "44px",
+  },
+  cardHeaderTypography: {
+    fontSize: "21px",
+  },
+
+  labelsChip: {
+    margin: "5px",
+    marginLeft: "10px",
+    borderRadius: "9px",
+    color: theme.palette.text.secondary,
+  },
+  inputGrid: {
+    width: "100%",
+  },
+  input: {
+    fontSize: 14,
+    marginRight: "60px",
+    marginLeft: "12px",
+    marginBottom: "13px",
+  },
+  addLabelButton: {
+    color: theme.palette.primary.light,
+    position: "absolute",
+    bottom: theme.spacing(1),
+    left: theme.spacing(1),
+  },
+  svgSmall: { width: "10px", height: "100%" },
+});
 
 interface Props {
   id: string;
@@ -95,14 +78,14 @@ export function LabelsPopover(props: Props): ReactElement {
   const [anchorElement, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [newLabel, setNewLabel] = useState("");
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleNewLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewLabelChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewLabel(event.target.value);
   };
 

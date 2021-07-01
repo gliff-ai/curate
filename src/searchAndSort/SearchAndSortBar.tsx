@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
-import * as React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -10,40 +9,31 @@ import TooltipButton from "@/components/TooltipButton";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: "inline",
-    },
-    cardContent: {
-      backgroundColor: theme.palette.primary.light,
-      borderRadius: "9px",
-      marginTop: "15px",
-      height: "110px",
-      padding: "inherit",
-      marginBottom: "15px",
-    },
-    input1: {
-      paddingLeft: "10px",
-      width: "90%",
-    },
-    input2: {
-      paddingLeft: "10px",
-      width: "80%",
-      display: "inline-block",
-    },
-    inputField: {
-      fontSize: "11px",
-    },
-    iconButton: {
-      padding: "0px",
-      paddingTop: "4px",
-      marginRight: "4px",
-    },
-
-    svgSmall: { width: "22px", height: "100%" },
-  })
-);
+const useStyles = makeStyles({
+  root: {
+    display: "inline",
+  },
+  cardContent: {
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: "9px",
+    marginTop: "15px",
+    height: "110px",
+    padding: "inherit",
+    marginBottom: "15px",
+  },
+  input1: {
+    paddingLeft: "10px",
+    width: "90%",
+  },
+  input2: {
+    paddingLeft: "10px",
+    width: "80%",
+    display: "inline-block",
+  },
+  inputField: {
+    fontSize: "11px",
+  },
+});
 
 interface Props {
   metadata: Metadata;
@@ -167,9 +157,9 @@ export default function SearchAndSortBar({
           type="submit"
           tooltip="Search"
           svgSrc="search"
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          onClick={(e) => {
             if (!inputKey) {
-              e.preventDefault();
+              e?.preventDefault();
             }
           }}
         />

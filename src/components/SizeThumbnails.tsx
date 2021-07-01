@@ -3,21 +3,19 @@ import { theme } from "@/theme";
 
 import { Card } from "@material-ui/core";
 
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import TooltipButton from "@/components/TooltipButton";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    svgSmall: { width: "22px", height: "100%" },
-    card: {
-      height: "48px",
-      backgroundColor: theme.palette.primary.light,
-      width: "150px",
-      paddingLeft: "10px",
-      paddingTop: "1px",
-    },
-  })
-);
+const useStyles = makeStyles({
+  svgSmall: { width: "22px", height: "100%" },
+  card: {
+    height: "48px",
+    backgroundColor: theme.palette.primary.light,
+    width: "150px",
+    paddingLeft: "10px",
+    paddingTop: "1px",
+  },
+});
 
 interface ThumbnailSizes {
   name: string;
