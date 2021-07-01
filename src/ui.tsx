@@ -1,4 +1,10 @@
-import { Component, ChangeEvent, ReactNode, KeyboardEvent, MouseEvent } from "react";
+import {
+  Component,
+  ChangeEvent,
+  ReactNode,
+  KeyboardEvent,
+  MouseEvent,
+} from "react";
 
 import {
   AppBar,
@@ -40,11 +46,12 @@ const styles = () => ({
     height: "90px",
     paddingTop: "9px",
   },
-
   sideBar: {
     width: "290px",
   },
-
+  toolBoxCard: {
+    marginBottom: "10px",
+  },
   imagesContainer: {
     display: "flex",
     width: "calc(100% - 290px)",
@@ -60,9 +67,6 @@ const styles = () => ({
   logo: {
     marginBottom: "5px",
     marginTop: "7px",
-  },
-  iconButton: {
-    padding: "4px",
   },
   smallButton: {
     backgroundColor: theme.palette.primary.light,
@@ -106,12 +110,6 @@ const styles = () => ({
     paddingRight: "9px",
     bottom: "18px",
     left: "15px",
-  },
-
-  svgSmall: {
-    width: "22px",
-    height: "100%",
-    marginLeft: "-1px",
   },
 });
 
@@ -505,7 +503,11 @@ class UserInterface extends Component<Props, State> {
     );
 
     const toolBoxCard = (
-      <Box display="flex" justifyContent="space-between">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        className={classes.toolBoxCard}
+      >
         <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
 
         <Card className={classes.smallButton}>
