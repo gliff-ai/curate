@@ -6,8 +6,6 @@ import React, {
   MouseEvent,
 } from "react";
 
-import SVG from "react-inlinesvg";
-
 import {
   AppBar,
   CssBaseline,
@@ -19,19 +17,15 @@ import {
   ListItem,
   Button,
   Container,
-  IconButton,
   Card,
-  Avatar,
-  Typography,
   Box,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { ThemeProvider, theme } from "@/theme";
-import { HtmlTooltip } from "@/components/HtmlTooltip";
 import { svgSrc } from "@/helpers";
 
-import FloatingButton from "@/components/FloatingButton";
+import TooltipButton from "@/components/TooltipButton";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
 import MetadataDrawer from "./MetadataDrawer";
@@ -62,7 +56,6 @@ const styles = () => ({
     width: "calc(100% - 290px)",
     justifyContent: "flex-start",
     marginBottom: "auto",
-    // flexWrap: "wrap",
   },
 
   uploadButton: {
@@ -91,7 +84,7 @@ const styles = () => ({
   deleteImageList: {
     display: "flex",
     justifyContent: "space-around",
-    marginTop: "-24px",
+    marginTop: "-14px",
   },
   deleteImageListItem: {
     width: "auto",
@@ -529,7 +522,7 @@ class UserInterface extends Component<Props, State> {
         </Card>
 
         <Card className={classes.smallButton}>
-          <FloatingButton
+          <TooltipButton
             tooltip="Select Multiple Images"
             svgSrc="multiple-image-selection"
             isActive={this.state.selectMultipleImagesMode}
@@ -551,19 +544,11 @@ class UserInterface extends Component<Props, State> {
             style={{ fontWeight: 500 }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
           <ListItem className={classes.deleteImageListItem}>
-            <HtmlTooltip
-              title={<Typography color="inherit">Delete Images</Typography>}
-              placement="top"
-            >
-              <IconButton
-                aria-label="Delete"
-                onClick={this.deleteSelectedImages}
-              >
-                <Avatar variant="circular" className={classes.iconButton}>
-                  <SVG src={svgSrc("delete")} className={classes.svgSmall} />
-                </Avatar>
-              </IconButton>
-            </HtmlTooltip>
+            <TooltipButton
+              tooltip="Delete Images"
+              svgSrc="delete"
+              onClick={this.deleteSelectedImages}
+            />
           </ListItem>
         </List>
       </Card>
@@ -587,7 +572,7 @@ class UserInterface extends Component<Props, State> {
                   className={classes.collectionViewer}
                   style={{ position: "fixed" }}
                 >
-                  <FloatingButton
+                  <TooltipButton
                     tooltip="View Collection"
                     svgSrc="collections-viewer"
                     size="large"
@@ -598,7 +583,7 @@ class UserInterface extends Component<Props, State> {
                     setUploadedImage={this.addUploadedImage}
                     multiple
                     spanElement={
-                      <FloatingButton
+                      <TooltipButton
                         tooltip="Upload Image"
                         svgSrc="upload-icon"
                         size="large"

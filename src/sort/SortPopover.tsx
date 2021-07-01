@@ -7,7 +7,6 @@ import {
   Typography,
   Button,
   makeStyles,
-  Theme,
   Card,
   Paper,
   FormControl,
@@ -16,10 +15,8 @@ import {
   Radio,
   TextField,
   MenuItem,
-  Tooltip,
   IconButton,
   Avatar,
-  withStyles,
 } from "@material-ui/core";
 import {
   getLabelsFromKeys,
@@ -28,6 +25,7 @@ import {
 
 import { theme } from "@/theme";
 import { svgSrc } from "@/helpers";
+import TooltipButton from "@/components/TooltipButton";
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -66,9 +64,6 @@ const useStyles = makeStyles(() => ({
     top: "-5px",
     right: theme.spacing(1),
   },
-  iconButton: {
-    padding: "4px",
-  },
   closeAvatar: {
     width: "30px",
     height: "30px",
@@ -83,15 +78,6 @@ const useStyles = makeStyles(() => ({
     height: "100%",
   },
 }));
-
-const HtmlTooltip = withStyles((t: Theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.primary.light,
-    fontSize: t.typography.pxToRem(12),
-    border: "1px solid #dadde9",
-    color: theme.palette.text.primary,
-  },
-}))(Tooltip);
 
 interface Props {
   metadataKeys: string[];
@@ -147,16 +133,11 @@ export const SortPopover = ({
 
   return (
     <>
-      <HtmlTooltip
-        title={<Typography color="inherit">Sort</Typography>}
-        placement="top"
-      >
-        <IconButton onClick={handleClick} className={classes.iconButton}>
-          <Avatar variant="circular">
-            <SVG src={svgSrc("search-filter")} className={classes.svgMedium} />
-          </Avatar>
-        </IconButton>
-      </HtmlTooltip>
+      <TooltipButton
+        tooltip="Sort"
+        svgSrc="search-filter"
+        onClick={handleClick}
+      />
 
       <Popover
         id="sort-popover"
