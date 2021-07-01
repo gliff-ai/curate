@@ -68,18 +68,20 @@ const thumbnailSizes: ThumbnailSizes[] = [
   {
     name: "Small Thumbnails",
     icon: svgSrc("small-image-grid"),
-    size: 132
+    size: 132,
   },
 ];
 
-export default function SizeThumbnails({resizeThumbnails}: Props): ReactElement {
+export default function SizeThumbnails({
+  resizeThumbnails,
+}: Props): ReactElement {
   const classes = useStyles();
   const [buttonClicked, setButtonClicked] = useState("");
 
   useEffect(() => {
-    thumbnailSizes.forEach(thumb => {
-      if(thumb.name === buttonClicked) resizeThumbnails(thumb.size)
-    })
+    thumbnailSizes.forEach((thumb) => {
+      if (thumb.name === buttonClicked) resizeThumbnails(thumb.size);
+    });
   }, [buttonClicked]);
 
   return (
