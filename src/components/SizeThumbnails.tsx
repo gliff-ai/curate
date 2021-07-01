@@ -1,21 +1,10 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { theme } from "@/theme";
-import { svgSrc } from "@/helpers";
 
-import {
-  Avatar,
-  Card,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
-import SVG from "react-inlinesvg";
-import {
-  makeStyles,
-  createStyles,
-  withStyles,
-  Theme,
-} from "@material-ui/core/styles";
+import { Card } from "@material-ui/core";
+
+import { makeStyles, createStyles } from "@material-ui/core/styles";
+import TooltipButton from "@/components/TooltipButton";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,21 +16,8 @@ const useStyles = makeStyles(() =>
       paddingLeft: "10px",
       paddingTop: "1px",
     },
-    iconButton: {
-      padding: "0px",
-      paddingTop: "4px",
-      marginRight: "4px",
-    },
   })
 );
-const HtmlTooltip = withStyles((t: Theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.primary.light,
-    fontSize: t.typography.pxToRem(12),
-    border: "1px solid #dadde9",
-    color: theme.palette.text.primary,
-  },
-}))(Tooltip);
 
 interface ThumbnailSizes {
   name: string;
@@ -56,17 +32,17 @@ interface Props {
 export const thumbnailSizes: ThumbnailSizes[] = [
   {
     name: "Large Thumbnails",
-    icon: svgSrc("large-image-grid"),
+    icon: "large-image-grid",
     size: 298,
   },
   {
     name: "Medium Thumbnails",
-    icon: svgSrc("medium-image-grid"),
+    icon: "medium-image-grid",
     size: 211,
   },
   {
     name: "Small Thumbnails",
-    icon: svgSrc("small-image-grid"),
+    icon: "small-image-grid",
     size: 132,
   },
 ];
@@ -87,30 +63,14 @@ export default function SizeThumbnails({
     <div>
       <Card className={classes.card}>
         {thumbnailSizes.map((thumbnailSize: ThumbnailSizes) => (
-          <HtmlTooltip
-            title={
-              <Typography color="inherit">{thumbnailSize.name} </Typography>
-            }
-            placement="top"
+          <TooltipButton
             key={thumbnailSize.name}
-          >
-            <IconButton
-              className={classes.iconButton}
-              onClick={() => setButtonClicked(thumbnailSize.name)}
-            >
-              <Avatar variant="circular">
-                <SVG
-                  src={thumbnailSize.icon}
-                  className={classes.svgSmall}
-                  fill={
-                    buttonClicked === thumbnailSize.name
-                      ? theme.palette.primary.main
-                      : null
-                  }
-                />
-              </Avatar>
-            </IconButton>
-          </HtmlTooltip>
+            tooltip={thumbnailSize.name}
+            svgSrc={thumbnailSize.icon}
+            size="inline"
+            onClick={() => setButtonClicked(thumbnailSize.name)}
+            isActive={buttonClicked === thumbnailSize.name}
+          />
         ))}
       </Card>
     </div>

@@ -1,19 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { ChangeEvent, useState, useEffect, ReactElement } from "react";
-import SVG from "react-inlinesvg";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import {
-  Avatar,
-  Card,
-  CardContent,
-  IconButton,
-  Paper,
-  TextField,
-} from "@material-ui/core";
+import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
+import TooltipButton from "@/components/TooltipButton";
+import { metadataNameMap } from "@/MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
-import { metadataNameMap } from "../MetadataDrawer";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -168,23 +161,16 @@ export default function SearchAndSortBar({
           renderInput={(params: any) => <TextField {...params} label="..." />}
           PaperComponent={CustomPaper}
         />
-        <IconButton
+        <TooltipButton
           type="submit"
-          aria-label="search"
-          className={classes.iconButton}
-          onClick={(e) => {
+          tooltip="Search"
+          svgSrc="search"
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             if (!inputKey) {
               e.preventDefault();
             }
           }}
-        >
-          <Avatar variant="circular">
-            <SVG
-              src={require("../assets/search.svg") as string}
-              className={classes.svgSmall}
-            />
-          </Avatar>
-        </IconButton>
+        />
       </CardContent>
     </Card>
   );
