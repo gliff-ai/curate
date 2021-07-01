@@ -1,4 +1,5 @@
-import React, { useState, ReactElement } from "react";
+import { useState, ReactElement } from "react";
+import * as React from "react";
 import { theme } from "@/theme";
 
 import {

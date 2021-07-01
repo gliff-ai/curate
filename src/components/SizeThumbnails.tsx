@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { theme } from "@/theme";
 
 import { Card } from "@material-ui/core";

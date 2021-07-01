@@ -1,10 +1,4 @@
-import React, {
-  Component,
-  ChangeEvent,
-  ReactNode,
-  KeyboardEvent,
-  MouseEvent,
-} from "react";
+import { Component, ChangeEvent, ReactNode, KeyboardEvent, MouseEvent } from "react";
 
 import {
   AppBar,

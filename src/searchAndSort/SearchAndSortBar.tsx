@@ -1,5 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { ChangeEvent, useState, useEffect, ReactElement } from "react";
+import { ChangeEvent, useState, useEffect, ReactElement } from "react";
+
+import * as React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
