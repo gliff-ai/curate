@@ -1,31 +1,13 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
+const port = process.env.PORT || 3000;
+
 module.exports = {
-  entry: {
-    main: "./src/index.tsx",
-  },
+  entry: "./examples/src/index.tsx",
   mode: "development",
-  devtool: "source-map",
-  output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "dist"),
-    libraryTarget: "commonjs",
-  },
-  externals: {
-    // Don't bundle react or react-dom
-    react: {
-      commonjs: "react",
-      commonjs2: "react",
-      amd: "React",
-      root: "React",
-    },
-    "react-dom": {
-      commonjs: "react-dom",
-      commonjs2: "react-dom",
-      amd: "ReactDOM",
-      root: "ReactDOM",
-    },
-  },
+  devtool: "eval-source-map",
   module: {
     rules: [
       {
@@ -33,21 +15,14 @@ module.exports = {
         use: "ts-loader",
         exclude: /node_modules/,
       },
+
       {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: "babel-loader",
           options: {
-            presets: [
-              "@babel/preset-env",
-              [
-                "@babel/preset-react",
-                {
-                  runtime: "automatic", // defaults to classic
-                },
-              ],
-            ],
+            presets: ["@babel/preset-env", "@babel/react"],
             plugins: ["@babel/proposal-class-properties"],
           },
         },
@@ -56,7 +31,7 @@ module.exports = {
         test: /\.(s*)css$/,
         use: ["style-loader", "css-loader", "sass-loader"],
       },
-        {
+      {
         test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
         use: {
           loader: "url-loader",
@@ -73,5 +48,28 @@ module.exports = {
     alias: {
       "@": path.resolve(__dirname, "src"),
     },
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "examples/index.html",
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "examples/samples",
+          to: "samples",
+        },
+        {
+          from: "examples/metadata.json",
+          to: "metadata.json",
+        },
+      ],
+    }),
+  ],
+  devServer: {
+    host: "localhost",
+    port,
+    historyApiFallback: true,
+    open: true,
   },
 };

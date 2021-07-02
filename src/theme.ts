@@ -18,6 +18,10 @@ const theme: Theme = createMuiTheme({
   },
   typography: {
     fontFamily: "Roboto",
+    h6: {
+      fontWeight: 500,
+      fontSize: "0.875rem", // Same as body2
+    },
   },
 
   shape: {

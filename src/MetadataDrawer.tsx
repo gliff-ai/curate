@@ -72,8 +72,12 @@ const useStyles = makeStyles({
   },
   metaValue: {
     fontSize: 14,
-    margin: 0,
     marginLeft: "5px",
+    "& > span": {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   },
   svgSmall: { width: "12px", height: "100%" },
 });
@@ -149,6 +153,9 @@ export default function MetadataDrawer(props: Props): ReactElement {
               .map((key) => (
                 <ListItem key={key} className={classes.metaListItem}>
                   <ListItemText
+                    primaryTypographyProps={{ variant: "h6" }}
+                    className={classes.metaKey}
+                    title={metadataNameMap[key]}
                     primary={`${metadataNameMap[key]}:`}
                     classes={{
                       primary: classes.metaKey,
@@ -156,6 +163,8 @@ export default function MetadataDrawer(props: Props): ReactElement {
                     }}
                   />
                   <ListItemText
+                    className={classes.metaValue}
+                    title={props.metadata[key] as string}
                     primary={
                       key === "imageLabels"
                         ? (props.metadata[key] as string[]).join(", ")
