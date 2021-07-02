@@ -20,17 +20,15 @@ import { HtmlTooltip } from "@/components/HtmlTooltip";
 type MetadataNameMap = { [index: string]: string };
 
 const useStyles = makeStyles({
-  paper: {
+  paperHeader: {
     backgroundColor: theme.palette.primary.main,
-    paddingLeft: "18px",
     width: "334px",
     height: "44px",
     paddingTop: "5px",
   },
-  typography: {
+  typographyHeader: {
     display: "inline",
-    marginRight: "135px",
-    marginLeft: "10px",
+    marginLeft: "18px",
     fontWeight: 500,
   },
   mainbox: {
@@ -48,6 +46,7 @@ const useStyles = makeStyles({
     display: "inline-flex",
     width: "30px",
     height: "30px",
+    marginLeft: "150px",
   },
   avatarFontSize: {
     fontSize: "11px",
@@ -56,8 +55,25 @@ const useStyles = makeStyles({
   card: {
     backgroundColor: theme.palette.primary.light,
   },
-  metadata: {
+  metaListItem: {
+    paddingTop: "5px",
+    paddingBottom: "5px",
+    alignItems: "unset",
+  },
+  metaRoot: {
+    margin: 0,
+    padding: 0,
+    flex: "unset",
+    width: "50%",
+  },
+  metaKey: {
+    fontSize: 14,
     fontWeight: 500,
+  },
+  metaValue: {
+    fontSize: 14,
+    margin: 0,
+    marginLeft: "5px",
   },
   svgSmall: { width: "12px", height: "100%" },
 });
@@ -67,8 +83,8 @@ export const metadataNameMap: MetadataNameMap = {
   size: "Size",
   dateCreated: "Created",
   dimensions: "Dimensions",
-  numberOfDimensions: "Number Of Dimensions",
-  numberOfChannels: "Number Of Channels",
+  numberOfDimensions: "No. of Dimensions",
+  numberOfChannels: "No. of Channels",
   imageLabels: "Labels",
 };
 
@@ -84,8 +100,8 @@ export default function MetadataDrawer(props: Props): ReactElement {
   return (
     <>
       <Card className={classes.card}>
-        <Paper elevation={0} variant="outlined" className={classes.paper}>
-          <Typography className={classes.typography}>Metadata</Typography>
+        <Paper elevation={0} variant="outlined" className={classes.paperHeader}>
+          <Typography className={classes.typographyHeader}>Metadata</Typography>
           <HtmlTooltip
             key="Return to search"
             title={
@@ -131,17 +147,25 @@ export default function MetadataDrawer(props: Props): ReactElement {
             {Object.keys(props.metadata)
               .filter((key) => Object.keys(metadataNameMap).includes(key))
               .map((key) => (
-                <ListItem key={key}>
-                  <ListItemText>
-                    <Typography
-                      className={classes.metadata}
-                    >{`${metadataNameMap[key]}:`}</Typography>
-                  </ListItemText>
-                  <ListItemText>
-                    {key === "imageLabels"
-                      ? (props.metadata[key] as string[]).join(", ")
-                      : props.metadata[key].toString()}
-                  </ListItemText>
+                <ListItem key={key} className={classes.metaListItem}>
+                  <ListItemText
+                    primary={`${metadataNameMap[key]}:`}
+                    classes={{
+                      primary: classes.metaKey,
+                      root: classes.metaRoot,
+                    }}
+                  />
+                  <ListItemText
+                    primary={
+                      key === "imageLabels"
+                        ? (props.metadata[key] as string[]).join(", ")
+                        : props.metadata[key].toString()
+                    }
+                    classes={{
+                      primary: classes.metaValue,
+                      root: classes.metaRoot,
+                    }}
+                  />
                 </ListItem>
               ))}
           </List>
