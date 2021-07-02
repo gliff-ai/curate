@@ -583,6 +583,7 @@ class UserInterface extends Component<Props, State> {
                         tooltip="Upload Image"
                         svgSrc="upload-icon"
                         size="large"
+                        component="span"
                       />
                     }
                   />

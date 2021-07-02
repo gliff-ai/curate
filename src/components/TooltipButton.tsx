@@ -3,7 +3,7 @@ import { svgSrc } from "@/helpers";
 
 import SVG from "react-inlinesvg";
 
-import { Avatar, IconButton, Typography } from "@material-ui/core";
+import { Avatar, IconButton, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { HtmlTooltip } from "@/components/HtmlTooltip";
 import { theme } from "@/theme";
@@ -15,6 +15,7 @@ interface Props {
   onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
   isActive?: boolean;
   type?: "button" | "submit";
+  component?: "button" | "span";
 }
 
 const useStyles = makeStyles({
@@ -40,16 +41,42 @@ const useStyles = makeStyles({
 });
 
 export default function TooltipButton(props: Props): ReactElement {
-  const { size, isActive, type, tooltip, svgSrc: src, onClick } = props;
+  const {
+    size,
+    isActive,
+    type,
+    component,
+    tooltip,
+    svgSrc: src,
+    onClick,
+  } = props;
   const classes = useStyles({ size, isActive });
+
+  const avatarIcon = (
+    <Avatar variant="circular" className={classes.avatar}>
+      <SVG src={svgSrc(src)} className={classes.svg} />
+    </Avatar>
+  );
 
   return (
     <HtmlTooltip title={<Typography color="inherit">{tooltip}</Typography>}>
-      <IconButton type={type} className={classes.iconButton} onClick={onClick}>
-        <Avatar variant="circular" className={classes.avatar}>
-          <SVG src={svgSrc(src)} className={classes.svg} />
-        </Avatar>
-      </IconButton>
+      {component === "span" ? (
+        <Button
+          component="span"
+          className={classes.iconButton}
+          onClick={onClick}
+        >
+          {avatarIcon}
+        </Button>
+      ) : (
+        <IconButton
+          type={type}
+          className={classes.iconButton}
+          onClick={onClick}
+        >
+          {avatarIcon}
+        </IconButton>
+      )}
     </HtmlTooltip>
   );
 }
@@ -58,5 +85,6 @@ TooltipButton.defaultProps = {
   size: "small",
   isActive: false,
   type: "button",
+  component: "button",
   onClick: (): null => null,
 };

@@ -10,7 +10,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider,
   Avatar,
   Typography,
 } from "@material-ui/core";
@@ -21,17 +20,18 @@ import { HtmlTooltip } from "@/components/HtmlTooltip";
 const useStyles = makeStyles({
   cross: {
     position: "absolute",
-    marginLeft: "223px",
+    right: "10px",
     color: theme.palette.text.primary,
   },
+  addButton: { position: "absolute", right: "10px" },
   cardContent: {
-    paddingBottom: "18px",
-    padding: 0,
+    padding: "15px",
+    paddingTop: "10px",
   },
   labelsCard: {
     borderRadius: "9px",
     backgroundColor: theme.palette.primary.light,
-    width: "271px",
+    width: "300px",
   },
   labelsCardHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -40,11 +40,13 @@ const useStyles = makeStyles({
   },
   cardHeaderTypography: {
     fontSize: "21px",
+    width: "240px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
-
   labelsChip: {
-    margin: "5px",
-    marginLeft: "10px",
+    margin: "5px 5px 0 0 ",
     borderRadius: "9px",
     color: theme.palette.text.secondary,
   },
@@ -53,9 +55,9 @@ const useStyles = makeStyles({
   },
   input: {
     fontSize: 14,
-    marginRight: "60px",
-    marginLeft: "12px",
-    marginBottom: "13px",
+    width: "225px",
+    marginBottom: "20px",
+    borderBottom: "solid 1px #dadde9",
   },
   addLabelButton: {
     color: theme.palette.primary.light,
@@ -110,9 +112,9 @@ export function LabelsPopover(props: Props): ReactElement {
         placement="top-start"
       >
         <IconButton
+          className={classes.addLabelButton}
           aria-describedby={props.id}
           onClick={handleClick}
-          className={classes.addLabelButton}
         >
           <Label />
         </IconButton>
@@ -153,6 +155,7 @@ export function LabelsPopover(props: Props): ReactElement {
             <InputBase
               key={`input-${props.id}`}
               placeholder="New label"
+              type="text"
               value={newLabel}
               onChange={handleNewLabelChange}
               inputProps={{
@@ -160,13 +163,13 @@ export function LabelsPopover(props: Props): ReactElement {
               }}
             />
             <IconButton
+              className={classes.addButton}
               key={`button-add-${props.id}`}
               type="submit"
               onClick={handleAddLabel(newLabel)}
             >
               <Add />
             </IconButton>
-            <Divider />
             {props.labels.map((label) => (
               <Chip
                 key={`chip-add-${label}`}
