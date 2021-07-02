@@ -56,10 +56,24 @@ const useStyles = makeStyles({
   card: {
     backgroundColor: theme.palette.primary.light,
   },
-  metadata: {
-    fontWeight: 500,
-  },
   svgSmall: { width: "12px", height: "100%" },
+  metaKey: {
+    width: "100px",
+    "& > span": {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+  },
+  metaValue: {
+    width: "180px",
+    "& > span": {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+  },
+  metaList: {},
 });
 
 export const metadataNameMap: MetadataNameMap = {
@@ -67,8 +81,8 @@ export const metadataNameMap: MetadataNameMap = {
   size: "Size",
   dateCreated: "Created",
   dimensions: "Dimensions",
-  numberOfDimensions: "Number Of Dimensions",
-  numberOfChannels: "Number Of Channels",
+  numberOfDimensions: "# Dimensions",
+  numberOfChannels: "# Channels",
   imageLabels: "Labels",
 };
 
@@ -131,13 +145,19 @@ export default function MetadataDrawer(props: Props): ReactElement {
             {Object.keys(props.metadata)
               .filter((key) => Object.keys(metadataNameMap).includes(key))
               .map((key) => (
-                <ListItem key={key}>
-                  <ListItemText>
-                    <Typography
-                      className={classes.metadata}
-                    >{`${metadataNameMap[key]}:`}</Typography>
+                <ListItem key={key} className={classes.metaList}>
+                  <ListItemText
+                    primaryTypographyProps={{ variant: "h6" }}
+                    className={classes.metaKey}
+                    title={metadataNameMap[key]}
+                  >
+                    {metadataNameMap[key]}:
                   </ListItemText>
-                  <ListItemText>
+
+                  <ListItemText
+                    className={classes.metaValue}
+                    title={props.metadata[key] as string}
+                  >
                     {key === "imageLabels"
                       ? (props.metadata[key] as string[]).join(", ")
                       : props.metadata[key].toString()}
