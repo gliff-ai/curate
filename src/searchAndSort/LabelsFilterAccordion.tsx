@@ -28,11 +28,13 @@ const useStyles = makeStyles({
     display: "flex",
   },
   labelIcon: {
+    width: "20px",
+    height: "auto",
     color: theme.palette.primary.dark,
   },
   labelText: {
     paddingLeft: theme.spacing(1),
-    marginRight: theme.spacing(6),
+    marginRight: theme.spacing(4),
   },
   buttonsList: {
     display: "flex",
