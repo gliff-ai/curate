@@ -149,11 +149,15 @@ export default function MetadataDrawer(props: Props): ReactElement {
                   <ListItemText
                     primaryTypographyProps={{ variant: "h6" }}
                     className={classes.metaKey}
+                    title={metadataNameMap[key]}
                   >
                     {metadataNameMap[key]}:
                   </ListItemText>
 
-                  <ListItemText className={classes.metaValue}>
+                  <ListItemText
+                    className={classes.metaValue}
+                    title={props.metadata[key] as string}
+                  >
                     {key === "imageLabels"
                       ? (props.metadata[key] as string[]).join(", ")
                       : props.metadata[key].toString()}
