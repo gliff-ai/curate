@@ -40,6 +40,10 @@ const useStyles = makeStyles({
   },
   cardHeaderTypography: {
     fontSize: "21px",
+    width: "240px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   labelsChip: {
     margin: "5px 5px 0 0 ",

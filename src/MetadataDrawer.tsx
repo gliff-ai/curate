@@ -69,6 +69,11 @@ const useStyles = makeStyles({
   metaKey: {
     fontSize: 14,
     fontWeight: 500,
+    "& > span": {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   },
   metaValue: {
     fontSize: 14,
