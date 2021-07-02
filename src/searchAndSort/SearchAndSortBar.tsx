@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { ChangeEvent, useState, useEffect, ReactElement } from "react";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { ChangeEvent, useState, useEffect, ReactElement } from "react";
+
+import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { theme } from "@/theme";
@@ -8,40 +9,31 @@ import TooltipButton from "@/components/TooltipButton";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: "inline",
-    },
-    cardContent: {
-      backgroundColor: theme.palette.primary.light,
-      borderRadius: "9px",
-      marginTop: "15px",
-      height: "110px",
-      padding: "inherit",
-      marginBottom: "15px",
-    },
-    input1: {
-      paddingLeft: "10px",
-      width: "90%",
-    },
-    input2: {
-      paddingLeft: "10px",
-      width: "80%",
-      display: "inline-block",
-    },
-    inputField: {
-      fontSize: "11px",
-    },
-    iconButton: {
-      padding: "0px",
-      paddingTop: "4px",
-      marginRight: "4px",
-    },
-
-    svgSmall: { width: "22px", height: "100%" },
-  })
-);
+const useStyles = makeStyles({
+  root: {
+    display: "inline",
+  },
+  cardContent: {
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: "9px",
+    marginTop: "15px",
+    height: "110px",
+    padding: "inherit",
+    marginBottom: "15px",
+  },
+  input1: {
+    paddingLeft: "10px",
+    width: "90%",
+  },
+  input2: {
+    paddingLeft: "10px",
+    width: "80%",
+    display: "inline-block",
+  },
+  inputField: {
+    fontSize: "11px",
+  },
+});
 
 interface Props {
   metadata: Metadata;
@@ -56,7 +48,7 @@ export type MetadataLabel = {
 };
 
 // To be able to style the dropdown list
-const CustomPaper = (props: any) => (
+const CustomPaper = (props: unknown) => (
   <Paper
     elevation={8}
     {...props}
@@ -144,7 +136,7 @@ export default function SearchAndSortBar({
             setInputKey(metaLabel?.[0]);
           }}
           options={metadataLabels}
-          renderInput={(params: any) => (
+          renderInput={(params: unknown) => (
             <TextField {...params} label="Search Category" />
           )}
           PaperComponent={CustomPaper}
@@ -158,16 +150,18 @@ export default function SearchAndSortBar({
             setInputValue(newInputValue);
           }}
           options={inputOptions}
-          renderInput={(params: any) => <TextField {...params} label="..." />}
+          renderInput={(params: unknown) => (
+            <TextField {...params} label="..." />
+          )}
           PaperComponent={CustomPaper}
         />
         <TooltipButton
           type="submit"
           tooltip="Search"
           svgSrc="search"
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          onClick={(e) => {
             if (!inputKey) {
-              e.preventDefault();
+              e?.preventDefault();
             }
           }}
         />

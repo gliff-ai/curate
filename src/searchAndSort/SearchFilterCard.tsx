@@ -1,45 +1,43 @@
-import React, { ReactElement } from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { ReactElement } from "react";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { List, ListItem, ListItemText, Card } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
 import { Filter } from "@/searchAndSort/interfaces";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      width: "100%",
-      height: "auto",
-      marginBottom: "15px",
-      backgroundColor: theme.palette.primary.light,
-    },
+const useStyles = makeStyles((theme: Theme) => ({
+  card: {
+    width: "100%",
+    height: "auto",
+    marginBottom: "15px",
+    backgroundColor: theme.palette.primary.light,
+  },
 
-    list: {
-      display: "flex",
-      flexDirection: "row",
-      flexWrap: "wrap",
-    },
-    listItem: {
-      padding: `${theme.spacing(0)}, ${theme.spacing(0)}`,
-      marginLeft: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-      marginTop: theme.spacing(1),
-      width: "auto",
-      border: "1px solid",
-      borderColor: theme.palette.text.secondary,
-      borderRadius: "10px",
-    },
-    icon: {
-      color: theme.palette.text.secondary,
-      fontSize: "14px",
-      marginRight: "-5px",
-      marginLeft: "-5px",
-    },
-    text: {
-      paddingLeft: theme.spacing(2),
-      color: theme.palette.text.secondary,
-    },
-  })
-);
+  list: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  listItem: {
+    padding: `${theme.spacing(0)}, ${theme.spacing(0)}`,
+    marginLeft: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(1),
+    width: "auto",
+    border: "1px solid",
+    borderColor: theme.palette.text.secondary,
+    borderRadius: "10px",
+  },
+  icon: {
+    color: theme.palette.text.secondary,
+    fontSize: "14px",
+    marginRight: "-5px",
+    marginLeft: "-5px",
+  },
+  text: {
+    paddingLeft: theme.spacing(2),
+    color: theme.palette.text.secondary,
+  },
+}));
 
 interface Props {
   activeFilters: Filter[];

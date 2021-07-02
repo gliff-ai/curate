@@ -1,5 +1,10 @@
-import React, { ReactElement, useEffect, useState } from "react";
-
+import {
+  ReactElement,
+  useEffect,
+  useState,
+  ChangeEvent,
+  MouseEvent,
+} from "react";
 import SVG from "react-inlinesvg";
 
 import {
@@ -27,7 +32,7 @@ import { theme } from "@/theme";
 import { svgSrc } from "@/helpers";
 import TooltipButton from "@/components/TooltipButton";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   card: {
     backgroundColor: theme.palette.primary.light,
     width: "250px",
@@ -68,16 +73,11 @@ const useStyles = makeStyles(() => ({
     width: "30px",
     height: "30px",
   },
-  svgMedium: {
-    width: "22px",
-    height: "100%",
-    marginLeft: "-1px",
-  },
   svgSmall: {
     width: "12px",
     height: "100%",
   },
-}));
+});
 
 interface Props {
   metadataKeys: string[];
@@ -99,7 +99,7 @@ export const SortPopover = ({
   const [sortOrder, setSortOrder] = useState("");
   const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -109,7 +109,7 @@ export const SortPopover = ({
 
   const handleChange =
     (func: (value: string) => void) =>
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
+    (event: ChangeEvent<HTMLInputElement>): void => {
       event.preventDefault();
       const { value } = event.target as HTMLButtonElement;
       func(value);

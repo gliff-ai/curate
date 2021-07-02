@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import { ReactElement, MouseEvent } from "react";
 import { svgSrc } from "@/helpers";
 
 import SVG from "react-inlinesvg";
@@ -12,7 +12,7 @@ interface Props {
   tooltip: string;
   svgSrc: string;
   size?: "small" | "large" | "inline";
-  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
   isActive?: boolean;
   type?: "button" | "submit";
 }
