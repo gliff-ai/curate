@@ -28,6 +28,7 @@ import { svgSrc } from "@/helpers";
 import TooltipButton from "@/components/TooltipButton";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
+import { logTaskExecution } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import SizeThumbnails, { thumbnailSizes } from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
@@ -35,7 +36,6 @@ import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
-import { logTaskExecution } from "@/decorators";
 
 const styles = () => ({
   root: {
@@ -140,7 +140,7 @@ interface State {
   selectMultipleImagesMode: boolean;
 }
 
-export class UserInterface extends Component<Props, State> {
+class UserInterface extends Component<Props, State> {
   static defaultProps = {
     showAppBar: true,
   } as Pick<Props, "showAppBar">;
@@ -162,6 +162,8 @@ export class UserInterface extends Component<Props, State> {
       thumbnailHeight: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
     };
+
+    /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
     this.addUploadedImage = this.addUploadedImage.bind(this);
   }
 
@@ -389,44 +391,6 @@ export class UserInterface extends Component<Props, State> {
     return canvas.toDataURL();
   };
 
-  @logTaskExecution("Image(s) upload")
-  async addUploadedImage(
-    imageFileInfo: ImageFileInfo,
-    images: ImageBitmap[][]
-  ) {
-    const thumbnail = this.makeThumbnail(images);
-    const today = new Date();
-    const newMetadata = {
-      imageName: imageFileInfo.fileName,
-      id: imageFileInfo.fileID,
-      dateCreated: today.toLocaleDateString("gb-EN"),
-      size: imageFileInfo.size.toString(),
-      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
-      numberOfDimensions: images.length === 1 ? "2" : "3",
-      numberOfChannels: images[0].length.toString(),
-      imageLabels: [] as Array<string>,
-      thumbnail,
-      selected: true,
-    };
-
-    if (this.props.saveImageCallback) {
-      // Store uploaded image
-      await this.props.saveImageCallback(imageFileInfo, images);
-    } else {
-      // add the uploaded image directly to state.metadata
-      this.setState((state) => {
-        const metaKeys =
-          state.metadataKeys.length === 0
-            ? this.getMetadataKeys(newMetadata)
-            : state.metadataKeys;
-        return {
-          metadata: state.metadata.concat(newMetadata),
-          metadataKeys: metaKeys,
-        };
-      });
-    }
-  }
-
   deleteSelectedImages = (): void => {
     if (!this.state.selectedImagesUid) return;
     this.setState((state) => {
@@ -485,6 +449,44 @@ export class UserInterface extends Component<Props, State> {
         };
       });
     };
+
+  @logTaskExecution("Image(s) upload")
+  async addUploadedImage(
+    imageFileInfo: ImageFileInfo,
+    images: ImageBitmap[][]
+  ) {
+    const thumbnail = this.makeThumbnail(images);
+    const today = new Date();
+    const newMetadata = {
+      imageName: imageFileInfo.fileName,
+      id: imageFileInfo.fileID,
+      dateCreated: today.toLocaleDateString("gb-EN"),
+      size: imageFileInfo.size.toString(),
+      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
+      numberOfDimensions: images.length === 1 ? "2" : "3",
+      numberOfChannels: images[0].length.toString(),
+      imageLabels: [] as Array<string>,
+      thumbnail,
+      selected: true,
+    };
+
+    if (this.props.saveImageCallback) {
+      // Store uploaded image
+      await this.props.saveImageCallback(imageFileInfo, images);
+    } else {
+      // add the uploaded image directly to state.metadata
+      this.setState((state) => {
+        const metaKeys =
+          state.metadataKeys.length === 0
+            ? this.getMetadataKeys(newMetadata)
+            : state.metadataKeys;
+        return {
+          metadata: state.metadata.concat(newMetadata),
+          metadataKeys: metaKeys,
+        };
+      });
+    }
+  }
 
   render = (): ReactNode => {
     const { classes, showAppBar } = this.props;
@@ -768,4 +770,5 @@ export class UserInterface extends Component<Props, State> {
   };
 }
 
+export { UserInterface as UI };
 export default withStyles(styles)(UserInterface);
