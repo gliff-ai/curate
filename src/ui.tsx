@@ -38,10 +38,6 @@ import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
 
 const styles = () => ({
-  root: {
-    marginTop: "108px", // We shouldn't need this even if there is an app bar!
-  },
-
   appBar: {
     backgroundColor: theme.palette.secondary.light,
     height: "90px",
@@ -563,7 +559,7 @@ class UserInterface extends Component<Props, State> {
         <Container maxWidth={false}>
           {appBar}
 
-          <div className={showAppBar ? classes.root : ""}>
+          <div style={{ marginTop: this.props.showAppBar ? "108px" : "20px" }}>
             <Grid container spacing={1}>
               <Grid item className={classes.sideBar}>
                 {toolBoxCard}
