@@ -35,6 +35,7 @@ import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
+import { logTaskExecution } from "@/decorators";
 
 const styles = () => ({
   root: {
@@ -118,11 +119,12 @@ interface Props extends WithStyles<typeof styles> {
   saveImageCallback?: (
     imageFileInfo: ImageFileInfo,
     image: ImageBitmap[][]
-  ) => void;
+  ) => Promise<void>;
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
   annotateCallback?: (id: string) => void;
+  setTask?: (task: { isLoading: boolean; description?: string }) => void;
 }
 
 interface State {
@@ -138,7 +140,7 @@ interface State {
   selectMultipleImagesMode: boolean;
 }
 
-class UserInterface extends Component<Props, State> {
+export class UserInterface extends Component<Props, State> {
   static defaultProps = {
     showAppBar: true,
   } as Pick<Props, "showAppBar">;
@@ -160,6 +162,7 @@ class UserInterface extends Component<Props, State> {
       thumbnailHeight: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
     };
+    this.addUploadedImage = this.addUploadedImage.bind(this);
   }
 
   /* eslint-disable react/no-did-update-set-state */
@@ -386,10 +389,11 @@ class UserInterface extends Component<Props, State> {
     return canvas.toDataURL();
   };
 
-  addUploadedImage = (
+  @logTaskExecution("Image(s) upload")
+  async addUploadedImage(
     imageFileInfo: ImageFileInfo,
     images: ImageBitmap[][]
-  ) => {
+  ) {
     const thumbnail = this.makeThumbnail(images);
     const today = new Date();
     const newMetadata = {
@@ -407,7 +411,7 @@ class UserInterface extends Component<Props, State> {
 
     if (this.props.saveImageCallback) {
       // Store uploaded image
-      this.props.saveImageCallback(imageFileInfo, images);
+      await this.props.saveImageCallback(imageFileInfo, images);
     } else {
       // add the uploaded image directly to state.metadata
       this.setState((state) => {
@@ -421,7 +425,7 @@ class UserInterface extends Component<Props, State> {
         };
       });
     }
-  };
+  }
 
   deleteSelectedImages = (): void => {
     if (!this.state.selectedImagesUid) return;
