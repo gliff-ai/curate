@@ -43,7 +43,7 @@ fetch("metadata.json")
 
         // render main component:
         ReactDOM.render(
-          <UserInterface metadata={tiles} />,
+          <UserInterface metadata={tiles} showAppBar />,
           document.getElementById("react-container")
         );
       },
