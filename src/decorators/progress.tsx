@@ -16,11 +16,8 @@ function logTaskExecution(taskDescription: string) {
 
     descriptor.value = async function decoratorWrapper(...args) {
       const setTask = (this as UI).props?.setTask;
-      console.log("running decorator");
-      console.log(typeof setTask);
 
       if (typeof setTask === "function") {
-        console.log("running task");
         setTask({
           isLoading: true,
           description: taskDescription,
