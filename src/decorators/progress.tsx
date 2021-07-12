@@ -48,10 +48,6 @@ function pageLoading(
   descriptor.value = async function decoratorWrapper(...args) {
     const setIsLoading = (this as UI).props?.setIsLoading;
 
-    if (typeof setIsLoading === "function") {
-      setIsLoading(true);
-    }
-
     const result: unknown = await targetMethod.apply(this, args);
 
     if (typeof setIsLoading === "function") {
