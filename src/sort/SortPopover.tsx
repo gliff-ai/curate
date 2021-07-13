@@ -124,10 +124,10 @@ export const SortPopover = ({
 
   useEffect(() => {
     if (!metadataKeys || metadataKeys.length === 0) return;
-    const labels = metadataKeys.reduce(
-      getLabelsFromKeys,
-      [] as MetadataLabel[]
-    );
+    const labels = metadataKeys
+      .reduce(getLabelsFromKeys, [] as MetadataLabel[])
+      .filter(({ key }) => key !== "imageLabels");
+
     setMetadataLabels(labels);
   }, [metadataKeys]);
 
@@ -198,11 +198,12 @@ export const SortPopover = ({
                 onChange={handleChange(updateKey)}
                 helperText="Please select a metadata field"
               >
-                {metadataLabels.map(({ key, label }) => (
-                  <MenuItem key={key} value={label}>
-                    {label}
-                  </MenuItem>
-                ))}
+                {metadataLabels &&
+                  metadataLabels.map(({ key, label }) => (
+                    <MenuItem key={key} value={label}>
+                      {label}
+                    </MenuItem>
+                  ))}
               </TextField>
             </FormControl>
           </Paper>
@@ -238,7 +239,7 @@ export const SortPopover = ({
               className={classes.sortButton}
               onClick={() => {
                 const { key } = inputKey;
-                if (key === "" || key === "imageLabels") return;
+                if (key === "") return;
                 callbackSort(key, sortOrder);
               }}
             >

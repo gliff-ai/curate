@@ -165,17 +165,21 @@ class UserInterface extends Component<Props, State> {
 
   /* eslint-disable react/no-did-update-set-state */
   // TODO: remove state.metadata, just use props.metadata
-  componentDidUpdate = (prevProps: Props) => {
+  componentDidUpdate = (prevProps: Props): void => {
     if (
-      JSON.stringify(this.props.metadata) !== JSON.stringify(prevProps.metadata)
+      JSON.stringify(prevProps.metadata) !== JSON.stringify(this.props.metadata)
     ) {
+      if (prevProps.metadata.length === 0) {
+        this.setState({
+          metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
+        });
+      }
       this.setState({
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
         imageLabels: this.getImageLabels(this.props.metadata),
       });
     }
   };
-  /* eslint-enable react/no-did-update-set-state */
 
   // Add field "selected" to metadata; this field is used to define which
   // metadata items are displayed on the dashboard.
@@ -202,7 +206,7 @@ class UserInterface extends Component<Props, State> {
       (filt) => filt.key === filter.key && filt.value === filter.value
     );
 
-  resetSearchFilters = () => {
+  resetSearchFilters = (): void => {
     // Select all items and empty active filters array.
     this.setState((prevState) => {
       prevState.metadata.forEach((mitem) => {
@@ -296,14 +300,14 @@ class UserInterface extends Component<Props, State> {
     }
   };
 
-  resizeThumbnails = (size: number) => {
+  resizeThumbnails = (size: number): void => {
     this.setState({
       thumbnailHeight: size,
       thumbnailWidth: size,
     });
   };
 
-  handleOnActiveFiltersChange = (filter: Filter) => {
+  handleOnActiveFiltersChange = (filter: Filter): void => {
     // If a filter is removed, update list of active filters and metadata selection.
     this.setActiveFilter(filter);
   };
@@ -313,7 +317,11 @@ class UserInterface extends Component<Props, State> {
 
     if (key === "") return; // for some reason this function is being called on startup with an empty key
 
-    function compare(a: string | Date, b: string | Date, sort: string): number {
+    function compare(
+      a: string | Date | number,
+      b: string | Date | number,
+      sort: string
+    ): number {
       if (a < b) {
         return sort === "asc" ? -1 : 1;
       }
@@ -332,6 +340,10 @@ class UserInterface extends Component<Props, State> {
             new Date(b[key] as string),
             sortOrder
           )
+        );
+      } else if (typeof prevState.metadata[0][key] === "number") {
+        prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
+          compare(a[key] as number, b[key] as number, sortOrder)
         );
       } else {
         // Sort by any string
@@ -450,7 +462,7 @@ class UserInterface extends Component<Props, State> {
   async addUploadedImage(
     imageFileInfo: ImageFileInfo,
     images: ImageBitmap[][]
-  ) {
+  ): Promise<void> {
     const thumbnail = this.makeThumbnail(images);
     const today = new Date();
     const newMetadata = {
