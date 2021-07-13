@@ -1,1 +1,1 @@
-export { logTaskExecution } from "./progress";
+export { logTaskExecution, pageLoading } from "./progress";

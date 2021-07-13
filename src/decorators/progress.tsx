@@ -38,4 +38,22 @@ function logTaskExecution(taskDescription: string) {
   };
 }
 
-export { logTaskExecution };
+function pageLoading(
+  target: UI,
+  propertyKey: string,
+  descriptor: Descriptor
+): void {
+  const targetMethod = descriptor.value;
+
+  descriptor.value = async function decoratorWrapper(...args) {
+    const setIsLoading = (this as UI).props?.setIsLoading;
+
+    const result: unknown = await targetMethod.apply(this, args);
+
+    if (typeof setIsLoading === "function") {
+      setIsLoading(false);
+    }
+  };
+}
+
+export { logTaskExecution, pageLoading };

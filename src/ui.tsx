@@ -28,7 +28,7 @@ import { svgSrc } from "@/helpers";
 import TooltipButton from "@/components/TooltipButton";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
-import { logTaskExecution } from "@/decorators";
+import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import SizeThumbnails, { thumbnailSizes } from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
@@ -121,6 +121,7 @@ interface Props extends WithStyles<typeof styles> {
   deleteImagesCallback?: (imageUids: string[]) => void;
   annotateCallback?: (id: string) => void;
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
+  setIsLoading?: (isLoading: boolean) => void;
 }
 
 interface State {
@@ -162,6 +163,9 @@ class UserInterface extends Component<Props, State> {
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
     this.addUploadedImage = this.addUploadedImage.bind(this);
   }
+
+  @pageLoading
+  componentDidMount() {}
 
   /* eslint-disable react/no-did-update-set-state */
   // TODO: remove state.metadata, just use props.metadata
