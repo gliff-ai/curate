@@ -28,7 +28,7 @@ import {
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
 
-import { theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 import TooltipButton from "@/components/TooltipButton";
 

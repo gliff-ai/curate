@@ -4,7 +4,7 @@ import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 import TooltipButton from "@/components/TooltipButton";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";

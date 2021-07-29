@@ -15,7 +15,7 @@ import {
   Avatar,
 } from "@material-ui/core";
 
-import { theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 
 const useStyles = makeStyles({
   title: {

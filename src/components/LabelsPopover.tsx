@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Label, Close, Add } from "@material-ui/icons";
-import { theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 import { HtmlTooltip } from "@/components/HtmlTooltip";
 
 const useStyles = makeStyles({

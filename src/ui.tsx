@@ -19,10 +19,11 @@ import {
   Container,
   Card,
   Box,
+  ThemeProvider,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { ThemeProvider, theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 
 import TooltipButton from "@/components/TooltipButton";

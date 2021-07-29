@@ -1,5 +1,5 @@
 import { ReactElement, useState, useEffect } from "react";
-import { theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 
 import { Card } from "@material-ui/core";
 

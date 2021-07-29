@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import { MetaItem } from "@/searchAndSort/interfaces";
 import { makeStyles } from "@material-ui/core/styles";
-import { theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 
 import { HtmlTooltip } from "@/components/HtmlTooltip";

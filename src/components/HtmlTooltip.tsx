@@ -1,5 +1,5 @@
 import { Tooltip, withStyles } from "@material-ui/core";
-import { theme } from "@/theme";
+import { theme } from "@gliff-ai/style";
 import { Theme } from "@material-ui/core/styles";
 
 export const HtmlTooltip = withStyles((t: Theme) => ({
