@@ -5,8 +5,7 @@ import SVG from "react-inlinesvg";
 
 import { Avatar, IconButton, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { HtmlTooltip } from "@/components/HtmlTooltip";
-import { theme } from "@gliff-ai/style";
+import { theme, HtmlTooltip } from "@gliff-ai/style";
 
 interface Props {
   tooltip: string;
