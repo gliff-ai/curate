@@ -87,15 +87,12 @@ const styles = () => ({
     marginBottom: "-10ox",
   },
 
-  upload: {
+  bottomLeftButtons: {
     height: "53px",
     backgroundColor: theme.palette.primary.light,
     paddingTop: "1px",
-    marginLeft: "10px",
     width: "61px",
-    paddingRight: "9px",
-    bottom: "18px",
-    left: "95px",
+    marginRight: "9px",
   },
 
   collectionViewer: {
@@ -120,6 +117,7 @@ interface Props extends WithStyles<typeof styles> {
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
   annotateCallback?: (id: string) => void;
+  downloadDatasetCallback?: () => void;
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
   setIsLoading?: (isLoading: boolean) => void;
 }
@@ -570,30 +568,41 @@ class UserInterface extends Component<Props, State> {
 
                 {deleteImageCard}
 
-                <Card
-                  className={classes.collectionViewer}
-                  style={{ position: "fixed" }}
+                <div
+                  style={{ display: "flex", bottom: "18px", position: "fixed" }}
                 >
-                  <TooltipButton
-                    tooltip="View Collection"
-                    svgSrc="collections-viewer"
-                    size="large"
-                  />
-                </Card>
-                <Card className={classes.upload} style={{ position: "fixed" }}>
-                  <UploadImage
-                    setUploadedImage={this.addUploadedImage}
-                    multiple
-                    spanElement={
-                      <TooltipButton
-                        tooltip="Upload Image"
-                        svgSrc="upload-icon"
-                        size="large"
-                        component="span"
-                      />
-                    }
-                  />
-                </Card>
+                  <Card className={classes.bottomLeftButtons}>
+                    <TooltipButton
+                      tooltip="View Collection"
+                      svgSrc="collections-viewer"
+                      size="large"
+                    />
+                  </Card>
+
+                  <Card className={classes.bottomLeftButtons}>
+                    <UploadImage
+                      setUploadedImage={this.addUploadedImage}
+                      multiple
+                      spanElement={
+                        <TooltipButton
+                          tooltip="Upload Image"
+                          svgSrc="upload-icon"
+                          size="large"
+                          component="span"
+                        />
+                      }
+                    />
+                  </Card>
+
+                  <Card className={classes.bottomLeftButtons}>
+                    <TooltipButton
+                      tooltip="Download Dataset"
+                      svgSrc="download-icon"
+                      size="large"
+                      onClick={this.props.downloadDatasetCallback}
+                    />
+                  </Card>
+                </div>
 
                 {(this.state.openImageUid == null ||
                   this.state.selectMultipleImagesMode) && (
