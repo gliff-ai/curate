@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="upload"
+   data-name="Upload"
+   viewBox="0 0 512 512"
+   version="1.1"
+   sodipodi:docname="download-icon.svg"
+   inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs11" />
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="1.515625"
+     inkscape:cx="255.6701"
+     inkscape:cy="256"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="upload" />
+  <g
+     id="noun_Upload_3550734"
+     data-name="noun Upload 3550734"
+     transform="matrix(1,0,0,-1,0,511.58)">
+    <path
+       id="Path_18"
+       data-name="Path 18"
+       d="m 283.82,406.05 v -198.7 l 60.23,60.23 a 6.63,6.63 0 0 0 9.38,0 L 384.06,237 a 6.63,6.63 0 0 0 0,-9.38 L 275.51,119 a 28.31,28.31 0 0 0 -40,0 L 127,227.57 a 6.63,6.63 0 0 0 0,9.38 l 30.63,30.63 a 6.63,6.63 0 0 0 9.38,0 l 60.23,-60.23 v 198.7 a 6.63,6.63 0 0 0 6.63,6.63 h 43.35 a 6.63,6.63 0 0 0 6.6,-6.63 z" />
+    <path
+       id="Path_19"
+       data-name="Path 19"
+       d="M 512,93.65 A 93.86,93.86 0 0 0 418.15,-0.21 h -62.26 a 6,6 0 0 0 -6,6 V 45 a 6,6 0 0 0 6,6 h 62.26 a 42.66,42.66 0 0 1 42.67,42.66 v 62.27 a 6,6 0 0 0 6,6 H 506 a 6,6 0 0 0 6,-6 z" />
+    <path
+       id="Path_20"
+       data-name="Path 20"
+       d="m 6,161.92 h 39.2 a 6,6 0 0 0 6,-6 V 93.65 A 42.66,42.66 0 0 1 93.89,51 h 62.27 a 6,6 0 0 0 6,-6 V 5.79 a 6,6 0 0 0 -6,-6 H 93.89 A 93.87,93.87 0 0 0 0,93.65 v 0 62.27 a 6,6 0 0 0 6,6 z" />
+    <path
+       id="Path_21"
+       data-name="Path 21"
+       d="m 0,417.92 a 93.87,93.87 0 0 0 93.87,93.87 h 62.27 a 6,6 0 0 0 6,-6 v -39.2 a 6,6 0 0 0 -6,-6 H 93.89 A 42.67,42.67 0 0 1 51.22,417.92 v -62.27 a 6,6 0 0 0 -6,-6 H 6 a 6,6 0 0 0 -6,6 z" />
+    <path
+       id="Path_22"
+       data-name="Path 22"
+       d="m 506,349.65 h -39.2 a 6,6 0 0 0 -6,6 v 62.27 a 42.67,42.67 0 0 1 -42.67,42.67 h -62.24 a 6,6 0 0 0 -6,6 v 39.2 a 6,6 0 0 0 6,6 h 62.26 A 93.87,93.87 0 0 0 512,417.92 v 0 -62.27 a 6,6 0 0 0 -6,-6 z" />
+  </g>
+</svg>
