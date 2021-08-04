@@ -94,7 +94,14 @@ export const metadataNameMap: MetadataNameMap = {
   dimensions: "Dimensions",
   numberOfDimensions: "No. of Dimensions",
   numberOfChannels: "No. of Channels",
+  num_channels: "No. of Channels",
   imageLabels: "Labels",
+  width: "Width",
+  height: "Height",
+  num_slices: "No. of Slices",
+  resolution_x: "X Resolution",
+  resolution_y: "Y Resolution",
+  resolution_z: "Z Resolution",
 };
 
 interface Props {
