@@ -23,10 +23,10 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme } from "@gliff-ai/style";
+import { theme, BaseIconButton } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 
-import TooltipButton from "@/components/TooltipButton";
+// import TooltipButton from "@/components/TooltipButton";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
 import { logTaskExecution, pageLoading } from "@/decorators";
@@ -37,6 +37,7 @@ import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
+import { tooltips } from "./components/Tooltips";
 
 const styles = () => ({
   appBar: {
@@ -503,6 +504,7 @@ class UserInterface extends Component<Props, State> {
 
   render = (): ReactNode => {
     const { classes, showAppBar } = this.props;
+    console.log(tooltips.deleteImages.icon);
 
     const appBar = !showAppBar ? null : (
       <AppBar position="fixed" className={classes.appBar} elevation={0}>
@@ -537,10 +539,10 @@ class UserInterface extends Component<Props, State> {
         </Card>
 
         <Card className={classes.smallButton}>
-          <TooltipButton
-            tooltip="Select Multiple Images"
-            svgSrc="multiple-image-selection"
-            isActive={this.state.selectMultipleImagesMode}
+          <BaseIconButton
+            tooltip={tooltips.selectMultipleImages}
+            fill={this.state.selectMultipleImagesMode}
+            // isActive={this.state.selectMultipleImagesMode}
             onClick={() => {
               this.setState((prevState) => ({
                 selectMultipleImagesMode: !prevState.selectMultipleImagesMode,
@@ -559,9 +561,9 @@ class UserInterface extends Component<Props, State> {
             style={{ fontWeight: 500 }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
           <ListItem className={classes.deleteImageListItem}>
-            <TooltipButton
-              tooltip="Delete Images"
-              svgSrc="delete"
+            <BaseIconButton
+              tooltip={tooltips.deleteImages}
+              fill={null}
               onClick={this.deleteSelectedImages}
             />
           </ListItem>
@@ -587,25 +589,26 @@ class UserInterface extends Component<Props, State> {
                   className={classes.collectionViewer}
                   style={{ position: "fixed" }}
                 >
-                  <TooltipButton
-                    tooltip="View Collection"
-                    svgSrc="collections-viewer"
-                    size="large"
+                  <BaseIconButton
+                    tooltip={tooltips.viewCollection}
+                    fill={null}
+                    // buttonSize="large"
                   />
                 </Card>
                 <Card className={classes.upload} style={{ position: "fixed" }}>
-                  <UploadImage
+                  {/* <UploadImage
                     setUploadedImage={this.addUploadedImage}
                     multiple
                     spanElement={
-                      <TooltipButton
-                        tooltip="Upload Image"
+                      <BaseIconButton
+                        tooltip={tooltips.upload}
+                        fill={null}
                         svgSrc="upload-icon"
                         size="large"
                         component="span"
                       />
                     }
-                  />
+                  /> */}
                 </Card>
 
                 {(this.state.openImageUid == null ||
