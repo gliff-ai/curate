@@ -25,7 +25,7 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton } from "@gliff-ai/style";
+import { theme, BaseIconButton, BaseButton } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 
 // import TooltipButton from "@/components/TooltipButton";
@@ -575,7 +575,6 @@ class UserInterface extends Component<Props, State> {
       seed: "manage",
       disableGlobal: true,
     });
-
     return (
       <StylesProvider generateClassName={generateClassName}>
         <ThemeProvider theme={theme}>
@@ -607,19 +606,16 @@ class UserInterface extends Component<Props, State> {
                     className={classes.upload}
                     style={{ position: "fixed" }}
                   >
-                    {/* <UploadImage
-                    setUploadedImage={this.addUploadedImage}
-                    multiple
-                    spanElement={
-                      <BaseIconButton
-                        tooltip={tooltips.upload}
-                        fill={null}
-                        svgSrc="upload-icon"
-                        size="large"
-                        component="span"
-                      />
-                    }
-                  /> */}
+                    <UploadImage
+                      setUploadedImage={this.addUploadedImage}
+                      multiple
+                      spanElement={
+                        <BaseButton
+                          tooltip={tooltips.uploadImage}
+                          fill={null}
+                        />
+                      }
+                    />
                   </Card>
 
                   {(this.state.openImageUid == null ||
