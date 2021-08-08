@@ -25,7 +25,7 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton, BaseButton } from "@gliff-ai/style";
+import { theme, BaseIconButton, BaseUploadButton } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 
 // import TooltipButton from "@/components/TooltipButton";
@@ -599,7 +599,6 @@ class UserInterface extends Component<Props, State> {
                     <BaseIconButton
                       tooltip={tooltips.viewCollection}
                       fill={null}
-                      // buttonSize="large"
                     />
                   </Card>
                   <Card
@@ -610,7 +609,7 @@ class UserInterface extends Component<Props, State> {
                       setUploadedImage={this.addUploadedImage}
                       multiple
                       spanElement={
-                        <BaseButton
+                        <BaseUploadButton
                           tooltip={tooltips.uploadImage}
                           fill={null}
                         />
