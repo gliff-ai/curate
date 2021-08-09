@@ -28,7 +28,6 @@ import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { theme, BaseIconButton, BaseUploadButton } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 
-// import TooltipButton from "@/components/TooltipButton";
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
 import { logTaskExecution, pageLoading } from "@/decorators";
@@ -543,7 +542,7 @@ class UserInterface extends Component<Props, State> {
           <BaseIconButton
             tooltip={tooltips.selectMultipleImages}
             fill={this.state.selectMultipleImagesMode}
-            // isActive={this.state.selectMultipleImagesMode}
+            tooltipPlacement="bottom"
             onClick={() => {
               this.setState((prevState) => ({
                 selectMultipleImagesMode: !prevState.selectMultipleImagesMode,
@@ -566,6 +565,7 @@ class UserInterface extends Component<Props, State> {
               tooltip={tooltips.deleteImages}
               fill={null}
               onClick={this.deleteSelectedImages}
+              tooltipPlacement="bottom"
             />
           </ListItem>
         </List>
@@ -599,6 +599,7 @@ class UserInterface extends Component<Props, State> {
                     <BaseIconButton
                       tooltip={tooltips.viewCollection}
                       fill={null}
+                      tooltipPlacement="top"
                     />
                   </Card>
                   <Card
@@ -612,6 +613,7 @@ class UserInterface extends Component<Props, State> {
                         <BaseUploadButton
                           tooltip={tooltips.uploadImage}
                           fill={null}
+                          tooltipPlacement="top"
                         />
                       }
                     />
