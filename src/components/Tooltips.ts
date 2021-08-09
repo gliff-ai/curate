@@ -1,9 +1,9 @@
-import { ToolTip } from "@gliff-ai/style";
+import { Tooltip } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 
-type ToolTips = { [name: string]: ToolTip };
+type Tooltips = { [name: string]: Tooltip };
 
-const tooltips: ToolTips = {
+const tooltips: Tooltips = {
   deleteImages: {
     name: "Delete Images",
     icon: svgSrc("delete"),
@@ -22,4 +22,4 @@ const tooltips: ToolTips = {
   },
 };
 
-export { tooltips, ToolTips };
+export { tooltips, Tooltips };
