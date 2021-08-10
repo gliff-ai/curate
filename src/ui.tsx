@@ -25,7 +25,7 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton, BaseUploadButton } from "@gliff-ai/style";
+import { theme, BaseIconButton } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 
 import { LabelsPopover } from "@/components/LabelsPopover";
@@ -610,10 +610,11 @@ class UserInterface extends Component<Props, State> {
                       setUploadedImage={this.addUploadedImage}
                       multiple
                       spanElement={
-                        <BaseUploadButton
+                        <BaseIconButton
                           tooltip={tooltips.uploadImage}
                           fill={null}
                           tooltipPlacement="top"
+                          component="span"
                         />
                       }
                     />
