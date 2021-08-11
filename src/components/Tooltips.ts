@@ -26,17 +26,9 @@ const tooltips: Tooltips = {
     name: "Upload Image",
     icon: svgSrc("upload-icon"),
   },
-  largeThumbnails: {
-    name: "Large Thumbnails",
-    icon: svgSrc("large-image-grid"),
-  },
-  mediumThumbnails: {
-    name: "Medium Thumbnails",
-    icon: svgSrc("medium-image-grid"),
-  },
-  smallThumbnails: {
-    name: "Small Thumbnails",
-    icon: svgSrc("small-image-grid"),
+  sort: {
+    name: "Sort",
+    icon: svgSrc("search-filter"),
   },
 };
 
