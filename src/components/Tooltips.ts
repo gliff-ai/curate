@@ -3,6 +3,12 @@ import { svgSrc } from "@/helpers";
 
 type Tooltips = { [name: string]: Tooltip };
 
+interface ThumbnailSizes {
+  name: string;
+  icon: string;
+  size: number;
+}
+
 const tooltips: Tooltips = {
   deleteImages: {
     name: "Delete Images",
@@ -20,6 +26,36 @@ const tooltips: Tooltips = {
     name: "Upload Image",
     icon: svgSrc("upload-icon"),
   },
+  largeThumbnails: {
+    name: "Large Thumbnails",
+    icon: svgSrc("large-image-grid"),
+  },
+  mediumThumbnails: {
+    name: "Medium Thumbnails",
+    icon: svgSrc("medium-image-grid"),
+  },
+  smallThumbnails: {
+    name: "Small Thumbnails",
+    icon: svgSrc("small-image-grid"),
+  },
 };
 
-export { tooltips, Tooltips };
+const thumbnailSizes: ThumbnailSizes[] = [
+  {
+    name: "Large Thumbnails",
+    icon: svgSrc("large-image-grid"),
+    size: 298,
+  },
+  {
+    name: "Medium Thumbnails",
+    icon: svgSrc("medium-image-grid"),
+    size: 211,
+  },
+  {
+    name: "Small Thumbnails",
+    icon: svgSrc("small-image-grid"),
+    size: 132,
+  },
+];
+
+export { tooltips, thumbnailSizes, ThumbnailSizes, Tooltips };

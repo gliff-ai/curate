@@ -32,13 +32,13 @@ import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover } from "@/sort/SortPopover";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
-import SizeThumbnails, { thumbnailSizes } from "./components/SizeThumbnails";
+import { SizeThumbnails } from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
 import Tile from "./components/Tile";
-import { tooltips } from "./components/Tooltips";
+import { tooltips, thumbnailSizes } from "./components/Tooltips";
 
 const styles = () => ({
   appBar: {
@@ -572,7 +572,7 @@ class UserInterface extends Component<Props, State> {
       </Card>
     );
     const generateClassName = createGenerateClassName({
-      seed: "manage",
+      seed: "curate",
       disableGlobal: true,
     });
     return (
