@@ -4,9 +4,9 @@ import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent, Paper, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { theme } from "@gliff-ai/style";
-import TooltipButton from "@/components/TooltipButton";
+import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
+import { tooltips } from "@/components/Tooltips";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 
 const useStyles = makeStyles({
@@ -155,15 +155,17 @@ export default function SearchAndSortBar({
           )}
           PaperComponent={CustomPaper}
         />
-        <TooltipButton
+
+        <BaseIconButton
           type="submit"
-          tooltip="Search"
-          svgSrc="search"
+          tooltip={tooltips.search}
+          fill={null}
           onClick={(e) => {
             if (!inputKey) {
               e?.preventDefault();
             }
           }}
+          tooltipPlacement="bottom"
         />
       </CardContent>
     </Card>

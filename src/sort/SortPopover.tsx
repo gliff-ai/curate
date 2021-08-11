@@ -31,7 +31,6 @@ import {
 
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
-import TooltipButton from "@/components/TooltipButton";
 import { tooltips } from "@/components/Tooltips";
 
 const useStyles = makeStyles({
@@ -96,7 +95,6 @@ export const SortPopover = ({
     key: "",
     label: "",
   });
-  const [hover, sethover] = useState(false);
 
   const [sortOrder, setSortOrder] = useState("");
   const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
@@ -162,16 +160,7 @@ export const SortPopover = ({
             onClick={handleClose}
             edge="end"
           >
-            <Avatar
-              variant="circle"
-              onMouseOut={() => {
-                sethover(false);
-              }}
-              onMouseOver={() => {
-                sethover(true);
-              }}
-              className={classes.closeAvatar}
-            >
+            <Avatar variant="circle" className={classes.closeAvatar}>
               <SVG src={svgSrc("close")} className={classes.svgSmall} />
             </Avatar>
           </IconButton>

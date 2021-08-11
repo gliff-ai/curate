@@ -30,6 +30,10 @@ const tooltips: Tooltips = {
     name: "Sort",
     icon: svgSrc("search-filter"),
   },
+  search: {
+    name: "Search",
+    icon: svgSrc("search"),
+  },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [
