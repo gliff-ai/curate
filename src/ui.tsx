@@ -135,6 +135,7 @@ interface State {
   thumbnailHeight: number;
   selectMultipleImagesMode: boolean;
   sortedBy: string;
+  isGrouped: boolean;
 }
 
 class UserInterface extends Component<Props, State> {
@@ -159,6 +160,7 @@ class UserInterface extends Component<Props, State> {
       thumbnailHeight: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
       sortedBy: null,
+      isGrouped: false,
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
@@ -233,7 +235,7 @@ class UserInterface extends Component<Props, State> {
         } else {
           prevState.activeFilters.push(filter);
         }
-        return { activeFilters: prevState.activeFilters, sortedBy: null };
+        return { activeFilters: prevState.activeFilters };
       },
       () => {
         this.applySearchFiltersToMetadata();
@@ -266,8 +268,13 @@ class UserInterface extends Component<Props, State> {
           mitem.selected = true;
         });
       }
+
       return { metadata };
     });
+
+    if (this.state.isGrouped) {
+      this.groupByValue(this.state.sortedBy);
+    }
   };
 
   handleOnLabelSelection = (selectedLabels: string[]): void => {
@@ -280,8 +287,13 @@ class UserInterface extends Component<Props, State> {
         );
         mitem.selected = intersection.length === selectedLabels.length;
       });
-      return { metadata: prevState.metadata, sortedBy: null };
+
+      return { metadata: prevState.metadata };
     });
+
+    if (this.state.isGrouped) {
+      this.groupByValue(this.state.sortedBy);
+    }
   };
 
   handleOnSearchSubmit = (filter: Filter): void => {
@@ -361,16 +373,26 @@ class UserInterface extends Component<Props, State> {
           )
         );
       }
+      return { metadata: prevState.metadata, sortedBy: key };
+    });
 
-      // Re-assign group to all items, based on the same key used for sort
-      const areValuesEqual = isKeyDate
-        ? (value: unknown, previousValue: unknown) =>
-            this.getMonthAndYear(value as string) !==
-            this.getMonthAndYear(previousValue as string)
-        : (value: unknown, previousValue: unknown) => value !== previousValue;
+    if (this.state.isGrouped) {
+      this.groupByValue(key);
+    }
+  };
 
-      let prevValue: unknown = null;
-      prevState.metadata.forEach((mitem) => {
+  groupByValue = (key: string): void => {
+    // Assign the newGroup field to all items, based on the same key used for sort
+    if (!key) return;
+    const areValuesEqual = key?.toLowerCase().includes("date")
+      ? (value: unknown, previousValue: unknown) =>
+          this.getMonthAndYear(value as string) !==
+          this.getMonthAndYear(previousValue as string)
+      : (value: unknown, previousValue: unknown) => value !== previousValue;
+
+    let prevValue: unknown = null;
+    this.setState(({ metadata }) => {
+      metadata.forEach((mitem) => {
         if (!mitem.selected) return;
         const value = mitem[key] as string;
         if (!prevValue || areValuesEqual(value, prevValue)) {
@@ -380,8 +402,7 @@ class UserInterface extends Component<Props, State> {
         }
         prevValue = value;
       });
-
-      return { metadata: prevState.metadata, sortedBy: key };
+      return { metadata };
     });
   };
 
@@ -390,6 +411,10 @@ class UserInterface extends Component<Props, State> {
       month: "short",
       year: "numeric",
     });
+
+  toggleIsGrouped = (): void => {
+    this.setState(({ isGrouped }) => ({ isGrouped: !isGrouped }));
+  };
 
   getImageLabels = (metadata: Metadata): string[] => {
     if (!metadata) return [];
@@ -561,6 +586,8 @@ class UserInterface extends Component<Props, State> {
           <SortPopover
             metadataKeys={this.state.metadataKeys}
             callbackSort={this.handleOnSortSubmit}
+            isGrouped={this.state.isGrouped}
+            toggleIsGrouped={this.toggleIsGrouped}
           />
         </Card>
 
@@ -695,11 +722,13 @@ class UserInterface extends Component<Props, State> {
                   .filter((mitem) => mitem.selected)
                   .map((mitem: MetaItem, itemIndex) => (
                     <Fragment key={mitem.id as string}>
-                      <GroupBySeparator
-                        mitem={mitem}
-                        sortedBy={this.state.sortedBy}
-                        getMonthAndYear={this.getMonthAndYear}
-                      />
+                      {this.state.isGrouped && (
+                        <GroupBySeparator
+                          mitem={mitem}
+                          sortedBy={this.state.sortedBy}
+                          getMonthAndYear={this.getMonthAndYear}
+                        />
+                      )}
                       <Grid
                         item
                         style={{
