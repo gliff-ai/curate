@@ -90,7 +90,7 @@ interface Props {
 export default function LabelsFilterAccordion(props: Props): ReactElement {
   const accordionOpened = props.expanded;
   const classes = useStyles(accordionOpened);
-  const [labels, setLabels] = useState(props.allLabels);
+  const [labels, setLabels] = useState([]);
   const [infoOnHover, setInfoOnHover] = useState("");
 
   const toggleLabelSelection = (label: string) => (): void => {
@@ -128,7 +128,6 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
 
   useEffect(() => {
     if (props.expanded) {
-      selectAll();
       props.callbackOnAccordionExpanded();
     }
   }, [props.expanded]);
