@@ -22,6 +22,7 @@ import {
   MenuItem,
   IconButton,
   Avatar,
+  Checkbox,
 } from "@material-ui/core";
 import {
   getLabelsFromKeys,
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
   card: {
     backgroundColor: theme.palette.primary.light,
     width: "250px",
-    height: "300px",
+    height: "350px",
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -82,11 +83,15 @@ const useStyles = makeStyles({
 interface Props {
   metadataKeys: string[];
   callbackSort: (key: string, sortOrder: string) => void;
+  isGrouped: boolean;
+  toggleIsGrouped: () => void;
 }
 
 export const SortPopover = ({
   metadataKeys,
   callbackSort,
+  isGrouped,
+  toggleIsGrouped,
 }: Props): ReactElement => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -234,6 +239,17 @@ export const SortPopover = ({
                 />
               </RadioGroup>
             </FormControl>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isGrouped}
+                  onChange={toggleIsGrouped}
+                  name="group-by"
+                />
+              }
+              label="Group by value"
+            />
             <Button
               variant="outlined"
               className={classes.sortButton}
