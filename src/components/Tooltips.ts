@@ -26,6 +26,10 @@ const tooltips: Tooltips = {
     name: "Upload Image",
     icon: svgSrc("upload-icon"),
   },
+  downloadDataset: {
+    name: "Download Dataset",
+    icon: svgSrc("download-icon"),
+  },
   sort: {
     name: "Sort",
     icon: svgSrc("search-filter"),
