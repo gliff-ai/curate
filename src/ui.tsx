@@ -539,6 +539,7 @@ class UserInterface extends Component<Props, State> {
     if (this.props.saveImageCallback) {
       // Store uploaded image
       await this.props.saveImageCallback(imageFileInfo, images);
+      this.setState({ sortedBy: null });
     } else {
       // add the uploaded image directly to state.metadata
       this.setState((state) => {
@@ -549,6 +550,7 @@ class UserInterface extends Component<Props, State> {
         return {
           metadata: state.metadata.concat(newMetadata),
           metadataKeys: metaKeys,
+          sortedBy: null,
         };
       });
     }
