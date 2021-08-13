@@ -23,6 +23,7 @@ import {
   MenuItem,
   IconButton,
   Avatar,
+  Checkbox,
 } from "@material-ui/core";
 import {
   getLabelsFromKeys,
@@ -36,8 +37,8 @@ import { tooltips } from "@/components/Tooltips";
 const useStyles = makeStyles({
   card: {
     backgroundColor: theme.palette.primary.light,
-    width: "250px",
-    height: "300px",
+    width: "260px",
+    height: "370px",
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -48,6 +49,10 @@ const useStyles = makeStyles({
   paper: {
     padding: "10px",
     marginLeft: "15px",
+  },
+  paperPopover: {
+    margin: "0 15px",
+    padding: "5px",
   },
   typography: {
     color: theme.palette.text.primary,
@@ -78,16 +83,23 @@ const useStyles = makeStyles({
     width: "12px",
     height: "100%",
   },
+  menuItem: {
+    backgroundColor: "#ffffff !important",
+  },
 });
 
 interface Props {
   metadataKeys: string[];
   callbackSort: (key: string, sortOrder: string) => void;
+  isGrouped: boolean;
+  toggleIsGrouped: () => void;
 }
 
 export const SortPopover = ({
   metadataKeys,
   callbackSort,
+  isGrouped,
+  toggleIsGrouped,
 }: Props): ReactElement => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -172,7 +184,7 @@ export const SortPopover = ({
           >
             <Typography className={classes.typography}>Sort</Typography>
           </Paper>
-          <Paper elevation={0} square className={classes.paper}>
+          <Paper elevation={0} square className={classes.paperPopover}>
             {/* Form for selecting a metadata key */}
             <FormControl component="fieldset">
               <TextField
@@ -184,7 +196,11 @@ export const SortPopover = ({
               >
                 {metadataLabels &&
                   metadataLabels.map(({ key, label }) => (
-                    <MenuItem key={key} value={label}>
+                    <MenuItem
+                      key={key}
+                      value={label}
+                      className={classes.menuItem}
+                    >
                       {label}
                     </MenuItem>
                   ))}
@@ -218,6 +234,17 @@ export const SortPopover = ({
                 />
               </RadioGroup>
             </FormControl>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isGrouped}
+                  onChange={toggleIsGrouped}
+                  name="group-by"
+                />
+              }
+              label="Group by value"
+            />
             <Button
               variant="outlined"
               className={classes.sortButton}

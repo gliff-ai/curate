@@ -90,19 +90,20 @@ interface Props {
 export default function LabelsFilterAccordion(props: Props): ReactElement {
   const accordionOpened = props.expanded;
   const classes = useStyles(accordionOpened);
-  const [labels, setLabels] = useState(props.allLabels);
+  const [labels, setLabels] = useState([]);
   const [infoOnHover, setInfoOnHover] = useState("");
 
   const toggleLabelSelection = (label: string) => (): void => {
     // Add label to labels if it is not included, otherwise remove it.
-    setLabels((prevState) => {
-      const prevLabels = [...prevState];
-      if (prevLabels.includes(label)) {
-        prevLabels.splice(prevLabels.indexOf(label), 1);
+    setLabels((prevLabels) => {
+      /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+      const newLabels: string[] = [...prevLabels];
+      if (newLabels.includes(label)) {
+        newLabels.splice(newLabels.indexOf(label), 1);
       } else {
-        prevLabels.push(label);
+        newLabels.push(label);
       }
-      return prevLabels;
+      return newLabels;
     });
   };
 
@@ -128,7 +129,6 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
 
   useEffect(() => {
     if (props.expanded) {
-      selectAll();
       props.callbackOnAccordionExpanded();
     }
   }, [props.expanded]);
