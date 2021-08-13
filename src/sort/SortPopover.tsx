@@ -36,8 +36,8 @@ import TooltipButton from "@/components/TooltipButton";
 const useStyles = makeStyles({
   card: {
     backgroundColor: theme.palette.primary.light,
-    width: "250px",
-    height: "350px",
+    width: "260px",
+    height: "370px",
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -48,6 +48,10 @@ const useStyles = makeStyles({
   paper: {
     padding: "10px",
     marginLeft: "15px",
+  },
+  paperPopover: {
+    margin: "0 15px",
+    padding: "5px",
   },
   typography: {
     color: theme.palette.text.primary,
@@ -77,6 +81,9 @@ const useStyles = makeStyles({
   svgSmall: {
     width: "12px",
     height: "100%",
+  },
+  menuItem: {
+    backgroundColor: "#ffffff !important",
   },
 });
 
@@ -193,7 +200,7 @@ export const SortPopover = ({
           >
             <Typography className={classes.typography}>Sort</Typography>
           </Paper>
-          <Paper elevation={0} square className={classes.paper}>
+          <Paper elevation={0} square className={classes.paperPopover}>
             {/* Form for selecting a metadata key */}
             <FormControl component="fieldset">
               <TextField
@@ -205,7 +212,11 @@ export const SortPopover = ({
               >
                 {metadataLabels &&
                   metadataLabels.map(({ key, label }) => (
-                    <MenuItem key={key} value={label}>
+                    <MenuItem
+                      key={key}
+                      value={label}
+                      className={classes.menuItem}
+                    >
                       {label}
                     </MenuItem>
                   ))}
