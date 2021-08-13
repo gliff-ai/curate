@@ -12,8 +12,11 @@ const useStyles = makeStyles({
     height: "48px",
     backgroundColor: theme.palette.primary.light,
     width: "150px",
-    paddingLeft: "10px",
+    paddingLeft: "5px",
     paddingTop: "1px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

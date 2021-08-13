@@ -72,6 +72,9 @@ const styles = () => ({
     backgroundColor: theme.palette.primary.light,
     height: "48px",
     width: "48px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   deleteImageCard: {
     backgroundColor: theme.palette.primary.light,
@@ -96,6 +99,9 @@ const styles = () => ({
     paddingTop: "1px",
     width: "61px",
     marginRight: "9px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   collectionViewer: {
