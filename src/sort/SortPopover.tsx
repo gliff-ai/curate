@@ -30,7 +30,7 @@ import {
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
 
-import { BaseIconButton, theme } from "@gliff-ai/style";
+import { BaseIconButton, BaseTextButton, theme } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 import { tooltips } from "@/components/Tooltips";
 
@@ -65,7 +65,6 @@ const useStyles = makeStyles({
     position: "absolute",
     bottom: "18px",
     left: "85px",
-    backgroundColor: theme.palette.primary.main,
   },
   sortLabel: {
     fontSize: "17px",
@@ -245,17 +244,17 @@ export const SortPopover = ({
               }
               label="Group by value"
             />
-            <Button
-              variant="outlined"
-              className={classes.sortButton}
-              onClick={() => {
-                const { key } = inputKey;
-                if (key === "") return;
-                callbackSort(key, sortOrder);
-              }}
-            >
-              Sort
-            </Button>
+
+            <div className={classes.sortButton}>
+              <BaseTextButton
+                text="Sort"
+                onClick={() => {
+                  const { key } = inputKey;
+                  if (key === "") return;
+                  callbackSort(key, sortOrder);
+                }}
+              />
+            </div>
           </Paper>
         </Card>
       </Popover>
