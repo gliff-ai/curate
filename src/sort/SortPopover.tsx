@@ -48,6 +48,11 @@ const useStyles = makeStyles({
   paper: {
     padding: "10px",
     marginLeft: "15px",
+    "& $button": {
+      position: "absolute",
+      bottom: "18px",
+      left: "85px",
+    },
   },
   paperPopover: {
     margin: "0 15px",
@@ -60,11 +65,6 @@ const useStyles = makeStyles({
     marginLeft: "15px",
   },
 
-  sortButton: {
-    position: "absolute",
-    bottom: "18px",
-    left: "85px",
-  },
   sortLabel: {
     fontSize: "17px",
   },
@@ -244,16 +244,14 @@ export const SortPopover = ({
               label="Group by value"
             />
 
-            <div className={classes.sortButton}>
-              <BaseTextButton
-                text="Sort"
-                onClick={() => {
-                  const { key } = inputKey;
-                  if (key === "") return;
-                  callbackSort(key, sortOrder);
-                }}
-              />
-            </div>
+            <BaseTextButton
+              text="Sort"
+              onClick={() => {
+                const { key } = inputKey;
+                if (key === "") return;
+                callbackSort(key, sortOrder);
+              }}
+            />
           </Paper>
         </Card>
       </Popover>
