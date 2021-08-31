@@ -5,9 +5,7 @@ import {
   ChangeEvent,
   MouseEvent,
 } from "react";
-
 import SVG from "react-inlinesvg";
-
 import {
   Popover,
   Typography,
@@ -25,12 +23,11 @@ import {
   Avatar,
   Checkbox,
 } from "@material-ui/core";
+import { BaseIconButton, theme } from "@gliff-ai/style";
 import {
   getLabelsFromKeys,
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
-
-import { BaseIconButton, theme } from "@gliff-ai/style";
 import { svgSrc } from "@/helpers";
 import { tooltips } from "@/components/Tooltips";
 
