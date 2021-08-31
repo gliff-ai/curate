@@ -10,10 +10,10 @@ import {
   Avatar,
   Box,
 } from "@material-ui/core";
-import { MetaItem } from "@/searchAndSort/interfaces";
 import { makeStyles } from "@material-ui/core/styles";
 import { theme, HtmlTooltip } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
+import { MetaItem } from "@/searchAndSort/interfaces";
 
 type MetadataNameMap = { [index: string]: string };
 
