@@ -1,8 +1,6 @@
 import { ChangeEvent, useEffect, useState, ReactElement } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import SVG from "react-inlinesvg";
-
-import { svgSrc } from "@/helpers";
 import {
   Accordion,
   AccordionSummary,
@@ -14,8 +12,8 @@ import {
   IconButton,
   Avatar,
 } from "@material-ui/core";
-
 import { theme } from "@gliff-ai/style";
+import { svgSrc } from "@/helpers";
 
 const useStyles = makeStyles({
   title: {
