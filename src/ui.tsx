@@ -130,6 +130,9 @@ interface Props extends WithStyles<typeof styles> {
   downloadDatasetCallback?: () => void;
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
   setIsLoading?: (isLoading: boolean) => void;
+  trustedServiceButtonToolbar?:
+    | ((imageUid?: string, enabled?: boolean) => ReactNode)
+    | null;
 }
 
 interface State {
@@ -150,6 +153,7 @@ interface State {
 class UserInterface extends Component<Props, State> {
   static defaultProps = {
     showAppBar: true,
+    trustedServiceButtonToolbar: null,
   } as Pick<Props, "showAppBar">;
 
   constructor(props: Props) {
@@ -694,6 +698,14 @@ class UserInterface extends Component<Props, State> {
                         onClick={this.props.downloadDatasetCallback}
                       />
                     </Card>
+                    {this.props.trustedServiceButtonToolbar && (
+                      <Card className={classes.bottomLeftButtons}>
+                        {this.props.trustedServiceButtonToolbar(
+                          this.state.openImageUid,
+                          Boolean(this.state.openImageUid !== null)
+                        )}
+                      </Card>
+                    )}
                   </div>
 
                   {(this.state.openImageUid == null ||
