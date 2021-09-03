@@ -28,7 +28,7 @@ import {
   getLabelsFromKeys,
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
-import { svgSrc } from "@/helpers";
+import { imgSrc } from "@/helpers";
 import { tooltips } from "@/components/Tooltips";
 
 const useStyles = makeStyles({
@@ -169,8 +169,8 @@ export const SortPopover = ({
             onClick={handleClose}
             edge="end"
           >
-            <Avatar variant="circle" className={classes.closeAvatar}>
-              <SVG src={svgSrc("close")} className={classes.svgSmall} />
+            <Avatar variant="circular" className={classes.closeAvatar}>
+              <SVG src={imgSrc("close")} className={classes.svgSmall} />
             </Avatar>
           </IconButton>
           <Paper
