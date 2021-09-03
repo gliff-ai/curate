@@ -60,7 +60,10 @@ export const getLabelsFromKeys = (
   key: string
 ): MetadataLabel[] => {
   // Just an example of how to exclude metadata from the list if we need
-  if (["fileMetaVersion", "id", "thumbnail"].includes(key)) return acc;
+  if (
+    ["fileMetaVersion", "id", "thumbnail", "selected", "newGroup"].includes(key)
+  )
+    return acc;
 
   const label = metadataNameMap[key] || key;
   acc.push({
