@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { theme, HtmlTooltip } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/searchAndSort/interfaces";
+import { imgSrc } from "./helpers";
 
 type MetadataNameMap = { [index: string]: string };
 
@@ -144,7 +145,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
             >
               <IconButton onClick={props.handleMetadataHide}>
                 <SVG
-                  src={require("./assets/close.svg") as string}
+                  src={imgSrc("close")}
                   className={classes.svgSmall}
                   fill={
                     hover

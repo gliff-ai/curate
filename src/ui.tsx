@@ -27,7 +27,7 @@ import {
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { theme, BaseIconButton } from "@gliff-ai/style";
-import { svgSrc } from "@/helpers";
+import { imgSrc } from "@/helpers";
 
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover, GroupBySeparator } from "@/sort";
@@ -578,7 +578,7 @@ class UserInterface extends Component<Props, State> {
           <Grid container direction="row">
             <Grid item className={classes.logo}>
               <img
-                src={svgSrc("gliff-master-black")}
+                src={imgSrc("gliff-master-black")}
                 width="79px"
                 height="60px"
                 alt="gliff logo"

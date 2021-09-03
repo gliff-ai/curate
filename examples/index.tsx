@@ -1,8 +1,8 @@
 import * as ReactDOM from "react-dom";
 
-import UserInterface from "@/ui";
+import UserInterface from "../src/ui";
 
-import { Metadata, MetaItem } from "@/searchAndSort/interfaces";
+import type { Metadata, MetaItem } from "../src/searchAndSort/interfaces";
 
 // load the sample images, construct an array of tiles:
 const loadImage = (filename: string): Promise<string> =>
@@ -24,7 +24,7 @@ const loadImage = (filename: string): Promise<string> =>
 // get image promises:
 const promises: Array<Promise<string>> = [];
 for (let i = 0; i < 20; i += 1) {
-  const filename = `samples/sample${i}.png`;
+  const filename = `sample${i}.png`;
   promises.push(loadImage(filename));
 }
 
@@ -36,7 +36,7 @@ fetch("metadata.json")
         // make tiles:
         const tiles = metadata.map((mitem: MetaItem, i) => ({
           id: String(i),
-          imageName: `samples/sample${i}.png`,
+          imageName: `sample${i}.png`,
           thumbnail: images[i],
           ...mitem,
         }));
