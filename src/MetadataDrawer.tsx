@@ -134,7 +134,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
             placement="right"
           >
             <Avatar
-              variant="circle"
+              variant="circular"
               className={classes.closeAvatar}
               onMouseOut={() => {
                 sethover(false);

@@ -169,7 +169,7 @@ export const SortPopover = ({
             onClick={handleClose}
             edge="end"
           >
-            <Avatar variant="circle" className={classes.closeAvatar}>
+            <Avatar variant="circular" className={classes.closeAvatar}>
               <SVG src={imgSrc("close")} className={classes.svgSmall} />
             </Avatar>
           </IconButton>
