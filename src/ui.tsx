@@ -22,11 +22,10 @@ import {
   Box,
   ThemeProvider,
   StylesProvider,
-  createGenerateClassName,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton } from "@gliff-ai/style";
+import { theme, BaseIconButton, generateClassName } from "@gliff-ai/style";
 import { imgSrc } from "@/helpers";
 
 import { LabelsPopover } from "@/components/LabelsPopover";
@@ -639,12 +638,9 @@ class UserInterface extends Component<Props, State> {
         </List>
       </Card>
     );
-    const generateClassName = createGenerateClassName({
-      seed: "curate",
-      disableGlobal: true,
-    });
+
     return (
-      <StylesProvider generateClassName={generateClassName}>
+      <StylesProvider generateClassName={generateClassName("curate")}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
 
