@@ -228,8 +228,8 @@ export const SortPopover = ({
         vertical: "top",
         horizontal: "center",
       }}
-      childrens={popoverContent}
-      triggerClosure={close}
+      children={popoverContent}
+      triggerClosing={close}
     />
   );
 };

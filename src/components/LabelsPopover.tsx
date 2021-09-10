@@ -61,7 +61,7 @@ const useStyles = makeStyles({
   },
   addLabelButton: {
     position: "absolute",
-    bottom: theme.spacing(2),
+    bottom: theme.spacing(1),
     left: theme.spacing(2),
   },
   svgSmall: { width: "10px", height: "100%" },
@@ -173,8 +173,8 @@ export function LabelsPopover(props: Props): ReactElement {
         }}
         fill={true}
         iconColor="#ffffff"
-        childrens={popoverContent}
-        triggerClosure={close}
+        children={popoverContent}
+        triggerClosing={close}
       />
     </div>
   );
