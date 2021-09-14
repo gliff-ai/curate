@@ -1,3 +1,2 @@
-export const svgSrc = (src: string): string =>
-  // eslint-disable-next-line import/no-dynamic-require
-  require(`@/assets/${src}.svg`) as string;
+export const imgSrc = (src: string, type = "svg"): string =>
+  new URL(`/src/assets/${src}.${type}`, import.meta.url).href;

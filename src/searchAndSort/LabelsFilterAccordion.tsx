@@ -1,8 +1,6 @@
 import { ChangeEvent, useEffect, useState, ReactElement } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import SVG from "react-inlinesvg";
-
-import { svgSrc } from "@/helpers";
 import {
   Accordion,
   AccordionSummary,
@@ -14,8 +12,8 @@ import {
   IconButton,
   Avatar,
 } from "@material-ui/core";
-
 import { theme } from "@gliff-ai/style";
+import { imgSrc } from "@/helpers";
 
 const useStyles = makeStyles({
   title: {
@@ -140,7 +138,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
           expandIcon={
             <Avatar className={classes.avatar}>
               <SVG
-                src={svgSrc("down-arrow")}
+                src={imgSrc("down-arrow")}
                 className={classes.svgSmall}
                 fill={accordionOpened ? theme.palette.primary.main : null}
               />
@@ -167,13 +165,13 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 {labels.includes(label) ? (
                   <>
                     <SVG
-                      src={svgSrc("active-annotation-label-search-filter")}
+                      src={imgSrc("active-annotation-label-search-filter")}
                       className={classes.labelIcon}
                     />
                   </>
                 ) : (
                   <SVG
-                    src={svgSrc("non-active-annotation-label-search-filter")}
+                    src={imgSrc("non-active-annotation-label-search-filter")}
                     className={classes.labelIcon}
                   />
                 )}
@@ -192,7 +190,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
-                    src={svgSrc("select-all")}
+                    src={imgSrc("select-all")}
                   />
                 </Avatar>
               </IconButton>
@@ -205,7 +203,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
-                    src={svgSrc("deselect-all")}
+                    src={imgSrc("deselect-all")}
                   />
                 </Avatar>
               </IconButton>

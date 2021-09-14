@@ -22,12 +22,11 @@ import {
   Box,
   ThemeProvider,
   StylesProvider,
-  createGenerateClassName,
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton } from "@gliff-ai/style";
-import { svgSrc } from "@/helpers";
+import { theme, BaseIconButton, generateClassName } from "@gliff-ai/style";
+import { imgSrc } from "@/helpers";
 
 import { LabelsPopover } from "@/components/LabelsPopover";
 import { SortPopover, GroupBySeparator } from "@/sort";
@@ -130,6 +129,9 @@ interface Props extends WithStyles<typeof styles> {
   downloadDatasetCallback?: () => void;
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
   setIsLoading?: (isLoading: boolean) => void;
+  trustedServiceButtonToolbar?:
+    | ((imageUid?: string, enabled?: boolean) => ReactNode)
+    | null;
 }
 
 interface State {
@@ -150,6 +152,7 @@ interface State {
 class UserInterface extends Component<Props, State> {
   static defaultProps = {
     showAppBar: true,
+    trustedServiceButtonToolbar: null,
   } as Pick<Props, "showAppBar">;
 
   constructor(props: Props) {
@@ -574,7 +577,7 @@ class UserInterface extends Component<Props, State> {
           <Grid container direction="row">
             <Grid item className={classes.logo}>
               <img
-                src={svgSrc("gliff-master-black")}
+                src={imgSrc("gliff-master-black")}
                 width="79px"
                 height="60px"
                 alt="gliff logo"
@@ -635,12 +638,9 @@ class UserInterface extends Component<Props, State> {
         </List>
       </Card>
     );
-    const generateClassName = createGenerateClassName({
-      seed: "curate",
-      disableGlobal: true,
-    });
+
     return (
-      <StylesProvider generateClassName={generateClassName}>
+      <StylesProvider generateClassName={generateClassName("curate")}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
 
@@ -694,6 +694,14 @@ class UserInterface extends Component<Props, State> {
                         onClick={this.props.downloadDatasetCallback}
                       />
                     </Card>
+                    {this.props.trustedServiceButtonToolbar && (
+                      <Card className={classes.bottomLeftButtons}>
+                        {this.props.trustedServiceButtonToolbar(
+                          this.state.openImageUid,
+                          Boolean(this.state.openImageUid !== null)
+                        )}
+                      </Card>
+                    )}
                   </div>
 
                   {(this.state.openImageUid == null ||
