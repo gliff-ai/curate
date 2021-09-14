@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import {
   ListItem,
   Typography,
@@ -9,11 +9,16 @@ import {
   Card,
   Avatar,
   Box,
+  makeStyles,
 } from "@material-ui/core";
-import { MetaItem } from "@/searchAndSort/interfaces";
-import { makeStyles } from "@material-ui/core/styles";
 import { theme, HtmlTooltip } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
+import { MetaItem } from "@/searchAndSort/interfaces";
+import { imgSrc } from "./helpers";
+import {
+  getLabelsFromKeys,
+  MetadataLabel,
+} from "@/searchAndSort/SearchAndSortBar";
 
 type MetadataNameMap = { [index: string]: string };
 
@@ -110,6 +115,16 @@ interface Props {
 export default function MetadataDrawer(props: Props): ReactElement {
   const classes = useStyles();
   const [hover, sethover] = useState(false);
+  const [metaKeys, setMetaKeys] = useState<MetadataLabel[]>([]);
+
+  useEffect(() => {
+    setMetaKeys(
+      Object.keys(props.metadata).reduce(
+        getLabelsFromKeys,
+        [] as MetadataLabel[]
+      )
+    );
+  }, [props.metadata]);
 
   return (
     <>
@@ -133,7 +148,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
             placement="right"
           >
             <Avatar
-              variant="circle"
+              variant="circular"
               className={classes.closeAvatar}
               onMouseOut={() => {
                 sethover(false);
@@ -144,7 +159,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
             >
               <IconButton onClick={props.handleMetadataHide}>
                 <SVG
-                  src={require("./assets/close.svg") as string}
+                  src={imgSrc("close")}
                   className={classes.svgSmall}
                   fill={
                     hover
@@ -158,35 +173,33 @@ export default function MetadataDrawer(props: Props): ReactElement {
         </Paper>
         <Paper elevation={0} square>
           <List>
-            {Object.keys(props.metadata)
-              .filter((key) => Object.keys(metadataNameMap).includes(key))
-              .map((key) => (
-                <ListItem key={key} className={classes.metaListItem}>
-                  <ListItemText
-                    primaryTypographyProps={{ variant: "h6" }}
-                    className={classes.metaKey}
-                    title={metadataNameMap[key]}
-                    primary={`${metadataNameMap[key]}:`}
-                    classes={{
-                      primary: classes.metaKey,
-                      root: classes.metaRoot,
-                    }}
-                  />
-                  <ListItemText
-                    className={classes.metaValue}
-                    title={props.metadata[key] as string}
-                    primary={
-                      key === "imageLabels"
-                        ? (props.metadata[key] as string[]).join(", ")
-                        : props.metadata[key].toString()
-                    }
-                    classes={{
-                      primary: classes.metaValue,
-                      root: classes.metaRoot,
-                    }}
-                  />
-                </ListItem>
-              ))}
+            {metaKeys.map(({ key }) => (
+              <ListItem key={key} className={classes.metaListItem}>
+                <ListItemText
+                  primaryTypographyProps={{ variant: "h6" }}
+                  className={classes.metaKey}
+                  title={metadataNameMap[key] || key}
+                  primary={`${metadataNameMap[key] || key}:`}
+                  classes={{
+                    primary: classes.metaKey,
+                    root: classes.metaRoot,
+                  }}
+                />
+                <ListItemText
+                  className={classes.metaValue}
+                  title={props.metadata[key] as string}
+                  primary={
+                    key === "imageLabels"
+                      ? (props.metadata[key] as string[]).join(", ")
+                      : props.metadata[key].toString()
+                  }
+                  classes={{
+                    primary: classes.metaValue,
+                    root: classes.metaRoot,
+                  }}
+                />
+              </ListItem>
+            ))}
           </List>
         </Paper>
       </Card>

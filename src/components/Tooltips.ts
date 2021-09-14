@@ -1,5 +1,5 @@
 import { Tooltip } from "@gliff-ai/style";
-import { svgSrc } from "@/helpers";
+import { imgSrc } from "@/helpers";
 
 type Tooltips = { [name: string]: Tooltip };
 
@@ -12,48 +12,48 @@ interface ThumbnailSizes {
 const tooltips: Tooltips = {
   deleteImages: {
     name: "Delete Images",
-    icon: svgSrc("delete"),
+    icon: imgSrc("delete"),
   },
   selectMultipleImages: {
     name: "Select Multiple Images",
-    icon: svgSrc("multiple-image-selection"),
+    icon: imgSrc("multiple-image-selection"),
   },
   viewCollection: {
     name: "View Collection",
-    icon: svgSrc("collections-viewer"),
+    icon: imgSrc("collections-viewer"),
   },
   uploadImage: {
     name: "Upload Image",
-    icon: svgSrc("upload-icon"),
+    icon: imgSrc("upload-icon"),
   },
   downloadDataset: {
     name: "Download Dataset",
-    icon: svgSrc("download-icon"),
+    icon: imgSrc("download-icon"),
   },
   sort: {
     name: "Sort",
-    icon: svgSrc("search-filter"),
+    icon: imgSrc("search-filter"),
   },
   search: {
     name: "Search",
-    icon: svgSrc("search"),
+    icon: imgSrc("search"),
   },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [
   {
     name: "Large Thumbnails",
-    icon: svgSrc("large-image-grid"),
+    icon: imgSrc("large-image-grid"),
     size: 298,
   },
   {
     name: "Medium Thumbnails",
-    icon: svgSrc("medium-image-grid"),
+    icon: imgSrc("medium-image-grid"),
     size: 211,
   },
   {
     name: "Small Thumbnails",
-    icon: svgSrc("small-image-grid"),
+    icon: imgSrc("small-image-grid"),
     size: 132,
   },
 ];
