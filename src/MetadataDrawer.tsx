@@ -14,11 +14,11 @@ import {
 import { theme, HtmlTooltip } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/searchAndSort/interfaces";
-import { imgSrc } from "./helpers";
 import {
   getLabelsFromKeys,
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
+import { imgSrc } from "./helpers";
 
 type MetadataNameMap = { [index: string]: string };
 

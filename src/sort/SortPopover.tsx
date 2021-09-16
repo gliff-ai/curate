@@ -2,7 +2,6 @@ import { ReactElement, useEffect, useState, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 import {
   Typography,
-  Button,
   makeStyles,
   Card,
   Paper,
@@ -16,7 +15,7 @@ import {
   Avatar,
   Checkbox,
 } from "@material-ui/core";
-import { theme, BasePopover } from "@gliff-ai/style";
+import { BaseTextButton, theme, BasePopover } from "@gliff-ai/style";
 import {
   getLabelsFromKeys,
   MetadataLabel,
@@ -39,6 +38,11 @@ const useStyles = makeStyles({
   paper: {
     padding: "10px",
     marginLeft: "15px",
+    "& $button": {
+      position: "absolute",
+      bottom: "18px",
+      left: "85px",
+    },
   },
   paperPopover: {
     margin: "0 15px",
@@ -51,12 +55,6 @@ const useStyles = makeStyles({
     marginLeft: "15px",
   },
 
-  sortButton: {
-    position: "absolute",
-    bottom: "18px",
-    left: "85px",
-    backgroundColor: theme.palette.primary.main,
-  },
   sortLabel: {
     fontSize: "17px",
   },
@@ -180,6 +178,7 @@ export const SortPopover = ({
                 label: classes.sortLabel,
               }}
             />
+
             <FormControlLabel
               value="desc"
               control={<Radio size="small" />}
@@ -201,17 +200,14 @@ export const SortPopover = ({
           }
           label="Group by value"
         />
-        <Button
-          variant="outlined"
-          className={classes.sortButton}
+        <BaseTextButton
+          text="Sort"
           onClick={() => {
             const { key } = inputKey;
             if (key === "") return;
             callbackSort(key, sortOrder);
           }}
-        >
-          Sort
-        </Button>
+        />
       </Paper>
     </Card>
   );
