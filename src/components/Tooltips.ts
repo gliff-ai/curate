@@ -38,6 +38,10 @@ const tooltips: Tooltips = {
     name: "Search",
     icon: imgSrc("search"),
   },
+  addLabels: {
+    name: "Update image labels",
+    icon: imgSrc("non-active-annotation-label-search-filter"),
+  },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [
