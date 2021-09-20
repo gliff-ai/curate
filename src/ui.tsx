@@ -132,6 +132,8 @@ interface Props extends WithStyles<typeof styles> {
   trustedServiceButtonToolbar?:
     | ((imageUid?: string, enabled?: boolean) => ReactNode)
     | null;
+
+  plugins?: JSX.Element | null;
 }
 
 interface State {
@@ -153,6 +155,7 @@ class UserInterface extends Component<Props, State> {
   static defaultProps = {
     showAppBar: true,
     trustedServiceButtonToolbar: null,
+    plugins: null,
   } as Pick<Props, "showAppBar">;
 
   constructor(props: Props) {
@@ -661,6 +664,7 @@ class UserInterface extends Component<Props, State> {
                       display: "flex",
                       bottom: "18px",
                       position: "fixed",
+                      zIndex: 1,
                     }}
                   >
                     <Card className={classes.bottomLeftButtons}>
@@ -700,6 +704,11 @@ class UserInterface extends Component<Props, State> {
                           this.state.openImageUid,
                           Boolean(this.state.openImageUid !== null)
                         )}
+                      </Card>
+                    )}
+                    {this.props.plugins && (
+                      <Card className={classes.bottomLeftButtons}>
+                        {this.props.plugins}
                       </Card>
                     )}
                   </div>
