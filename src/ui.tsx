@@ -119,8 +119,8 @@ const styles = () => ({
 interface Props extends WithStyles<typeof styles> {
   metadata?: Metadata;
   saveImageCallback?: (
-    imageFileInfo: ImageFileInfo,
-    image: ImageBitmap[][]
+    imageFileInfo: ImageFileInfo[],
+    image: ImageBitmap[][][]
   ) => Promise<void>;
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
@@ -176,7 +176,7 @@ class UserInterface extends Component<Props, State> {
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
-    this.addUploadedImage = this.addUploadedImage.bind(this);
+    this.addUploadedImages = this.addUploadedImages.bind(this);
   }
 
   @pageLoading
@@ -528,28 +528,32 @@ class UserInterface extends Component<Props, State> {
     };
 
   @logTaskExecution("Image(s) upload")
-  async addUploadedImage(
-    imageFileInfo: ImageFileInfo,
-    images: ImageBitmap[][]
+  async addUploadedImages(
+    imageFileInfo: ImageFileInfo[],
+    images: ImageBitmap[][][]
   ): Promise<void> {
-    const thumbnail = this.makeThumbnail(images);
-    const today = new Date();
-    const newMetadata = {
-      imageName: imageFileInfo.fileName,
-      id: imageFileInfo.fileID,
-      dateCreated: today.toLocaleDateString("gb-EN"),
-      size: imageFileInfo.size.toString(),
-      dimensions: `${imageFileInfo.width} x ${imageFileInfo.height}`,
-      numberOfDimensions: images.length === 1 ? "2" : "3",
-      numberOfChannels: images[0].length.toString(),
-      imageLabels: [] as Array<string>,
-      thumbnail,
-      selected: true,
-      newGroup: false,
-    };
+    const newMetadata: MetaItem[] = [];
+    for (let i = 0; i < images.length; i += 1) {
+      const thumbnail = this.makeThumbnail(images[i]);
+      const today = new Date();
+      newMetadata.push({
+        imageName: imageFileInfo[i].fileName,
+        id: imageFileInfo[i].fileID,
+        dateCreated: today.toLocaleDateString("gb-EN"),
+        size: imageFileInfo[i].size.toString(),
+        dimensions: `${imageFileInfo[i].width} x ${imageFileInfo[i].height}`,
+        numberOfDimensions: images.length === 1 ? "2" : "3",
+        numberOfChannels: images[0].length.toString(),
+        imageLabels: [] as Array<string>,
+        thumbnail,
+        selected: true,
+        newGroup: false,
+      });
+    }
 
     if (this.props.saveImageCallback) {
       // Store uploaded image
+      console.log(`CURATE: ${imageFileInfo}`);
       await this.props.saveImageCallback(imageFileInfo, images);
       this.setState({ sortedBy: null });
     } else {
@@ -557,7 +561,7 @@ class UserInterface extends Component<Props, State> {
       this.setState((state) => {
         const metaKeys =
           state.metadataKeys.length === 0
-            ? this.getMetadataKeys(newMetadata)
+            ? this.getMetadataKeys(newMetadata[0])
             : state.metadataKeys;
         return {
           metadata: state.metadata.concat(newMetadata),
@@ -673,7 +677,7 @@ class UserInterface extends Component<Props, State> {
 
                     <Card className={classes.bottomLeftButtons}>
                       <UploadImage
-                        setUploadedImage={this.addUploadedImage}
+                        setUploadedImage={this.addUploadedImages}
                         multiple
                         spanElement={
                           <BaseIconButton
