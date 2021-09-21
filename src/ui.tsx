@@ -553,7 +553,6 @@ class UserInterface extends Component<Props, State> {
 
     if (this.props.saveImageCallback) {
       // Store uploaded image
-      console.log(`CURATE: ${imageFileInfo}`);
       await this.props.saveImageCallback(imageFileInfo, images);
       this.setState({ sortedBy: null });
     } else {
