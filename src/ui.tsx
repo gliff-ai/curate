@@ -349,9 +349,10 @@ class UserInterface extends Component<Props, State> {
 
     if (key === "") return; // for some reason this function is being called on startup with an empty key
 
+    // Number.MAX_VALUE added to handle missing values
     function compare(
-      a: string | Date | number,
-      b: string | Date | number,
+      a: string | Date | number = Number.MAX_VALUE,
+      b: string | Date | number = Number.MAX_VALUE,
       sort: string
     ): number {
       if (a < b) {
@@ -365,6 +366,7 @@ class UserInterface extends Component<Props, State> {
 
     this.setState((prevState) => {
       const isKeyDate = key?.toLowerCase().includes("date");
+
       if (isKeyDate) {
         // Sort by date
         prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
@@ -382,8 +384,8 @@ class UserInterface extends Component<Props, State> {
         // Sort by any string
         prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
           compare(
-            (a[key] as string).toLowerCase(),
-            (b[key] as string).toLowerCase(),
+            (a[key] as string)?.toLowerCase(),
+            (b[key] as string)?.toLowerCase(),
             sortOrder
           )
         );
@@ -409,7 +411,8 @@ class UserInterface extends Component<Props, State> {
     this.setState(({ metadata }) => {
       metadata.forEach((mitem) => {
         if (!mitem.selected) return;
-        const value = mitem[key] as string;
+        // Number.MAX_VALUE added to handle missing values
+        const value = (mitem[key] as string) || Number.MAX_VALUE;
         if (!prevValue || areValuesEqual(value, prevValue)) {
           mitem.newGroup = true;
         } else {
