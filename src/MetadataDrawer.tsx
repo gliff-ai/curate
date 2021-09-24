@@ -14,11 +14,11 @@ import {
 import { theme, HtmlTooltip } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/searchAndSort/interfaces";
-import { imgSrc } from "./helpers";
 import {
   getLabelsFromKeys,
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
+import { imgSrc } from "./helpers";
 
 type MetadataNameMap = { [index: string]: string };
 
@@ -126,6 +126,9 @@ export default function MetadataDrawer(props: Props): ReactElement {
     );
   }, [props.metadata]);
 
+  const hasKey = (mitem: MetaItem, key: string): boolean =>
+    key in mitem && mitem[key] !== null;
+
   return (
     <>
       <Card className={classes.card}>
@@ -173,33 +176,35 @@ export default function MetadataDrawer(props: Props): ReactElement {
         </Paper>
         <Paper elevation={0} square>
           <List>
-            {metaKeys.map(({ key }) => (
-              <ListItem key={key} className={classes.metaListItem}>
-                <ListItemText
-                  primaryTypographyProps={{ variant: "h6" }}
-                  className={classes.metaKey}
-                  title={metadataNameMap[key] || key}
-                  primary={`${metadataNameMap[key] || key}:`}
-                  classes={{
-                    primary: classes.metaKey,
-                    root: classes.metaRoot,
-                  }}
-                />
-                <ListItemText
-                  className={classes.metaValue}
-                  title={props.metadata[key] as string}
-                  primary={
-                    key === "imageLabels"
-                      ? (props.metadata[key] as string[]).join(", ")
-                      : props.metadata[key].toString()
-                  }
-                  classes={{
-                    primary: classes.metaValue,
-                    root: classes.metaRoot,
-                  }}
-                />
-              </ListItem>
-            ))}
+            {metaKeys.map(({ key }) =>
+              hasKey(props.metadata, key) ? (
+                <ListItem key={key} className={classes.metaListItem}>
+                  <ListItemText
+                    primaryTypographyProps={{ variant: "h6" }}
+                    className={classes.metaKey}
+                    title={metadataNameMap[key] || key}
+                    primary={`${metadataNameMap[key] || key}:`}
+                    classes={{
+                      primary: classes.metaKey,
+                      root: classes.metaRoot,
+                    }}
+                  />
+                  <ListItemText
+                    className={classes.metaValue}
+                    title={props.metadata[key] as string}
+                    primary={
+                      key === "imageLabels"
+                        ? (props.metadata[key] as string[]).join(", ")
+                        : props.metadata[key].toString()
+                    }
+                    classes={{
+                      primary: classes.metaValue,
+                      root: classes.metaRoot,
+                    }}
+                  />
+                </ListItem>
+              ) : null
+            )}
           </List>
         </Paper>
       </Card>
