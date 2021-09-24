@@ -266,7 +266,8 @@ class UserInterface extends Component<Props, State> {
             const value = mitem[filter.key];
             // Selection for current filter
             const currentSel =
-              (Array.isArray(value) && value.includes(filter.value)) ||
+              ((Array.isArray(value) || typeof value === "string") &&
+                value.includes(filter.value)) ||
               value === filter.value
                 ? 1
                 : 0;
