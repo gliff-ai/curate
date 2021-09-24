@@ -185,7 +185,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
               <IconButton
                 className={classes.iconButton}
                 onClick={selectAll}
-                onMouseOver={() => setInfoOnHover("Select all labelled")}
+                onMouseOver={() => setInfoOnHover("Select all labels")}
                 onMouseOut={() => setInfoOnHover("")}
               >
                 <Avatar variant="circular">
@@ -195,10 +195,26 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                   />
                 </Avatar>
               </IconButton>
+
+              <IconButton
+                className={classes.iconButton}
+                onClick={() => setLabels([])}
+                onMouseOver={() => setInfoOnHover("Deselect all labels")}
+                onMouseOut={() => setInfoOnHover("")}
+              >
+                <Avatar variant="circular">
+                  <SVG
+                    className={classes.svgLarge}
+                    src={imgSrc("deselect-all")}
+                  />
+                </Avatar>
+              </IconButton>
               <IconButton
                 className={classes.iconButton}
                 onClick={() => setLabels(null)}
-                onMouseOver={() => setInfoOnHover("Select all unlabelled")}
+                onMouseOver={() =>
+                  setInfoOnHover("Select all unlabelled images")
+                }
                 onMouseOut={() => setInfoOnHover("")}
               >
                 <Avatar variant="circular">
@@ -206,19 +222,6 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                     className={classes.svgLarge}
                     src={imgSrc("select-unlabelled")}
                     fill={labels === null ? theme.palette.primary.main : null}
-                  />
-                </Avatar>
-              </IconButton>
-              <IconButton
-                className={classes.iconButton}
-                onClick={() => setLabels([])}
-                onMouseOver={() => setInfoOnHover("Deselect all")}
-                onMouseOut={() => setInfoOnHover("")}
-              >
-                <Avatar variant="circular">
-                  <SVG
-                    className={classes.svgLarge}
-                    src={imgSrc("deselect-all")}
                   />
                 </Avatar>
               </IconButton>
