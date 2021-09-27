@@ -266,7 +266,8 @@ class UserInterface extends Component<Props, State> {
             const value = mitem[filter.key];
             // Selection for current filter
             const currentSel =
-              (Array.isArray(value) && value.includes(filter.value)) ||
+              ((Array.isArray(value) || typeof value === "string") &&
+                value.includes(filter.value)) ||
               value === filter.value
                 ? 1
                 : 0;
@@ -292,15 +293,19 @@ class UserInterface extends Component<Props, State> {
     }
   };
 
-  handleOnLabelSelection = (selectedLabels: string[]): void => {
+  handleOnLabelSelection = (selectedLabels: string[] | null): void => {
     // Filter metadata based on selected labels.
-
     this.setState((prevState) => {
       prevState.metadata.forEach((mitem) => {
-        const intersection = (mitem.imageLabels as string[]).filter((l) =>
-          selectedLabels.includes(l)
-        );
-        mitem.selected = intersection.length === selectedLabels.length;
+        if (selectedLabels === null) {
+          // select all unlabelled images
+          mitem.selected = (mitem.imageLabels as string[]).length === 0;
+        } else {
+          const intersection = (mitem.imageLabels as string[]).filter((l) =>
+            selectedLabels.includes(l)
+          );
+          mitem.selected = intersection.length === selectedLabels.length;
+        }
       });
 
       return { metadata: prevState.metadata };
