@@ -28,17 +28,20 @@ import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import { theme, BaseIconButton, generateClassName } from "@gliff-ai/style";
 import { imgSrc } from "@/helpers";
 
-import { LabelsPopover } from "@/components/LabelsPopover";
+import Tile, {
+  tooltips,
+  thumbnailSizes,
+  SizeThumbnails,
+  LabelsPopover,
+  AssigneesDialog,
+} from "@/components";
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
-import { SizeThumbnails } from "./components/SizeThumbnails";
 import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
 import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
 import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
 import SearchFilterCard from "./searchAndSort/SearchFilterCard";
-import Tile from "./components/Tile";
-import { tooltips, thumbnailSizes } from "./components/Tooltips";
 
 const styles = () => ({
   appBar: {
@@ -58,12 +61,10 @@ const styles = () => ({
     justifyContent: "flex-start",
     marginBottom: "auto",
   },
-
   uploadButton: {
     bottom: "18px",
     right: "18px",
   },
-
   logo: {
     marginBottom: "5px",
     marginTop: "7px",
@@ -78,9 +79,7 @@ const styles = () => ({
   },
   deleteImageCard: {
     backgroundColor: theme.palette.primary.light,
-    marginTop: "15px",
-    height: "50px",
-    marginBottom: "15px",
+    height: "auto",
   },
   deleteImageList: {
     display: "flex",
@@ -92,7 +91,6 @@ const styles = () => ({
     marginRight: "-10px",
     marginBottom: "-10ox",
   },
-
   bottomLeftButtons: {
     height: "53px",
     backgroundColor: theme.palette.primary.light,
@@ -103,7 +101,6 @@ const styles = () => ({
     justifyContent: "center",
     alignItems: "center",
   },
-
   collectionViewer: {
     height: "53px",
     backgroundColor: theme.palette.primary.light,
@@ -114,7 +111,13 @@ const styles = () => ({
     bottom: "18px",
     left: "15px",
   },
+  infoSelection: { fontWeight: 500, width: "1000px" },
 });
+
+type Collaborator = {
+  name: string;
+  email: string;
+};
 
 interface Props extends WithStyles<typeof styles> {
   metadata?: Metadata;
@@ -124,6 +127,7 @@ interface Props extends WithStyles<typeof styles> {
   ) => Promise<void>;
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
+  saveAssigneesCallback?: (imageUid: string, newAssignees: string[]) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
   annotateCallback?: (id: string) => void;
   downloadDatasetCallback?: () => void;
@@ -134,6 +138,7 @@ interface Props extends WithStyles<typeof styles> {
     | null;
 
   plugins?: JSX.Element | null;
+  collaborators?: Collaborator[] | null;
 }
 
 interface State {
@@ -156,6 +161,7 @@ class UserInterface extends Component<Props, State> {
     showAppBar: true,
     trustedServiceButtonToolbar: null,
     plugins: null,
+    collaborators: null,
   } as Pick<Props, "showAppBar">;
 
   constructor(props: Props) {
@@ -538,6 +544,38 @@ class UserInterface extends Component<Props, State> {
       });
     };
 
+  updateAssignees = (newAssignees: string[]): void => {
+    // Update assignees for the images selected
+
+    if (!this.state.selectedImagesUid) return;
+    this.setState((state) => ({
+      metadata: state.metadata.map((mitem) => {
+        if (state.selectedImagesUid.includes(mitem.id as string)) {
+          mitem.assignees = newAssignees;
+        }
+        return mitem;
+      }),
+    }));
+
+    if (this.props.saveAssigneesCallback) {
+      this.state.selectedImagesUid.forEach((uid) =>
+        this.props.saveAssigneesCallback(uid, newAssignees)
+      );
+    }
+  };
+
+  getCurrentAssignees = (): string[] => {
+    // Get assignees for the images selected
+
+    let currentAssignees: string[] = [];
+    this.state.metadata.forEach(({ id, assignees }) => {
+      if (this.state.selectedImagesUid.includes(id as string)) {
+        currentAssignees = currentAssignees.concat(assignees as string[]);
+      }
+    });
+    return Array.from(new Set(currentAssignees));
+  };
+
   @logTaskExecution("Image(s) upload")
   async addUploadedImages(
     imageFileInfo: ImageFileInfo[],
@@ -637,11 +675,25 @@ class UserInterface extends Component<Props, State> {
 
     const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
       <Card className={classes.deleteImageCard}>
-        <List component="span" className={classes.deleteImageList}>
+        <List
+          component="div"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
           <ListItem
+            className={classes.infoSelection}
             style={{ fontWeight: 500 }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-          <ListItem className={classes.deleteImageListItem}>
+          {this.props.collaborators && (
+            <ListItem style={{ padding: 0 }}>
+              <AssigneesDialog
+                profiles={this.props.collaborators}
+                selectedImagesUids={this.state.selectedImagesUid}
+                updateAssignees={this.updateAssignees}
+                getCurrentAssignees={this.getCurrentAssignees}
+              />
+            </ListItem>
+          )}
+          <ListItem style={{ padding: 0 }}>
             <BaseIconButton
               tooltip={tooltips.deleteImages}
               fill={null}
@@ -685,7 +737,6 @@ class UserInterface extends Component<Props, State> {
                         tooltipPlacement="top"
                       />
                     </Card>
-
                     <Card className={classes.bottomLeftButtons}>
                       <UploadImage
                         setUploadedImage={this.addUploadedImages}
@@ -700,7 +751,6 @@ class UserInterface extends Component<Props, State> {
                         }
                       />
                     </Card>
-
                     <Card className={classes.bottomLeftButtons}>
                       <BaseIconButton
                         tooltip={tooltips.downloadDataset}
@@ -908,9 +958,9 @@ class UserInterface extends Component<Props, State> {
                             </Button>
                             <LabelsPopover
                               id={mitem.id as string}
+                              imageName={mitem.imageName as string}
                               labels={mitem.imageLabels as string[]}
                               updateLabels={this.updateLabels(itemIndex)}
-                              imageName={mitem.imageName as string}
                             />
                           </div>
                         </Grid>
