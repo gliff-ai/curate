@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     width: "auto",
-    // hegith: "400px",
+    hegith: "400px",
   },
   button: {
     marginTop: "20px",
@@ -84,7 +84,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
   }, [props.selectedImagesUids, props.getCurrentAssignees]);
 
   const multiInputForm = (
-    <div className={classes.container}>
+    <>
       <FormControl>
         <InputLabel>Assignees:</InputLabel>
         <Select
@@ -115,17 +115,19 @@ export function AssigneesDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <Button
-        className={classes.button}
-        onClick={() => {
-          props.updateAssignees(assignees);
-          setOpen(false);
-        }}
-        variant="outlined"
-      >
-        Assign
-      </Button>
-    </div>
+      <div className={classes.container}>
+        <Button
+          className={classes.button}
+          onClick={() => {
+            props.updateAssignees(assignees);
+            setOpen(false);
+          }}
+          variant="outlined"
+        >
+          Assign
+        </Button>
+      </div>
+    </>
   );
 
   return (
