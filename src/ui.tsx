@@ -139,6 +139,7 @@ interface Props extends WithStyles<typeof styles> {
 
   plugins?: JSX.Element | null;
   collaborators?: Collaborator[] | null;
+  userIsOwner?: boolean;
 }
 
 interface State {
@@ -162,6 +163,7 @@ class UserInterface extends Component<Props, State> {
     trustedServiceButtonToolbar: null,
     plugins: null,
     collaborators: null,
+    userIsOwner: false,
   } as Pick<Props, "showAppBar">;
 
   constructor(props: Props) {
@@ -581,6 +583,8 @@ class UserInterface extends Component<Props, State> {
     imageFileInfo: ImageFileInfo[],
     images: ImageBitmap[][][]
   ): Promise<void> {
+    if (!this.props.userIsOwner) return;
+
     const newMetadata: MetaItem[] = [];
     for (let i = 0; i < images.length; i += 1) {
       const thumbnail = this.makeThumbnail(images[i]);
@@ -683,7 +687,7 @@ class UserInterface extends Component<Props, State> {
             className={classes.infoSelection}
             style={{ fontWeight: 500 }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-          {this.props.collaborators && (
+          {this.props.userIsOwner && this.props.collaborators && (
             <ListItem style={{ padding: 0 }}>
               <AssigneesDialog
                 profiles={this.props.collaborators}
@@ -737,20 +741,22 @@ class UserInterface extends Component<Props, State> {
                         tooltipPlacement="top"
                       />
                     </Card>
-                    <Card className={classes.bottomLeftButtons}>
-                      <UploadImage
-                        setUploadedImage={this.addUploadedImages}
-                        multiple
-                        spanElement={
-                          <BaseIconButton
-                            tooltip={tooltips.uploadImage}
-                            fill={null}
-                            tooltipPlacement="top"
-                            component="span"
-                          />
-                        }
-                      />
-                    </Card>
+                    {this.props.userIsOwner && (
+                      <Card className={classes.bottomLeftButtons}>
+                        <UploadImage
+                          setUploadedImage={this.addUploadedImages}
+                          multiple
+                          spanElement={
+                            <BaseIconButton
+                              tooltip={tooltips.uploadImage}
+                              fill={null}
+                              tooltipPlacement="top"
+                              component="span"
+                            />
+                          }
+                        />
+                      </Card>
+                    )}
                     <Card className={classes.bottomLeftButtons}>
                       <BaseIconButton
                         tooltip={tooltips.downloadDataset}

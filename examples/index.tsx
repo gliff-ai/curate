@@ -55,6 +55,7 @@ fetch("metadata.json")
             metadata={tiles}
             showAppBar
             collaborators={collaborators}
+            userIsOwner={true}
           />,
           document.getElementById("react-container")
         );
