@@ -380,9 +380,17 @@ class UserInterface extends Component<Props, State> {
       return 0;
     }
 
-    this.setState((prevState) => {
-      const metaType = this.getMetaTypeFromKey(key);
+    const metaType = this.getMetaTypeFromKey(key);
 
+    if (metaType === "undefined") {
+      console.log(`No values set for metadata key "${key}".`);
+      return;
+    } else if (!["date", "string", "number"].includes(metaType)) {
+      console.log(`Cannot sort values with type "${metaType}".`);
+      return;
+    }
+
+    this.setState((prevState) => {
       if (metaType === "date") {
         // Sort by date
         prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
@@ -405,14 +413,7 @@ class UserInterface extends Component<Props, State> {
             sortOrder
           )
         );
-      } else if (metaType === "undefined") {
-        console.log(`No values set for metadata key "${key}".`);
-        return;
-      } else {
-        console.log(`Cannot sort values with type "${metaType}".`);
-        return;
       }
-
       return { metadata: prevState.metadata, sortedBy: key };
     });
 
