@@ -264,13 +264,13 @@ class UserInterface extends Component<Props, State> {
         metadata.forEach((mitem) => {
           activeFilters.forEach((filter, fi) => {
             const value = mitem[filter.key];
-            // Selection for current filter
-            const currentSel =
-              ((Array.isArray(value) || typeof value === "string") &&
-                value.includes(filter.value)) ||
-              value === filter.value
-                ? 1
-                : 0;
+
+            // Current filter selection
+            const currentSel = Number(
+              Array.isArray(value)
+                ? value.some((v) => v.includes(filter.value))
+                : String(value).includes(filter.value)
+            );
 
             // Selection for all filter up to current
             const prevSel = fi === 0 ? 1 : Number(mitem.selected);
@@ -349,6 +349,17 @@ class UserInterface extends Component<Props, State> {
     this.setActiveFilter(filter);
   };
 
+  getMetaTypeFromKey = (key: string): string => {
+    if (key?.toLowerCase().includes("date")) return "date";
+    for (const mitem of this.state.metadata) {
+      const someType = typeof mitem[key];
+      if (someType !== "undefined") {
+        return someType;
+      }
+    }
+    return "undefined";
+  };
+
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
     // Handle sort by any string or by date.
 
@@ -370,9 +381,9 @@ class UserInterface extends Component<Props, State> {
     }
 
     this.setState((prevState) => {
-      const isKeyDate = key?.toLowerCase().includes("date");
+      const metaType = this.getMetaTypeFromKey(key);
 
-      if (isKeyDate) {
+      if (metaType === "date") {
         // Sort by date
         prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
           compare(
@@ -381,11 +392,11 @@ class UserInterface extends Component<Props, State> {
             sortOrder
           )
         );
-      } else if (typeof prevState.metadata[0][key] === "number") {
+      } else if (metaType === "number") {
         prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
           compare(a[key] as number, b[key] as number, sortOrder)
         );
-      } else {
+      } else if (metaType === "string") {
         // Sort by any string
         prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
           compare(
@@ -394,7 +405,14 @@ class UserInterface extends Component<Props, State> {
             sortOrder
           )
         );
+      } else if (metaType === "undefined") {
+        console.log(`No values set for metadata key "${key}".`);
+        return;
+      } else {
+        console.log(`Cannot sort values with type "${metaType}".`);
+        return;
       }
+
       return { metadata: prevState.metadata, sortedBy: key };
     });
 
