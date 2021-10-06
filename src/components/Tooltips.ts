@@ -42,6 +42,10 @@ const tooltips: Tooltips = {
     name: "Update image labels",
     icon: imgSrc("non-active-annotation-label-search-filter"),
   },
+  addAssignees: {
+    name: "Update assignees",
+    icon: imgSrc("close"), //TODO: replace this icon
+  },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [

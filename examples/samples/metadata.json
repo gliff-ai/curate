@@ -7,6 +7,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label1"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -17,6 +18,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label1", "label2"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -27,6 +29,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label1", "label2", "label3"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
         {
@@ -37,6 +40,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
         {
@@ -47,6 +51,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label4"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
         {
@@ -57,6 +62,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -67,6 +73,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -77,6 +84,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -87,6 +95,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -97,6 +106,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
     {
@@ -107,6 +117,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
       {
@@ -117,6 +128,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
       {
@@ -127,6 +139,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
       {
@@ -137,6 +150,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
       {
@@ -147,6 +161,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     },
       {
@@ -157,6 +172,7 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label2", "label7"],
+        "assignees": [],
         "fileMetaVersion": "1.0.0"
     }
 
