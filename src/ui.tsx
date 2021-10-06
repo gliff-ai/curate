@@ -34,6 +34,7 @@ import Tile, {
   SizeThumbnails,
   LabelsPopover,
   AssigneesDialog,
+  AutoAssignDialog,
 } from "@/components";
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
@@ -546,13 +547,15 @@ class UserInterface extends Component<Props, State> {
       });
     };
 
-  updateAssignees = (newAssignees: string[]): void => {
+  updateAssignees = (newAssignees: string[], selectedUids?: string[]): void => {
     // Update assignees for the images selected
 
-    if (!this.state.selectedImagesUid) return;
+    if (!selectedUids && !this.state.selectedImagesUid) return;
+
+    const imageUids = selectedUids || this.state.selectedImagesUid;
     this.setState((state) => ({
       metadata: state.metadata.map((mitem) => {
-        if (state.selectedImagesUid.includes(mitem.id as string)) {
+        if (imageUids.includes(mitem.id as string)) {
           mitem.assignees = newAssignees;
         }
         return mitem;
@@ -560,7 +563,7 @@ class UserInterface extends Component<Props, State> {
     }));
 
     if (this.props.saveAssigneesCallback) {
-      this.state.selectedImagesUid.forEach((uid) =>
+      imageUids.forEach((uid) =>
         this.props.saveAssigneesCallback(uid, newAssignees)
       );
     }
@@ -645,36 +648,54 @@ class UserInterface extends Component<Props, State> {
     );
 
     const toolBoxCard = (
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        className={classes.toolBoxCard}
-      >
-        <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
+      <>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          className={classes.toolBoxCard}
+        >
+          <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
 
-        <Card className={classes.smallButton}>
-          <SortPopover
-            metadataKeys={this.state.metadataKeys}
-            callbackSort={this.handleOnSortSubmit}
-            isGrouped={this.state.isGrouped}
-            toggleIsGrouped={this.toggleIsGrouped}
-          />
-        </Card>
+          <Card className={classes.smallButton}>
+            <SortPopover
+              metadataKeys={this.state.metadataKeys}
+              callbackSort={this.handleOnSortSubmit}
+              isGrouped={this.state.isGrouped}
+              toggleIsGrouped={this.toggleIsGrouped}
+            />
+          </Card>
 
-        <Card className={classes.smallButton}>
-          <BaseIconButton
-            tooltip={tooltips.selectMultipleImages}
-            fill={this.state.selectMultipleImagesMode}
-            tooltipPlacement="bottom"
-            onClick={() => {
-              this.setState((prevState) => ({
-                selectMultipleImagesMode: !prevState.selectMultipleImagesMode,
-                openImageUid: null,
-              }));
-            }}
-          />
-        </Card>
-      </Box>
+          <Card className={classes.smallButton}>
+            <BaseIconButton
+              tooltip={tooltips.selectMultipleImages}
+              fill={this.state.selectMultipleImagesMode}
+              tooltipPlacement="bottom"
+              onClick={() => {
+                this.setState((prevState) => ({
+                  selectMultipleImagesMode: !prevState.selectMultipleImagesMode,
+                  openImageUid: null,
+                }));
+              }}
+            />
+          </Card>
+        </Box>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          className={classes.toolBoxCard}
+        >
+          {this.props.userIsOwner && (
+            <Card className={classes.smallButton}>
+              <AutoAssignDialog
+                collaborators={this.props.collaborators}
+                metadata={this.state.metadata}
+                selectedImagesUids={this.state.selectedImagesUid}
+                updateAssignees={this.updateAssignees}
+              />
+            </Card>
+          )}
+        </Box>
+      </>
     );
 
     const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
