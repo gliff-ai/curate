@@ -12,7 +12,9 @@ import {
   Select,
   Chip,
   Button,
+  IconButton,
 } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { tooltips } from "@/components";
 import { Profile } from "./interfaces";
@@ -144,6 +146,9 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             <Typography className={classes.topography}>
               Assign selected images
             </Typography>
+            <IconButton onClick={() => setOpen(false)}>
+              <Close />
+            </IconButton>
           </Paper>
           <Paper elevation={0} square className={classes.paperBody}>
             {multiInputForm}
