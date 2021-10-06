@@ -393,7 +393,8 @@ class UserInterface extends Component<Props, State> {
     if (metaType === "undefined") {
       console.log(`No values set for metadata key "${key}".`);
       return;
-    } else if (!["date", "string", "number"].includes(metaType)) {
+    }
+    if (!["date", "string", "number"].includes(metaType)) {
       console.log(`Cannot sort values with type "${metaType}".`);
       return;
     }
