@@ -13,8 +13,9 @@ import {
   Chip,
   Button,
 } from "@material-ui/core";
-import { tooltips } from "@/components";
 import { BaseIconButton, theme } from "@gliff-ai/style";
+import { tooltips } from "@/components";
+import { Profile } from "./interfaces";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
@@ -44,11 +45,6 @@ const useStyles = makeStyles(() => ({
     color: theme.palette.text.secondary,
   },
 }));
-
-type Profile = {
-  name: string;
-  email: string;
-};
 
 interface Props {
   profiles: Profile[];
