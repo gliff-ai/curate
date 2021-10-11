@@ -90,15 +90,53 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     return props.metadata.map(({ id }) => id as string);
   }
 
+  function selectNextCombination(
+    assignmentCount: { [name: string]: number },
+    kCombsLastRound: Set<number[]>
+  ): number[] {
+    /* Select a combination, so as to minimise the range of the number of images
+    assigned to each collaborators. */
+
+    let minRange = Number.MAX_SAFE_INTEGER;
+    let selectedCombination: number[];
+
+    // for each combination..
+    kCombsLastRound.forEach((combination) => {
+      let newCounts: number[] = [];
+      // and each collaborator, calculate new image count
+      props.collaborators.forEach((collaborator, i) => {
+        newCounts.push(
+          combination.includes(i)
+            ? assignmentCount[collaborator.name] + 1
+            : assignmentCount[collaborator.name]
+        );
+      });
+
+      // calculate range of number of images assigned to each collaborators
+      const newRange =
+        Math.max.apply(Math, newCounts) - Math.min.apply(Math, newCounts);
+
+      // update minimum range, if required
+      if (newRange < minRange) {
+        minRange = newRange;
+        selectedCombination = combination;
+      }
+    });
+
+    // remove selected combination from last round and return it
+    kCombsLastRound.delete(selectedCombination);
+    return selectedCombination;
+  }
+
   function autoAssignImages(): void {
     // get images to use for assignment
     const imagesUids = getImagesUids();
     shuffle(imagesUids);
 
-    // get all combinations of k assignees
+    // get all combinations of k collaborators
     const kCombs: number[][] = kCombinations(
       [...Array(props.collaborators.length).keys()], //array of indexes
-      assigneesPerImage // k, number of people each image is assigned to
+      assigneesPerImage // number of collaborators each image is assigned to
     );
     shuffle(kCombs);
 
@@ -108,14 +146,30 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       assignmentCount[name] = 0;
     });
 
+    const totImages = imagesUids.length;
+    const startLastRound = totImages - (totImages % kCombs.length);
+    const kCombsLastRound = new Set(kCombs);
+
+    let currentCombination: number[];
     imagesUids.forEach((uid, i) => {
-      const assignees: string[] = kCombs[i % kCombs.length].map((j) => {
-        const collab = props.collaborators[j];
-        assignmentCount[collab.name] += 1;
-        return collab.email;
+      // select combination of colleagues to be assigned to the next image
+      if (i < startLastRound) {
+        currentCombination = kCombs[i % kCombs.length];
+      } else {
+        currentCombination = selectNextCombination(
+          assignmentCount,
+          kCombsLastRound
+        );
+      }
+
+      // get assignees for the current combination and update the image count for each assignee
+      const assignees: string[] = currentCombination.map((j) => {
+        assignmentCount[props.collaborators[j].name] += 1;
+        return props.collaborators[j].email;
       });
 
-      props.updateAssignees(assignees, [uid]);
+      // update assignees for the current image
+      props.updateAssignees(assignees, [uid]); // TODO: store once, at the end
     });
 
     console.log(assignmentCount);
@@ -126,12 +180,11 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       setMessage("Not enough collaborators in this project.");
       return;
     }
-    // Update select imges options
   }, [props.collaborators]);
 
   const dialogContent = (
     <div style={{ padding: "10px" }}>
-      {/* Select images to assign */}
+      {/* select images to assign */}
       <FormControl variant="standard">
         <InputLabel>Images to assign:</InputLabel>
         <Select
@@ -144,7 +197,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           )}
         </Select>
       </FormControl>
-      {/* Select number of assignees per image */}
+      {/* select number of assignees per image */}
       <FormControl variant="standard">
         <InputLabel>Assignees per image:</InputLabel>
         <Select
