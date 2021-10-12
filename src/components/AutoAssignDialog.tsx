@@ -90,6 +90,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     // Reset defaults values
     setImageSelectionType(SelectionType.All);
     setAssigneesPerImage(1);
+
     // Close dialog
     setOpen(false);
   }
@@ -210,12 +211,19 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
 
     props.updateAssignees(imagesUids, newAssignees);
 
+    setMessage({
+      text: "Images assigned.",
+      severify: "success",
+    });
+
     console.log(assignmentCount);
   }
 
   useEffect(() => {
-    updateMessage();
-  }, [props.collaborators, props.metadata, imageSelectionType]);
+    if (open) {
+      updateMessage();
+    }
+  }, [props.collaborators, imageSelectionType, open]);
 
   const dialogContent = (
     <div className={classes.contentContainer}>
@@ -255,7 +263,6 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           className={classes.button}
           onClick={() => {
             autoAssignImages();
-            setOpen(false);
           }}
           variant="outlined"
           disabled={Boolean(message?.severify === "error")}
@@ -270,10 +277,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     <>
       <BaseIconButton
         tooltip={tooltips.addAssignees}
-        onClick={() => {
-          updateMessage();
-          setOpen(!open);
-        }}
+        onClick={() => setOpen(!open)}
         tooltipPlacement="top"
       />
       <Dialog open={open} onClose={handleClose}>
