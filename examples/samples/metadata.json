@@ -7,8 +7,10 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label1"],
-        "assignees": [],
-        "fileMetaVersion": "1.0.0"
+        "assignees": [],        
+        "fileMetaVersion": "1.0.0",
+        "width": 1230,
+        "height": 2402
     },
     {
         "imageName": "sample1.png",
@@ -18,8 +20,10 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label1", "label2"],
-        "assignees": [],
-        "fileMetaVersion": "1.0.0"
+        "assignees": [],        
+        "fileMetaVersion": "1.0.0",
+        "width": 1500,
+        "height": 3402
     },
     {
         "imageName": "sample2.png",
@@ -29,8 +33,10 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label1", "label2", "label3"],
-        "assignees": [],
-        "fileMetaVersion": "1.0.0"
+        "assignees": [],        
+        "fileMetaVersion": "1.0.0",
+        "width": 396,
+        "height": 297
     },
         {
         "imageName": "sample3.png",
@@ -40,8 +46,10 @@
         "numberOfDimensions": "2",
         "numberOfChannels": "1",
         "imageLabels": ["label5", "label7"],
-        "assignees": [],
-        "fileMetaVersion": "1.0.0"
+        "assignees": [],        
+        "fileMetaVersion": "1.0.0",
+        "width": 252,
+        "height": 169
     },
         {
         "imageName": "sample4.png",
