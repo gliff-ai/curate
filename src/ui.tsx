@@ -128,7 +128,10 @@ interface Props extends WithStyles<typeof styles> {
   ) => Promise<void>;
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
-  saveAssigneesCallback?: (imageUid: string, newAssignees: string[]) => void;
+  saveAssigneesCallback?: (
+    imageUid: string[],
+    newAssignees: string[][]
+  ) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
   annotateCallback?: (id: string) => void;
   downloadDatasetCallback?: () => void;
@@ -547,25 +550,22 @@ class UserInterface extends Component<Props, State> {
       });
     };
 
-  updateAssignees = (newAssignees: string[], selectedUids?: string[]): void => {
+  updateAssignees = (imageUids: string[], newAssignees: string[][]): void => {
     // Update assignees for the images selected
+    if (imageUids.length !== newAssignees.length) return;
 
-    if (!selectedUids && !this.state.selectedImagesUid) return;
-
-    const imageUids = selectedUids || this.state.selectedImagesUid;
-    this.setState((state) => ({
-      metadata: state.metadata.map((mitem) => {
-        if (imageUids.includes(mitem.id as string)) {
-          mitem.assignees = newAssignees;
+    this.setState((prevState) => ({
+      metadata: prevState.metadata.map((mitem) => {
+        const index = imageUids.indexOf(mitem.id as string);
+        if (index !== -1) {
+          mitem.assignees = newAssignees[index];
         }
         return mitem;
       }),
     }));
 
     if (this.props.saveAssigneesCallback) {
-      imageUids.forEach((uid) =>
-        this.props.saveAssigneesCallback(uid, newAssignees)
-      );
+      this.props.saveAssigneesCallback(imageUids, newAssignees);
     }
   };
 
@@ -684,7 +684,7 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           className={classes.toolBoxCard}
         >
-          {this.props.userIsOwner && (
+          {this.props.userIsOwner && this.props.collaborators && (
             <Card className={classes.smallButton}>
               <AutoAssignDialog
                 collaborators={this.props.collaborators}

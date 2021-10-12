@@ -51,7 +51,7 @@ const useStyles = makeStyles(() => ({
 interface Props {
   profiles: Profile[];
   selectedImagesUids: string[];
-  updateAssignees: (value: string[]) => void;
+  updateAssignees: (imageUids: string[], newAssignees: string[][]) => void;
   getCurrentAssignees: () => string[];
 }
 
@@ -117,7 +117,10 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         <Button
           className={classes.button}
           onClick={() => {
-            props.updateAssignees(assignees);
+            props.updateAssignees(
+              props.selectedImagesUids,
+              props.selectedImagesUids.map(() => assignees)
+            );
             setOpen(false);
           }}
           variant="outlined"

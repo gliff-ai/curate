@@ -52,7 +52,7 @@ interface Props {
   collaborators: Profile[];
   selectedImagesUids: string[];
   metadata: Metadata;
-  updateAssignees: (value: string[], selectedUids?: string[]) => void;
+  updateAssignees: (imageUids: string[], newAssinees: string[][]) => void;
 }
 
 enum SelectionType {
@@ -183,6 +183,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     });
 
     const totImages = imagesUids.length;
+    const newAssignees: string[][] = [];
     const startLastRound = totImages - (totImages % kCombs.length);
     const kCombsLastRound = new Set(kCombs);
 
@@ -199,14 +200,15 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       }
 
       // get assignees for the current combination and update the image count for each assignee
-      const assignees: string[] = currentCombination.map((j) => {
-        assignmentCount[props.collaborators[j].name] += 1;
-        return props.collaborators[j].email;
-      });
-
-      // update assignees for the current image
-      props.updateAssignees(assignees, [uid]); // TODO: store once, at the end
+      newAssignees.push(
+        currentCombination.map((j) => {
+          assignmentCount[props.collaborators[j].name] += 1;
+          return props.collaborators[j].email;
+        })
+      );
     });
+
+    props.updateAssignees(imagesUids, newAssignees);
 
     console.log(assignmentCount);
   }
