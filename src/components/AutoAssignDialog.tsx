@@ -18,10 +18,11 @@ import { tooltips } from "@/components";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "@/helpers";
 import { Metadata } from "@/searchAndSort/interfaces";
+import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
-  paperBody: { margin: "15px" },
+  paperBody: { margin: "15px", width: "450px" },
   container: { textAlign: "center" },
   card: {
     display: "flex",
@@ -40,6 +41,11 @@ const useStyles = makeStyles(() => ({
     fontSize: "21px",
     marginRight: "125px",
   },
+  alert: {
+    width: "auto",
+  },
+  contentContainer: { padding: "10px" },
+  closeButton: { position: "absolute", right: "5px", top: "5px" },
 }));
 
 interface Props {
@@ -54,6 +60,11 @@ enum SelectionType {
   "Selected" = 1,
 }
 
+type Message = {
+  text: string;
+  severify: "info" | "warning" | "error" | "success";
+};
+
 export function AutoAssignDialog(props: Props): React.ReactElement {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
@@ -61,7 +72,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     SelectionType.All
   );
   const [assigneesPerImage, setAssigneesPerImage] = useState<number>(1);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<Message | null>(null);
 
   function onChangeOfImageSelectionType(
     event: React.ChangeEvent<{ value: SelectionType }>
@@ -88,6 +99,31 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       return props.selectedImagesUids;
     }
     return props.metadata.map(({ id }) => id as string);
+  }
+
+  function anyAssignedImage(): boolean {
+    const imagesUids = getImagesUids();
+    return props.metadata.some(
+      ({ id, assignees }) =>
+        imagesUids.includes(id as string) &&
+        (assignees as string[]).length !== 0
+    );
+  }
+
+  function updateMessage(): void {
+    if (props.collaborators.length === 0) {
+      setMessage({
+        text: "No collaborator has been added to this project.",
+        severify: "error",
+      });
+    } else if (anyAssignedImage()) {
+      setMessage({
+        text: "One or more of the selected images are already assigned.",
+        severify: "warning",
+      });
+    } else {
+      setMessage(null);
+    }
   }
 
   function selectNextCombination(
@@ -176,14 +212,11 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   }
 
   useEffect(() => {
-    if (props.collaborators.length === 0) {
-      setMessage("Not enough collaborators in this project.");
-      return;
-    }
-  }, [props.collaborators]);
+    updateMessage();
+  }, [props.collaborators, props.metadata, imageSelectionType]);
 
   const dialogContent = (
-    <div style={{ padding: "10px" }}>
+    <div className={classes.contentContainer}>
       {/* select images to assign */}
       <FormControl variant="standard">
         <InputLabel>Images to assign:</InputLabel>
@@ -223,6 +256,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
             setOpen(false);
           }}
           variant="outlined"
+          disabled={Boolean(message?.severify === "error")}
         >
           Assign
         </Button>
@@ -234,7 +268,10 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     <>
       <BaseIconButton
         tooltip={tooltips.addAssignees}
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          updateMessage();
+          setOpen(!open);
+        }}
         tooltipPlacement="top"
       />
       <Dialog open={open} onClose={handleClose}>
@@ -248,11 +285,16 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
             <Typography className={classes.topography}>
               Auto-assign images
             </Typography>
-            <IconButton onClick={handleClose}>
+            <IconButton className={classes.closeButton} onClick={handleClose}>
               <Close />
             </IconButton>
           </Paper>
           <Paper elevation={0} square className={classes.paperBody}>
+            {message ? (
+              <Alert className={classes.alert} severity={message.severify}>
+                {message.text}
+              </Alert>
+            ) : null}
             {dialogContent}
           </Paper>
         </Card>
