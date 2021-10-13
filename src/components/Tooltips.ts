@@ -46,6 +46,10 @@ const tooltips: Tooltips = {
     name: "Update assignees",
     icon: imgSrc("close"), //TODO: replace this icon
   },
+  close: {
+    name: "Close",
+    icon: imgSrc("close"),
+  },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [

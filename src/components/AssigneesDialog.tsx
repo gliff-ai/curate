@@ -14,10 +14,11 @@ import {
   Button,
   IconButton,
 } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
 import { BaseIconButton, theme } from "@gliff-ai/style";
+import SVG from "react-inlinesvg";
 import { tooltips } from "@/components";
 import { Profile } from "./interfaces";
+import { imgSrc } from "@/helpers";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
@@ -46,6 +47,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: "9px",
     color: theme.palette.text.secondary,
   },
+  closeIcon: { width: "15px" },
 }));
 
 interface Props {
@@ -150,7 +152,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
               Assign selected images
             </Typography>
             <IconButton onClick={() => setOpen(false)}>
-              <Close />
+              <SVG src={imgSrc("close")} className={classes.closeIcon} />
             </IconButton>
           </Paper>
           <Paper elevation={0} square className={classes.paperBody}>

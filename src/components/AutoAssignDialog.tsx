@@ -12,13 +12,13 @@ import {
   Button,
   IconButton,
 } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
-import { BaseIconButton, theme } from "@gliff-ai/style";
+import { Alert } from "@material-ui/lab";
+import SVG from "react-inlinesvg";
+import { BaseIconButton, BaseTextButton, theme } from "@gliff-ai/style";
 import { tooltips } from "@/components";
 import { Profile } from "./interfaces";
-import { kCombinations, shuffle } from "@/helpers";
+import { kCombinations, shuffle, imgSrc } from "@/helpers";
 import { Metadata } from "@/searchAndSort/interfaces";
-import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
@@ -45,7 +45,12 @@ const useStyles = makeStyles(() => ({
     width: "auto",
   },
   contentContainer: { padding: "10px" },
-  closeButton: { position: "absolute", right: "5px", top: "5px" },
+  closeButton: {
+    position: "absolute",
+    top: "7px",
+    right: "5px",
+  },
+  closeIcon: { width: "15px" },
 }));
 
 interface Props {
@@ -292,7 +297,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
               Auto-assign images
             </Typography>
             <IconButton className={classes.closeButton} onClick={handleClose}>
-              <Close />
+              <SVG src={imgSrc("close")} className={classes.closeIcon} />
             </IconButton>
           </Paper>
           <Paper elevation={0} square className={classes.paperBody}>
