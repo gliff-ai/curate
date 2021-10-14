@@ -11,10 +11,9 @@ import {
   FormControl,
   Select,
   Chip,
-  Button,
   IconButton,
 } from "@material-ui/core";
-import { BaseIconButton, theme } from "@gliff-ai/style";
+import { BaseIconButton, BaseTextButton, theme } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { tooltips } from "@/components";
 import { Profile } from "./interfaces";
@@ -23,17 +22,12 @@ import { imgSrc } from "@/helpers";
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
   paperBody: { margin: "15px" },
-  container: { textAlign: "center" },
+  container: { textAlign: "center", marginTop: "20px" },
   card: {
     display: "flex",
     flexDirection: "column",
     width: "auto",
     hegith: "400px",
-  },
-  button: {
-    marginTop: "20px",
-    backgroundColor: theme.palette.primary.main,
-    display: "inlineBlock",
   },
   topography: {
     color: "#000000",
@@ -116,8 +110,8 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         </Select>
       </FormControl>
       <div className={classes.container}>
-        <Button
-          className={classes.button}
+        <BaseTextButton
+          text="Assign"
           onClick={() => {
             props.updateAssignees(
               props.selectedImagesUids,
@@ -125,10 +119,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             );
             setOpen(false);
           }}
-          variant="outlined"
-        >
-          Assign
-        </Button>
+        />
       </div>
     </>
   );
