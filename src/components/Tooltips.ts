@@ -1,5 +1,4 @@
-import { Tooltip } from "@gliff-ai/style";
-import { imgSrc } from "@/helpers";
+import { Tooltip, icons } from "@gliff-ai/style";
 
 type Tooltips = { [name: string]: Tooltip };
 
@@ -12,60 +11,64 @@ interface ThumbnailSizes {
 const tooltips: Tooltips = {
   deleteImages: {
     name: "Delete Images",
-    icon: imgSrc("delete"),
+    icon: icons.delete,
   },
   selectMultipleImages: {
     name: "Select Multiple Images",
-    icon: imgSrc("multiple-image-selection"),
+    icon: icons.multipleImageSelection,
   },
   viewCollection: {
     name: "View Collection",
-    icon: imgSrc("collections-viewer"),
+    icon: icons.collectionsViewerToggle,
   },
   uploadImage: {
     name: "Upload Image",
-    icon: imgSrc("upload-icon"),
+    icon: icons.upload,
   },
   downloadDataset: {
     name: "Download Dataset",
-    icon: imgSrc("download-icon"),
+    icon: icons.download,
   },
   sort: {
     name: "Sort",
-    icon: imgSrc("search-filter"),
+    icon: icons.searchFilter,
   },
   search: {
     name: "Search",
-    icon: imgSrc("search"),
+    icon: icons.search,
   },
   addLabels: {
-    name: "Update image labels",
-    icon: imgSrc("non-active-annotation-label-search-filter"),
+    name: "Update Image Labels",
+    icon: icons.annotationLabel,
   },
   addAssignees: {
-    name: "Update assignees",
-    icon: imgSrc("close"), //TODO: replace this icon
+    name: "Update Assignees",
+    icon: icons.removeLabel, //TODO: replace this icon
   },
   close: {
     name: "Close",
-    icon: imgSrc("close"),
+    icon: icons.removeLabel,
+  },
+  autoAssign: {
+    name: "Auto-Assign Images",
+    icon: icons.usersPage,
   },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [
   {
     name: "Large Thumbnails",
-    icon: imgSrc("large-image-grid"),
+    icon: icons.smallImageGrid,
     size: 298,
   },
   {
     name: "Medium Thumbnails",
-    icon: imgSrc("medium-image-grid"),
+    icon: icons.mediumImageGrid,
     size: 211,
   },
   {
     name: "Small Thumbnails",
-    icon: imgSrc("small-image-grid"),
+    icon: icons.largeImageGrid,
     size: 132,
   },
 ];
