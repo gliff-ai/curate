@@ -9,7 +9,6 @@ import {
   MenuItem,
   FormControl,
   Select,
-  Button,
   IconButton,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -23,17 +22,12 @@ import { Metadata } from "@/searchAndSort/interfaces";
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
   paperBody: { margin: "15px", width: "450px" },
-  container: { textAlign: "center" },
+  container: { textAlign: "center", marginTop: "20px" },
   card: {
     display: "flex",
     flexDirection: "column",
     width: "auto",
     hegith: "400px",
-  },
-  button: {
-    marginTop: "20px",
-    backgroundColor: theme.palette.primary.main,
-    display: "inlineBlock",
   },
   topography: {
     color: "#000000",
@@ -264,16 +258,11 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       </FormControl>
 
       <div className={classes.container}>
-        <Button
-          className={classes.button}
-          onClick={() => {
-            autoAssignImages();
-          }}
-          variant="outlined"
+        <BaseTextButton
+          text="Assign"
+          onClick={autoAssignImages}
           disabled={Boolean(message?.severify === "error")}
-        >
-          Assign
-        </Button>
+        />
       </div>
     </div>
   );
