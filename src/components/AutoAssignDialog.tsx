@@ -13,10 +13,10 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import SVG from "react-inlinesvg";
-import { BaseIconButton, BaseTextButton, theme } from "@gliff-ai/style";
+import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
 import { tooltips } from "@/components";
 import { Profile } from "./interfaces";
-import { kCombinations, shuffle, imgSrc } from "@/helpers";
+import { kCombinations, shuffle } from "@/helpers";
 import { Metadata } from "@/searchAndSort/interfaces";
 
 const useStyles = makeStyles(() => ({
@@ -270,7 +270,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   return (
     <>
       <BaseIconButton
-        tooltip={tooltips.addAssignees}
+        tooltip={tooltips.autoAssign}
         onClick={() => setOpen(!open)}
         tooltipPlacement="top"
       />
@@ -286,7 +286,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
               Auto-assign images
             </Typography>
             <IconButton className={classes.closeButton} onClick={handleClose}>
-              <SVG src={imgSrc("close")} className={classes.closeIcon} />
+              <SVG src={icons.removeLabel} className={classes.closeIcon} />
             </IconButton>
           </Paper>
           <Paper elevation={0} square className={classes.paperBody}>
