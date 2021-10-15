@@ -513,19 +513,23 @@ class UserInterface extends Component<Props, State> {
 
   deleteSelectedImages = (): void => {
     if (!this.state.selectedImagesUid) return;
-    this.setState((state) => {
-      const metadata: Metadata = state.metadata.filter(
-        (mitem) => !state.selectedImagesUid.includes(mitem.id as string)
-      );
 
-      this.props.deleteImagesCallback?.(state.selectedImagesUid);
+    this.props.deleteImagesCallback?.(this.state.selectedImagesUid);
 
-      return {
-        selectedImagesUid: [],
-        metadata,
-        imageLabels: this.getImageLabels(metadata),
-      };
-    });
+    if (!this.props.deleteImagesCallback) {
+      // running standalone, so remove images here and now rather than waiting for store to update:
+      this.setState((state) => {
+        const metadata: Metadata = state.metadata.filter(
+          (mitem) => !state.selectedImagesUid.includes(mitem.id as string)
+        );
+
+        return {
+          selectedImagesUid: [],
+          metadata,
+          imageLabels: this.getImageLabels(metadata),
+        };
+      });
+    }
   };
 
   getItemUidNextToLastSelected = (forward = true): number | null => {
