@@ -440,15 +440,16 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         </Select>
       </FormControl>
       {/* select type of assignment */}
-      <FormControl>
-        <InputLabel>Type of assignment:</InputLabel>
-        <Select value={assignmentType} onChange={onChangeOfAssignmentType}>
-          <MenuItem value={AssignmentType.New}>New</MenuItem>
-          {info && info.hasAssignedImages && (
+      {info && info.hasAssignedImages && (
+        <FormControl>
+          <InputLabel>Type of assignment:</InputLabel>
+          <Select value={assignmentType} onChange={onChangeOfAssignmentType}>
+            <MenuItem value={AssignmentType.New}>New</MenuItem>
+
             <MenuItem value={AssignmentType.Integrative}>Integrative</MenuItem>
-          )}
-        </Select>
-      </FormControl>
+          </Select>
+        </FormControl>
+      )}
       {/* select number of assignees per image */}
       <FormControl variant="standard">
         <InputLabel>Assignees per image:</InputLabel>
