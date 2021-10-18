@@ -62,7 +62,7 @@ enum SelectionType {
 }
 
 enum AssignmentType {
-  "Initial" = 0,
+  "New" = 0,
   "Integrative" = 1,
 }
 
@@ -90,7 +90,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     SelectionType.All
   );
   const [assignmentType, setAssignmentType] = useState<AssignmentType>(
-    AssignmentType.Initial
+    AssignmentType.New
   );
   const [assigneesPerImage, setAssigneesPerImage] = useState<number>(1);
   const [options, setOptions] = useState<number[]>(
@@ -130,7 +130,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     setMessage(null);
     updateInfo();
     setImageSelectionType(SelectionType.All);
-    setImageSelectionType(AssignmentType.Initial);
+    setImageSelectionType(AssignmentType.New);
   }
 
   function updateImageUids(): void {
@@ -173,7 +173,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         severity: "error",
       });
     } else if (
-      assignmentType === AssignmentType.Initial &&
+      assignmentType === AssignmentType.New &&
       info.hasAssignedImages
     ) {
       setMessage({
@@ -376,7 +376,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     });
 
     const result =
-      assignmentType === AssignmentType.Initial
+      assignmentType === AssignmentType.New
         ? initialAssignment(kCombs, assignmentCount)
         : integrativeAssignment(kCombs, assignmentCount);
 
@@ -443,7 +443,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       <FormControl>
         <InputLabel>Type of assignment:</InputLabel>
         <Select value={assignmentType} onChange={onChangeOfAssignmentType}>
-          <MenuItem value={AssignmentType.Initial}>Initial</MenuItem>
+          <MenuItem value={AssignmentType.New}>New</MenuItem>
           {info && info.hasAssignedImages && (
             <MenuItem value={AssignmentType.Integrative}>Integrative</MenuItem>
           )}
