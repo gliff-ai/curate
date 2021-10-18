@@ -11,25 +11,23 @@ import {
   FormControl,
   Select,
   Chip,
-  Button,
+  IconButton,
 } from "@material-ui/core";
+import { BaseIconButton, BaseTextButton, theme } from "@gliff-ai/style";
+import SVG from "react-inlinesvg";
 import { tooltips } from "@/components";
-import { BaseIconButton, theme } from "@gliff-ai/style";
+import { Profile } from "./interfaces";
+import { imgSrc } from "@/helpers";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
   paperBody: { margin: "15px" },
-  container: { textAlign: "center" },
+  container: { textAlign: "center", marginTop: "20px" },
   card: {
     display: "flex",
     flexDirection: "column",
     width: "auto",
     hegith: "400px",
-  },
-  button: {
-    marginTop: "20px",
-    backgroundColor: theme.palette.primary.main,
-    display: "inlineBlock",
   },
   topography: {
     color: "#000000",
@@ -43,17 +41,13 @@ const useStyles = makeStyles(() => ({
     borderRadius: "9px",
     color: theme.palette.text.secondary,
   },
+  closeIcon: { width: "15px" },
 }));
-
-type Profile = {
-  name: string;
-  email: string;
-};
 
 interface Props {
   profiles: Profile[];
   selectedImagesUids: string[];
-  updateAssignees: (value: string[]) => void;
+  updateAssignees: (imageUids: string[], newAssignees: string[][]) => void;
   getCurrentAssignees: () => string[];
 }
 
@@ -116,16 +110,16 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         </Select>
       </FormControl>
       <div className={classes.container}>
-        <Button
-          className={classes.button}
+        <BaseTextButton
+          text="Assign"
           onClick={() => {
-            props.updateAssignees(assignees);
+            props.updateAssignees(
+              props.selectedImagesUids,
+              props.selectedImagesUids.map(() => assignees)
+            );
             setOpen(false);
           }}
-          variant="outlined"
-        >
-          Assign
-        </Button>
+        />
       </div>
     </>
   );
@@ -148,6 +142,9 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             <Typography className={classes.topography}>
               Assign selected images
             </Typography>
+            <IconButton onClick={() => setOpen(false)}>
+              <SVG src={imgSrc("close")} className={classes.closeIcon} />
+            </IconButton>
           </Paper>
           <Paper elevation={0} square className={classes.paperBody}>
             {multiInputForm}
