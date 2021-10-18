@@ -284,7 +284,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     }
 
     // Filter and sort metadata items by the length of assignees (descending), so
-    // as to process already assigned images first, partially second, unassigned last.
+    // as to process assigned images first, partially assigned second, unassigned last.
     const metadata = props.metadata
       .filter(({ id }) => imageUids.includes(id as string))
       .sort((a: MetaItem, b: MetaItem): number =>
@@ -323,7 +323,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           const viableCombs: string[][] = allCombs
             .filter(
               (comb, i, newCombs) =>
-                newCombs.indexOf(comb) === i &&
+                newCombs.indexOf(comb) === i && // unique combinations
                 assignees.every((email) => comb.includes(email))
             )
             .map((comb) => JSON.parse(comb));
