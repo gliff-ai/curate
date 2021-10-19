@@ -187,7 +187,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     ) {
       setMessage({
         text: `Different number of assignees per image.\n
-        Please ensure the initial assignement is correct
+        Please ensure the initial assignment is correct
         before proceeding with the integrative assignement.`,
         severity: "warning",
       });
