@@ -178,7 +178,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     ) {
       setMessage({
         text: `One or more of the selected images are already assigned.\n
-        Clicking on the 'ASSIGN' button will override the initial assignement.`,
+        Clicking on the 'ASSIGN' button will override the initial assignment.`,
         severity: "warning",
       });
     } else if (
