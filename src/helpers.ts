@@ -1,7 +1,7 @@
 const imgSrc = (src: string, type = "svg"): string =>
   new URL(`/src/assets/${src}.${type}`, import.meta.url).href;
 
-function kCombinations(set: number[], k: number): number[][] {
+function kCombinations(set: any[], k: number): any[][] {
   if (k > set.length || k <= 0) {
     return [];
   }
