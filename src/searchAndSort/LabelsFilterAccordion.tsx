@@ -45,8 +45,7 @@ const useStyles = makeStyles({
     width: "auto",
   },
   iconButton: {
-    marginRight: "-22px",
-    marginLeft: "-10px",
+    margin: "0 -12px",
   },
   infoOnHover: {
     color: theme.palette.text.secondary,
@@ -88,12 +87,13 @@ interface Props {
 export default function LabelsFilterAccordion(props: Props): ReactElement {
   const accordionOpened = props.expanded;
   const classes = useStyles(accordionOpened);
-  const [labels, setLabels] = useState([]);
+  const [labels, setLabels] = useState<string[] | null>([]);
   const [infoOnHover, setInfoOnHover] = useState("");
 
   const toggleLabelSelection = (label: string) => (): void => {
     // Add label to labels if it is not included, otherwise remove it.
     setLabels((prevLabels) => {
+      if (prevLabels === null) prevLabels = [];
       /* eslint-disable @typescript-eslint/no-unsafe-assignment */
       const newLabels: string[] = [...prevLabels];
       if (newLabels.includes(label)) {
@@ -108,7 +108,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
   const SelectDeselectAllButOne = (label: string) => (): void => {
     // If label deselected, select it and deselect every other label (and vice versa).
     let newSelectedLabels = [];
-    if (labels.includes(label)) {
+    if (labels && labels.includes(label)) {
       newSelectedLabels = props.allLabels.filter((l) => l !== label);
     } else {
       newSelectedLabels.push(label);
@@ -153,38 +153,39 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
         </AccordionSummary>
         <AccordionDetails className={classes.accordionDetails}>
           <List component="div" disablePadding className={classes.labelsList}>
-            {props.allLabels.map((label) => (
-              <ListItem
-                key={label}
-                dense
-                button
-                onDoubleClick={SelectDeselectAllButOne(label)}
-                onClick={toggleLabelSelection(label)}
-                className={classes.labelsListItem}
-              >
-                {labels.includes(label) ? (
-                  <>
+            {props.allLabels &&
+              props.allLabels.map((label) => (
+                <ListItem
+                  key={label}
+                  dense
+                  button
+                  onDoubleClick={SelectDeselectAllButOne(label)}
+                  onClick={toggleLabelSelection(label)}
+                  className={classes.labelsListItem}
+                >
+                  {labels && labels.includes(label) ? (
+                    <>
+                      <SVG
+                        src={imgSrc("active-annotation-label-search-filter")}
+                        className={classes.labelIcon}
+                      />
+                    </>
+                  ) : (
                     <SVG
-                      src={imgSrc("active-annotation-label-search-filter")}
+                      src={imgSrc("non-active-annotation-label-search-filter")}
                       className={classes.labelIcon}
                     />
-                  </>
-                ) : (
-                  <SVG
-                    src={imgSrc("non-active-annotation-label-search-filter")}
-                    className={classes.labelIcon}
-                  />
-                )}
-                <ListItemText primary={label} className={classes.labelText} />
-              </ListItem>
-            ))}
+                  )}
+                  <ListItemText primary={label} className={classes.labelText} />
+                </ListItem>
+              ))}
           </List>
           <List component="span" disablePadding className={classes.buttonsList}>
             <ListItem className={classes.buttonsListItem}>
               <IconButton
                 className={classes.iconButton}
                 onClick={selectAll}
-                onMouseOver={() => setInfoOnHover("Select All labels")}
+                onMouseOver={() => setInfoOnHover("Select all labels")}
                 onMouseOut={() => setInfoOnHover("")}
               >
                 <Avatar variant="circular">
@@ -196,14 +197,31 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
               </IconButton>
 
               <IconButton
+                className={classes.iconButton}
                 onClick={() => setLabels([])}
-                onMouseOver={() => setInfoOnHover("Deselect All labels")}
+                onMouseOver={() => setInfoOnHover("Deselect all labels")}
                 onMouseOut={() => setInfoOnHover("")}
               >
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
                     src={imgSrc("deselect-all")}
+                  />
+                </Avatar>
+              </IconButton>
+              <IconButton
+                className={classes.iconButton}
+                onClick={() => setLabels(null)}
+                onMouseOver={() =>
+                  setInfoOnHover("Select all unlabelled images")
+                }
+                onMouseOut={() => setInfoOnHover("")}
+              >
+                <Avatar variant="circular">
+                  <SVG
+                    className={classes.svgLarge}
+                    src={imgSrc("select-unlabelled")}
+                    fill={labels === null ? theme.palette.primary.main : null}
                   />
                 </Avatar>
               </IconButton>

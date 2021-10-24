@@ -21,6 +21,14 @@ const loadImage = (filename: string): Promise<string> =>
     image.src = filename;
   });
 
+const collaborators = [
+  { name: "Mike Jones", email: "mike@gliff.app" },
+  { name: "John Smith", email: "john@gliff.app" },
+  { name: "Sarah Williams", email: "sarah@gliff.app" },
+  { name: "Elisabeth Johnson", email: "elisabeth@gliff.app" },
+  { name: "David Brown", email: "david@gliff.app" },
+];
+
 // get image promises:
 const promises: Array<Promise<string>> = [];
 for (let i = 0; i < 20; i += 1) {
@@ -43,7 +51,12 @@ fetch("metadata.json")
 
         // render main component:
         ReactDOM.render(
-          <UserInterface metadata={tiles} showAppBar />,
+          <UserInterface
+            metadata={tiles}
+            showAppBar
+            collaborators={collaborators}
+            userIsOwner={true}
+          />,
           document.getElementById("react-container")
         );
       },

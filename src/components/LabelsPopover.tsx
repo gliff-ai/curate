@@ -1,4 +1,4 @@
-import { useState, ReactElement, MouseEvent, ChangeEvent } from "react";
+import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,15 +6,15 @@ import {
   InputBase,
   IconButton,
   Chip,
-  Popover,
   Card,
   CardHeader,
   CardContent,
   Avatar,
   Typography,
 } from "@material-ui/core";
-import { Label, Close, Add } from "@material-ui/icons";
-import { theme, HtmlTooltip } from "@gliff-ai/style";
+import { Close, Add } from "@material-ui/icons";
+import { theme, BasePopover } from "@gliff-ai/style";
+import { tooltips } from "@/components/Tooltips";
 import { imgSrc } from "@/helpers";
 
 const useStyles = makeStyles({
@@ -60,10 +60,9 @@ const useStyles = makeStyles({
     borderBottom: "solid 1px #dadde9",
   },
   addLabelButton: {
-    color: theme.palette.primary.light,
     position: "absolute",
     bottom: theme.spacing(1),
-    left: theme.spacing(1),
+    left: theme.spacing(2),
   },
   svgSmall: { width: "10px", height: "100%" },
 });
@@ -77,16 +76,9 @@ interface Props {
 
 export function LabelsPopover(props: Props): ReactElement {
   const classes = useStyles();
-  const [anchorElement, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [newLabel, setNewLabel] = useState("");
+  const [close, setClose] = useState(0);
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   const handleNewLabelChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewLabel(event.target.value);
   };
@@ -105,27 +97,72 @@ export function LabelsPopover(props: Props): ReactElement {
     setNewLabel("");
   };
 
-  return (
-    <>
-      <HtmlTooltip
-        title={<Typography>Update image labels</Typography>}
-        placement="top-start"
+  const popoverContent = (
+    <Card className={classes.labelsCard}>
+      <IconButton
+        key={`button-close-${props.id}`}
+        className={classes.cross}
+        onClick={() => setClose((close) => close + 1)}
       >
+        <Close />
+      </IconButton>
+      <CardHeader
+        className={classes.labelsCardHeader}
+        title={
+          <Typography className={classes.cardHeaderTypography}>
+            {props.imageName}
+          </Typography>
+        }
+      />
+      <CardContent className={classes.cardContent}>
+        <InputBase
+          key={`input-${props.id}`}
+          placeholder="New label"
+          type="text"
+          value={newLabel}
+          onChange={handleNewLabelChange}
+          inputProps={{
+            className: classes.input,
+          }}
+        />
         <IconButton
-          className={classes.addLabelButton}
-          aria-describedby={props.id}
-          onClick={handleClick}
+          className={classes.addButton}
+          key={`button-add-${props.id}`}
+          type="submit"
+          onClick={handleAddLabel(newLabel)}
         >
-          <Label />
+          <Add />
         </IconButton>
-      </HtmlTooltip>
+        {props.labels.map((label) => (
+          <Chip
+            key={`chip-add-${label}`}
+            avatar={
+              <Avatar
+                variant="circular"
+                style={{ cursor: "pointer" }}
+                onClick={handleDeleteLabel(label)}
+              >
+                <SVG
+                  src={imgSrc("close")}
+                  className={classes.svgSmall}
+                  fill={theme.palette.text.secondary}
+                />
+              </Avatar>
+            }
+            className={classes.labelsChip}
+            label={label}
+            variant="outlined"
+          />
+        ))}
+      </CardContent>
+    </Card>
+  );
 
-      <Popover
-        key={`popover-${props.id}`}
-        id={props.id}
-        open={Boolean(anchorElement)}
-        anchorEl={anchorElement}
-        onClose={handleClose}
+  return (
+    <div className={classes.addLabelButton}>
+      <BasePopover
+        tooltip={tooltips.addLabels}
+        tooltipPlacement="top-start"
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",
@@ -134,66 +171,11 @@ export function LabelsPopover(props: Props): ReactElement {
           vertical: "top",
           horizontal: "left",
         }}
-      >
-        <Card className={classes.labelsCard}>
-          <IconButton
-            key={`button-close-${props.id}`}
-            className={classes.cross}
-            onClick={handleClose}
-          >
-            <Close />
-          </IconButton>
-          <CardHeader
-            className={classes.labelsCardHeader}
-            title={
-              <Typography className={classes.cardHeaderTypography}>
-                {props.imageName}
-              </Typography>
-            }
-          />
-          <CardContent className={classes.cardContent}>
-            <InputBase
-              key={`input-${props.id}`}
-              placeholder="New label"
-              type="text"
-              value={newLabel}
-              onChange={handleNewLabelChange}
-              inputProps={{
-                className: classes.input,
-              }}
-            />
-            <IconButton
-              className={classes.addButton}
-              key={`button-add-${props.id}`}
-              type="submit"
-              onClick={handleAddLabel(newLabel)}
-            >
-              <Add />
-            </IconButton>
-            {props.labels.map((label) => (
-              <Chip
-                key={`chip-add-${label}`}
-                avatar={
-                  <Avatar
-                    variant="circular"
-                    style={{ cursor: "pointer" }}
-                    onClick={handleDeleteLabel(label)}
-                  >
-                    <SVG
-                      src={imgSrc("close")}
-                      className={classes.svgSmall}
-                      fill={theme.palette.text.secondary}
-                    />
-                  </Avatar>
-                }
-                className={classes.labelsChip}
-                label={label}
-                variant="outlined"
-              />
-            ))}
-          </CardContent>
-        </Card>
-      </Popover>
-    </>
+        fill={true}
+        iconColor="#ffffff"
+        children={popoverContent}
+        triggerClosing={close}
+      />
+    </div>
   );
 }
