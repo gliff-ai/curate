@@ -12,8 +12,7 @@ import {
   IconButton,
   Avatar,
 } from "@material-ui/core";
-import { theme } from "@gliff-ai/style";
-import { imgSrc } from "@/helpers";
+import { theme, icons } from "@gliff-ai/style";
 
 const useStyles = makeStyles({
   title: {
@@ -74,6 +73,7 @@ const useStyles = makeStyles({
   },
   svgLarge: { width: "55%", height: "100%" },
   svgSmall: { width: "15px", height: "100%" },
+  rotateIcon: { transform: "rotate(-90deg)" },
 });
 
 interface Props {
@@ -138,8 +138,8 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
           expandIcon={
             <Avatar className={classes.avatar}>
               <SVG
-                src={imgSrc("down-arrow")}
-                className={classes.svgSmall}
+                className={`${classes.svgSmall} ${classes.rotateIcon}`}
+                src={icons.previousNext}
                 fill={accordionOpened ? theme.palette.primary.main : null}
               />
             </Avatar>
@@ -166,13 +166,13 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                   {labels && labels.includes(label) ? (
                     <>
                       <SVG
-                        src={imgSrc("active-annotation-label-search-filter")}
+                        src={icons.selectedChip}
                         className={classes.labelIcon}
                       />
                     </>
                   ) : (
                     <SVG
-                      src={imgSrc("non-active-annotation-label-search-filter")}
+                      src={icons.notSelectedChip}
                       className={classes.labelIcon}
                     />
                   )}
@@ -191,7 +191,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
-                    src={imgSrc("select-all")}
+                    src={icons.selectAllLabels}
                   />
                 </Avatar>
               </IconButton>
@@ -205,7 +205,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
-                    src={imgSrc("deselect-all")}
+                    src={icons.deselectAllLabels}
                   />
                 </Avatar>
               </IconButton>
@@ -220,7 +220,7 @@ export default function LabelsFilterAccordion(props: Props): ReactElement {
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
-                    src={imgSrc("select-unlabelled")}
+                    src={icons.displayUnlabelledImages}
                     fill={labels === null ? theme.palette.primary.main : null}
                   />
                 </Avatar>

@@ -13,9 +13,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Close, Add } from "@material-ui/icons";
-import { theme, BasePopover } from "@gliff-ai/style";
+import { theme, BasePopover, icons } from "@gliff-ai/style";
 import { tooltips } from "@/components/Tooltips";
-import { imgSrc } from "@/helpers";
 
 const useStyles = makeStyles({
   cross: {
@@ -143,7 +142,7 @@ export function LabelsPopover(props: Props): ReactElement {
                 onClick={handleDeleteLabel(label)}
               >
                 <SVG
-                  src={imgSrc("close")}
+                  src={icons.removeLabel}
                   className={classes.svgSmall}
                   fill={theme.palette.text.secondary}
                 />
