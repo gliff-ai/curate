@@ -1,5 +1,5 @@
 import { ReactElement, useState, useEffect } from "react";
-import { BaseIconButton, theme } from "@gliff-ai/style";
+import { IconButton, theme } from "@gliff-ai/style";
 import { Card } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,10 +39,11 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
     <div>
       <Card className={classes.card}>
         {thumbnailSizes.map((thumbnailSize: ThumbnailSizes) => (
-          <BaseIconButton
+          <IconButton
             key={thumbnailSize.name}
+            icon={thumbnailSize.icon}
             tooltipPlacement="bottom"
-            tooltip={thumbnailSize}
+            tooltip={{ name: thumbnailSize.name }}
             onClick={() => setButtonClicked(thumbnailSize.name)}
             fill={buttonClicked === thumbnailSize.name}
           />
