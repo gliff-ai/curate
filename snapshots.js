@@ -1,6 +1,6 @@
 module.exports = [{
-  name: 'My form',
-  url: 'http://localhost:3002',
+  name: 'Curate Home',
+  url: 'http://localhost:3000',
   waitForSelector: '#large-thumbnail',
 
   additionalSnapshots: [{
