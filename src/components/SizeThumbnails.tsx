@@ -1,6 +1,6 @@
 import { ReactElement, useState, useEffect } from "react";
 import { IconButton, theme } from "@gliff-ai/style";
-import { ButtonGroup, Card } from "@material-ui/core";
+import { ButtonGroup } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -12,7 +12,6 @@ const useStyles = makeStyles({
     height: "48px",
     backgroundColor: theme.palette.primary.light,
     width: "150px",
-    // paddingLeft: "5px",
     paddingTop: "1px",
     paddingBottom: "4px",
     display: "flex",

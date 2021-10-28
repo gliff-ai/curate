@@ -25,7 +25,12 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton, generateClassName } from "@gliff-ai/style";
+import {
+  theme,
+  BaseIconButton,
+  generateClassName,
+  IconButton,
+} from "@gliff-ai/style";
 import { imgSrc } from "@/helpers";
 
 import Tile, {
@@ -690,9 +695,10 @@ class UserInterface extends Component<Props, State> {
           </Card>
 
           <Card className={classes.smallButton}>
-            <BaseIconButton
+            <IconButton
               tooltip={tooltips.selectMultipleImages}
               fill={this.state.selectMultipleImagesMode}
+              icon={tooltips.selectMultipleImages.icon}
               tooltipPlacement="bottom"
               onClick={() => {
                 this.setState((prevState) => ({
@@ -700,6 +706,7 @@ class UserInterface extends Component<Props, State> {
                   openImageUid: null,
                 }));
               }}
+              id="select-multiple-images"
             />
           </Card>
         </Box>
