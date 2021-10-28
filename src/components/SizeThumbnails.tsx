@@ -1,6 +1,6 @@
 import { ReactElement, useState, useEffect } from "react";
 import { IconButton, theme } from "@gliff-ai/style";
-import { Card } from "@material-ui/core";
+import { ButtonGroup, Card } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     height: "48px",
     backgroundColor: theme.palette.primary.light,
     width: "150px",
-    paddingLeft: "5px",
+    // paddingLeft: "5px",
     paddingTop: "1px",
     paddingBottom: "4px",
     display: "flex",
@@ -37,7 +37,7 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
 
   return (
     <div>
-      <Card className={classes.card}>
+      <ButtonGroup orientation="horizontal">
         {thumbnailSizes.map((thumbnailSize: ThumbnailSizes) => (
           <IconButton
             key={thumbnailSize.name}
@@ -46,9 +46,10 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
             tooltip={{ name: thumbnailSize.name }}
             onClick={() => setButtonClicked(thumbnailSize.name)}
             fill={buttonClicked === thumbnailSize.name}
+            id={thumbnailSize.id}
           />
         ))}
-      </Card>
+      </ButtonGroup>
     </div>
   );
 }

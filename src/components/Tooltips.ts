@@ -6,6 +6,7 @@ interface ThumbnailSizes {
   name: string;
   icon: string;
   size: number;
+  id: string;
 }
 
 const tooltips: Tooltips = {
@@ -60,16 +61,19 @@ const thumbnailSizes: ThumbnailSizes[] = [
     name: "Large Thumbnails",
     icon: icons.largeImageGrid,
     size: 298,
+    id: "large-thumbnail",
   },
   {
     name: "Medium Thumbnails",
     icon: icons.mediumImageGrid,
     size: 211,
+    id: "medium-thumbnail",
   },
   {
     name: "Small Thumbnails",
     icon: icons.smallImageGrid,
     size: 132,
+    id: "small-thumbnail",
   },
 ];
 
