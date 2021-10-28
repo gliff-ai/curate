@@ -23,7 +23,7 @@ jobs:
       - name: Setup dependencies
         run: npm i
       - name: Build
-        run: npm run serve:example
+        run: npm run serve
       - name: Snapshot
         run: npx percy snapshot snapshots.js
 
