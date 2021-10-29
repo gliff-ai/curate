@@ -15,10 +15,10 @@ import {
 import { Alert } from "@material-ui/lab";
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
-import { tooltips } from "@/components";
+import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
-import { kCombinations, shuffle } from "@/helpers";
-import { Metadata, MetaItem } from "@/searchAndSort/interfaces";
+import { kCombinations, shuffle } from "../helpers";
+import { Metadata, MetaItem } from "../searchAndSort/interfaces";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
@@ -65,6 +65,8 @@ enum AssignmentType {
   "New" = 0,
   "Integrative" = 1,
 }
+
+export type AssignmentCount = { [email: string]: number };
 
 type Info = {
   hasAssignedImages: boolean;
@@ -245,7 +247,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
 
   function initialAssignment(
     kCombs: string[][],
-    assignmentCount: { [email: string]: number }
+    assignmentCount: AssignmentCount
   ): AssignmentResult {
     const totImages = imageUids.length;
     const startLastRound = totImages - (totImages % kCombs.length);
@@ -370,7 +372,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     shuffle(kCombs);
 
     // initialise assignment count
-    const assignmentCount: { [email: string]: number } = {};
+    const assignmentCount: AssignmentCount = {};
     props.collaborators.forEach(({ email }) => {
       assignmentCount[email] = 0;
     });
@@ -398,7 +400,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       severity: "success",
     });
 
-    console.log(assignmentCount);
+    // console.log(assignmentCount);
   }
 
   useEffect(() => {
@@ -427,9 +429,10 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   const dialogContent = (
     <div className={classes.contentContainer}>
       {/* select images to assign */}
-      <FormControl variant="standard">
+      <FormControl>
         <InputLabel>Images to assign:</InputLabel>
         <Select
+          data-testid="selection-type"
           value={imageSelectionType}
           onChange={onChangeOfImageSelectionType}
         >
@@ -443,7 +446,11 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       {info && info.hasAssignedImages && (
         <FormControl>
           <InputLabel>Type of assignment:</InputLabel>
-          <Select value={assignmentType} onChange={onChangeOfAssignmentType}>
+          <Select
+            data-testid="assignment-type"
+            value={assignmentType}
+            onChange={onChangeOfAssignmentType}
+          >
             <MenuItem value={AssignmentType.New}>New</MenuItem>
 
             <MenuItem value={AssignmentType.Integrative}>Integrative</MenuItem>
@@ -451,9 +458,10 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         </FormControl>
       )}
       {/* select number of assignees per image */}
-      <FormControl variant="standard">
+      <FormControl>
         <InputLabel>Assignees per image:</InputLabel>
         <Select
+          data-testid="assignees-per-image"
           value={assigneesPerImage}
           onChange={onChangeOfAssigneesPerImage}
         >
@@ -466,6 +474,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       </FormControl>
       <div className={classes.container}>
         <BaseTextButton
+          dataTestid="autoassign-btn"
           text="Assign"
           onClick={autoAssignImages}
           disabled={requiresConfirmation()}
@@ -477,6 +486,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   return (
     <>
       <BaseIconButton
+        dataTestid="open-autoassign-dialog-btn"
         tooltip={tooltips.autoAssign}
         onClick={() => setOpen(!open)}
         tooltipPlacement="top"
