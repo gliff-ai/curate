@@ -23,10 +23,10 @@ const metadata: Metadata = data.map((mitem, i) => ({
 }));
 const selectedUids = ["1", "2", "3", "4", "5"];
 
-function selectOption(testId: string, text: string): void {
+function changeOption(text: string, newText: string): void {
   // change option selected in a Select material ui component
-  fireEvent.mouseDown(within(screen.getByTestId(testId)).getByRole("button"));
-  fireEvent.click(within(screen.getByRole("listbox")).getByText(text));
+  fireEvent.mouseDown(screen.getByText(text));
+  fireEvent.click(within(screen.getByRole("listbox")).getByText(newText));
 }
 
 function initAssignmentCount(): AssignmentCount {
@@ -47,11 +47,11 @@ describe.only("new auto-assignment", () => {
         updateAssignees={updateAssignees}
       />
     );
-    fireEvent.click(screen.getByTestId("open-autoassign-dialog-btn"));
+    fireEvent.click(screen.getByRole("button"));
   });
 
   test("assignment on all images", () => {
-    fireEvent.click(screen.getByTestId("autoassign-btn"));
+    fireEvent.click(screen.getByText("Assign"));
 
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(metadata.length); //imageUids and metadata should have the same length
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(
@@ -60,8 +60,8 @@ describe.only("new auto-assignment", () => {
   });
 
   test("assignment on selected images", () => {
-    selectOption("selection-type", "Selected");
-    fireEvent.click(screen.getByTestId("autoassign-btn"));
+    changeOption("All", "Selected");
+    fireEvent.click(screen.getByText("Assign"));
 
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(selectedUids.length); //imageUids and selectedUids should have the same length
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(
@@ -70,9 +70,7 @@ describe.only("new auto-assignment", () => {
   });
 
   test("assignees per image from 1 to N = number of collaborators", () => {
-    fireEvent.mouseDown(
-      within(screen.getByTestId("assignees-per-image")).getByRole("button")
-    );
+    fireEvent.mouseDown(screen.getByText("1"));
     const listbox = within(screen.getByRole("listbox"));
 
     expect(listbox.getByText(1)).toBeInTheDocument(); // min assignees per image = 1
@@ -84,8 +82,8 @@ describe.only("new auto-assignment", () => {
   test.each([1, 2, 3, 4, 5])(
     "assign each image to %s different collaborators",
     (assigneesPerImage: number) => {
-      selectOption("assignees-per-image", String(assigneesPerImage));
-      fireEvent.click(screen.getByTestId("autoassign-btn"));
+      changeOption("1", String(assigneesPerImage));
+      fireEvent.click(screen.getByText("Assign"));
 
       const assignmentCount: AssignmentCount = initAssignmentCount();
       const values = updateAssignees.mock.results[0].value.forEach(
@@ -127,12 +125,12 @@ describe.only("integrative auto-assignment", () => {
       />
     );
 
-    fireEvent.click(screen.getByTestId("open-autoassign-dialog-btn"));
-    selectOption("assignment-type", "Integrative"); // select integrative assignment
+    fireEvent.click(screen.getByRole("button"));
+    changeOption("New", "Integrative"); // select integrative assignment
   });
 
   test("assign only partially assigned and unassigned images", () => {
-    fireEvent.click(screen.getByTestId("autoassign-btn"));
+    fireEvent.click(screen.getByText("Assign"));
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(metadata.length - 1); // the already assigned image should not be reassigned
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(
       updateAssignees.mock.calls[0][1].length //imageUids and newAssignees should have the same length
@@ -140,21 +138,17 @@ describe.only("integrative auto-assignment", () => {
   });
 
   it("the min number of assignees per image must be the max number of assignees per image from the initial assignment", () => {
-    fireEvent.mouseDown(
-      within(screen.getByTestId("assignees-per-image")).getByRole("button")
-    );
+    fireEvent.mouseDown(screen.getByText("3"));
     const listbox = within(screen.getByRole("listbox"));
 
-    // the min number of assignees allowed should be 3
-    expect(listbox.getByText("3")).toBeInTheDocument();
-    expect(listbox.queryByText("2")).toBeNull();
+    expect(listbox.queryByText("2")).toBeNull(); // the min number of assignees allowed should be 3
   });
 
   test.each([3, 4, 5])(
     "assign each image to %s different collaborators",
     (assigneesPerImage: number) => {
-      selectOption("assignees-per-image", String(assigneesPerImage));
-      fireEvent.click(screen.getByTestId("autoassign-btn"));
+      changeOption("3", String(assigneesPerImage));
+      fireEvent.click(screen.getByText("Assign"));
 
       const assignmentCount: AssignmentCount = initAssignmentCount();
       const values = updateAssignees.mock.results[0].value.forEach(

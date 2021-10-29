@@ -432,7 +432,6 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       <FormControl>
         <InputLabel>Images to assign:</InputLabel>
         <Select
-          data-testid="selection-type"
           value={imageSelectionType}
           onChange={onChangeOfImageSelectionType}
         >
@@ -446,11 +445,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       {info && info.hasAssignedImages && (
         <FormControl>
           <InputLabel>Type of assignment:</InputLabel>
-          <Select
-            data-testid="assignment-type"
-            value={assignmentType}
-            onChange={onChangeOfAssignmentType}
-          >
+          <Select value={assignmentType} onChange={onChangeOfAssignmentType}>
             <MenuItem value={AssignmentType.New}>New</MenuItem>
 
             <MenuItem value={AssignmentType.Integrative}>Integrative</MenuItem>
@@ -461,7 +456,6 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       <FormControl>
         <InputLabel>Assignees per image:</InputLabel>
         <Select
-          data-testid="assignees-per-image"
           value={assigneesPerImage}
           onChange={onChangeOfAssigneesPerImage}
         >
@@ -474,7 +468,6 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       </FormControl>
       <div className={classes.container}>
         <BaseTextButton
-          dataTestid="autoassign-btn"
           text="Assign"
           onClick={autoAssignImages}
           disabled={requiresConfirmation()}
@@ -486,7 +479,6 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   return (
     <>
       <BaseIconButton
-        dataTestid="open-autoassign-dialog-btn"
         tooltip={tooltips.autoAssign}
         onClick={() => setOpen(!open)}
         tooltipPlacement="top"
