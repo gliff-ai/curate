@@ -43,7 +43,7 @@ const tooltips: Tooltips = {
   },
   addAssignees: {
     name: "Update Assignees",
-    icon: icons.removeLabel, //TODO: replace this icon
+    icon: icons.usersPage,
   },
   close: {
     name: "Close",
@@ -51,7 +51,7 @@ const tooltips: Tooltips = {
   },
   autoAssign: {
     name: "Auto-Assign Images",
-    icon: icons.usersPage,
+    icon: icons.autoAssign,
   },
 };
 
