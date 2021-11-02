@@ -25,8 +25,12 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton, generateClassName } from "@gliff-ai/style";
-import { imgSrc } from "@/helpers";
+import {
+  theme,
+  BaseIconButton,
+  generateClassName,
+  Logo,
+} from "@gliff-ai/style";
 
 import Tile, {
   tooltips,
@@ -659,12 +663,7 @@ class UserInterface extends Component<Props, State> {
         <Toolbar>
           <Grid container direction="row">
             <Grid item className={classes.logo}>
-              <img
-                src={imgSrc("gliff-master-black")}
-                width="79px"
-                height="60px"
-                alt="gliff logo"
-              />
+              <Logo />
             </Grid>
           </Grid>
         </Toolbar>

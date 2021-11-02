@@ -11,14 +11,13 @@ import {
   Box,
   makeStyles,
 } from "@material-ui/core";
-import { theme, HtmlTooltip } from "@gliff-ai/style";
+import { theme, HtmlTooltip, icons } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/searchAndSort/interfaces";
 import {
   getLabelsFromKeys,
   MetadataLabel,
 } from "@/searchAndSort/SearchAndSortBar";
-import { imgSrc } from "./helpers";
 
 type MetadataNameMap = { [index: string]: string };
 
@@ -162,7 +161,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
             >
               <IconButton onClick={props.handleMetadataHide}>
                 <SVG
-                  src={imgSrc("close")}
+                  src={icons.removeLabel}
                   className={classes.svgSmall}
                   fill={
                     hover
