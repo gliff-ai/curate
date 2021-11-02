@@ -44,7 +44,7 @@ jobs:
           skip_app_build: true
           ###### End of Repository/Build Configurations ######
         env:
-          NODE_VERSION: 15.3.0
+          NODE_VERSION: 16.0.0
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
