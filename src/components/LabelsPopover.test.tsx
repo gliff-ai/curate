@@ -11,7 +11,7 @@ const updateLabels = jest.fn((newLables: string[]) => newLables);
 const prevLabel = "label1";
 const newLabel = "label2";
 
-describe.only("labels assignement", () => {
+describe("labels assignment", () => {
   beforeEach(() => {
     render(
       <LabelsPopover
