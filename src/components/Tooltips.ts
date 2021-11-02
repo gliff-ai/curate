@@ -57,9 +57,9 @@ const tooltips: Tooltips = {
 
 const thumbnailSizes: ThumbnailSizes[] = [
   {
-    name: "Large Thumbnails",
-    icon: icons.largeImageGrid,
-    size: 298,
+    name: "Small Thumbnails",
+    icon: icons.smallImageGrid,
+    size: 132,
   },
   {
     name: "Medium Thumbnails",
@@ -67,9 +67,9 @@ const thumbnailSizes: ThumbnailSizes[] = [
     size: 211,
   },
   {
-    name: "Small Thumbnails",
-    icon: icons.smallImageGrid,
-    size: 132,
+    name: "Large Thumbnails",
+    icon: icons.largeImageGrid,
+    size: 298,
   },
 ];
 
