@@ -84,12 +84,10 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         <InputLabel>Assignees:</InputLabel>
         <Select
           className={classes.selectInput}
-          labelId="demo-mutiple-chip-label"
-          id="demo-mutiple-chip"
           multiple
           value={assignees}
           onChange={handleChange}
-          input={<Input id="select-multiple-chip" />}
+          input={<Input />}
           renderValue={(selected) => (
             <>
               {(selected as string[]).map((value) => (
