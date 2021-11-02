@@ -144,6 +144,7 @@ export function LabelsPopover(props: Props): ReactElement {
                 variant="circular"
                 style={{ cursor: "pointer" }}
                 onClick={handleDeleteLabel(label)}
+                data-testid={`delete-${label}`}
               >
                 <SVG
                   className={classes.iconSize}
