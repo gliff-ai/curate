@@ -1,10 +1,4 @@
-import {
-  render,
-  fireEvent,
-  screen,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import { LabelsPopover } from "./LabelsPopover";
 
 const updateLabels = jest.fn((newLables: string[]) => newLables);
@@ -25,16 +19,20 @@ describe("labels assignment", () => {
   });
 
   test("image has previously assigned label", () => {
-    expect(screen.getByText(prevLabel)).toBeInTheDocument();
+    expect(screen.queryByRole("span", { name: prevLabel })).toBeDefined();
+    expect(screen.queryByRole("span", { name: newLabel })).toBeNull();
   });
 
   test("add a new label", () => {
-    expect(screen.queryByText(newLabel)).toBeNull();
+    const chipElement = screen.queryByRole("span", { name: newLabel });
+
+    expect(chipElement).toBeNull();
     fireEvent.change(screen.getByPlaceholderText("New label"), {
       target: { value: newLabel },
     });
     fireEvent.click(screen.getByRole("button", { name: "add-label" }));
-    expect(screen.getByText(newLabel)).toBeInTheDocument();
+
+    expect(chipElement).toBeDefined();
   });
 
   test("cannot add duplicate labels", async () => {
@@ -54,13 +52,12 @@ describe("labels assignment", () => {
   });
 
   test("delete a label", async () => {
-    expect(screen.queryByText(prevLabel)).toBeDefined();
-    fireEvent.click(screen.getByText(prevLabel));
-    try {
-      await waitForElementToBeRemoved(screen.getByText(prevLabel));
-      expect(screen.queryByText(prevLabel)).toBeNull();
-    } catch (e) {
-      console.log(e);
-    }
+    const chipElement = screen.queryByRole("span", { name: prevLabel });
+    expect(chipElement).toBeDefined();
+    fireEvent.click(screen.getByTestId(`delete-${prevLabel}`));
+
+    await waitFor(() => {
+      expect(chipElement).toBeNull();
+    });
   });
 });
