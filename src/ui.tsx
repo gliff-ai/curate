@@ -900,6 +900,7 @@ class UserInterface extends Component<Props, State> {
                         >
                           <div style={{ position: "relative" }}>
                             <Button
+                              id="images"
                               onClick={(e: MouseEvent) => {
                                 const imageUid = mitem.id as string;
                                 this.handleMetadataShow(imageUid);
