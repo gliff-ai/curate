@@ -30,6 +30,7 @@ import {
   BaseIconButton,
   generateClassName,
   IconButton,
+  Logo,
 } from "@gliff-ai/style";
 import { imgSrc } from "@/helpers";
 
@@ -664,12 +665,7 @@ class UserInterface extends Component<Props, State> {
         <Toolbar>
           <Grid container direction="row">
             <Grid item className={classes.logo}>
-              <img
-                src={imgSrc("gliff-master-black")}
-                width="79px"
-                height="60px"
-                alt="gliff logo"
-              />
+              <Logo />
             </Grid>
           </Grid>
         </Toolbar>
@@ -742,7 +738,7 @@ class UserInterface extends Component<Props, State> {
           {this.props.userIsOwner && this.props.collaborators && (
             <ListItem style={{ padding: 0 }}>
               <AssigneesDialog
-                profiles={this.props.collaborators}
+                collaborators={this.props.collaborators}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
