@@ -44,7 +44,7 @@ import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
-import SearchAndSortBar from "./search/SearchAndSortBar";
+import { SearchBar } from "./search/SearchBar";
 import LabelsFilterAccordion from "./search/LabelsFilterAccordion";
 import SearchFilterCard from "./search/SearchFilterCard";
 

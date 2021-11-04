@@ -14,7 +14,7 @@ import {
 import { theme, HtmlTooltip, icons } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/interfaces";
-import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchAndSortBar";
+import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 
 type MetadataNameMap = { [index: string]: string };
 

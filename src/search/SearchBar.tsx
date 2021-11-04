@@ -73,7 +73,7 @@ export const getLabelsFromKeys = (
   return acc;
 };
 
-export default function SearchAndSortBar({
+export function SearchBar({
   metadata,
   metadataKeys,
   callbackSearch,
