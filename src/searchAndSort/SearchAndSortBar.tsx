@@ -7,7 +7,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
-import { Metadata, MetaItem, Filter } from "./interfaces";
+import { Metadata, MetaItem, Filter } from "../interfaces";
 
 const useStyles = makeStyles({
   root: {

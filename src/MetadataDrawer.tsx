@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import { theme, HtmlTooltip, icons } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
-import { MetaItem } from "@/searchAndSort/interfaces";
+import { MetaItem } from "@/interfaces";
 import {
   getLabelsFromKeys,
   MetadataLabel,
