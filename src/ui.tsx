@@ -44,9 +44,7 @@ import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
-import { SearchBar } from "./search/SearchBar";
-import LabelsFilterAccordion from "./search/LabelsFilterAccordion";
-import SearchFilterCard from "./search/SearchFilterCard";
+import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 
 const styles = () => ({
   appBar: {
@@ -827,7 +825,7 @@ class UserInterface extends Component<Props, State> {
                   {(this.state.openImageUid == null ||
                     this.state.selectMultipleImagesMode) && (
                     <>
-                      <SearchAndSortBar
+                      <SearchBar
                         metadata={this.state.metadata}
                         metadataKeys={this.state.metadataKeys}
                         callbackSearch={this.handleOnSearchSubmit}

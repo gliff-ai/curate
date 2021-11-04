@@ -42,10 +42,10 @@ interface Props {
   callbackSort: (key: string, sortOrder: string) => void;
 }
 
-export type MetadataLabel = {
+interface MetadataLabel {
   key: string;
   label: string;
-};
+}
 
 // To be able to style the dropdown list
 const CustomPaper = (props: unknown) => (
@@ -55,7 +55,8 @@ const CustomPaper = (props: unknown) => (
     style={{ backgroundColor: theme.palette.primary.light }}
   />
 );
-export const getLabelsFromKeys = (
+
+const getLabelsFromKeys = (
   acc: MetadataLabel[],
   key: string
 ): MetadataLabel[] => {
@@ -73,7 +74,7 @@ export const getLabelsFromKeys = (
   return acc;
 };
 
-export function SearchBar({
+function SearchBar({
   metadata,
   metadataKeys,
   callbackSearch,
@@ -174,3 +175,5 @@ export function SearchBar({
     </Card>
   );
 }
+
+export { getLabelsFromKeys, SearchBar, MetadataLabel };

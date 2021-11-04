@@ -44,7 +44,7 @@ interface Props {
   callback: (filter: Filter) => void;
 }
 
-export default function SearchFilterCard({
+export function SearchFilterCard({
   activeFilters,
   callback,
 }: Props): ReactElement {
