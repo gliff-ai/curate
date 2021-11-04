@@ -16,10 +16,7 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import { BaseTextButton, theme, BasePopover, icons } from "@gliff-ai/style";
-import {
-  getLabelsFromKeys,
-  MetadataLabel,
-} from "@/searchAndSort/SearchAndSortBar";
+import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchAndSortBar";
 import { tooltips } from "@/components/Tooltips";
 
 const useStyles = makeStyles({

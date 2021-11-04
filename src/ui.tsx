@@ -44,9 +44,9 @@ import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
-import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
-import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
-import SearchFilterCard from "./searchAndSort/SearchFilterCard";
+import SearchAndSortBar from "./search/SearchAndSortBar";
+import LabelsFilterAccordion from "./search/LabelsFilterAccordion";
+import SearchFilterCard from "./search/SearchFilterCard";
 
 const styles = () => ({
   appBar: {
