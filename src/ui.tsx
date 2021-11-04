@@ -829,7 +829,6 @@ class UserInterface extends Component<Props, State> {
                         metadata={this.state.metadata}
                         metadataKeys={this.state.metadataKeys}
                         callbackSearch={this.handleOnSearchSubmit}
-                        callbackSort={this.handleOnSortSubmit}
                       />
                       <SearchFilterCard
                         activeFilters={this.state.activeFilters}

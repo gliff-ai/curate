@@ -39,7 +39,6 @@ interface Props {
   metadata: Metadata;
   metadataKeys: string[];
   callbackSearch: (filter: Filter) => void;
-  callbackSort: (key: string, sortOrder: string) => void;
 }
 
 interface MetadataLabel {
