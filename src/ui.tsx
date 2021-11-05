@@ -369,15 +369,9 @@ class UserInterface extends Component<Props, State> {
 
     if (key === "") return; // for some reason this function is being called on startup with an empty key
 
-    this.setState((prevState) => {
-      const newMetadata = sortMetadata(
-        prevState.metadata,
-        key,
-        sortOrder === "asc"
-      );
-      if (newMetadata) {
-        return { metadata: newMetadata, sortedBy: key };
-      }
+    this.setState(({ metadata }: State) => {
+      const newMetadata = sortMetadata(metadata, key, sortOrder === "asc");
+      return newMetadata ? { metadata: newMetadata, sortedBy: key } : undefined;
     });
 
     if (this.state.isGrouped) {
