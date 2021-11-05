@@ -32,7 +32,6 @@ import {
   IconButton,
   Logo,
 } from "@gliff-ai/style";
-import { imgSrc } from "@/helpers";
 
 import Tile, {
   tooltips,

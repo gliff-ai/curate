@@ -134,6 +134,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         }}
         tooltipPlacement="top"
         enabled={isEnabled()}
+        id="update-assignees"
       />
       <Dialog open={open} onClose={() => setOpen(false)}>
         <Card className={classes.card}>
