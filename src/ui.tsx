@@ -676,7 +676,7 @@ class UserInterface extends Component<Props, State> {
           {this.props.userIsOwner && this.props.collaborators && (
             <ListItem style={{ padding: 0 }}>
               <AssigneesDialog
-                profiles={this.props.collaborators}
+                collaborators={this.props.collaborators}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
