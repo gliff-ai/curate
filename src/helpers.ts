@@ -32,17 +32,23 @@ function shuffle(array: unknown[]): void {
 }
 
 function compare(
-  a: string | Date | number = Number.MAX_VALUE,
-  b: string | Date | number = Number.MAX_VALUE,
-  ascendingOrder: boolean
+  a: string | Date | number,
+  b: string | Date | number,
+  ascending: boolean
 ): number {
-  // compare two values of type string, Date or number.
-  // defaults to Number.MAX_VALUE (useful for missing values)
+  // compare two values.
+  // undefined values always at the end of the array.
+  if (a === undefined) {
+    return 1;
+  }
+  if (b === undefined) {
+    return -1;
+  }
   if (a < b) {
-    return ascendingOrder ? -1 : 1;
+    return ascending ? -1 : 1;
   }
   if (a > b) {
-    return ascendingOrder ? 1 : -1;
+    return ascending ? 1 : -1;
   }
   return 0;
 }
@@ -61,33 +67,29 @@ function getKeyType(metadata: Metadata, key: string): string {
 function sortMetadata(
   metadata: Metadata,
   key: string,
-  acendingOrder: boolean
+  acending = true
 ): Metadata | null {
   const metaType = getKeyType(metadata, key);
 
+  function toDate(value: string): Date {
+    return value !== undefined ? new Date(value) : undefined;
+  }
+
   switch (metaType) {
-    case "date":
-      metadata.sort((a: MetaItem, b: MetaItem): number =>
-        compare(
-          new Date(a[key] as string),
-          new Date(b[key] as string),
-          acendingOrder
-        )
-      );
-      return metadata;
     case "number":
       metadata.sort((a: MetaItem, b: MetaItem): number =>
-        compare(a[key] as number, b[key] as number, acendingOrder)
+        compare(a[key] as number, b[key] as number, acending)
+      );
+      return metadata;
+    case "date":
+      metadata.sort((a, b): number =>
+        compare(toDate(a[key] as string), toDate(b[key] as string), acending)
       );
       return metadata;
 
     case "string":
       metadata.sort((a: MetaItem, b: MetaItem): number =>
-        compare(
-          (a[key] as string)?.toLowerCase(),
-          (b[key] as string)?.toLowerCase(),
-          acendingOrder
-        )
+        compare(a[key] as number, b[key] as number, acending)
       );
       return metadata;
 

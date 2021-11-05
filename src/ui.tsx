@@ -365,7 +365,7 @@ class UserInterface extends Component<Props, State> {
   };
 
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
-    // Handle sort by any string or by date.
+    // Handle sort by key
 
     if (key === "") return; // for some reason this function is being called on startup with an empty key
 
@@ -412,10 +412,12 @@ class UserInterface extends Component<Props, State> {
   };
 
   getMonthAndYear = (date: string): string =>
-    new Date(date).toLocaleDateString("en-GB", {
-      month: "short",
-      year: "numeric",
-    });
+    date !== undefined
+      ? new Date(date).toLocaleDateString("en-GB", {
+          month: "short",
+          year: "numeric",
+        })
+      : "";
 
   toggleIsGrouped = (): void => {
     this.setState(({ isGrouped }) => ({ isGrouped: !isGrouped }));
