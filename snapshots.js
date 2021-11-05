@@ -66,7 +66,11 @@ module.exports = [{
     document.querySelector('#combobox-metadata-key').click() 
     }
   },
-
-  
+   {
+    suffix: 'assign',
+    execute() {
+    document.querySelector('#assign').click() 
+    }
+  },
 ]
 }]

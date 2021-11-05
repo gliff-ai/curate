@@ -468,6 +468,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       </FormControl>
       <div className={classes.container}>
         <BaseTextButton
+          id="assign"
           text="Assign"
           onClick={autoAssignImages}
           disabled={requiresConfirmation()}
