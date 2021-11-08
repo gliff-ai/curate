@@ -1,4 +1,4 @@
-import { Metadata } from "./interfaces";
+import { Metadata } from "@/interfaces";
 import { sortMetadata } from "./helpers";
 
 const metadata: Metadata = [

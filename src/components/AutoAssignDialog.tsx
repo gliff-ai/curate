@@ -18,7 +18,7 @@ import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
-import { Metadata, MetaItem } from "../interfaces";
+import { Metadata, MetaItem } from "@/interfaces";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
