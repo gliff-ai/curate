@@ -1,4 +1,4 @@
-import { Metadata, MetaItem } from "./interfaces";
+import { Metadata, MetaItem, Filter } from "./interfaces";
 
 function kCombinations(set: any[], k: number): any[][] {
   if (k > set.length || k <= 0) {
@@ -103,4 +103,33 @@ function sortMetadata(
   }
 }
 
-export { kCombinations, shuffle, sortMetadata };
+function filterMetadata(metadata: Metadata, activeFilters: Filter[]): Metadata {
+  if (activeFilters.length > 0) {
+    metadata.forEach((mitem) => {
+      activeFilters.forEach((filter, fi) => {
+        const value = mitem[filter.key];
+
+        // current filter selection
+        const currentSel = Number(
+          Array.isArray(value)
+            ? value.some((v) => v.includes(filter.value))
+            : String(value).includes(filter.value)
+        );
+
+        // selection for all filters up to current
+        const prevSel = fi === 0 ? 1 : Number(mitem.selected);
+
+        // update 'selected' field
+        mitem.selected = Boolean(prevSel * currentSel);
+      });
+    });
+  } else {
+    // all items selected
+    metadata.forEach((mitem) => {
+      mitem.selected = true;
+    });
+  }
+  return metadata;
+}
+
+export { kCombinations, shuffle, sortMetadata, filterMetadata };
