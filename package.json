@@ -1,6 +1,6 @@
 {
   "name": "@gliff-ai/curate",
-  "version": "0.14.2",
+  "version": "1.0.0",
   "description": "gliff.ai CURATE",
   "repository": "git://github.com/gliff-ai/curate.git",
   "main": "dist/index.es.js",
