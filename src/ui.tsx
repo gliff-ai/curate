@@ -45,7 +45,7 @@ import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
-import { sortMetadata } from "@/helpers";
+import { sortMetadata, filterMetadata } from "@/helpers";
 
 const styles = () => ({
   appBar: {
@@ -275,32 +275,9 @@ class UserInterface extends Component<Props, State> {
 
   applySearchFiltersToMetadata = (): void => {
     this.setState(({ metadata, activeFilters }) => {
-      if (activeFilters.length > 0) {
-        metadata.forEach((mitem) => {
-          activeFilters.forEach((filter, fi) => {
-            const value = mitem[filter.key];
+      const newMetadata = filterMetadata(metadata, activeFilters);
 
-            // Current filter selection
-            const currentSel = Number(
-              Array.isArray(value)
-                ? value.some((v) => v.includes(filter.value))
-                : String(value).includes(filter.value)
-            );
-
-            // Selection for all filter up to current
-            const prevSel = fi === 0 ? 1 : Number(mitem.selected);
-
-            // Update value for selected
-            mitem.selected = Boolean(prevSel * currentSel);
-          });
-        });
-      } else {
-        metadata.forEach((mitem) => {
-          mitem.selected = true;
-        });
-      }
-
-      return { metadata };
+      return newMetadata ? { metadata } : undefined;
     });
 
     if (this.state.isGrouped) {
