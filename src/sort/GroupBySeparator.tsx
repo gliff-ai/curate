@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { makeStyles, Grid } from "@material-ui/core";
-import { MetaItem } from "@/searchAndSort/interfaces";
+import { MetaItem } from "@/interfaces";
 
 const useStyles = makeStyles({
   container: { width: "100%", height: "100%" },

@@ -1,3 +1,5 @@
+import { Metadata, MetaItem } from "./interfaces";
+
 function kCombinations(set: any[], k: number): any[][] {
   if (k > set.length || k <= 0) {
     return [];
@@ -29,4 +31,76 @@ function shuffle(array: unknown[]): void {
   }
 }
 
-export { kCombinations, shuffle };
+function compare(
+  a: string | Date | number,
+  b: string | Date | number,
+  ascending: boolean
+): number {
+  // compare two values.
+  // undefined values always at the end of the array.
+  if (a === undefined) {
+    return 1;
+  }
+  if (b === undefined) {
+    return -1;
+  }
+  if (a < b) {
+    return ascending ? -1 : 1;
+  }
+  if (a > b) {
+    return ascending ? 1 : -1;
+  }
+  return 0;
+}
+
+function getKeyType(metadata: Metadata, key: string): string {
+  if (key?.toLowerCase().includes("date")) return "date";
+  for (const mitem of metadata) {
+    const someType = typeof mitem[key];
+    if (someType !== "undefined") {
+      return someType;
+    }
+  }
+  return "undefined";
+}
+
+function sortMetadata(
+  metadata: Metadata,
+  key: string,
+  acending = true
+): Metadata | null {
+  const metaType = getKeyType(metadata, key);
+
+  function toDate(value: string): Date {
+    return value !== undefined ? new Date(value) : undefined;
+  }
+
+  switch (metaType) {
+    case "number":
+      metadata.sort((a: MetaItem, b: MetaItem): number =>
+        compare(a[key] as number, b[key] as number, acending)
+      );
+      return metadata;
+    case "date":
+      metadata.sort((a, b): number =>
+        compare(toDate(a[key] as string), toDate(b[key] as string), acending)
+      );
+      return metadata;
+
+    case "string":
+      metadata.sort((a: MetaItem, b: MetaItem): number =>
+        compare(a[key] as number, b[key] as number, acending)
+      );
+      return metadata;
+
+    case "undefined":
+      console.log(`No values set for metadata key "${key}".`);
+      return null;
+
+    default:
+      console.log(`Cannot sort values with type "${metaType}".`);
+      return null;
+  }
+}
+
+export { kCombinations, shuffle, sortMetadata };
