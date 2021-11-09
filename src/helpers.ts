@@ -1,4 +1,4 @@
-import { Metadata, MetaItem, Filter } from "./interfaces";
+import { Metadata, MetaItem, Filter } from "@/interfaces";
 
 function kCombinations(set: any[], k: number): any[][] {
   if (k > set.length || k <= 0) {
@@ -105,7 +105,7 @@ function sortMetadata(
 
 function filterMetadata(metadata: Metadata, activeFilters: Filter[]): Metadata {
   if (activeFilters.length > 0) {
-    metadata.forEach((mitem) => {
+    metadata.forEach((mitem: MetaItem) => {
       activeFilters.forEach((filter, fi) => {
         const value = mitem[filter.key];
 
@@ -125,7 +125,7 @@ function filterMetadata(metadata: Metadata, activeFilters: Filter[]): Metadata {
     });
   } else {
     // all items selected
-    metadata.forEach((mitem) => {
+    metadata.forEach((mitem: MetaItem) => {
       mitem.selected = true;
     });
   }
