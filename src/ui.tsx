@@ -29,6 +29,7 @@ import {
   theme,
   BaseIconButton,
   generateClassName,
+  IconButton,
   Logo,
 } from "@gliff-ai/style";
 
@@ -608,9 +609,10 @@ class UserInterface extends Component<Props, State> {
           </Card>
 
           <Card className={classes.smallButton}>
-            <BaseIconButton
+            <IconButton
               tooltip={tooltips.selectMultipleImages}
               fill={this.state.selectMultipleImagesMode}
+              icon={tooltips.selectMultipleImages.icon}
               tooltipPlacement="bottom"
               onClick={() => {
                 this.setState((prevState) => ({
@@ -618,6 +620,7 @@ class UserInterface extends Component<Props, State> {
                   openImageUid: null,
                 }));
               }}
+              id="select-multiple-images"
             />
           </Card>
         </Box>
@@ -810,6 +813,7 @@ class UserInterface extends Component<Props, State> {
                         >
                           <div style={{ position: "relative" }}>
                             <Button
+                              id="images"
                               onClick={(e: MouseEvent) => {
                                 const imageUid = mitem.id as string;
                                 this.handleMetadataShow(imageUid);

@@ -468,6 +468,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       </FormControl>
       <div className={classes.container}>
         <BaseTextButton
+          id="assign"
           text="Assign"
           onClick={autoAssignImages}
           disabled={requiresConfirmation()}
@@ -482,6 +483,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         tooltip={tooltips.autoAssign}
         onClick={() => setOpen(!open)}
         tooltipPlacement="top"
+        id="auto-assign-images"
       />
       <Dialog open={open} onClose={handleClose}>
         <Card className={classes.card}>

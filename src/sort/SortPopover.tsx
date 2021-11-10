@@ -212,6 +212,7 @@ export const SortPopover = ({
     <BasePopover
       tooltip={tooltips.sort}
       tooltipPlacement="bottom"
+      id="sort"
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "center",

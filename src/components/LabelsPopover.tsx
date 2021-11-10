@@ -179,6 +179,7 @@ export function LabelsPopover(props: Props): ReactElement {
         iconColor="#ffffff"
         children={popoverContent}
         triggerClosing={close}
+        id="add-label"
       />
     </div>
   );
