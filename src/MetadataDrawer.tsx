@@ -13,11 +13,8 @@ import {
 } from "@material-ui/core";
 import { theme, HtmlTooltip, icons } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
-import { MetaItem } from "@/searchAndSort/interfaces";
-import {
-  getLabelsFromKeys,
-  MetadataLabel,
-} from "@/searchAndSort/SearchAndSortBar";
+import { MetaItem } from "@/interfaces";
+import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 
 type MetadataNameMap = { [index: string]: string };
 

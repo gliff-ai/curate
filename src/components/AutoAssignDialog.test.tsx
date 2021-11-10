@@ -1,5 +1,5 @@
 import { render, fireEvent, screen, within } from "@testing-library/react";
-import { Metadata } from "../searchAndSort/interfaces";
+import { Metadata } from "@/interfaces";
 import { AutoAssignDialog, AssignmentCount } from "./AutoAssignDialog";
 
 const updateAssignees = jest.fn(

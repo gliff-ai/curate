@@ -84,7 +84,7 @@ interface Props {
   callbackOnAccordionExpanded: () => void;
 }
 
-export default function LabelsFilterAccordion(props: Props): ReactElement {
+export function LabelsFilterAccordion(props: Props): ReactElement {
   const accordionOpened = props.expanded;
   const classes = useStyles(accordionOpened);
   const [labels, setLabels] = useState<string[] | null>([]);
