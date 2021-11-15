@@ -25,8 +25,13 @@ import {
 } from "@material-ui/core";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import { theme, BaseIconButton, generateClassName } from "@gliff-ai/style";
-import { imgSrc } from "@/helpers";
+import {
+  theme,
+  BaseIconButton,
+  generateClassName,
+  IconButton,
+  Logo,
+} from "@gliff-ai/style";
 
 import Tile, {
   tooltips,
@@ -39,10 +44,9 @@ import Tile, {
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
-import { Metadata, MetaItem, Filter } from "./searchAndSort/interfaces";
-import SearchAndSortBar from "./searchAndSort/SearchAndSortBar";
-import LabelsFilterAccordion from "./searchAndSort/LabelsFilterAccordion";
-import SearchFilterCard from "./searchAndSort/SearchFilterCard";
+import { Metadata, MetaItem, Filter } from "./interfaces";
+import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
+import { sortMetadata, filterMetadata } from "@/helpers";
 
 const styles = () => ({
   appBar: {
@@ -272,32 +276,9 @@ class UserInterface extends Component<Props, State> {
 
   applySearchFiltersToMetadata = (): void => {
     this.setState(({ metadata, activeFilters }) => {
-      if (activeFilters.length > 0) {
-        metadata.forEach((mitem) => {
-          activeFilters.forEach((filter, fi) => {
-            const value = mitem[filter.key];
+      const newMetadata = filterMetadata(metadata, activeFilters);
 
-            // Current filter selection
-            const currentSel = Number(
-              Array.isArray(value)
-                ? value.some((v) => v.includes(filter.value))
-                : String(value).includes(filter.value)
-            );
-
-            // Selection for all filter up to current
-            const prevSel = fi === 0 ? 1 : Number(mitem.selected);
-
-            // Update value for selected
-            mitem.selected = Boolean(prevSel * currentSel);
-          });
-        });
-      } else {
-        metadata.forEach((mitem) => {
-          mitem.selected = true;
-        });
-      }
-
-      return { metadata };
+      return newMetadata ? { metadata } : undefined;
     });
 
     if (this.state.isGrouped) {
@@ -361,73 +342,14 @@ class UserInterface extends Component<Props, State> {
     this.setActiveFilter(filter);
   };
 
-  getMetaTypeFromKey = (key: string): string => {
-    if (key?.toLowerCase().includes("date")) return "date";
-    for (const mitem of this.state.metadata) {
-      const someType = typeof mitem[key];
-      if (someType !== "undefined") {
-        return someType;
-      }
-    }
-    return "undefined";
-  };
-
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
-    // Handle sort by any string or by date.
+    // Handle sort by key
 
     if (key === "") return; // for some reason this function is being called on startup with an empty key
 
-    // Number.MAX_VALUE added to handle missing values
-    function compare(
-      a: string | Date | number = Number.MAX_VALUE,
-      b: string | Date | number = Number.MAX_VALUE,
-      sort: string
-    ): number {
-      if (a < b) {
-        return sort === "asc" ? -1 : 1;
-      }
-      if (a > b) {
-        return sort === "asc" ? 1 : -1;
-      }
-      return 0;
-    }
-
-    const metaType = this.getMetaTypeFromKey(key);
-
-    if (metaType === "undefined") {
-      console.log(`No values set for metadata key "${key}".`);
-      return;
-    }
-    if (!["date", "string", "number"].includes(metaType)) {
-      console.log(`Cannot sort values with type "${metaType}".`);
-      return;
-    }
-
-    this.setState((prevState) => {
-      if (metaType === "date") {
-        // Sort by date
-        prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
-          compare(
-            new Date(a[key] as string),
-            new Date(b[key] as string),
-            sortOrder
-          )
-        );
-      } else if (metaType === "number") {
-        prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
-          compare(a[key] as number, b[key] as number, sortOrder)
-        );
-      } else if (metaType === "string") {
-        // Sort by any string
-        prevState.metadata.sort((a: MetaItem, b: MetaItem): number =>
-          compare(
-            (a[key] as string)?.toLowerCase(),
-            (b[key] as string)?.toLowerCase(),
-            sortOrder
-          )
-        );
-      }
-      return { metadata: prevState.metadata, sortedBy: key };
+    this.setState(({ metadata }: State) => {
+      const newMetadata = sortMetadata(metadata, key, sortOrder === "asc");
+      return newMetadata ? { metadata: newMetadata, sortedBy: key } : undefined;
     });
 
     if (this.state.isGrouped) {
@@ -462,10 +384,12 @@ class UserInterface extends Component<Props, State> {
   };
 
   getMonthAndYear = (date: string): string =>
-    new Date(date).toLocaleDateString("en-GB", {
-      month: "short",
-      year: "numeric",
-    });
+    date !== undefined
+      ? new Date(date).toLocaleDateString("en-GB", {
+          month: "short",
+          year: "numeric",
+        })
+      : "";
 
   toggleIsGrouped = (): void => {
     this.setState(({ isGrouped }) => ({ isGrouped: !isGrouped }));
@@ -659,12 +583,7 @@ class UserInterface extends Component<Props, State> {
         <Toolbar>
           <Grid container direction="row">
             <Grid item className={classes.logo}>
-              <img
-                src={imgSrc("gliff-master-black")}
-                width="79px"
-                height="60px"
-                alt="gliff logo"
-              />
+              <Logo />
             </Grid>
           </Grid>
         </Toolbar>
@@ -690,9 +609,10 @@ class UserInterface extends Component<Props, State> {
           </Card>
 
           <Card className={classes.smallButton}>
-            <BaseIconButton
+            <IconButton
               tooltip={tooltips.selectMultipleImages}
               fill={this.state.selectMultipleImagesMode}
+              icon={tooltips.selectMultipleImages.icon}
               tooltipPlacement="bottom"
               onClick={() => {
                 this.setState((prevState) => ({
@@ -700,6 +620,7 @@ class UserInterface extends Component<Props, State> {
                   openImageUid: null,
                 }));
               }}
+              id="select-multiple-images"
             />
           </Card>
         </Box>
@@ -735,7 +656,7 @@ class UserInterface extends Component<Props, State> {
           {this.props.userIsOwner && this.props.collaborators && (
             <ListItem style={{ padding: 0 }}>
               <AssigneesDialog
-                profiles={this.props.collaborators}
+                collaborators={this.props.collaborators}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
@@ -828,11 +749,10 @@ class UserInterface extends Component<Props, State> {
                   {(this.state.openImageUid == null ||
                     this.state.selectMultipleImagesMode) && (
                     <>
-                      <SearchAndSortBar
+                      <SearchBar
                         metadata={this.state.metadata}
                         metadataKeys={this.state.metadataKeys}
                         callbackSearch={this.handleOnSearchSubmit}
-                        callbackSort={this.handleOnSortSubmit}
                       />
                       <SearchFilterCard
                         activeFilters={this.state.activeFilters}
@@ -893,6 +813,7 @@ class UserInterface extends Component<Props, State> {
                         >
                           <div style={{ position: "relative" }}>
                             <Button
+                              id="images"
                               onClick={(e: MouseEvent) => {
                                 const imageUid = mitem.id as string;
                                 this.handleMetadataShow(imageUid);

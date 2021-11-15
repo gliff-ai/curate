@@ -1,32 +1,14 @@
 import { ReactElement, useState, useEffect } from "react";
-import { BaseIconButton, theme } from "@gliff-ai/style";
-import { Card } from "@material-ui/core";
-
-import { makeStyles } from "@material-ui/core/styles";
+import { IconButton } from "@gliff-ai/style";
+import { ButtonGroup } from "@material-ui/core";
 
 import { thumbnailSizes, ThumbnailSizes } from "@/components/Tooltips";
-
-const useStyles = makeStyles({
-  svgSmall: { width: "22px", height: "100%" },
-  card: {
-    height: "48px",
-    backgroundColor: theme.palette.primary.light,
-    width: "150px",
-    paddingLeft: "5px",
-    paddingTop: "1px",
-    paddingBottom: "4px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 interface Props {
   resizeThumbnails: (size: number) => void;
 }
 
 export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
-  const classes = useStyles();
   const [buttonClicked, setButtonClicked] = useState("Small Thumbnails");
 
   useEffect(() => {
@@ -37,17 +19,19 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
 
   return (
     <div>
-      <Card className={classes.card}>
+      <ButtonGroup orientation="horizontal">
         {thumbnailSizes.map((thumbnailSize: ThumbnailSizes) => (
-          <BaseIconButton
+          <IconButton
             key={thumbnailSize.name}
+            icon={thumbnailSize.icon}
             tooltipPlacement="bottom"
-            tooltip={thumbnailSize}
+            tooltip={{ name: thumbnailSize.name }}
             onClick={() => setButtonClicked(thumbnailSize.name)}
             fill={buttonClicked === thumbnailSize.name}
+            id={thumbnailSize.id}
           />
         ))}
-      </Card>
+      </ButtonGroup>
     </div>
   );
 }

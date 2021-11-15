@@ -4,18 +4,16 @@ import SVG from "react-inlinesvg";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   InputBase,
-  IconButton,
   Chip,
   Card,
   CardHeader,
   CardContent,
   Avatar,
   Typography,
+  IconButton,
 } from "@material-ui/core";
-import { Close, Add } from "@material-ui/icons";
-import { theme, BasePopover } from "@gliff-ai/style";
-import { tooltips } from "@/components/Tooltips";
-import { imgSrc } from "@/helpers";
+import { theme, BasePopover, icons } from "@gliff-ai/style";
+import { tooltips } from "./Tooltips";
 
 const useStyles = makeStyles({
   cross: {
@@ -65,6 +63,7 @@ const useStyles = makeStyles({
     left: theme.spacing(2),
   },
   svgSmall: { width: "10px", height: "100%" },
+  iconSize: { width: "15px" },
 });
 
 interface Props {
@@ -104,7 +103,7 @@ export function LabelsPopover(props: Props): ReactElement {
         className={classes.cross}
         onClick={() => setClose((close) => close + 1)}
       >
-        <Close />
+        <SVG className={classes.iconSize} src={icons.removeLabel} />
       </IconButton>
       <CardHeader
         className={classes.labelsCardHeader}
@@ -126,12 +125,16 @@ export function LabelsPopover(props: Props): ReactElement {
           }}
         />
         <IconButton
-          className={classes.addButton}
+          aria-label="add-label"
           key={`button-add-${props.id}`}
-          type="submit"
+          className={classes.addButton}
           onClick={handleAddLabel(newLabel)}
         >
-          <Add />
+          <SVG
+            className={classes.iconSize}
+            src={icons.add}
+            fill={theme.palette.text.secondary}
+          />
         </IconButton>
         {props.labels.map((label) => (
           <Chip
@@ -141,10 +144,11 @@ export function LabelsPopover(props: Props): ReactElement {
                 variant="circular"
                 style={{ cursor: "pointer" }}
                 onClick={handleDeleteLabel(label)}
+                data-testid={`delete-${label}`}
               >
                 <SVG
-                  src={imgSrc("close")}
-                  className={classes.svgSmall}
+                  className={classes.iconSize}
+                  src={icons.removeLabel}
                   fill={theme.palette.text.secondary}
                 />
               </Avatar>
@@ -175,6 +179,7 @@ export function LabelsPopover(props: Props): ReactElement {
         iconColor="#ffffff"
         children={popoverContent}
         triggerClosing={close}
+        id="add-label"
       />
     </div>
   );

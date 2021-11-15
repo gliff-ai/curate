@@ -1,0 +1,31 @@
+name: Percy Visual Testing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  Percy:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Setup dependencies
+        run: npm i
+      - name: Build
+        run: npm run serve &
+      - name: Snapshot
+        run: npx percy snapshot snapshots.js
+
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}

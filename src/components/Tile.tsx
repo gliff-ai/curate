@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { MetaItem } from "@/searchAndSort/interfaces";
+import { MetaItem } from "@/interfaces";
 
 export default function Tile(props: {
   mitem: MetaItem;

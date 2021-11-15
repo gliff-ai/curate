@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { List, ListItem, ListItemText, Card } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
-import { Filter } from "@/searchAndSort/interfaces";
+import { Filter } from "@/interfaces";
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -44,7 +44,7 @@ interface Props {
   callback: (filter: Filter) => void;
 }
 
-export default function SearchFilterCard({
+export function SearchFilterCard({
   activeFilters,
   callback,
 }: Props): ReactElement {

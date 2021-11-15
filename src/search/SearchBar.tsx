@@ -7,7 +7,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
-import { Metadata, MetaItem, Filter } from "./interfaces";
+import { Metadata, MetaItem, Filter } from "@/interfaces";
 
 const useStyles = makeStyles({
   root: {
@@ -39,13 +39,12 @@ interface Props {
   metadata: Metadata;
   metadataKeys: string[];
   callbackSearch: (filter: Filter) => void;
-  callbackSort: (key: string, sortOrder: string) => void;
 }
 
-export type MetadataLabel = {
+interface MetadataLabel {
   key: string;
   label: string;
-};
+}
 
 // To be able to style the dropdown list
 const CustomPaper = (props: unknown) => (
@@ -55,7 +54,8 @@ const CustomPaper = (props: unknown) => (
     style={{ backgroundColor: theme.palette.primary.light }}
   />
 );
-export const getLabelsFromKeys = (
+
+const getLabelsFromKeys = (
   acc: MetadataLabel[],
   key: string
 ): MetadataLabel[] => {
@@ -73,7 +73,7 @@ export const getLabelsFromKeys = (
   return acc;
 };
 
-export default function SearchAndSortBar({
+function SearchBar({
   metadata,
   metadataKeys,
   callbackSearch,
@@ -174,3 +174,5 @@ export default function SearchAndSortBar({
     </Card>
   );
 }
+
+export { getLabelsFromKeys, SearchBar, MetadataLabel };

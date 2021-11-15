@@ -13,11 +13,10 @@ import {
   Chip,
   IconButton,
 } from "@material-ui/core";
-import { BaseIconButton, BaseTextButton, theme } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
-import { tooltips } from "@/components";
+import { BaseIconButton, BaseTextButton, icons, theme } from "@gliff-ai/style";
+import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
-import { imgSrc } from "@/helpers";
 
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
@@ -45,7 +44,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  profiles: Profile[];
+  collaborators: Profile[];
   selectedImagesUids: string[];
   updateAssignees: (imageUids: string[], newAssignees: string[][]) => void;
   getCurrentAssignees: () => string[];
@@ -73,6 +72,8 @@ export function AssigneesDialog(props: Props): React.ReactElement {
     setAssignees(value);
   };
 
+  const isEnabled = (): boolean => props.collaborators.length !== 0;
+
   useEffect(() => {
     setAssignees(props.getCurrentAssignees());
   }, [props.selectedImagesUids, props.getCurrentAssignees]);
@@ -83,12 +84,10 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         <InputLabel>Assignees:</InputLabel>
         <Select
           className={classes.selectInput}
-          labelId="demo-mutiple-chip-label"
-          id="demo-mutiple-chip"
           multiple
           value={assignees}
           onChange={handleChange}
-          input={<Input id="select-multiple-chip" />}
+          input={<Input />}
           renderValue={(selected) => (
             <>
               {(selected as string[]).map((value) => (
@@ -102,7 +101,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             </>
           )}
         >
-          {props.profiles.map(({ name, email }) => (
+          {props.collaborators.map(({ name, email }) => (
             <MenuItem key={name} value={email}>
               {name}
             </MenuItem>
@@ -128,8 +127,14 @@ export function AssigneesDialog(props: Props): React.ReactElement {
     <>
       <BaseIconButton
         tooltip={tooltips.addAssignees}
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          if (isEnabled()) {
+            setOpen(!open);
+          }
+        }}
         tooltipPlacement="top"
+        enabled={isEnabled()}
+        id="update-assignees"
       />
       <Dialog open={open} onClose={() => setOpen(false)}>
         <Card className={classes.card}>
@@ -143,7 +148,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
               Assign selected images
             </Typography>
             <IconButton onClick={() => setOpen(false)}>
-              <SVG src={imgSrc("close")} className={classes.closeIcon} />
+              <SVG src={icons.removeLabel} className={classes.closeIcon} />
             </IconButton>
           </Paper>
           <Paper elevation={0} square className={classes.paperBody}>

@@ -15,12 +15,8 @@ import {
   Avatar,
   Checkbox,
 } from "@material-ui/core";
-import { BaseTextButton, theme, BasePopover } from "@gliff-ai/style";
-import {
-  getLabelsFromKeys,
-  MetadataLabel,
-} from "@/searchAndSort/SearchAndSortBar";
-import { imgSrc } from "@/helpers";
+import { BaseTextButton, theme, BasePopover, icons } from "@gliff-ai/style";
+import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
 
 const useStyles = makeStyles({
@@ -131,7 +127,7 @@ export const SortPopover = ({
         edge="end"
       >
         <Avatar variant="circular" className={classes.closeAvatar}>
-          <SVG src={imgSrc("close")} className={classes.svgSmall} />
+          <SVG src={icons.removeLabel} className={classes.svgSmall} />
         </Avatar>
       </IconButton>
       <Paper
@@ -216,6 +212,7 @@ export const SortPopover = ({
     <BasePopover
       tooltip={tooltips.sort}
       tooltipPlacement="bottom"
+      id="sort"
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "center",
