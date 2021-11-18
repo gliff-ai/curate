@@ -40,6 +40,7 @@ const useStyles = makeStyles({
       left: "85px",
     },
   },
+  button: {}, // added to get rid of warning
   paperPopover: {
     margin: "0 15px",
     padding: "5px",
