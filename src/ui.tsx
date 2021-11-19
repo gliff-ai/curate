@@ -597,7 +597,9 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           className={classes.toolBoxCard}
         >
-          <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
+          <Card>
+            <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
+          </Card>
           <Card className={classes.smallButton}>
             <SortPopover
               metadataKeys={this.state.metadataKeys}
