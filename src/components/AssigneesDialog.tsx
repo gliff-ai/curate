@@ -72,7 +72,8 @@ export function AssigneesDialog(props: Props): React.ReactElement {
     setAssignees(value);
   };
 
-  const isEnabled = (): boolean => props.collaborators.length !== 0;
+  const isEnabled = (): boolean =>
+    props.collaborators.length !== 0 && props.selectedImagesUids.length !== 0;
 
   useEffect(() => {
     setAssignees(props.getCurrentAssignees());
