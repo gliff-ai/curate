@@ -1,17 +1,18 @@
 import { render, fireEvent } from "@testing-library/react";
-import { Metadata, MetaItem } from "@/interfaces";
+import { Metadata } from "@/interfaces";
 import UserInterface from "./index";
 
-const metadata: Metadata = require("../examples/samples/metadata.json");
-const tiles = metadata.map((mitem: MetaItem, i) => ({
-  id: String(i),
-  imageName: `sample${i}.png`,
-  ...mitem,
-}));
+const metadata = (require("../examples/samples/metadata.json") as Metadata).map(
+  (mitem, i) => ({
+    id: String(i),
+    imageName: `sample${i}.png`,
+    ...mitem,
+  })
+);
 
 const getComponent = (isOwner: boolean): JSX.Element => (
   <UserInterface
-    metadata={tiles}
+    metadata={metadata}
     showAppBar
     collaborators={[{ name: "Mike Jones", email: "mike@gliff.app" }]}
     userIsOwner={isOwner}
