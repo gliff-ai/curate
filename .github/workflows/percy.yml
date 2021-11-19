@@ -12,6 +12,7 @@ on:
 jobs:
   Percy:
     runs-on: ubuntu-18.04
+    if: github.event.pull_request.draft == false
     timeout-minutes: 5
     steps:
       - name: Checkout
