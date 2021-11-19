@@ -210,7 +210,7 @@ export const SortPopover = ({
       }}
       transformOrigin={{
         vertical: "top",
-        horizontal: "center",
+        horizontal: "right",
       }}
       children={popoverContent}
       triggerClosing={close}
