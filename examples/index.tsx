@@ -2,7 +2,7 @@ import * as ReactDOM from "react-dom";
 
 import UserInterface from "../src/ui";
 
-import type { Metadata, MetaItem } from "../src/searchAndSort/interfaces";
+import type { Metadata, MetaItem } from "../src/interfaces";
 
 // load the sample images, construct an array of tiles:
 const loadImage = (filename: string): Promise<string> =>
