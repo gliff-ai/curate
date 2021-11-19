@@ -34,13 +34,13 @@ const useStyles = makeStyles({
   paper: {
     padding: "10px",
     marginLeft: "15px",
-    "& $button": {
-      position: "absolute",
-      bottom: "18px",
-      left: "85px",
-    },
   },
-  button: {}, // added to get rid of warning
+  sortButton: {
+    position: "absolute",
+    left: "50%",
+    transform: "translate(-50%, 0)",
+    bottom: "50px",
+  },
   paperPopover: {
     margin: "0 15px",
     padding: "5px",
@@ -198,6 +198,7 @@ export const SortPopover = ({
           label="Group by value"
         />
         <BaseTextButton
+          className={classes.sortButton}
           text="Sort"
           onClick={() => {
             const { key } = inputKey;
