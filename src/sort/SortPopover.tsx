@@ -12,7 +12,6 @@ import {
   TextField,
   MenuItem,
   IconButton,
-  Avatar,
   Checkbox,
 } from "@material-ui/core";
 import { BaseTextButton, theme, BasePopover, icons } from "@gliff-ai/style";
@@ -55,22 +54,15 @@ const useStyles = makeStyles({
   sortLabel: {
     fontSize: "17px",
   },
-  cross: {
-    position: "absolute",
-    top: "-5px",
-    right: theme.spacing(1),
-  },
-  closeAvatar: {
-    width: "30px",
-    height: "30px",
-  },
-  svgSmall: {
-    width: "12px",
-    height: "100%",
-  },
   menuItem: {
     backgroundColor: "#ffffff !important",
   },
+  closeButton: {
+    position: "absolute",
+    top: "7px",
+    right: "5px",
+  },
+  closeIcon: { width: "15px" },
 });
 
 interface Props {
@@ -123,13 +115,10 @@ export const SortPopover = ({
   const popoverContent = (
     <Card className={classes.card}>
       <IconButton
-        className={classes.cross}
+        className={classes.closeButton}
         onClick={() => setClose((close) => close + 1)}
-        edge="end"
       >
-        <Avatar variant="circular" className={classes.closeAvatar}>
-          <SVG src={icons.removeLabel} className={classes.svgSmall} />
-        </Avatar>
+        <SVG src={icons.removeLabel} className={classes.closeIcon} />
       </IconButton>
       <Paper
         elevation={0}
