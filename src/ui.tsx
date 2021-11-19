@@ -715,6 +715,7 @@ class UserInterface extends Component<Props, State> {
                         multiple
                         spanElement={
                           <BaseIconButton
+                            id="upload-image"
                             tooltip={tooltips.uploadImage}
                             fill={null}
                             tooltipPlacement="top"
