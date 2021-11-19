@@ -685,6 +685,7 @@ class UserInterface extends Component<Props, State> {
             {appBar}
             <Grid
               container
+              spacing={2}
               style={{ marginTop: this.props.showAppBar ? "108px" : 0 }}
             >
               <Grid item className={classes.sideBar}>
