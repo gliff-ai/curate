@@ -23,6 +23,12 @@ const useStyles = makeStyles({
     backgroundColor: theme.palette.primary.light,
     width: "260px",
     height: "370px",
+    "& button:last-of-type": {
+      position: "absolute",
+      left: "50%",
+      transform: "translate(-50%, 0)",
+      bottom: "50px",
+    },
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -33,12 +39,6 @@ const useStyles = makeStyles({
   paper: {
     padding: "10px",
     marginLeft: "15px",
-  },
-  sortButton: {
-    position: "absolute",
-    left: "50%",
-    transform: "translate(-50%, 0)",
-    bottom: "50px",
   },
   paperPopover: {
     margin: "0 15px",
@@ -164,7 +164,6 @@ export const SortPopover = ({
                 label: classes.sortLabel,
               }}
             />
-
             <FormControlLabel
               value="desc"
               control={<Radio size="small" />}
@@ -175,7 +174,6 @@ export const SortPopover = ({
             />
           </RadioGroup>
         </FormControl>
-
         <FormControlLabel
           control={
             <Checkbox
@@ -186,16 +184,15 @@ export const SortPopover = ({
           }
           label="Group by value"
         />
-        <BaseTextButton
-          className={classes.sortButton}
-          text="Sort"
-          onClick={() => {
-            const { key } = inputKey;
-            if (key === "") return;
-            callbackSort(key, sortOrder);
-          }}
-        />
       </Paper>
+      <BaseTextButton
+        text="Sort"
+        onClick={() => {
+          const { key } = inputKey;
+          if (key === "") return;
+          callbackSort(key, sortOrder);
+        }}
+      />
     </Card>
   );
 
