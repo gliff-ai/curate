@@ -914,7 +914,6 @@ class UserInterface extends Component<Props, State> {
                               mitem={mitem}
                               width={this.state.thumbnailWidth}
                               height={this.state.thumbnailHeight}
-                              data-private
                             />
                           </Button>
                           <LabelsPopover
