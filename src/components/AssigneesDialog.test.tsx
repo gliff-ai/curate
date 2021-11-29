@@ -5,7 +5,7 @@ const updateAssignees = jest.fn(
   (imageUids: string[], newAssinees: string[][]) => newAssinees
 );
 
-const collaborators = [
+const profiles = [
   { name: "Mike Jones", email: "mike@gliff.app" },
   { name: "John Smith", email: "john@gliff.app" },
   { name: "Sarah Williams", email: "sarah@gliff.app" },
@@ -25,11 +25,11 @@ const getCurrentAssignees = jest.fn(() => [prevAssignee.email]);
 const selectedUids = ["1", "2", "3"];
 
 describe("manual image assignment", () => {
-  describe("without collaborators", () => {
+  describe("without profiles", () => {
     beforeEach(() => {
       render(
         <AssigneesDialog
-          collaborators={[]}
+          profiles={[]}
           selectedImagesUids={selectedUids}
           updateAssignees={updateAssignees}
           getCurrentAssignees={getCurrentAssignees}
@@ -43,11 +43,11 @@ describe("manual image assignment", () => {
     });
   });
 
-  describe("with collaborators", () => {
+  describe("with profiles", () => {
     beforeEach(() => {
       render(
         <AssigneesDialog
-          collaborators={collaborators}
+          profiles={profiles}
           selectedImagesUids={selectedUids}
           updateAssignees={updateAssignees}
           getCurrentAssignees={getCurrentAssignees}

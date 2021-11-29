@@ -15,7 +15,7 @@ const getComponent = (userAccess: UserAccess): JSX.Element => (
   <UserInterface
     metadata={metadata}
     showAppBar
-    collaborators={[{ name: "Mike Jones", email: "mike@gliff.app" }]}
+    profiles={[{ name: "Mike Jones", email: "mike@gliff.app" }]}
     userAccess={userAccess}
   />
 );

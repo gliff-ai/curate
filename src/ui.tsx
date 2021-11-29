@@ -47,6 +47,7 @@ import MetadataDrawer from "./MetadataDrawer";
 import { Metadata, MetaItem, Filter, UserAccess } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
+import { Profile } from "./components/interfaces";
 
 const styles = () => ({
   appBar: {
@@ -119,11 +120,6 @@ const styles = () => ({
   infoSelection: { fontWeight: 500, width: "1000px" },
 });
 
-type Collaborator = {
-  name: string;
-  email: string;
-};
-
 interface Props extends WithStyles<typeof styles> {
   metadata?: Metadata;
   saveImageCallback?: (
@@ -146,7 +142,7 @@ interface Props extends WithStyles<typeof styles> {
     | null;
 
   plugins?: JSX.Element | null;
-  collaborators?: Collaborator[] | null;
+  profiles?: Profile[] | null;
   userAccess?: UserAccess;
 }
 
@@ -170,7 +166,7 @@ class UserInterface extends Component<Props, State> {
     showAppBar: true,
     trustedServiceButtonToolbar: null,
     plugins: null,
-    collaborators: null,
+    profiles: null,
     userAccess: UserAccess.Collaborator,
   } as Pick<Props, "showAppBar">;
 
@@ -529,6 +525,10 @@ class UserInterface extends Component<Props, State> {
     return Array.from(new Set(currentAssignees));
   };
 
+  private isOwnerOrMember = (): boolean =>
+    this.props.userAccess === UserAccess.Owner ||
+    this.props.userAccess === UserAccess.Member;
+
   @logTaskExecution("Image(s) upload")
   async addUploadedImages(
     imageFileInfo: ImageFileInfo[],
@@ -574,10 +574,6 @@ class UserInterface extends Component<Props, State> {
       });
     }
   }
-
-  private isOwnerOrMember = (): boolean =>
-    this.props.userAccess === UserAccess.Owner ||
-    this.props.userAccess === UserAccess.Member;
 
   render = (): ReactNode => {
     const { classes, showAppBar } = this.props;
@@ -634,10 +630,10 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           className={classes.toolBoxCard}
         >
-          {this.isOwnerOrMember() && this.props.collaborators && (
+          {this.isOwnerOrMember() && this.props.profiles && (
             <Card className={classes.smallButton}>
               <AutoAssignDialog
-                collaborators={this.props.collaborators}
+                profiles={this.props.profiles}
                 metadata={this.state.metadata}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
@@ -658,10 +654,10 @@ class UserInterface extends Component<Props, State> {
             className={classes.infoSelection}
             style={{ fontWeight: 500 }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-          {this.isOwnerOrMember() && this.props.collaborators && (
+          {this.isOwnerOrMember() && this.props.profiles && (
             <ListItem style={{ padding: 0 }}>
               <AssigneesDialog
-                collaborators={this.props.collaborators}
+                profiles={this.props.profiles}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
