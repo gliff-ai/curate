@@ -1,8 +1,8 @@
 import * as ReactDOM from "react-dom";
 
-import UserInterface from "../src/ui";
+import UserInterface, { UserAccess } from "../src/ui";
 
-import { Metadata, MetaItem, UserAccess } from "../src/interfaces";
+import type { Metadata, MetaItem } from "../src/interfaces";
 
 // load the sample images, construct an array of tiles:
 const loadImage = (filename: string): Promise<string> =>

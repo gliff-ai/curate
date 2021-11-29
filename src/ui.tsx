@@ -44,7 +44,7 @@ import Tile, {
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
-import { Metadata, MetaItem, Filter, UserAccess } from "./interfaces";
+import { Metadata, MetaItem, Filter } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 import { Profile } from "./components/interfaces";
@@ -119,6 +119,12 @@ const styles = () => ({
   },
   infoSelection: { fontWeight: 500, width: "1000px" },
 });
+
+export enum UserAccess {
+  Owner = "owner",
+  Member = "member",
+  Collaborator = "collaborator",
+}
 
 interface Props extends WithStyles<typeof styles> {
   metadata?: Metadata;

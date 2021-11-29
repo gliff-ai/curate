@@ -1,7 +1,7 @@
 import { render, fireEvent } from "@testing-library/react";
 import { Metadata } from "@/interfaces";
 import UserInterface from "./index";
-import { UserAccess } from "./interfaces";
+import { UserAccess } from "./ui";
 
 const metadata = (require("../examples/samples/metadata.json") as Metadata).map(
   (mitem, i) => ({

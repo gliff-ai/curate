@@ -8,9 +8,3 @@ export type Filter = {
   key: string;
   value: string;
 };
-
-export enum UserAccess {
-  Owner = "owner",
-  Member = "member",
-  Collaborator = "collaborator",
-}
