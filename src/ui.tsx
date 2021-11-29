@@ -44,7 +44,7 @@ import Tile, {
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
-import { Metadata, MetaItem, Filter } from "./interfaces";
+import { Metadata, MetaItem, Filter, UserAccess } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 
@@ -147,7 +147,7 @@ interface Props extends WithStyles<typeof styles> {
 
   plugins?: JSX.Element | null;
   collaborators?: Collaborator[] | null;
-  userIsOwner?: boolean;
+  userAccess?: UserAccess;
 }
 
 interface State {
@@ -171,7 +171,7 @@ class UserInterface extends Component<Props, State> {
     trustedServiceButtonToolbar: null,
     plugins: null,
     collaborators: null,
-    userIsOwner: false,
+    userAccess: UserAccess.Collaborator,
   } as Pick<Props, "showAppBar">;
 
   constructor(props: Props) {
@@ -534,7 +534,7 @@ class UserInterface extends Component<Props, State> {
     imageFileInfo: ImageFileInfo[],
     images: ImageBitmap[][][]
   ): Promise<void> {
-    if (!this.props.userIsOwner) return;
+    if (this.props.userAccess === UserAccess.Collaborator) return;
 
     const newMetadata: MetaItem[] = [];
     for (let i = 0; i < images.length; i += 1) {
@@ -574,6 +574,10 @@ class UserInterface extends Component<Props, State> {
       });
     }
   }
+
+  private isOwnerOrMember = (): boolean =>
+    this.props.userAccess === UserAccess.Owner ||
+    this.props.userAccess === UserAccess.Member;
 
   render = (): ReactNode => {
     const { classes, showAppBar } = this.props;
@@ -630,7 +634,7 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           className={classes.toolBoxCard}
         >
-          {this.props.userIsOwner && this.props.collaborators && (
+          {this.isOwnerOrMember() && this.props.collaborators && (
             <Card className={classes.smallButton}>
               <AutoAssignDialog
                 collaborators={this.props.collaborators}
@@ -654,7 +658,7 @@ class UserInterface extends Component<Props, State> {
             className={classes.infoSelection}
             style={{ fontWeight: 500 }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-          {this.props.userIsOwner && this.props.collaborators && (
+          {this.isOwnerOrMember() && this.props.collaborators && (
             <ListItem style={{ padding: 0 }}>
               <AssigneesDialog
                 collaborators={this.props.collaborators}
@@ -708,7 +712,7 @@ class UserInterface extends Component<Props, State> {
                       tooltipPlacement="top"
                     />
                   </Card>
-                  {this.props.userIsOwner && (
+                  {this.isOwnerOrMember() && (
                     <Card className={classes.bottomLeftButtons}>
                       <UploadImage
                         setUploadedImage={this.addUploadedImages}

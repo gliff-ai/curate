@@ -2,7 +2,7 @@ import * as ReactDOM from "react-dom";
 
 import UserInterface from "../src/ui";
 
-import type { Metadata, MetaItem } from "../src/interfaces";
+import { Metadata, MetaItem, UserAccess } from "../src/interfaces";
 
 // load the sample images, construct an array of tiles:
 const loadImage = (filename: string): Promise<string> =>
@@ -55,7 +55,7 @@ fetch("metadata.json")
             metadata={tiles}
             showAppBar
             collaborators={collaborators}
-            userIsOwner={true}
+            userAccess={UserAccess.Owner}
           />,
           document.getElementById("react-container")
         );
