@@ -1,6 +1,7 @@
 import { render, fireEvent } from "@testing-library/react";
 import { Metadata } from "@/interfaces";
 import UserInterface from "./index";
+import { UserAccess } from "./ui";
 
 const metadata = (require("../examples/samples/metadata.json") as Metadata).map(
   (mitem, i) => ({
@@ -10,37 +11,40 @@ const metadata = (require("../examples/samples/metadata.json") as Metadata).map(
   })
 );
 
-const getComponent = (isOwner: boolean): JSX.Element => (
+const getComponent = (userAccess: UserAccess): JSX.Element => (
   <UserInterface
     metadata={metadata}
     showAppBar
-    collaborators={[{ name: "Mike Jones", email: "mike@gliff.app" }]}
-    userIsOwner={isOwner}
+    profiles={[{ name: "Mike Jones", email: "mike@gliff.app" }]}
+    userAccess={userAccess}
   />
 );
 
-describe("owners access", () => {
-  beforeEach(() => {
-    render(getComponent(true));
-  });
+describe.each([UserAccess.Owner, UserAccess.Member])(
+  "%ss access",
+  (userAccess) => {
+    beforeEach(() => {
+      render(getComponent(userAccess));
+    });
 
-  test("can upload an image", () => {
-    expect(document.querySelector("#upload-image")).not.toBeNull();
-  });
+    test("can upload an image", () => {
+      expect(document.querySelector("#upload-image")).not.toBeNull();
+    });
 
-  test("can manually assign images", () => {
-    fireEvent.click(document.querySelector("#select-multiple-images"));
-    expect(document.querySelector("#update-assignees")).not.toBeNull();
-  });
+    test("can manually assign images", () => {
+      fireEvent.click(document.querySelector("#select-multiple-images"));
+      expect(document.querySelector("#update-assignees")).not.toBeNull();
+    });
 
-  test("can auto-assign images", () => {
-    expect(document.querySelector("#auto-assign-images")).not.toBeNull();
-  });
-});
+    test("can auto-assign images", () => {
+      expect(document.querySelector("#auto-assign-images")).not.toBeNull();
+    });
+  }
+);
 
 describe("collaborators access", () => {
   beforeEach(() => {
-    render(getComponent(false));
+    render(getComponent(UserAccess.Collaborator));
   });
 
   test("cannot upload an image", () => {

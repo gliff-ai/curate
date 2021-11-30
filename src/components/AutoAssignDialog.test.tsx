@@ -6,7 +6,7 @@ const updateAssignees = jest.fn(
   (imageUids: string[], newAssinees: string[][]) => newAssinees
 );
 
-const collaborators = [
+const profiles = [
   { name: "Mike Jones", email: "mike@gliff.app" },
   { name: "John Smith", email: "john@gliff.app" },
   { name: "Sarah Williams", email: "sarah@gliff.app" },
@@ -30,7 +30,7 @@ function changeOption(text: string, newText: string): void {
 
 function initAssignmentCount(): AssignmentCount {
   const assignmentCount: AssignmentCount = {};
-  collaborators.forEach(({ email }) => {
+  profiles.forEach(({ email }) => {
     assignmentCount[email] = 0;
   });
   return assignmentCount;
@@ -40,7 +40,7 @@ describe("new auto-assignment", () => {
   beforeEach(() => {
     render(
       <AutoAssignDialog
-        collaborators={collaborators}
+        profiles={profiles}
         selectedImagesUids={selectedUids}
         metadata={metadata}
         updateAssignees={updateAssignees}
@@ -68,18 +68,18 @@ describe("new auto-assignment", () => {
     );
   });
 
-  test("assignees per image from 1 to N = number of collaborators", () => {
+  test("assignees per image from 1 to N = number of profiles", () => {
     fireEvent.mouseDown(screen.getByText("1"));
     const listbox = within(screen.getByRole("listbox"));
 
     expect(listbox.queryByText(1)).toBeDefined(); // min assignees per image = 1
-    // max assignees per image = number of collaborators
-    expect(listbox.queryByText(collaborators.length)).toBeDefined();
-    expect(listbox.queryByText(collaborators.length + 1)).toBeNull();
+    // max assignees per image = number of profiles
+    expect(listbox.queryByText(profiles.length)).toBeDefined();
+    expect(listbox.queryByText(profiles.length + 1)).toBeNull();
   });
 
   test.each([1, 2, 3, 4, 5])(
-    "assign each image to %s different collaborators",
+    "assign each image to %s different profiles",
     (assigneesPerImage: number) => {
       changeOption("1", String(assigneesPerImage));
       fireEvent.click(screen.getByText("Assign"));
@@ -89,13 +89,13 @@ describe("new auto-assignment", () => {
         (assignees: string[]) => {
           assignees.forEach((email) => (assignmentCount[email] += 1)); //update assignees count
 
-          // each image should be assigned to N = assigneesPerImage different collaborators
+          // each image should be assigned to N = assigneesPerImage different profiles
           const uniqueAssignees = new Set(assignees);
           expect(uniqueAssignees.size).toBe(assigneesPerImage);
         }
       );
 
-      // the difference between collaborators in the number of images assigned should be of 1 image max
+      // the difference between profiles in the number of images assigned should be of 1 image max
       const imagesPerCollab = Object.values(assignmentCount);
       expect(
         Math.max.apply(Math, imagesPerCollab) -
@@ -117,7 +117,7 @@ describe("integrative auto-assignment", () => {
 
     render(
       <AutoAssignDialog
-        collaborators={collaborators}
+        profiles={profiles}
         selectedImagesUids={selectedUids}
         metadata={metadata}
         updateAssignees={updateAssignees}
@@ -144,7 +144,7 @@ describe("integrative auto-assignment", () => {
   });
 
   test.each([3, 4, 5])(
-    "assign each image to %s different collaborators",
+    "assign each image to %s different profiles",
     (assigneesPerImage: number) => {
       changeOption("3", String(assigneesPerImage));
       fireEvent.click(screen.getByText("Assign"));
@@ -152,7 +152,7 @@ describe("integrative auto-assignment", () => {
       const assignmentCount: AssignmentCount = initAssignmentCount();
       const values = updateAssignees.mock.results[0].value.forEach(
         (assignees: string[]) => {
-          // each image should be assigned to N = assigneesPerImage different collaborators
+          // each image should be assigned to N = assigneesPerImage different profiles
           const uniqueAssignees = new Set(assignees);
           assignees.forEach((email) => (assignmentCount[email] += 1)); //update assignees count
           expect(uniqueAssignees.size).toBe(assigneesPerImage);
@@ -167,7 +167,7 @@ describe("integrative auto-assignment", () => {
         }
       });
 
-      // the difference between collaborators in the number of images assigned should be of 1 image max
+      // the difference between profiles in the number of images assigned should be of 1 image max
       const imagesPerCollab = Object.values(assignmentCount);
       expect(
         Math.max.apply(Math, imagesPerCollab) -

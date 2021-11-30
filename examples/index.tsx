@@ -1,6 +1,6 @@
 import * as ReactDOM from "react-dom";
 
-import UserInterface from "../src/ui";
+import UserInterface, { UserAccess } from "../src/ui";
 
 import type { Metadata, MetaItem } from "../src/interfaces";
 
@@ -21,7 +21,7 @@ const loadImage = (filename: string): Promise<string> =>
     image.src = filename;
   });
 
-const collaborators = [
+const profiles = [
   { name: "Mike Jones", email: "mike@gliff.app" },
   { name: "John Smith", email: "john@gliff.app" },
   { name: "Sarah Williams", email: "sarah@gliff.app" },
@@ -54,8 +54,8 @@ fetch("metadata.json")
           <UserInterface
             metadata={tiles}
             showAppBar
-            collaborators={collaborators}
-            userIsOwner={true}
+            profiles={profiles}
+            userAccess={UserAccess.Owner}
           />,
           document.getElementById("react-container")
         );

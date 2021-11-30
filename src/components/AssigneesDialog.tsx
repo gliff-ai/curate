@@ -44,7 +44,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  collaborators: Profile[];
+  profiles: Profile[];
   selectedImagesUids: string[];
   updateAssignees: (imageUids: string[], newAssignees: string[][]) => void;
   getCurrentAssignees: () => string[];
@@ -73,7 +73,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
   };
 
   const isEnabled = (): boolean =>
-    props.collaborators.length !== 0 && props.selectedImagesUids.length !== 0;
+    props.profiles.length !== 0 && props.selectedImagesUids.length !== 0;
 
   useEffect(() => {
     setAssignees(props.getCurrentAssignees());
@@ -102,7 +102,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             </>
           )}
         >
-          {props.collaborators.map(({ name, email }) => (
+          {props.profiles.map(({ name, email }) => (
             <MenuItem key={name} value={email}>
               {name}
             </MenuItem>
