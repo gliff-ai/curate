@@ -12,7 +12,6 @@ import {
   TextField,
   MenuItem,
   IconButton,
-  Avatar,
   Checkbox,
 } from "@material-ui/core";
 import { BaseTextButton, theme, BasePopover, icons } from "@gliff-ai/style";
@@ -24,6 +23,12 @@ const useStyles = makeStyles({
     backgroundColor: theme.palette.primary.light,
     width: "260px",
     height: "370px",
+    "& button:last-of-type": {
+      position: "absolute",
+      left: "50%",
+      transform: "translate(-50%, 0)",
+      bottom: "50px",
+    },
   },
   paperHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -34,11 +39,6 @@ const useStyles = makeStyles({
   paper: {
     padding: "10px",
     marginLeft: "15px",
-    "& $button": {
-      position: "absolute",
-      bottom: "18px",
-      left: "85px",
-    },
   },
   paperPopover: {
     margin: "0 15px",
@@ -54,22 +54,15 @@ const useStyles = makeStyles({
   sortLabel: {
     fontSize: "17px",
   },
-  cross: {
-    position: "absolute",
-    top: "-5px",
-    right: theme.spacing(1),
-  },
-  closeAvatar: {
-    width: "30px",
-    height: "30px",
-  },
-  svgSmall: {
-    width: "12px",
-    height: "100%",
-  },
   menuItem: {
     backgroundColor: "#ffffff !important",
   },
+  closeButton: {
+    position: "absolute",
+    top: "7px",
+    right: "5px",
+  },
+  closeIcon: { width: "15px" },
 });
 
 interface Props {
@@ -122,13 +115,10 @@ export const SortPopover = ({
   const popoverContent = (
     <Card className={classes.card}>
       <IconButton
-        className={classes.cross}
+        className={classes.closeButton}
         onClick={() => setClose((close) => close + 1)}
-        edge="end"
       >
-        <Avatar variant="circular" className={classes.closeAvatar}>
-          <SVG src={icons.removeLabel} className={classes.svgSmall} />
-        </Avatar>
+        <SVG src={icons.removeLabel} className={classes.closeIcon} />
       </IconButton>
       <Paper
         elevation={0}
@@ -174,7 +164,6 @@ export const SortPopover = ({
                 label: classes.sortLabel,
               }}
             />
-
             <FormControlLabel
               value="desc"
               control={<Radio size="small" />}
@@ -185,7 +174,6 @@ export const SortPopover = ({
             />
           </RadioGroup>
         </FormControl>
-
         <FormControlLabel
           control={
             <Checkbox
@@ -196,15 +184,15 @@ export const SortPopover = ({
           }
           label="Group by value"
         />
-        <BaseTextButton
-          text="Sort"
-          onClick={() => {
-            const { key } = inputKey;
-            if (key === "") return;
-            callbackSort(key, sortOrder);
-          }}
-        />
       </Paper>
+      <BaseTextButton
+        text="Sort"
+        onClick={() => {
+          const { key } = inputKey;
+          if (key === "") return;
+          callbackSort(key, sortOrder);
+        }}
+      />
     </Card>
   );
 
@@ -219,7 +207,7 @@ export const SortPopover = ({
       }}
       transformOrigin={{
         vertical: "top",
-        horizontal: "center",
+        horizontal: "right",
       }}
       children={popoverContent}
       triggerClosing={close}

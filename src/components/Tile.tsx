@@ -12,6 +12,7 @@ export default function Tile(props: {
       height={props.height}
       src={props.mitem.thumbnail as string}
       alt={props.mitem.imageName as string}
+      data-private
     />
   );
 }
