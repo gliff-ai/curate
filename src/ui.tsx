@@ -31,6 +31,7 @@ import {
   generateClassName,
   IconButton,
   Logo,
+  LoadingSpinner,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -675,6 +676,136 @@ class UserInterface extends Component<Props, State> {
       </Card>
     );
 
+    const spinner = !this.state.metadata.length ? (
+      <LoadingSpinner />
+    ) : (
+      this.state.metadata
+        .filter((mitem) => mitem.selected)
+        .map((mitem: MetaItem, itemIndex) => (
+          <Fragment key={mitem.id as string}>
+            {this.state.isGrouped && (
+              <GroupBySeparator
+                mitem={mitem}
+                sortedBy={this.state.sortedBy}
+                getMonthAndYear={this.getMonthAndYear}
+              />
+            )}
+            <Grid
+              item
+              style={{
+                backgroundColor:
+                  this.state.selectedImagesUid.includes(mitem.id as string) &&
+                  theme.palette.primary.main,
+              }}
+            >
+              <div style={{ position: "relative" }}>
+                <Button
+                  id="images"
+                  onClick={(e: MouseEvent) => {
+                    const imageUid = mitem.id as string;
+                    this.handleMetadataShow(imageUid);
+
+                    if (e.metaKey || e.ctrlKey) {
+                      // Add clicked image to the selection if unselected; remove it if already selected
+                      this.setState((state) => {
+                        if (state.selectedImagesUid.includes(imageUid)) {
+                          state.selectedImagesUid.splice(
+                            state.selectedImagesUid.indexOf(imageUid),
+                            1
+                          );
+                        } else {
+                          state.selectedImagesUid.push(imageUid);
+                        }
+                        return {
+                          selectedImagesUid: state.selectedImagesUid,
+                        };
+                      });
+                    } else if (
+                      e.shiftKey &&
+                      this.state.selectedImagesUid.length > 0
+                    ) {
+                      // Selected all images between a pair of clicked images.
+                      this.setState((state) => {
+                        const currIdx = this.getIndexFromUid(imageUid);
+                        const prevIdx = this.getIndexFromUid(
+                          state.selectedImagesUid[0]
+                        );
+                        // first element added to the selection remains one end of the range
+                        const selectedImagesUid = [state.selectedImagesUid[0]];
+
+                        const startIdx = prevIdx < currIdx ? prevIdx : currIdx;
+                        const endIdx = prevIdx < currIdx ? currIdx : prevIdx;
+
+                        for (let i = startIdx; i <= endIdx; i += 1) {
+                          if (
+                            !selectedImagesUid.includes(
+                              state.metadata[i].id as string
+                            )
+                          ) {
+                            selectedImagesUid.push(
+                              state.metadata[i].id as string
+                            );
+                          }
+                        }
+                        return { selectedImagesUid };
+                      });
+                    } else {
+                      // Select single item
+                      this.setState({
+                        selectedImagesUid: [imageUid],
+                      });
+                    }
+                  }}
+                  onDoubleClick={() => {
+                    this.props.annotateCallback?.(mitem.id as string);
+                  }}
+                  onKeyDown={(e: KeyboardEvent) => {
+                    if (
+                      e.shiftKey &&
+                      (e.key === "ArrowLeft" || e.key === "ArrowRight")
+                    ) {
+                      // Select consecutive images to the left or to the right of the clicked image.
+                      const index = this.getItemUidNextToLastSelected(
+                        e.key === "ArrowRight"
+                      );
+                      if (index !== null) {
+                        this.setState((state) => {
+                          const uid = state.metadata[index].id as string;
+                          if (state.selectedImagesUid.includes(uid)) {
+                            state.selectedImagesUid.pop();
+                          } else {
+                            state.selectedImagesUid.push(uid);
+                          }
+                          return {
+                            selectedImagesUid: state.selectedImagesUid,
+                          };
+                        });
+                      }
+                    } else if (e.key === "Escape") {
+                      // Deselect all
+                      this.setState({ selectedImagesUid: [] });
+                    }
+                  }}
+                >
+                  <Tile
+                    mitem={mitem}
+                    width={this.state.thumbnailWidth}
+                    height={this.state.thumbnailHeight}
+                    data-private
+                  />
+                </Button>
+                <LabelsPopover
+                  id={mitem.id as string}
+                  imageName={mitem.imageName as string}
+                  labels={mitem.imageLabels as string[]}
+                  updateLabels={this.updateLabels(itemIndex)}
+                />
+              </div>
+            </Grid>
+          </Fragment>
+        ))
+    );
+
     return (
       <StylesProvider generateClassName={generateClassName("curate")}>
         <ThemeProvider theme={theme}>
@@ -791,154 +922,7 @@ class UserInterface extends Component<Props, State> {
                   className={classes.imagesContainer}
                   style={{ flexWrap: "wrap" }}
                 >
-                  {this.state.metadata
-                    .filter((mitem) => mitem.selected)
-                    .map((mitem: MetaItem, itemIndex) => (
-                      <Fragment key={mitem.id as string}>
-                        {this.state.isGrouped && (
-                          <GroupBySeparator
-                            mitem={mitem}
-                            sortedBy={this.state.sortedBy}
-                            getMonthAndYear={this.getMonthAndYear}
-                          />
-                        )}
-                        <Grid
-                          item
-                          style={{
-                            backgroundColor:
-                              this.state.selectedImagesUid.includes(
-                                mitem.id as string
-                              ) && theme.palette.primary.main,
-                          }}
-                        >
-                          <div style={{ position: "relative" }}>
-                            <Button
-                              id="images"
-                              onClick={(e: MouseEvent) => {
-                                const imageUid = mitem.id as string;
-                                this.handleMetadataShow(imageUid);
-
-                                if (e.metaKey || e.ctrlKey) {
-                                  // Add clicked image to the selection if unselected; remove it if already selected
-                                  this.setState((state) => {
-                                    if (
-                                      state.selectedImagesUid.includes(imageUid)
-                                    ) {
-                                      state.selectedImagesUid.splice(
-                                        state.selectedImagesUid.indexOf(
-                                          imageUid
-                                        ),
-                                        1
-                                      );
-                                    } else {
-                                      state.selectedImagesUid.push(imageUid);
-                                    }
-                                    return {
-                                      selectedImagesUid:
-                                        state.selectedImagesUid,
-                                    };
-                                  });
-                                } else if (
-                                  e.shiftKey &&
-                                  this.state.selectedImagesUid.length > 0
-                                ) {
-                                  // Selected all images between a pair of clicked images.
-                                  this.setState((state) => {
-                                    const currIdx =
-                                      this.getIndexFromUid(imageUid);
-                                    const prevIdx = this.getIndexFromUid(
-                                      state.selectedImagesUid[0]
-                                    );
-                                    // first element added to the selection remains one end of the range
-                                    const selectedImagesUid = [
-                                      state.selectedImagesUid[0],
-                                    ];
-
-                                    const startIdx =
-                                      prevIdx < currIdx ? prevIdx : currIdx;
-                                    const endIdx =
-                                      prevIdx < currIdx ? currIdx : prevIdx;
-
-                                    for (
-                                      let i = startIdx;
-                                      i <= endIdx;
-                                      i += 1
-                                    ) {
-                                      if (
-                                        !selectedImagesUid.includes(
-                                          state.metadata[i].id as string
-                                        )
-                                      ) {
-                                        selectedImagesUid.push(
-                                          state.metadata[i].id as string
-                                        );
-                                      }
-                                    }
-                                    return { selectedImagesUid };
-                                  });
-                                } else {
-                                  // Select single item
-                                  this.setState({
-                                    selectedImagesUid: [imageUid],
-                                  });
-                                }
-                              }}
-                              onDoubleClick={() => {
-                                this.props.annotateCallback?.(
-                                  mitem.id as string
-                                );
-                              }}
-                              onKeyDown={(e: KeyboardEvent) => {
-                                if (
-                                  e.shiftKey &&
-                                  (e.key === "ArrowLeft" ||
-                                    e.key === "ArrowRight")
-                                ) {
-                                  // Select consecutive images to the left or to the right of the clicked image.
-                                  const index =
-                                    this.getItemUidNextToLastSelected(
-                                      e.key === "ArrowRight"
-                                    );
-                                  if (index !== null) {
-                                    this.setState((state) => {
-                                      const uid = state.metadata[index]
-                                        .id as string;
-                                      if (
-                                        state.selectedImagesUid.includes(uid)
-                                      ) {
-                                        state.selectedImagesUid.pop();
-                                      } else {
-                                        state.selectedImagesUid.push(uid);
-                                      }
-                                      return {
-                                        selectedImagesUid:
-                                          state.selectedImagesUid,
-                                      };
-                                    });
-                                  }
-                                } else if (e.key === "Escape") {
-                                  // Deselect all
-                                  this.setState({ selectedImagesUid: [] });
-                                }
-                              }}
-                            >
-                              <Tile
-                                mitem={mitem}
-                                width={this.state.thumbnailWidth}
-                                height={this.state.thumbnailHeight}
-                                data-private
-                              />
-                            </Button>
-                            <LabelsPopover
-                              id={mitem.id as string}
-                              imageName={mitem.imageName as string}
-                              labels={mitem.imageLabels as string[]}
-                              updateLabels={this.updateLabels(itemIndex)}
-                            />
-                          </div>
-                        </Grid>
-                      </Fragment>
-                    ))}
+                  {spinner}
                 </Grid>
               </Grid>
             </div>
