@@ -928,29 +928,12 @@ class UserInterface extends Component<Props, State> {
                 className={classes.imagesContainer}
                 style={{ flexWrap: "wrap" }}
               >
-                {this.state.metadata
-                  .filter((mitem) => mitem.selected)
-                  .map((mitem: MetaItem, itemIndex) => (
-                    <Fragment key={mitem.id as string}>
-                      {this.state.isGrouped && (
-                        <GroupBySeparator
-                          mitem={mitem}
-                          sortedBy={this.state.sortedBy}
-                          getMonthAndYear={this.getMonthAndYear}
-                        />
-                      )}
-                  </div>
-                </Grid>
-
                 <Grid
                   className={classes.imagesContainer}
                   style={{ flexWrap: "wrap" }}
                 >
                   {spinner}
                 </Grid>
-
-  
-
               </Grid>
             </Grid>
           </Container>
