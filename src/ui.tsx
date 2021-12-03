@@ -119,6 +119,12 @@ const styles = () => ({
     left: "15px",
   },
   infoSelection: { fontWeight: 500, width: "1000px" },
+  boxSpinner: {
+    margin: 0,
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
+  },
 });
 
 export enum UserAccess {
@@ -684,7 +690,9 @@ class UserInterface extends Component<Props, State> {
     );
 
     const spinner = !this.state.metadata.length ? (
-      <LoadingSpinner />
+      <Box className={classes.boxSpinner}>
+        <LoadingSpinner />
+      </Box>
     ) : (
       this.state.metadata
         .filter((mitem) => mitem.selected)
