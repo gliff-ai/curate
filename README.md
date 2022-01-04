@@ -20,22 +20,7 @@ _Coming soon._
 
 Looking for something specific? 🔍
 
-- [Repository Introduction](#gliffai-annotate)
-- [Demo-Preview](#demo-preview)
-- [Table of Contents](#table-of-contents)
-- [Installation](#installation)
-- [Development](#development)
-- [Linting and Formatting](#linting-and-formatting)
-- [Testing](#testing)
-- [Contribute](#contribute)
-- [Contact](#contact)
-- [License](#license)
-
-## Table of Contents
-
-Looking for something specific? 🔍
-
-- [Repository Introduction](#gliffai-annotate)
+- [Repository Introduction](#gliffai-curate)
 - [Demo-Preview](#demo-preview)
 - [Table of Contents](#table-of-contents)
 - [Installation](#installation)
@@ -109,5 +94,5 @@ Reach out to the gliff.ai team at [community@gliff.ai](mailto:community@gliff.ai
 
 [{{back to navigation}}](#table-of-contents)
 
-This code is licensed under a [GNU AGPLv3 license](https://github.com/gliff-ai/audit/blob/main/LICENSE) 📝 \
+This code is licensed under a [GNU AGPLv3 license](https://github.com/gliff-ai/curate/blob/main/LICENSE) 📝 \
 Curious about our reasoning for this? Read about them [here](https://gliff.ai/articles/open-source-license-gnu-agplv3/)!
