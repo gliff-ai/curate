@@ -13,7 +13,7 @@ import {
   IconButton,
   Checkbox,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { BaseTextButton, theme, BasePopover, icons } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
@@ -117,7 +117,8 @@ export const SortPopover = ({
       <IconButton
         className={classes.closeButton}
         onClick={() => setClose((close) => close + 1)}
-        size="large">
+        size="small"
+      >
         <SVG src={icons.removeLabel} className={classes.closeIcon} />
       </IconButton>
       <Paper
@@ -137,6 +138,7 @@ export const SortPopover = ({
             value={inputKey.label}
             onChange={handleChange(updateKey)}
             helperText="Please select a metadata field"
+            variant="standard"
           >
             {metadataLabels &&
               metadataLabels.map(({ key, label }) => (

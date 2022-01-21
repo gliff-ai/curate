@@ -1,7 +1,7 @@
 import { ReactElement, useState, useEffect } from "react";
 import { IconButton, theme } from "@gliff-ai/style";
 import { ButtonGroup } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { thumbnailSizes, ThumbnailSizes } from "@/components/Tooltips";
 
 const useStyle = makeStyles({
@@ -32,7 +32,11 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
   }, [buttonClicked]);
 
   return (
-    <ButtonGroup orientation="horizontal" className={classes.card}>
+    <ButtonGroup
+      orientation="horizontal"
+      className={classes.card}
+      variant="text"
+    >
       {thumbnailSizes.map(({ name, icon, id }: ThumbnailSizes) => (
         <IconButton
           id={id}
@@ -43,7 +47,8 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
           tooltip={{ name }}
           onClick={() => setButtonClicked(name)}
           fill={buttonClicked === name}
-          size="large" />
+          size="small"
+        />
       ))}
     </ButtonGroup>
   );

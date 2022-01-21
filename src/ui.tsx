@@ -23,9 +23,9 @@ import {
   StyledEngineProvider,
 } from "@mui/material";
 
-import { WithStyles } from '@mui/styles';
-import withStyles from '@mui/styles/withStyles';
-import StylesProvider from '@mui/styles/StylesProvider';
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import StylesProvider from "@mui/styles/StylesProvider";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import {
@@ -52,12 +52,10 @@ import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 import { Profile } from "./components/interfaces";
 
-
-declare module '@mui/styles/defaultTheme' {
+declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }
-
 
 const styles = () => ({
   appBar: {
@@ -638,7 +636,8 @@ class UserInterface extends Component<Props, State> {
                 }));
               }}
               id="select-multiple-images"
-              size="large" />
+              size="small"
+            />
           </Card>
         </Box>
         <Box
@@ -778,7 +777,9 @@ class UserInterface extends Component<Props, State> {
                         callback={this.handleOnActiveFiltersChange}
                       />
                       <LabelsFilterAccordion
-                        expanded={this.state.expanded === "labels-filter-toolbox"}
+                        expanded={
+                          this.state.expanded === "labels-filter-toolbox"
+                        }
                         handleToolboxChange={this.handleToolboxChange(
                           "labels-filter-toolbox"
                         )}
@@ -842,14 +843,17 @@ class UserInterface extends Component<Props, State> {
                                       state.selectedImagesUid.includes(imageUid)
                                     ) {
                                       state.selectedImagesUid.splice(
-                                        state.selectedImagesUid.indexOf(imageUid),
+                                        state.selectedImagesUid.indexOf(
+                                          imageUid
+                                        ),
                                         1
                                       );
                                     } else {
                                       state.selectedImagesUid.push(imageUid);
                                     }
                                     return {
-                                      selectedImagesUid: state.selectedImagesUid,
+                                      selectedImagesUid:
+                                        state.selectedImagesUid,
                                     };
                                   });
                                 } else if (
@@ -873,7 +877,11 @@ class UserInterface extends Component<Props, State> {
                                     const endIdx =
                                       prevIdx < currIdx ? currIdx : prevIdx;
 
-                                    for (let i = startIdx; i <= endIdx; i += 1) {
+                                    for (
+                                      let i = startIdx;
+                                      i <= endIdx;
+                                      i += 1
+                                    ) {
                                       if (
                                         !selectedImagesUid.includes(
                                           state.metadata[i].id as string
@@ -894,7 +902,9 @@ class UserInterface extends Component<Props, State> {
                                 }
                               }}
                               onDoubleClick={() => {
-                                this.props.annotateCallback?.(mitem.id as string);
+                                this.props.annotateCallback?.(
+                                  mitem.id as string
+                                );
                               }}
                               onKeyDown={(e: KeyboardEvent) => {
                                 if (
@@ -903,14 +913,17 @@ class UserInterface extends Component<Props, State> {
                                     e.key === "ArrowRight")
                                 ) {
                                   // Select consecutive images to the left or to the right of the clicked image.
-                                  const index = this.getItemUidNextToLastSelected(
-                                    e.key === "ArrowRight"
-                                  );
+                                  const index =
+                                    this.getItemUidNextToLastSelected(
+                                      e.key === "ArrowRight"
+                                    );
                                   if (index !== null) {
                                     this.setState((state) => {
                                       const uid = state.metadata[index]
                                         .id as string;
-                                      if (state.selectedImagesUid.includes(uid)) {
+                                      if (
+                                        state.selectedImagesUid.includes(uid)
+                                      ) {
                                         state.selectedImagesUid.pop();
                                       } else {
                                         state.selectedImagesUid.push(uid);

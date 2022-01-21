@@ -11,8 +11,8 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { Alert } from '@mui/material';
+import makeStyles from "@mui/styles/makeStyles";
+import { Alert } from "@mui/material";
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
@@ -434,6 +434,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         <Select
           value={imageSelectionType}
           onChange={onChangeOfImageSelectionType}
+          variant="standard"
         >
           <MenuItem value={SelectionType.All}>All</MenuItem>
           {props.selectedImagesUids.length && (
@@ -445,19 +446,26 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       {info && info.hasAssignedImages && (
         <FormControl>
           <InputLabel>Type of assignment:</InputLabel>
-          <Select value={assignmentType} onChange={onChangeOfAssignmentType}>
+          <Select
+            value={assignmentType}
+            onChange={onChangeOfAssignmentType}
+            variant="standard"
+          >
             <MenuItem value={AssignmentType.New}>New</MenuItem>
 
             <MenuItem value={AssignmentType.Integrative}>Integrative</MenuItem>
           </Select>
         </FormControl>
       )}
+      <br />
+
       {/* select number of assignees per image */}
       <FormControl>
         <InputLabel>Assignees per image:</InputLabel>
         <Select
           value={assigneesPerImage}
           onChange={onChangeOfAssigneesPerImage}
+          variant="standard"
         >
           {options.map((option) => (
             <MenuItem key={`${option}-assignees`} value={option}>
@@ -477,49 +485,55 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     </div>
   );
 
-  return <>
-    <BaseIconButton
-      tooltip={tooltips.autoAssign}
-      onClick={() => setOpen(!open)}
-      tooltipPlacement="top"
-      id="auto-assign-images"
-    />
-    <Dialog open={open} onClose={handleClose}>
-      <Card className={classes.card}>
-        <Paper
-          elevation={0}
-          variant="outlined"
-          square
-          className={classes.paperHeader}
-        >
-          <Typography className={classes.topography}>
-            Auto-assign images
-          </Typography>
-          <IconButton className={classes.closeButton} onClick={handleClose} size="large">
-            <SVG src={icons.removeLabel} className={classes.closeIcon} />
-          </IconButton>
-        </Paper>
-        <Paper elevation={0} square className={classes.paperBody}>
-          {message ? (
-            <>
-              <Alert className={classes.alert} severity={message.severity}>
-                {message.text}
-                {requiresConfirmation() && (
-                  <Button
-                    className={classes.okButton}
-                    onClick={resetDefaults}
-                    color="inherit"
-                  >
-                    Ok
-                  </Button>
-                )}
-              </Alert>
-            </>
-          ) : null}
+  return (
+    <>
+      <BaseIconButton
+        tooltip={tooltips.autoAssign}
+        onClick={() => setOpen(!open)}
+        tooltipPlacement="top"
+        id="auto-assign-images"
+      />
+      <Dialog open={open} onClose={handleClose}>
+        <Card className={classes.card}>
+          <Paper
+            elevation={0}
+            variant="outlined"
+            square
+            className={classes.paperHeader}
+          >
+            <Typography className={classes.topography}>
+              Auto-assign images
+            </Typography>
+            <IconButton
+              className={classes.closeButton}
+              onClick={handleClose}
+              size="small"
+            >
+              <SVG src={icons.removeLabel} className={classes.closeIcon} />
+            </IconButton>
+          </Paper>
+          <Paper elevation={0} square className={classes.paperBody}>
+            {message ? (
+              <>
+                <Alert className={classes.alert} severity={message.severity}>
+                  {message.text}
+                  {requiresConfirmation() && (
+                    <Button
+                      className={classes.okButton}
+                      onClick={resetDefaults}
+                      color="inherit"
+                    >
+                      Ok
+                    </Button>
+                  )}
+                </Alert>
+              </>
+            ) : null}
 
-          {dialogContent}
-        </Paper>
-      </Card>
-    </Dialog>
-  </>;
+            {dialogContent}
+          </Paper>
+        </Card>
+      </Dialog>
+    </>
+  );
 }

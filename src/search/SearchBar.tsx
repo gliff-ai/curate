@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { Card, CardContent, Paper, TextField } from "@mui/material";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
@@ -140,7 +140,7 @@ function SearchBar({
           }}
           options={metadataLabels}
           renderInput={(params: unknown) => (
-            <TextField {...params} label="Search Category" />
+            <TextField {...params} label="Search Category" variant="standard" />
           )}
           PaperComponent={CustomPaper}
         />
@@ -154,7 +154,7 @@ function SearchBar({
           }}
           options={inputOptions}
           renderInput={(params: unknown) => (
-            <TextField {...params} label="..." />
+            <TextField {...params} label="..." variant="standard" />
           )}
           PaperComponent={CustomPaper}
         />
