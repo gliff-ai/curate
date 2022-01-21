@@ -50,7 +50,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  collaborators: Profile[];
+  profiles: Profile[];
   selectedImagesUids: string[];
   metadata: Metadata;
   updateAssignees: (imageUids: string[], newAssinees: string[][]) => void;
@@ -96,7 +96,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   );
   const [assigneesPerImage, setAssigneesPerImage] = useState<number>(1);
   const [options, setOptions] = useState<number[]>(
-    getOptions(props.collaborators.length)
+    getOptions(props.profiles.length)
   );
 
   const [imageUids, setImageUids] = useState<string[] | null>(null);
@@ -169,9 +169,9 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   function updateMessage(): void {
     if (!info || requiresConfirmation()) return;
 
-    if (props.collaborators.length === 0) {
+    if (props.profiles.length === 0) {
       setMessage({
-        text: "No collaborator has been added to this project.",
+        text: "No collaborator or member has been added to this project.",
         severity: "error",
       });
     } else if (
@@ -214,7 +214,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     kCombs: string[][]
   ): number {
     /* Select a combination, so as to minimise the range of the number of images
-    assigned to each collaborators. */
+    assigned to each profiles. */
 
     let minRange = Number.MAX_SAFE_INTEGER;
     let selectedIndex: number;
@@ -222,8 +222,8 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     // for each combination..
     kCombs.forEach((combination, i) => {
       let newCounts: number[] = [];
-      // and each collaborator, calculate new image count
-      props.collaborators.forEach(({ email }) => {
+      // and each profile, calculate new image count
+      props.profiles.forEach(({ email }) => {
         newCounts.push(
           combination.includes(email)
             ? assignmentCount[email] + 1
@@ -231,7 +231,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         );
       });
 
-      // calculate range of number of images assigned to each collaborators
+      // calculate range of number of images assigned to each profiles
       const newRange =
         Math.max.apply(Math, newCounts) - Math.min.apply(Math, newCounts);
 
@@ -363,17 +363,17 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   }
 
   function autoAssignImages(): void {
-    // get all combinations of k collaborators
+    // get all combinations of k profiles
     const kCombs: string[][] = kCombinations(
-      props.collaborators.map(({ email }) => email),
-      assigneesPerImage // number of collaborators each image is assigned to
+      props.profiles.map(({ email }) => email),
+      assigneesPerImage // number of profiles each image is assigned to
     ).map((comb) => comb.sort());
 
     shuffle(kCombs);
 
     // initialise assignment count
     const assignmentCount: AssignmentCount = {};
-    props.collaborators.forEach(({ email }) => {
+    props.profiles.forEach(({ email }) => {
       assignmentCount[email] = 0;
     });
 
@@ -414,17 +414,17 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
 
   useEffect(() => {
     updateMessage();
-  }, [info, props.collaborators, assignmentType]);
+  }, [info, props.profiles, assignmentType]);
 
   useEffect(() => {
     const start =
       assignmentType === AssignmentType.Integrative
         ? info?.maxNumOfAssignees
         : 1;
-    const newOptions = getOptions(props.collaborators.length, start);
+    const newOptions = getOptions(props.profiles.length, start);
     setAssigneesPerImage(newOptions[0]);
     setOptions(newOptions);
-  }, [props.collaborators, assignmentType, info]);
+  }, [props.profiles, assignmentType, info]);
 
   const dialogContent = (
     <div className={classes.contentContainer}>
