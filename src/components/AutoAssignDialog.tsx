@@ -4,15 +4,15 @@ import {
   Card,
   Dialog,
   Typography,
-  makeStyles,
   InputLabel,
   MenuItem,
   FormControl,
   Select,
   IconButton,
   Button,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { Alert } from '@mui/material';
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
@@ -477,51 +477,49 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     </div>
   );
 
-  return (
-    <>
-      <BaseIconButton
-        tooltip={tooltips.autoAssign}
-        onClick={() => setOpen(!open)}
-        tooltipPlacement="top"
-        id="auto-assign-images"
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <Card className={classes.card}>
-          <Paper
-            elevation={0}
-            variant="outlined"
-            square
-            className={classes.paperHeader}
-          >
-            <Typography className={classes.topography}>
-              Auto-assign images
-            </Typography>
-            <IconButton className={classes.closeButton} onClick={handleClose}>
-              <SVG src={icons.removeLabel} className={classes.closeIcon} />
-            </IconButton>
-          </Paper>
-          <Paper elevation={0} square className={classes.paperBody}>
-            {message ? (
-              <>
-                <Alert className={classes.alert} severity={message.severity}>
-                  {message.text}
-                  {requiresConfirmation() && (
-                    <Button
-                      className={classes.okButton}
-                      onClick={resetDefaults}
-                      color="inherit"
-                    >
-                      Ok
-                    </Button>
-                  )}
-                </Alert>
-              </>
-            ) : null}
+  return <>
+    <BaseIconButton
+      tooltip={tooltips.autoAssign}
+      onClick={() => setOpen(!open)}
+      tooltipPlacement="top"
+      id="auto-assign-images"
+    />
+    <Dialog open={open} onClose={handleClose}>
+      <Card className={classes.card}>
+        <Paper
+          elevation={0}
+          variant="outlined"
+          square
+          className={classes.paperHeader}
+        >
+          <Typography className={classes.topography}>
+            Auto-assign images
+          </Typography>
+          <IconButton className={classes.closeButton} onClick={handleClose} size="large">
+            <SVG src={icons.removeLabel} className={classes.closeIcon} />
+          </IconButton>
+        </Paper>
+        <Paper elevation={0} square className={classes.paperBody}>
+          {message ? (
+            <>
+              <Alert className={classes.alert} severity={message.severity}>
+                {message.text}
+                {requiresConfirmation() && (
+                  <Button
+                    className={classes.okButton}
+                    onClick={resetDefaults}
+                    color="inherit"
+                  >
+                    Ok
+                  </Button>
+                )}
+              </Alert>
+            </>
+          ) : null}
 
-            {dialogContent}
-          </Paper>
-        </Card>
-      </Dialog>
-    </>
-  );
+          {dialogContent}
+        </Paper>
+      </Card>
+    </Dialog>
+  </>;
 }

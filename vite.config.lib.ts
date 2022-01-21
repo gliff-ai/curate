@@ -17,9 +17,9 @@ export default defineConfig({
         "react",
         "react-dom",
         "react-router-dom",
-        "@material-ui/core",
-        "@material-ui/icons",
-        "@material-ui/lab",
+        "@mui/material",
+        "@mui/icons-material",
+        "@mui/lab",
         "@gliff-ai/style"
       ],
       output: {

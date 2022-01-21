@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import { Card, CardContent, Paper, TextField } from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import makeStyles from '@mui/styles/makeStyles';
+import { Card, CardContent, Paper, TextField } from "@mui/material";
+import Autocomplete from '@mui/material/Autocomplete';
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
@@ -129,7 +129,7 @@ function SearchBar({
           id="combobox-metadata-key"
           className={classes.input1}
           getOptionLabel={(option: MetadataLabel) => option.label}
-          getOptionSelected={(option, value) => option.label === value.label}
+          isOptionEqualToValue={(option, value) => option.label === value.label}
           onInputChange={(e: ChangeEvent, newInputKey: string) => {
             // Match the text with the actual key we want
             const metaLabel = metadataLabels.filter(

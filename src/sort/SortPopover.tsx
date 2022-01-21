@@ -2,7 +2,6 @@ import { ReactElement, useEffect, useState, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 import {
   Typography,
-  makeStyles,
   Card,
   Paper,
   FormControl,
@@ -13,7 +12,8 @@ import {
   MenuItem,
   IconButton,
   Checkbox,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { BaseTextButton, theme, BasePopover, icons } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
@@ -117,7 +117,7 @@ export const SortPopover = ({
       <IconButton
         className={classes.closeButton}
         onClick={() => setClose((close) => close + 1)}
-      >
+        size="large">
         <SVG src={icons.removeLabel} className={classes.closeIcon} />
       </IconButton>
       <Paper

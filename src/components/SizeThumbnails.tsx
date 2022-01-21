@@ -1,6 +1,7 @@
 import { ReactElement, useState, useEffect } from "react";
 import { IconButton, theme } from "@gliff-ai/style";
-import { ButtonGroup, makeStyles } from "@material-ui/core";
+import { ButtonGroup } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { thumbnailSizes, ThumbnailSizes } from "@/components/Tooltips";
 
 const useStyle = makeStyles({
@@ -42,7 +43,7 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
           tooltip={{ name }}
           onClick={() => setButtonClicked(name)}
           fill={buttonClicked === name}
-        />
+          size="large" />
       ))}
     </ButtonGroup>
   );

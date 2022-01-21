@@ -9,8 +9,8 @@ import {
   Card,
   Avatar,
   Box,
-  makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { theme, HtmlTooltip, icons } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/interfaces";
@@ -125,85 +125,83 @@ export default function MetadataDrawer(props: Props): ReactElement {
   const hasKey = (mitem: MetaItem, key: string): boolean =>
     key in mitem && mitem[key] !== null;
 
-  return (
-    <>
-      <Card className={classes.card}>
-        <Paper elevation={0} variant="outlined" className={classes.paperHeader}>
-          <Typography className={classes.typographyHeader}>Metadata</Typography>
-          <HtmlTooltip
-            key="Return to search"
-            title={
-              <Box className={classes.mainbox}>
-                <Box mr={3} ml={2}>
-                  <Typography color="inherit">Return to search </Typography>
-                </Box>
-                <Avatar className={classes.popoverAvatar}>
-                  <Typography className={classes.avatarFontSize}>
-                    ESC
-                  </Typography>
-                </Avatar>
+  return <>
+    <Card className={classes.card}>
+      <Paper elevation={0} variant="outlined" className={classes.paperHeader}>
+        <Typography className={classes.typographyHeader}>Metadata</Typography>
+        <HtmlTooltip
+          key="Return to search"
+          title={
+            <Box className={classes.mainbox}>
+              <Box mr={3} ml={2}>
+                <Typography color="inherit">Return to search </Typography>
               </Box>
-            }
-            placement="right"
+              <Avatar className={classes.popoverAvatar}>
+                <Typography className={classes.avatarFontSize}>
+                  ESC
+                </Typography>
+              </Avatar>
+            </Box>
+          }
+          placement="right"
+        >
+          <Avatar
+            variant="circular"
+            className={classes.closeAvatar}
+            onMouseOut={() => {
+              sethover(false);
+            }}
+            onMouseOver={() => {
+              sethover(true);
+            }}
           >
-            <Avatar
-              variant="circular"
-              className={classes.closeAvatar}
-              onMouseOut={() => {
-                sethover(false);
-              }}
-              onMouseOver={() => {
-                sethover(true);
-              }}
-            >
-              <IconButton onClick={props.handleMetadataHide}>
-                <SVG
-                  src={icons.removeLabel}
-                  className={classes.svgSmall}
-                  fill={
-                    hover
-                      ? theme.palette.primary.main
-                      : theme.palette.text.primary
-                  }
+            <IconButton onClick={props.handleMetadataHide} size="large">
+              <SVG
+                src={icons.removeLabel}
+                className={classes.svgSmall}
+                fill={
+                  hover
+                    ? theme.palette.primary.main
+                    : theme.palette.text.primary
+                }
+              />
+            </IconButton>
+          </Avatar>
+        </HtmlTooltip>
+      </Paper>
+      <Paper elevation={0} square>
+        <List>
+          {metaKeys.map(({ key }) =>
+            hasKey(props.metadata, key) ? (
+              <ListItem key={key} className={classes.metaListItem}>
+                <ListItemText
+                  primaryTypographyProps={{ variant: "h6" }}
+                  className={classes.metaKey}
+                  title={metadataNameMap[key] || key}
+                  primary={`${metadataNameMap[key] || key}:`}
+                  classes={{
+                    primary: classes.metaKey,
+                    root: classes.metaRoot,
+                  }}
                 />
-              </IconButton>
-            </Avatar>
-          </HtmlTooltip>
-        </Paper>
-        <Paper elevation={0} square>
-          <List>
-            {metaKeys.map(({ key }) =>
-              hasKey(props.metadata, key) ? (
-                <ListItem key={key} className={classes.metaListItem}>
-                  <ListItemText
-                    primaryTypographyProps={{ variant: "h6" }}
-                    className={classes.metaKey}
-                    title={metadataNameMap[key] || key}
-                    primary={`${metadataNameMap[key] || key}:`}
-                    classes={{
-                      primary: classes.metaKey,
-                      root: classes.metaRoot,
-                    }}
-                  />
-                  <ListItemText
-                    className={classes.metaValue}
-                    title={props.metadata[key] as string}
-                    primary={
-                      key === "imageLabels"
-                        ? (props.metadata[key] as string[]).join(", ")
-                        : props.metadata[key].toString()
-                    }
-                    classes={{
-                      primary: classes.metaValue,
-                      root: classes.metaRoot,
-                    }}
-                  />
-                </ListItem>
-              ) : null
-            )}
-          </List>
-        </Paper>
-      </Card>
-    </>
-  );
+                <ListItemText
+                  className={classes.metaValue}
+                  title={props.metadata[key] as string}
+                  primary={
+                    key === "imageLabels"
+                      ? (props.metadata[key] as string[]).join(", ")
+                      : props.metadata[key].toString()
+                  }
+                  classes={{
+                    primary: classes.metaValue,
+                    root: classes.metaRoot,
+                  }}
+                />
+              </ListItem>
+            ) : null
+          )}
+        </List>
+      </Paper>
+    </Card>
+  </>;
 }
