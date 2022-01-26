@@ -718,8 +718,9 @@ class UserInterface extends Component<Props, State> {
                     }}
                   >
                     <Card className={classes.bottomLeftButtons}>
-                      <BaseIconButton
+                      <IconButton
                         tooltip={tooltips.viewCollection}
+                        icon={tooltips.viewCollection.icon}
                         fill={null}
                         tooltipPlacement="top"
                       />
@@ -743,8 +744,9 @@ class UserInterface extends Component<Props, State> {
                       </Card>
                     )}
                     <Card className={classes.bottomLeftButtons}>
-                      <BaseIconButton
+                      <IconButton
                         tooltip={tooltips.downloadDataset}
+                        icon={tooltips.downloadDataset.icon}
                         fill={null}
                         tooltipPlacement="top"
                         onClick={this.props.downloadDatasetCallback}
