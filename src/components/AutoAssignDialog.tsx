@@ -104,21 +104,21 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   const [message, setMessage] = useState<Message | null>(null);
 
   function onChangeOfImageSelectionType(
-    event: React.ChangeEvent<{ value: SelectionType }>
+    event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setImageSelectionType(event.target.value);
+    setImageSelectionType(Number(event.target.value));
   }
 
   function onChangeOfAssigneesPerImage(
-    event: React.ChangeEvent<{ value: number }>
+    event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setAssigneesPerImage(event.target.value);
+    setAssigneesPerImage(Number(event.target.value));
   }
 
   function onChangeOfAssignmentType(
-    event: React.ChangeEvent<{ value: AssignmentType }>
+    event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setAssignmentType(event.target.value);
+    setAssignmentType(Number(event.target.value));
   }
 
   function handleClose() {

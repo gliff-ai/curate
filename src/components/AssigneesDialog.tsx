@@ -11,8 +11,9 @@ import {
   Select,
   Chip,
   IconButton,
+  SelectChangeEvent,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, icons, theme } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
@@ -55,7 +56,9 @@ export function AssigneesDialog(props: Props): React.ReactElement {
   const [open, setOpen] = useState<boolean>(false);
   const [assignees, setAssignees] = useState<string[]>([]);
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string[]>
+  ) => {
     setAssignees(event.target.value as string[]);
   };
 
@@ -124,37 +127,39 @@ export function AssigneesDialog(props: Props): React.ReactElement {
     </>
   );
 
-  return <>
-    <BaseIconButton
-      tooltip={tooltips.addAssignees}
-      onClick={() => {
-        if (isEnabled()) {
-          setOpen(!open);
-        }
-      }}
-      tooltipPlacement="top"
-      enabled={isEnabled()}
-      id="update-assignees"
-    />
-    <Dialog open={open} onClose={() => setOpen(false)}>
-      <Card className={classes.card}>
-        <Paper
-          elevation={0}
-          variant="outlined"
-          square
-          className={classes.paperHeader}
-        >
-          <Typography className={classes.topography}>
-            Assign selected images
-          </Typography>
-          <IconButton onClick={() => setOpen(false)} size="large">
-            <SVG src={icons.removeLabel} className={classes.closeIcon} />
-          </IconButton>
-        </Paper>
-        <Paper elevation={0} square className={classes.paperBody}>
-          {multiInputForm}
-        </Paper>
-      </Card>
-    </Dialog>
-  </>;
+  return (
+    <>
+      <BaseIconButton
+        tooltip={tooltips.addAssignees}
+        onClick={() => {
+          if (isEnabled()) {
+            setOpen(!open);
+          }
+        }}
+        tooltipPlacement="top"
+        enabled={isEnabled()}
+        id="update-assignees"
+      />
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <Card className={classes.card}>
+          <Paper
+            elevation={0}
+            variant="outlined"
+            square
+            className={classes.paperHeader}
+          >
+            <Typography className={classes.topography}>
+              Assign selected images
+            </Typography>
+            <IconButton onClick={() => setOpen(false)} size="large">
+              <SVG src={icons.removeLabel} className={classes.closeIcon} />
+            </IconButton>
+          </Paper>
+          <Paper elevation={0} square className={classes.paperBody}>
+            {multiInputForm}
+          </Paper>
+        </Card>
+      </Dialog>
+    </>
+  );
 }

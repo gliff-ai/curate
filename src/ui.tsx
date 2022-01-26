@@ -730,9 +730,10 @@ class UserInterface extends Component<Props, State> {
                           setUploadedImage={this.addUploadedImages}
                           multiple
                           spanElement={
-                            <BaseIconButton
+                            <IconButton
                               id="upload-image"
                               tooltip={tooltips.uploadImage}
+                              icon={tooltips.uploadImage.icon}
                               fill={null}
                               tooltipPlacement="top"
                               component="span"
