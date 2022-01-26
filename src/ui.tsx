@@ -71,9 +71,10 @@ const styles = () => ({
   },
   imagesContainer: {
     display: "flex",
-    width: "calc(100% - 290px)",
+    width: "calc(100% - 310px)",
     justifyContent: "flex-start",
     marginBottom: "auto",
+    marginLeft: "20px",
   },
   uploadButton: {
     bottom: "18px",
@@ -126,6 +127,12 @@ const styles = () => ({
     left: "15px",
   },
   infoSelection: { fontWeight: 500, width: "1000px" },
+  divButton: {
+    position: "relative",
+    "& > button": {
+      margin: "5px",
+    },
+  },
 });
 
 export enum UserAccess {
@@ -832,7 +839,7 @@ class UserInterface extends Component<Props, State> {
                               ) && theme.palette.primary.main,
                           }}
                         >
-                          <div style={{ position: "relative" }}>
+                          <div className={classes.divButton}>
                             <Button
                               id="images"
                               onClick={(e: MouseEvent) => {
