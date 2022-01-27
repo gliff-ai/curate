@@ -128,7 +128,7 @@ const styles = () => ({
   },
   infoSelection: { fontWeight: 500, width: "1000px" },
   divButton: {
-    position: "relative",
+    position: "relative" as const,
     "& > button": {
       margin: "5px",
     },
