@@ -24,7 +24,12 @@ import { tooltips } from "./Tooltips";
 const useStyles = makeStyles(() => ({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
   paperBody: { margin: "15px", width: "450px" },
-  container: { textAlign: "center", marginTop: "20px" },
+  container: {
+    textAlign: "center",
+    marginTop: "20px",
+    display: "flex",
+    justifyContent: "space-around",
+  },
   card: {
     display: "flex",
     flexDirection: "column",
@@ -90,20 +95,21 @@ interface Props {
 export function DefaultLabelsDialog(props: Props): React.ReactElement {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
-  const [newLabel, setNewLabel] = useState<string>("");
+  const [inputString, setInputString] = useState<string>("");
+  const [oldLabels, setOldLabels] = useState<string[]>([]);
 
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleNewLabelChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setNewLabel(event.target.value);
+    setInputString(event.target.value);
   };
 
   const handleAddLabel = (label: string) => (): void => {
     if (props.labels.includes(label)) return;
     props.updateDefaultLabels(props.labels.concat([label]), false);
-    setNewLabel("");
+    setInputString("");
   };
 
   const handleDeleteLabel = (label: string) => (): void => {
@@ -118,6 +124,8 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
         tooltip={tooltips.defaultLabels}
         onClick={() => {
           setOpen(!open);
+          // remember the original defaultLabels so we can revert if user hits Cancel:
+          setOldLabels(props.labels);
         }}
         tooltipPlacement="top"
         id="set-default-labels"
@@ -140,7 +148,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               key="input-new-default-label"
               placeholder="New label"
               type="text"
-              value={newLabel}
+              value={inputString}
               onChange={handleNewLabelChange}
               inputProps={{
                 className: classes.input,
@@ -150,7 +158,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               aria-label="add-label"
               key={"button-add-default-label"}
               className={classes.addButton}
-              onClick={handleAddLabel(newLabel)}
+              onClick={handleAddLabel(inputString)}
             >
               <SVG
                 className={classes.iconSize}
@@ -180,6 +188,24 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 variant="outlined"
               />
             ))}
+            <div className={classes.container}>
+              <BaseTextButton
+                id="confirm-default-labels"
+                text="Confirm"
+                onClick={() => {
+                  props.updateDefaultLabels(props.labels, true);
+                  handleClose();
+                }}
+              />
+              <BaseTextButton
+                id="cancel-default=labels"
+                text="Cancel"
+                onClick={() => {
+                  props.updateDefaultLabels(oldLabels, false);
+                  handleClose();
+                }}
+              />
+            </div>
           </CardContent>
         </Card>
       </Dialog>
