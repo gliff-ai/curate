@@ -135,6 +135,8 @@ interface Props extends WithStyles<typeof styles> {
   ) => Promise<void>;
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
+  defaultLabels?: string[];
+  saveDefaultLabelsCallback?: (newLabels: string[]) => void;
   saveAssigneesCallback?: (
     imageUid: string[],
     newAssignees: string[][]
@@ -158,6 +160,7 @@ interface State {
   metadataKeys: string[];
   activeFilters: Filter[];
   imageLabels: string[];
+  defaultLabels: string[];
   expanded: string | boolean;
   openImageUid: string; // Uid for the image whose metadata is shown in the drawer
   selectedImagesUid: string[]; // Uids for selected images
@@ -186,6 +189,7 @@ class UserInterface extends Component<Props, State> {
         ? this.getMetadataKeys(this.props.metadata[0])
         : [],
       imageLabels: this.getImageLabels(this.props.metadata),
+      defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
       openImageUid: null,
       selectedImagesUid: [],
@@ -399,6 +403,7 @@ class UserInterface extends Component<Props, State> {
   };
 
   getImageLabels = (metadata: Metadata): string[] => {
+    // returns the set of all labels that are assigned to at least one image
     if (!metadata) return [];
     const labels: Set<string> = new Set();
     metadata.forEach((mitem) => {
@@ -500,6 +505,13 @@ class UserInterface extends Component<Props, State> {
         };
       });
     };
+
+  updateDefaultLabels = (newLabels: string[], sync = false) => {
+    this.setState({ defaultLabels: newLabels });
+    if (sync && this.props.saveDefaultLabelsCallback) {
+      this.props.saveDefaultLabelsCallback(newLabels);
+    }
+  };
 
   updateAssignees = (imageUids: string[], newAssignees: string[][]): void => {
     // Update assignees for the images selected
@@ -648,7 +660,10 @@ class UserInterface extends Component<Props, State> {
             </Card>
           )}
           <Card className={classes.smallButton} style={{ marginLeft: "14px" }}>
-            <DefaultLabelsDialog />
+            <DefaultLabelsDialog
+              labels={this.state.defaultLabels}
+              updateDefaultLabels={this.updateDefaultLabels}
+            />
           </Card>
         </Box>
       </>
