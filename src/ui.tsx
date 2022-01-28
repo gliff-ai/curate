@@ -222,6 +222,7 @@ class UserInterface extends Component<Props, State> {
       this.setState({
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
         imageLabels: this.getImageLabels(this.props.metadata),
+        defaultLabels: this.props.defaultLabels || this.state.defaultLabels,
       });
     }
   };
