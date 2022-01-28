@@ -54,6 +54,10 @@ const tooltips: Tooltips = {
     name: "Auto-Assign Images",
     icon: icons.autoAssign,
   },
+  defaultLabels: {
+    name: "Set default labels",
+    icon: icons.annotationLabels,
+  }
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [

@@ -40,6 +40,7 @@ import Tile, {
   LabelsPopover,
   AssigneesDialog,
   AutoAssignDialog,
+  DefaultLabelsDialog,
 } from "@/components";
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
@@ -633,7 +634,7 @@ class UserInterface extends Component<Props, State> {
         </Box>
         <Box
           display="flex"
-          justifyContent="space-between"
+          justifyContent="flex-start"
           className={classes.toolBoxCard}
         >
           {this.isOwnerOrMember() && this.props.profiles && (
@@ -646,6 +647,9 @@ class UserInterface extends Component<Props, State> {
               />
             </Card>
           )}
+          <Card className={classes.smallButton} style={{ marginLeft: "14px" }}>
+            <DefaultLabelsDialog />
+          </Card>
         </Box>
       </>
     );
