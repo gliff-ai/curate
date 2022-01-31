@@ -153,6 +153,7 @@ interface Props extends WithStyles<typeof styles> {
   plugins?: JSX.Element | null;
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
+  restrictLabels?: boolean; // restrict image labels to defaultLabels
 }
 
 interface State {
@@ -169,6 +170,7 @@ interface State {
   selectMultipleImagesMode: boolean;
   sortedBy: string;
   isGrouped: boolean;
+  restrictLabels: boolean;
 }
 
 class UserInterface extends Component<Props, State> {
@@ -199,6 +201,7 @@ class UserInterface extends Component<Props, State> {
       selectMultipleImagesMode: false,
       sortedBy: null,
       isGrouped: false,
+      restrictLabels: false,
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
@@ -663,7 +666,11 @@ class UserInterface extends Component<Props, State> {
           <Card className={classes.smallButton} style={{ marginLeft: "14px" }}>
             <DefaultLabelsDialog
               labels={this.state.defaultLabels}
+              restrictLabels={this.state.restrictLabels}
               updateDefaultLabels={this.updateDefaultLabels}
+              updateRestrictLabels={(restrictLabels: boolean) => {
+                this.setState({ restrictLabels });
+              }}
             />
           </Card>
         </Box>

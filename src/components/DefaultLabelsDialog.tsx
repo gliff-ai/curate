@@ -16,6 +16,8 @@ import {
   Avatar,
   CardHeader,
   CardContent,
+  Checkbox,
+  FormControlLabel,
 } from "@material-ui/core";
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
@@ -89,7 +91,9 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   labels: string[];
+  restrictLabels: boolean;
   updateDefaultLabels: (labels: string[], sync: boolean) => void;
+  updateRestrictLabels: (restrictLabels: boolean) => void;
 }
 
 export function DefaultLabelsDialog(props: Props): React.ReactElement {
@@ -188,6 +192,18 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 variant="outlined"
               />
             ))}
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={props.restrictLabels}
+                  onChange={(event) => {
+                    props.updateRestrictLabels(event.target.checked);
+                  }}
+                />
+              }
+              label="Restrict collaborators to these labels"
+            />
             <div className={classes.container}>
               <BaseTextButton
                 id="confirm-default-labels"
