@@ -71,7 +71,8 @@ const useStyles = makeStyles({
 interface Props {
   id: string;
   labels: string[];
-  defaultLabels: string[] | null;
+  defaultLabels: string[];
+  restrictLabels: boolean;
   imageName: string;
   updateLabels: (newLables: string[]) => void;
 }
@@ -117,12 +118,16 @@ export function LabelsPopover(props: Props): ReactElement {
         }
       />
       <CardContent className={classes.cardContent}>
-        {props.defaultLabels ? (
+        {props.defaultLabels.length > 0 ? (
           <Autocomplete
             onChange={(event, value) => {
               setNewLabel(value);
             }}
+            onInputChange={(event, value) => {
+              setNewLabel(value);
+            }}
             options={props.defaultLabels}
+            freeSolo={!props.restrictLabels}
             renderInput={(params) => <TextField {...params} label="Label" />}
           />
         ) : (
