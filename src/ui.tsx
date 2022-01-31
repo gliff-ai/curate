@@ -953,6 +953,11 @@ class UserInterface extends Component<Props, State> {
                             id={mitem.id as string}
                             imageName={mitem.imageName as string}
                             labels={mitem.imageLabels as string[]}
+                            defaultLabels={
+                              this.state.restrictLabels
+                                ? this.state.defaultLabels
+                                : null
+                            }
                             updateLabels={this.updateLabels(itemIndex)}
                           />
                         </div>

@@ -11,9 +11,11 @@ import {
   Avatar,
   Typography,
   IconButton,
+  TextField,
 } from "@material-ui/core";
 import { theme, BasePopover, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
+import { Autocomplete } from "@material-ui/lab";
 
 const useStyles = makeStyles({
   cross: {
@@ -69,6 +71,7 @@ const useStyles = makeStyles({
 interface Props {
   id: string;
   labels: string[];
+  defaultLabels: string[] | null;
   imageName: string;
   updateLabels: (newLables: string[]) => void;
 }
@@ -114,16 +117,27 @@ export function LabelsPopover(props: Props): ReactElement {
         }
       />
       <CardContent className={classes.cardContent}>
-        <InputBase
-          key={`input-${props.id}`}
-          placeholder="New label"
-          type="text"
-          value={newLabel}
-          onChange={handleNewLabelChange}
-          inputProps={{
-            className: classes.input,
-          }}
-        />
+        {props.defaultLabels ? (
+          <Autocomplete
+            onChange={(event, value) => {
+              setNewLabel(value);
+            }}
+            options={props.defaultLabels}
+            renderInput={(params) => <TextField {...params} label="Label" />}
+          />
+        ) : (
+          <InputBase
+            key={`input-${props.id}`}
+            placeholder="New label"
+            type="text"
+            value={newLabel}
+            onChange={handleNewLabelChange}
+            inputProps={{
+              className: classes.input,
+            }}
+          />
+        )}
+
         <IconButton
           aria-label="add-label"
           key={`button-add-${props.id}`}
