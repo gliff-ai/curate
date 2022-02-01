@@ -154,6 +154,11 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               type="text"
               value={inputString}
               onChange={handleNewLabelChange}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleAddLabel(inputString)();
+                }
+              }}
               inputProps={{
                 className: classes.input,
               }}

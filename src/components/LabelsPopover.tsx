@@ -128,7 +128,18 @@ export function LabelsPopover(props: Props): ReactElement {
             }}
             options={props.defaultLabels}
             freeSolo={!props.restrictLabels}
-            renderInput={(params) => <TextField {...params} label="Label" />}
+            value={newLabel}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Label"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddLabel(newLabel)();
+                  }
+                }}
+              />
+            )}
           />
         ) : (
           <InputBase
