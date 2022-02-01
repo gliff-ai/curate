@@ -162,6 +162,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               inputProps={{
                 className: classes.input,
               }}
+              autoFocus
             />
             <IconButton
               aria-label="add-label"

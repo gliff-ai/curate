@@ -138,6 +138,7 @@ export function LabelsPopover(props: Props): ReactElement {
                     handleAddLabel(newLabel)();
                   }
                 }}
+                autoFocus
               />
             )}
           />
@@ -148,9 +149,15 @@ export function LabelsPopover(props: Props): ReactElement {
             type="text"
             value={newLabel}
             onChange={handleNewLabelChange}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleAddLabel(newLabel)();
+              }
+            }}
             inputProps={{
               className: classes.input,
             }}
+            autoFocus
           />
         )}
 
