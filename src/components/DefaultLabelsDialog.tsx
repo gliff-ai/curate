@@ -209,6 +209,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 />
               }
               label="Restrict collaborators to these labels"
+              style={{ marginTop: "8px" }}
             />
             <div className={classes.container}>
               <BaseTextButton

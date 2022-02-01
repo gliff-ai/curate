@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     right: "10px",
     color: theme.palette.text.primary,
   },
-  addButton: { position: "absolute", right: "10px" },
+  addButton: { position: "absolute", right: "10px", top: "60px" },
   cardContent: {
     padding: "15px",
     paddingTop: "10px",
@@ -139,6 +139,7 @@ export function LabelsPopover(props: Props): ReactElement {
                   }
                 }}
                 autoFocus
+                className={classes.input}
               />
             )}
           />
