@@ -3,10 +3,8 @@ module.exports = [{
   url: 'http://localhost:3000',
   waitForSelector: '#large-thumbnail',
 
-
-
   additionalSnapshots: [{
-    suffix: 'large-thumbnail',
+    suffix: '-large-thumbnail',
     execute() {
     document.querySelector('#large-thumbnail').click() 
 
@@ -14,21 +12,12 @@ module.exports = [{
   },
 
   {
-    suffix: 'medium-thumbnail',
+    suffix: '-medium-thumbnail',
     execute() {
     document.querySelector('#medium-thumbnail').click() 
     }
 },
-  {
-    suffix: 'small-thumbnail',
-    execute() {
-    document.querySelector('#small-thumbnail').click() 
-    }
-  },
 ],},
-
-
-
 
 {
   name: 'Curate Select',
@@ -39,7 +28,6 @@ execute() {
     },
 },
 
-
 {
   name: 'Curate Image',
   url: 'http://localhost:3000',
@@ -47,7 +35,6 @@ execute() {
  execute() {
     document.querySelector('#images').click()
 },},
-
 
 {
   name: 'Curate Sort',
@@ -58,9 +45,8 @@ execute() {
     }
 },
 
-
 {
-  name: 'Curate Image',
+  name: 'Curate Assign Image',
   url: 'http://localhost:3000',
   waitForSelector: '#large-thumbnail',
     execute() {
@@ -68,19 +54,8 @@ execute() {
     }
 },
 
-
 {
-  name: 'Curate Image',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
-   execute() {
-    document.querySelector('#update-assignees').click() 
-    }
-},
-   
-
-{
-  name: 'Curate Image',
+  name: 'Curate Add Label',
   url: 'http://localhost:3000',
   waitForSelector: '#large-thumbnail',
      execute() {
@@ -89,20 +64,11 @@ execute() {
 },
 
 {
-  name: 'Curate Image',
+  name: 'Curate Metadata Key',
   url: 'http://localhost:3000',
   waitForSelector: '#large-thumbnail',
     execute() {
     document.querySelector('#combobox-metadata-key').click() 
     }
 },
-
- 
-{
-  name: 'Curate Image',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
-     execute() {
-    document.querySelector('#assign').click() 
-    }
-}]
+]
