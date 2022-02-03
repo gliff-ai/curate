@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState, ReactElement } from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import {
   Accordion,
@@ -54,6 +54,7 @@ const useStyles = makeStyles({
   paper: {
     borderRadius: "inherit",
     height: "49px",
+    minHeight: "49px !important",
     backgroundColor: (accordionOpened) =>
       accordionOpened
         ? theme.palette.primary.main
@@ -187,7 +188,8 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                 onClick={selectAll}
                 onMouseOver={() => setInfoOnHover("Select all labels")}
                 onMouseOut={() => setInfoOnHover("")}
-                size="large">
+                size="large"
+              >
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
@@ -201,7 +203,8 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                 onClick={() => setLabels([])}
                 onMouseOver={() => setInfoOnHover("Deselect all labels")}
                 onMouseOut={() => setInfoOnHover("")}
-                size="large">
+                size="large"
+              >
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}
@@ -216,7 +219,8 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                   setInfoOnHover("Select all unlabelled images")
                 }
                 onMouseOut={() => setInfoOnHover("")}
-                size="large">
+                size="large"
+              >
                 <Avatar variant="circular">
                   <SVG
                     className={classes.svgLarge}

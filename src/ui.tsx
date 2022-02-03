@@ -76,6 +76,10 @@ const styles = () => ({
     marginBottom: "auto",
     marginLeft: "20px",
   },
+  assigneeDialog: {
+    padding: 0,
+    justifyContent: "center",
+  },
   uploadButton: {
     bottom: "18px",
     right: "18px",
@@ -677,7 +681,7 @@ class UserInterface extends Component<Props, State> {
             style={{ fontWeight: 500 }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
           {this.isOwnerOrMember() && this.props.profiles && (
-            <ListItem style={{ padding: 0 }}>
+            <ListItem className={classes.assigneeDialog}>
               <AssigneesDialog
                 profiles={this.props.profiles}
                 selectedImagesUids={this.state.selectedImagesUid}
