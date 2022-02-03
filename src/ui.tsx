@@ -80,7 +80,7 @@ const styles = () => ({
     padding: "0px !important",
     justifyContent: "center",
     width: "280px !important",
-    border: "none",
+    border: "none !important",
   },
   uploadButton: {
     bottom: "18px",
