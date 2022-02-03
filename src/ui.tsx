@@ -136,7 +136,7 @@ interface Props extends WithStyles<typeof styles> {
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
   defaultLabels?: string[];
-  saveDefaultLabelsCallback?: (newLabels: string[]) => void;
+  saveDefaultLabelsCallback?: (newLabels: string[], restrictLabels: boolean) => void;
   saveAssigneesCallback?: (
     imageUid: string[],
     newAssignees: string[][]
