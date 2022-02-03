@@ -77,8 +77,9 @@ const styles = () => ({
     marginLeft: "20px",
   },
   assigneeDialog: {
-    padding: 0,
+    padding: "0px !important",
     justifyContent: "center",
+    width: "280px ",
   },
   uploadButton: {
     bottom: "18px",
@@ -674,7 +675,7 @@ class UserInterface extends Component<Props, State> {
       <Card className={classes.deleteImageCard}>
         <List
           component="div"
-          style={{ display: "flex", justifyContent: "center" }}
+          style={{ display: "flex", justifyContent: "left" }}
         >
           <ListItem
             className={classes.infoSelection}
