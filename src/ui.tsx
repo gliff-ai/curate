@@ -79,7 +79,8 @@ const styles = () => ({
   assigneeDialog: {
     padding: "0px !important",
     justifyContent: "center",
-    width: "280px ",
+    width: "280px !important",
+    border: "none",
   },
   uploadButton: {
     bottom: "18px",
@@ -673,13 +674,10 @@ class UserInterface extends Component<Props, State> {
 
     const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
       <Card className={classes.deleteImageCard}>
-        <List
-          component="div"
-          style={{ display: "flex", justifyContent: "left" }}
-        >
+        <List component="div" style={{ display: "flex" }}>
           <ListItem
             className={classes.infoSelection}
-            style={{ fontWeight: 500 }}
+            style={{ fontWeight: 500, justifyContent: "left" }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
           {this.isOwnerOrMember() && this.props.profiles && (
             <ListItem className={classes.assigneeDialog}>
