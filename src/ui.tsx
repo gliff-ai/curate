@@ -669,7 +669,7 @@ class UserInterface extends Component<Props, State> {
               />
             </Card>
           )}
-          {this.props.userAccess === UserAccess.Collaborator && (
+          {this.props.userAccess !== UserAccess.Collaborator && (
             <Card
               className={classes.smallButton}
               style={{ marginLeft: "14px" }}
