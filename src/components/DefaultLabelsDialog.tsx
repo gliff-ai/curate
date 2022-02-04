@@ -103,7 +103,6 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [inputString, setInputString] = useState<string>("");
-  const [checkboxState, setCheckboxState] = useState<boolean>(false);
   const [oldLabels, setOldLabels] = useState<string[]>([]);
 
   const handleClose = () => {
@@ -118,7 +117,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
     if (props.labels.includes(label)) return;
     props.updateDefaultLabels(
       props.labels.concat([label]),
-      checkboxState,
+      props.restrictLabels,
       false
     );
     setInputString("");
@@ -127,7 +126,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   const handleDeleteLabel = (label: string) => (): void => {
     const oldLabels: string[] = props.labels;
     oldLabels.splice(oldLabels.indexOf(label), 1);
-    props.updateDefaultLabels(oldLabels, checkboxState, false);
+    props.updateDefaultLabels(oldLabels, props.restrictLabels, false);
   };
 
   return (
@@ -212,7 +211,11 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 <Checkbox
                   checked={props.restrictLabels}
                   onChange={(event) => {
-                    setCheckboxState(event.target.checked);
+                    props.updateDefaultLabels(
+                      props.labels,
+                      !props.restrictLabels,
+                      false
+                    );
                   }}
                 />
               }
@@ -224,7 +227,11 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 id="confirm-default-labels"
                 text="Confirm"
                 onClick={() => {
-                  props.updateDefaultLabels(props.labels, checkboxState, true);
+                  props.updateDefaultLabels(
+                    props.labels,
+                    props.restrictLabels,
+                    true
+                  );
                   handleClose();
                 }}
               />
@@ -232,7 +239,11 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 id="cancel-default=labels"
                 text="Cancel"
                 onClick={() => {
-                  props.updateDefaultLabels(oldLabels, checkboxState, false);
+                  props.updateDefaultLabels(
+                    oldLabels,
+                    props.restrictLabels,
+                    false
+                  );
                   handleClose();
                 }}
               />
