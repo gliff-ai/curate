@@ -669,13 +669,18 @@ class UserInterface extends Component<Props, State> {
               />
             </Card>
           )}
-          <Card className={classes.smallButton} style={{ marginLeft: "14px" }}>
-            <DefaultLabelsDialog
-              labels={this.state.defaultLabels}
-              restrictLabels={this.state.restrictLabels}
-              updateDefaultLabels={this.updateDefaultLabels}
-            />
-          </Card>
+          {this.props.userAccess === UserAccess.Collaborator && (
+            <Card
+              className={classes.smallButton}
+              style={{ marginLeft: "14px" }}
+            >
+              <DefaultLabelsDialog
+                labels={this.state.defaultLabels}
+                restrictLabels={this.state.restrictLabels}
+                updateDefaultLabels={this.updateDefaultLabels}
+              />
+            </Card>
+          )}
         </Box>
       </>
     );
