@@ -136,7 +136,10 @@ interface Props extends WithStyles<typeof styles> {
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
   defaultLabels?: string[];
-  saveDefaultLabelsCallback?: (newLabels: string[], restrictLabels: boolean) => void;
+  saveDefaultLabelsCallback?: (
+    newLabels: string[],
+    restrictLabels: boolean
+  ) => void;
   saveAssigneesCallback?: (
     imageUid: string[],
     newAssignees: string[][]
@@ -226,6 +229,7 @@ class UserInterface extends Component<Props, State> {
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
         imageLabels: this.getImageLabels(this.props.metadata),
         defaultLabels: this.props.defaultLabels || this.state.defaultLabels,
+        restrictLabels: this.props.restrictLabels,
       });
     }
   };
@@ -510,10 +514,14 @@ class UserInterface extends Component<Props, State> {
       });
     };
 
-  updateDefaultLabels = (newLabels: string[], sync = false) => {
-    this.setState({ defaultLabels: newLabels });
+  updateDefaultLabels = (
+    newLabels: string[],
+    restrictLabels: boolean,
+    sync = false
+  ) => {
+    this.setState({ defaultLabels: newLabels, restrictLabels });
     if (sync && this.props.saveDefaultLabelsCallback) {
-      this.props.saveDefaultLabelsCallback(newLabels);
+      this.props.saveDefaultLabelsCallback(newLabels, restrictLabels);
     }
   };
 
@@ -668,9 +676,6 @@ class UserInterface extends Component<Props, State> {
               labels={this.state.defaultLabels}
               restrictLabels={this.state.restrictLabels}
               updateDefaultLabels={this.updateDefaultLabels}
-              updateRestrictLabels={(restrictLabels: boolean) => {
-                this.setState({ restrictLabels });
-              }}
             />
           </Card>
         </Box>
