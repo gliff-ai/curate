@@ -217,10 +217,8 @@ class UserInterface extends Component<Props, State> {
   /* eslint-disable react/no-did-update-set-state */
   // TODO: remove state.metadata, just use props.metadata
   componentDidUpdate = (prevProps: Props): void => {
-    if (
-      JSON.stringify(prevProps.metadata) !== JSON.stringify(this.props.metadata)
-    ) {
-      if (prevProps.metadata.length === 0) {
+    if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
+      if (this.props.metadata.length > 0) {
         this.setState({
           metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
         });
