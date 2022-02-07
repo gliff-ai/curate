@@ -10,15 +10,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "npx vite build -c vite.config.lib.ts && tsc --emitDeclarationOnly --outDir dist",
-    "watch": "npx vite build -c vite.config.lib.ts --watch",
+    "build": "npx vite build -c vite.config.lib.ts && tsc --emitDeclarationOnly --outDir dist && tsc-alias -p tsconfig.json && npm run build:patch",      "watch": "npx vite build -c vite.config.lib.ts --watch",
     "format": "npx --no-install prettier --write src/*.ts*",
     "prettier": "npx --no-install prettier -c src/*.ts*",
     "lint": "npm run lint:ts && npm run prettier",
     "lint:ts": "npx --no-install eslint src/*.ts*",
     "serve": "vite",
     "build:example": "vite build",
-    "test": "jest --coverage --passWithNoTests"
+    "test": "jest --coverage --passWithNoTests",
+    "build:patch": "sed -i 's/const generateClassName$1 = createGenerateClassName();/const generateClassName$1 = createGenerateClassName({seed:\"\",disableGlobal:true,productionPrefix:\"jss-curate-\"});/g' dist/index.es.js"
   },
   "license": "AGPL-3.0-only",
   "devDependencies": {
@@ -26,7 +26,6 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@gliff-ai/eslint-config": "^0.2.1",
-    "@gliff-ai/style": "^8.0.0",
     "@mui/icons-material": "^5.3.0",
     "@mui/material": "^5.3.0",
     "@mui/styles": "^5.3.0",
@@ -53,7 +52,6 @@
   "peerDependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
-    "@gliff-ai/style": "^8.0.0",
     "@mui/icons-material": "^5.3.0",
     "@mui/material": "^5.3.0",
     "@mui/styles": "^5.3.0",
@@ -62,6 +60,7 @@
     "react-dom": "^17.0.1"
   },
   "dependencies": {
+    "@gliff-ai/style": "^8.1.4",
     "@gliff-ai/upload": "^0.3.2",
     "react-inlinesvg": "^2.3.0"
   }
