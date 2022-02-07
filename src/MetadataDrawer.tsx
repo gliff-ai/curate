@@ -9,8 +9,8 @@ import {
   Card,
   Avatar,
   Box,
-  makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import { theme, HtmlTooltip, icons } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/interfaces";
@@ -156,7 +156,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                 sethover(true);
               }}
             >
-              <IconButton onClick={props.handleMetadataHide}>
+              <IconButton onClick={props.handleMetadataHide} size="large">
                 <SVG
                   src={icons.removeLabel}
                   className={classes.svgSmall}

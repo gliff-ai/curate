@@ -1,7 +1,7 @@
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   InputBase,
   Chip,
@@ -11,7 +11,7 @@ import {
   Avatar,
   Typography,
   IconButton,
-} from "@material-ui/core";
+} from "@mui/material";
 import { theme, BasePopover, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 
@@ -102,7 +102,7 @@ export function LabelsPopover(props: Props): ReactElement {
         key={`button-close-${props.id}`}
         className={classes.cross}
         onClick={() => setClose((close) => close + 1)}
-      >
+        size="large">
         <SVG className={classes.iconSize} src={icons.removeLabel} />
       </IconButton>
       <CardHeader
@@ -129,7 +129,7 @@ export function LabelsPopover(props: Props): ReactElement {
           key={`button-add-${props.id}`}
           className={classes.addButton}
           onClick={handleAddLabel(newLabel)}
-        >
+          size="large">
           <SVG
             className={classes.iconSize}
             src={icons.add}

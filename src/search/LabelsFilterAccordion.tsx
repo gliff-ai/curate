@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState, ReactElement } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import {
   Accordion,
@@ -11,7 +11,7 @@ import {
   ListItemText,
   IconButton,
   Avatar,
-} from "@material-ui/core";
+} from "@mui/material";
 import { theme, icons } from "@gliff-ai/style";
 
 const useStyles = makeStyles({
@@ -54,6 +54,7 @@ const useStyles = makeStyles({
   paper: {
     borderRadius: "inherit",
     height: "49px",
+    minHeight: "49px !important",
     backgroundColor: (accordionOpened) =>
       accordionOpened
         ? theme.palette.primary.main
@@ -187,6 +188,7 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                 onClick={selectAll}
                 onMouseOver={() => setInfoOnHover("Select all labels")}
                 onMouseOut={() => setInfoOnHover("")}
+                size="large"
               >
                 <Avatar variant="circular">
                   <SVG
@@ -201,6 +203,7 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                 onClick={() => setLabels([])}
                 onMouseOver={() => setInfoOnHover("Deselect all labels")}
                 onMouseOut={() => setInfoOnHover("")}
+                size="large"
               >
                 <Avatar variant="circular">
                   <SVG
@@ -216,6 +219,7 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                   setInfoOnHover("Select all unlabelled images")
                 }
                 onMouseOut={() => setInfoOnHover("")}
+                size="large"
               >
                 <Avatar variant="circular">
                   <SVG
