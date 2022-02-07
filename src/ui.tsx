@@ -163,7 +163,6 @@ interface State {
   metadata: Metadata;
   metadataKeys: string[];
   activeFilters: Filter[];
-  imageLabels: string[];
   defaultLabels: string[];
   expanded: string | boolean;
   openImageUid: string; // Uid for the image whose metadata is shown in the drawer
@@ -193,7 +192,6 @@ class UserInterface extends Component<Props, State> {
       metadataKeys: this.props.metadata?.length
         ? this.getMetadataKeys(this.props.metadata[0])
         : [],
-      imageLabels: this.getImageLabels(this.props.metadata),
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
       openImageUid: null,
@@ -215,7 +213,6 @@ class UserInterface extends Component<Props, State> {
   componentDidMount(): void {}
 
   /* eslint-disable react/no-did-update-set-state */
-  // TODO: remove state.metadata, just use props.metadata
   componentDidUpdate = (prevProps: Props): void => {
     if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
       if (this.props.metadata.length > 0) {
@@ -225,7 +222,6 @@ class UserInterface extends Component<Props, State> {
       }
       this.setState({
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
-        imageLabels: this.getImageLabels(this.props.metadata),
         defaultLabels: this.props.defaultLabels || this.state.defaultLabels,
         restrictLabels: this.props.restrictLabels,
       });
@@ -464,7 +460,6 @@ class UserInterface extends Component<Props, State> {
         return {
           selectedImagesUid: [],
           metadata,
-          imageLabels: this.getImageLabels(metadata),
         };
       });
     }
@@ -507,7 +502,6 @@ class UserInterface extends Component<Props, State> {
         }
         return {
           metadata: state.metadata,
-          imageLabels: this.getImageLabels(state.metadata),
         };
       });
     };
@@ -806,7 +800,7 @@ class UserInterface extends Component<Props, State> {
                       handleToolboxChange={this.handleToolboxChange(
                         "labels-filter-toolbox"
                       )}
-                      allLabels={this.state.imageLabels}
+                      allLabels={this.getImageLabels(this.props.metadata)}
                       callbackOnLabelSelection={this.handleOnLabelSelection}
                       callbackOnAccordionExpanded={this.resetSearchFilters}
                     />
