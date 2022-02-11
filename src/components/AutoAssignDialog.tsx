@@ -4,15 +4,15 @@ import {
   Card,
   Dialog,
   Typography,
-  makeStyles,
   InputLabel,
   MenuItem,
   FormControl,
   Select,
   IconButton,
   Button,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { Alert } from "@mui/material";
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
@@ -104,21 +104,21 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   const [message, setMessage] = useState<Message | null>(null);
 
   function onChangeOfImageSelectionType(
-    event: React.ChangeEvent<{ value: SelectionType }>
+    event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setImageSelectionType(event.target.value);
+    setImageSelectionType(Number(event.target.value));
   }
 
   function onChangeOfAssigneesPerImage(
-    event: React.ChangeEvent<{ value: number }>
+    event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setAssigneesPerImage(event.target.value);
+    setAssigneesPerImage(Number(event.target.value));
   }
 
   function onChangeOfAssignmentType(
-    event: React.ChangeEvent<{ value: AssignmentType }>
+    event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setAssignmentType(event.target.value);
+    setAssignmentType(Number(event.target.value));
   }
 
   function handleClose() {
@@ -434,6 +434,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         <Select
           value={imageSelectionType}
           onChange={onChangeOfImageSelectionType}
+          variant="standard"
         >
           <MenuItem value={SelectionType.All}>All</MenuItem>
           {props.selectedImagesUids.length && (
@@ -445,19 +446,26 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       {info && info.hasAssignedImages && (
         <FormControl>
           <InputLabel>Type of assignment:</InputLabel>
-          <Select value={assignmentType} onChange={onChangeOfAssignmentType}>
+          <Select
+            value={assignmentType}
+            onChange={onChangeOfAssignmentType}
+            variant="standard"
+          >
             <MenuItem value={AssignmentType.New}>New</MenuItem>
 
             <MenuItem value={AssignmentType.Integrative}>Integrative</MenuItem>
           </Select>
         </FormControl>
       )}
+      <br />
+
       {/* select number of assignees per image */}
       <FormControl>
         <InputLabel>Assignees per image:</InputLabel>
         <Select
           value={assigneesPerImage}
           onChange={onChangeOfAssigneesPerImage}
+          variant="standard"
         >
           {options.map((option) => (
             <MenuItem key={`${option}-assignees`} value={option}>
@@ -496,7 +504,11 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
             <Typography className={classes.topography}>
               Auto-assign images
             </Typography>
-            <IconButton className={classes.closeButton} onClick={handleClose}>
+            <IconButton
+              className={classes.closeButton}
+              onClick={handleClose}
+              size="small"
+            >
               <SVG src={icons.removeLabel} className={classes.closeIcon} />
             </IconButton>
           </Paper>

@@ -17,10 +17,13 @@ export default defineConfig({
         "react",
         "react-dom",
         "react-router-dom",
-        "@material-ui/core",
-        "@material-ui/icons",
-        "@material-ui/lab",
-        "@gliff-ai/style"
+        "@mui/material",
+        "@mui/icons-material",
+        "@mui/styles",
+        "@mui/system",
+        "@emotion/react",
+        "@emotion/styled",
+        "@gliff-ai/style",
       ],
       output: {
         globals: {},

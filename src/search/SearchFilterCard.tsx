@@ -1,10 +1,11 @@
 import { ReactElement } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
-import { List, ListItem, ListItemText, Card } from "@material-ui/core";
-import { Clear } from "@material-ui/icons";
+import makeStyles from "@mui/styles/makeStyles";
+import { List, ListItem, ListItemText, Card } from "@mui/material";
+import { Clear } from "@mui/icons-material";
+import { theme } from "@gliff-ai/style";
 import { Filter } from "@/interfaces";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
   card: {
     width: "100%",
     height: "auto",

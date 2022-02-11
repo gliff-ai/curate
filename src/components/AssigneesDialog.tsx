@@ -4,7 +4,6 @@ import {
   Card,
   Dialog,
   Typography,
-  makeStyles,
   Input,
   InputLabel,
   MenuItem,
@@ -12,7 +11,9 @@ import {
   Select,
   Chip,
   IconButton,
-} from "@material-ui/core";
+  SelectChangeEvent,
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, icons, theme } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
@@ -55,21 +56,10 @@ export function AssigneesDialog(props: Props): React.ReactElement {
   const [open, setOpen] = useState<boolean>(false);
   const [assignees, setAssignees] = useState<string[]>([]);
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setAssignees(event.target.value as string[]);
-  };
-
-  const handleChangeMultiple = (
-    event: React.ChangeEvent<{ value: unknown }>
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string[]>
   ) => {
-    const { options } = event.target as HTMLSelectElement;
-    const value: string[] = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setAssignees(value);
+    setAssignees(event.target.value as string[]);
   };
 
   const isEnabled = (): boolean =>
@@ -148,7 +138,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             <Typography className={classes.topography}>
               Assign selected images
             </Typography>
-            <IconButton onClick={() => setOpen(false)}>
+            <IconButton onClick={() => setOpen(false)} size="large">
               <SVG src={icons.removeLabel} className={classes.closeIcon} />
             </IconButton>
           </Paper>
