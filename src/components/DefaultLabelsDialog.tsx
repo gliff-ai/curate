@@ -1,15 +1,9 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import {
-  Paper,
   Card,
   Dialog,
   Typography,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
   IconButton,
-  Button,
   InputBase,
   Chip,
   Avatar,
@@ -24,8 +18,6 @@ import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 
 const useStyles = makeStyles({
-  paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
-  paperBody: { margin: "15px", width: "450px" },
   container: {
     textAlign: "center",
     marginTop: "20px",
