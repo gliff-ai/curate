@@ -15,6 +15,9 @@ import {
 import { theme, icons } from "@gliff-ai/style";
 
 const useStyles = makeStyles({
+  accordion: {
+    borderRadius: (accordionOpened) => (accordionOpened ? "9px 9px 0 0" : 0),
+  },
   title: {
     paddingLeft: theme.spacing(1),
   },
@@ -86,10 +89,10 @@ interface Props {
 }
 
 export function LabelsFilterAccordion(props: Props): ReactElement {
-  const accordionOpened = props.expanded;
-  const classes = useStyles(accordionOpened);
   const [labels, setLabels] = useState<string[] | null>([]);
   const [infoOnHover, setInfoOnHover] = useState("");
+
+  const classes = useStyles(props.expanded);
 
   const toggleLabelSelection = (label: string) => (): void => {
     // Add label to labels if it is not included, otherwise remove it.
@@ -133,107 +136,104 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
   }, [props.expanded]);
 
   return (
-    <div>
-      <Accordion expanded={props.expanded} onChange={props.handleToolboxChange}>
-        <AccordionSummary
-          expandIcon={
-            <Avatar className={classes.avatar}>
-              <SVG
-                className={`${classes.svgSmall} ${classes.rotateIcon}`}
-                src={icons.previousNext}
-                fill={accordionOpened ? theme.palette.primary.main : null}
-              />
-            </Avatar>
-          }
-          id="labels-filter-toolbox"
-          className={classes.paper}
-        >
-          <Typography className={classes.accordionTypography}>
-            Annotation Labels
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails className={classes.accordionDetails}>
-          <List component="div" disablePadding className={classes.labelsList}>
-            {props.allLabels &&
-              props.allLabels.map((label) => (
-                <ListItem
-                  key={label}
-                  dense
-                  button
-                  onDoubleClick={SelectDeselectAllButOne(label)}
-                  onClick={toggleLabelSelection(label)}
-                  className={classes.labelsListItem}
-                >
-                  {labels && labels.includes(label) ? (
-                    <>
-                      <SVG
-                        src={icons.selectedChip}
-                        className={classes.labelIcon}
-                      />
-                    </>
-                  ) : (
+    <Accordion
+      className={classes.accordion}
+      expanded={props.expanded}
+      onChange={props.handleToolboxChange}
+    >
+      <AccordionSummary
+        expandIcon={
+          <Avatar className={classes.avatar}>
+            <SVG
+              className={`${classes.svgSmall} ${classes.rotateIcon}`}
+              src={icons.previousNext}
+              fill={props.expanded ? theme.palette.primary.main : null}
+            />
+          </Avatar>
+        }
+        id="labels-filter-toolbox"
+        className={classes.paper}
+      >
+        <Typography className={classes.accordionTypography}>
+          Annotation Labels
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails className={classes.accordionDetails}>
+        <List component="div" disablePadding className={classes.labelsList}>
+          {props.allLabels &&
+            props.allLabels.map((label) => (
+              <ListItem
+                key={label}
+                dense
+                button
+                onDoubleClick={SelectDeselectAllButOne(label)}
+                onClick={toggleLabelSelection(label)}
+                className={classes.labelsListItem}
+              >
+                {labels && labels.includes(label) ? (
+                  <>
                     <SVG
-                      src={icons.notSelectedChip}
+                      src={icons.selectedChip}
                       className={classes.labelIcon}
                     />
-                  )}
-                  <ListItemText primary={label} className={classes.labelText} />
-                </ListItem>
-              ))}
-          </List>
-          <List component="span" disablePadding className={classes.buttonsList}>
-            <ListItem className={classes.buttonsListItem}>
-              <IconButton
-                className={classes.iconButton}
-                onClick={selectAll}
-                onMouseOver={() => setInfoOnHover("Select all labels")}
-                onMouseOut={() => setInfoOnHover("")}
-                size="large"
-              >
-                <Avatar variant="circular">
+                  </>
+                ) : (
                   <SVG
-                    className={classes.svgLarge}
-                    src={icons.selectAllLabels}
+                    src={icons.notSelectedChip}
+                    className={classes.labelIcon}
                   />
-                </Avatar>
-              </IconButton>
+                )}
+                <ListItemText primary={label} className={classes.labelText} />
+              </ListItem>
+            ))}
+        </List>
+        <List component="span" disablePadding className={classes.buttonsList}>
+          <ListItem className={classes.buttonsListItem}>
+            <IconButton
+              className={classes.iconButton}
+              onClick={selectAll}
+              onMouseOver={() => setInfoOnHover("Select all labels")}
+              onMouseOut={() => setInfoOnHover("")}
+              size="large"
+            >
+              <Avatar variant="circular">
+                <SVG className={classes.svgLarge} src={icons.selectAllLabels} />
+              </Avatar>
+            </IconButton>
 
-              <IconButton
-                className={classes.iconButton}
-                onClick={() => setLabels([])}
-                onMouseOver={() => setInfoOnHover("Deselect all labels")}
-                onMouseOut={() => setInfoOnHover("")}
-                size="large"
-              >
-                <Avatar variant="circular">
-                  <SVG
-                    className={classes.svgLarge}
-                    src={icons.deselectAllLabels}
-                  />
-                </Avatar>
-              </IconButton>
-              <IconButton
-                className={classes.iconButton}
-                onClick={() => setLabels(null)}
-                onMouseOver={() =>
-                  setInfoOnHover("Select all unlabelled images")
-                }
-                onMouseOut={() => setInfoOnHover("")}
-                size="large"
-              >
-                <Avatar variant="circular">
-                  <SVG
-                    className={classes.svgLarge}
-                    src={icons.displayUnlabelledImages}
-                    fill={labels === null ? theme.palette.primary.main : null}
-                  />
-                </Avatar>
-              </IconButton>
-            </ListItem>
-            <ListItem className={classes.infoOnHover}>{infoOnHover}</ListItem>
-          </List>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+            <IconButton
+              className={classes.iconButton}
+              onClick={() => setLabels([])}
+              onMouseOver={() => setInfoOnHover("Deselect all labels")}
+              onMouseOut={() => setInfoOnHover("")}
+              size="large"
+            >
+              <Avatar variant="circular">
+                <SVG
+                  className={classes.svgLarge}
+                  src={icons.deselectAllLabels}
+                />
+              </Avatar>
+            </IconButton>
+            <IconButton
+              className={classes.iconButton}
+              onClick={() => setLabels(null)}
+              onMouseOver={() => setInfoOnHover("Select all unlabelled images")}
+              onMouseOut={() => setInfoOnHover("")}
+              size="large"
+            >
+              <Avatar variant="circular">
+                <SVG
+                  className={classes.svgLarge}
+                  src={icons.displayUnlabelledImages}
+                  fill={labels === null ? theme.palette.primary.main : null}
+                />
+              </Avatar>
+            </IconButton>
+          </ListItem>
+          <ListItem className={classes.infoOnHover}>{infoOnHover}</ListItem>
+        </List>
+      </AccordionDetails>
+    </Accordion>
   );
 }
