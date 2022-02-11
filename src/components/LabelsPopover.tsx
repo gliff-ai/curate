@@ -93,7 +93,7 @@ export function LabelsPopover(props: Props): ReactElement {
   };
 
   const handleAddLabel = (label: string) => (): void => {
-    if (props.labels.includes(label)) return;
+    if (props.labels.includes(label) || label === "") return;
     const oldLabels: string[] = props.labels;
     oldLabels.push(label);
     props.updateLabels(oldLabels);
@@ -125,7 +125,9 @@ export function LabelsPopover(props: Props): ReactElement {
               setNewLabel(value);
             }}
             onInputChange={(event, value) => {
-              setNewLabel(value);
+              if (!props.restrictLabels) {
+                setNewLabel(value);
+              }
             }}
             options={props.defaultLabels}
             freeSolo={!props.restrictLabels}
