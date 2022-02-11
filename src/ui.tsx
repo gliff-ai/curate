@@ -241,11 +241,11 @@ class UserInterface extends Component<Props, State> {
           metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
         });
       }
-      this.setState({
+      this.setState((oldState) => ({
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
-        defaultLabels: this.props.defaultLabels || this.state.defaultLabels,
+        defaultLabels: this.props.defaultLabels || oldState.defaultLabels,
         restrictLabels: this.props.restrictLabels,
-      });
+      }));
     }
   };
 
@@ -531,7 +531,7 @@ class UserInterface extends Component<Props, State> {
     newLabels: string[],
     restrictLabels: boolean,
     sync = false
-  ) => {
+  ): void => {
     this.setState({ defaultLabels: newLabels, restrictLabels });
     if (sync && this.props.saveDefaultLabelsCallback) {
       this.props.saveDefaultLabelsCallback(newLabels, restrictLabels);
