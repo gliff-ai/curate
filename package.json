@@ -19,7 +19,7 @@
     "serve": "vite",
     "build:example": "vite build",
     "test": "jest --coverage --passWithNoTests",
-    "build:patch": "sed -i 's/const generateClassName$1 = createGenerateClassName();/const generateClassName$1 = createGenerateClassName({seed:\"\",disableGlobal:true,productionPrefix:\"jss-curate-\"});/g' dist/index.es.js"  
+    "build:patch": "sed -i 's/const generateClassName$1 = createGenerateClassName();/const generateClassName$1 = createGenerateClassName({seed:\"\",disableGlobal:true,productionPrefix:\"jss-curate-\"});/g' dist/index.es.js"
   },
   "license": "AGPL-3.0-only",
   "devDependencies": {
@@ -40,6 +40,7 @@
     "@types/resize-observer-browser": "^0.1.5",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.18.0",
+    "esbuild": "^0.14.21",
     "eslint": "^7.25.0",
     "history": "==5.0.1",
     "jest": "^27.0.3",
