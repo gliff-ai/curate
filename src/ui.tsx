@@ -52,7 +52,7 @@ import { Metadata, MetaItem, Filter } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 import { Profile } from "./components/interfaces";
-import { PluginsAccordion } from "./components/plugins";
+import { PluginObject, PluginsAccordion } from "./components/plugins";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -163,7 +163,7 @@ interface Props extends WithStyles<typeof styles> {
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
   setIsLoading?: (isLoading: boolean) => void;
   updateImagesCallback?: () => void;
-  plugins?: { [name: string]: any[] } | null;
+  plugins?: PluginObject | null;
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
 }
