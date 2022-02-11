@@ -108,11 +108,15 @@ export const PluginsAccordion = ({
     console.log("open docs");
   };
 
-  const runPlugin = async (plugin: Plugin) => {
+  const runPlugin = async (plugin: Plugin): Promise<void> => {
+    // TODO: remove this when plugin is updated
     if (plugin.name === "Geolocation Map") {
-      // TODO: remove this when plugin is updated
       try {
-        const response = await plugin.onClick(metadata);
+        const onClick = plugin.onClick as unknown as (
+          metadata: Metadata
+        ) => Promise<JSX.Element | null>;
+
+        const response = await onClick(metadata);
 
         if (response === null) {
           setError("No geolocation data found.");
@@ -149,26 +153,24 @@ export const PluginsAccordion = ({
     }
   };
 
-  const listPlugins = () => {
-    {
-      const pluginNames = Object.keys(plugins);
+  const getPluginButtons = (): JSX.Element[][] => {
+    const pluginNames = Object.keys(plugins);
 
-      return pluginNames.map((name) => {
-        const plugin = plugins[name];
+    return pluginNames.map((name) => {
+      const plugin = plugins[name];
 
-        return plugin.map((plugin) => (
-          <MenuItem
-            onClick={() => runPlugin(plugin)}
-            className={classes.menuItem}
-            dense
-          >
-            <Typography className={classes.truncate}>
-              {plugin.name}&nbsp;—&nbsp;{plugin.tooltip}
-            </Typography>
-          </MenuItem>
-        ));
-      });
-    }
+      return plugin.map((p) => (
+        <MenuItem
+          onClick={() => runPlugin(p)}
+          className={classes.menuItem}
+          dense
+        >
+          <Typography className={classes.truncate}>
+            {p.name}&nbsp;—&nbsp;{p.tooltip}
+          </Typography>
+        </MenuItem>
+      ));
+    });
   };
 
   return (
@@ -189,7 +191,7 @@ export const PluginsAccordion = ({
           <Typography className={classes.topography}>Plugins</Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordionDetails}>
-          <MenuList>{listPlugins()}</MenuList>
+          <MenuList>{getPluginButtons()}</MenuList>
           <Divider className={classes.divider} />
           <Paper elevation={0} square className={classes.paperFooter}>
             <SVG src={icons.betaStatus} width="auto" height="25px" />
@@ -224,7 +226,9 @@ export const PluginsAccordion = ({
         onClose={() => setError(null)}
         messageText={error}
       />
-      <PluginDialog children={dialogContent} setChildren={setDialogContent} />
+      <PluginDialog setChildren={setDialogContent}>
+        {dialogContent}
+      </PluginDialog>
     </>
   );
 };
