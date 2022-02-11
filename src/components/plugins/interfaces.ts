@@ -1,6 +1,6 @@
 import { Metadata } from "@/interfaces";
 
-interface Plugin {
+interface PluginElement {
   name: string;
   tooltip: string;
   onClick: (data: DataIn) => Promise<DataOut>;
@@ -18,6 +18,6 @@ interface DataOut {
   domElement?: JSX.Element | null;
 }
 
-type PluginObject = { [name: string]: Plugin[] };
+type PluginObject = { [name: string]: PluginElement[] };
 
-export type { Plugin, PluginObject };
+export type { PluginElement, PluginObject };

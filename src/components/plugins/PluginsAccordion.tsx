@@ -14,7 +14,7 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import { theme, icons, IconButton, WarningSnackbar } from "@gliff-ai/style";
-import type { Plugin, PluginObject } from "./interfaces";
+import type { PluginElement, PluginObject } from "./interfaces";
 import { Metadata } from "@/interfaces";
 import { PluginDialog } from "./PluginDialog";
 
@@ -108,7 +108,7 @@ export const PluginsAccordion = ({
     console.log("open docs");
   };
 
-  const runPlugin = async (plugin: Plugin): Promise<void> => {
+  const runPlugin = async (plugin: PluginElement): Promise<void> => {
     // TODO: remove this when plugin is updated
     if (plugin.name === "Geolocation Map") {
       try {

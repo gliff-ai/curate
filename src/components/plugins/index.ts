@@ -1,2 +1,2 @@
-export type { Plugin, PluginObject } from "./interfaces";
+export type { PluginElement, PluginObject } from "./interfaces";
 export { PluginsAccordion } from "./PluginsAccordion";
