@@ -33,8 +33,11 @@ const plugins = {
   "Example plug-in": [
     {
       name: "Example plug-in",
-      onClick: () => alert("Some plug-in action."),
       tooltip: "Short description",
+      onClick: (data = {}) => {
+        alert("Some plug-in action.");
+        return Promise.resolve({});
+      },
     },
   ],
 };
