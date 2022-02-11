@@ -4,7 +4,6 @@ import {
   Card,
   Dialog,
   Typography,
-  makeStyles,
   InputLabel,
   MenuItem,
   FormControl,
@@ -18,12 +17,13 @@ import {
   CardContent,
   Checkbox,
   FormControlLabel,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
   paperBody: { margin: "15px", width: "450px" },
   container: {
@@ -87,7 +87,7 @@ const useStyles = makeStyles(() => ({
     color: theme.palette.text.primary,
     height: "44px",
   },
-}));
+});
 
 interface Props {
   labels: string[];
