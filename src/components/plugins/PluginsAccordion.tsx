@@ -79,10 +79,10 @@ interface Props {
   expanded: boolean;
   handleToolboxChange: (event: ChangeEvent, isExpanded: boolean) => void;
   plugins: PluginObject | null;
-  isOwnerOrMember: boolean;
   metadata: Metadata;
   selectedImagesUid: string[];
   updateImagesCallback: () => void;
+  launchPluginSettingsCallback: (() => void) | null;
 }
 
 export const PluginsAccordion = ({
@@ -90,9 +90,9 @@ export const PluginsAccordion = ({
   plugins,
   handleToolboxChange,
   updateImagesCallback,
-  isOwnerOrMember,
   metadata,
   selectedImagesUid,
+  launchPluginSettingsCallback,
 }: Props): ReactElement | null => {
   const classes = useStyles(expanded);
   const [error, setError] = useState<string | null>(null);
@@ -100,16 +100,8 @@ export const PluginsAccordion = ({
 
   if (!plugins) return null;
 
-  const openSettings = () => {
-    console.log("open settings");
-  };
-
-  const openDocs = () => {
-    console.log("open docs");
-  };
-
   const runPlugin = async (plugin: PluginElement): Promise<void> => {
-    // TODO: remove this when plugin is updated
+    // TODO: delete when plug-in is updated
     if (plugin.name === "Geolocation Map") {
       try {
         const onClick = plugin.onClick as unknown as (
@@ -200,11 +192,11 @@ export const PluginsAccordion = ({
               orientation="horizontal"
               variant="text"
             >
-              {isOwnerOrMember && (
+              {launchPluginSettingsCallback && (
                 <IconButton
                   tooltip={{ name: "Settings" }}
                   icon={icons.cog}
-                  onClick={openSettings}
+                  onClick={launchPluginSettingsCallback}
                   fill={false}
                   tooltipPlacement="top"
                   size="small"
@@ -213,7 +205,9 @@ export const PluginsAccordion = ({
               <IconButton
                 tooltip={{ name: "Docs" }}
                 icon={icons.documentHelp}
-                onClick={openDocs}
+                onClick={() => {
+                  // TODO: Redirect to docs
+                }}
                 tooltipPlacement="top"
                 size="small"
               />

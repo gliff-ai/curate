@@ -166,6 +166,7 @@ interface Props extends WithStyles<typeof styles> {
   plugins?: PluginObject | null;
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
+  launchPluginSettingsCallback?: (() => void) | null;
 }
 
 interface State {
@@ -191,6 +192,7 @@ class UserInterface extends Component<Props, State> {
     plugins: null,
     profiles: null,
     userAccess: UserAccess.Collaborator,
+    launchPluginSettingsCallback: null,
   } as Pick<Props, "showAppBar">;
 
   constructor(props: Props) {
@@ -746,10 +748,12 @@ class UserInterface extends Component<Props, State> {
                           handleToolboxChange={this.handleToolboxChange(
                             "plugins-toolbox"
                           )}
-                          isOwnerOrMember={this.isOwnerOrMember()}
                           metadata={this.state.metadata}
                           selectedImagesUid={this.state.selectedImagesUid}
                           updateImagesCallback={this.props.updateImagesCallback}
+                          launchPluginSettingsCallback={
+                            this.props.launchPluginSettingsCallback
+                          }
                         />
                       )}
                     </>
