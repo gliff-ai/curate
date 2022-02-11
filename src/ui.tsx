@@ -52,7 +52,7 @@ import { Metadata, MetaItem, Filter } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 import { Profile } from "./components/interfaces";
-import { Plugin, PluginsAccordion } from "./components/plugins";
+import { PluginsAccordion } from "./components/plugins";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -820,6 +820,7 @@ class UserInterface extends Component<Props, State> {
                         onClick={() =>
                           this.setState((prevState) => ({
                             expanded: "plugins-toolbox",
+                            selectMultipleImagesMode: true, // to keep metadata drawer closed
                             showPluginsAccordion:
                               !prevState.showPluginsAccordion,
                           }))
