@@ -15,7 +15,7 @@ describe("labels assignment", () => {
         updateLabels={updateLabels}
         defaultLabels={[]}
         restrictLabels={false}
-        multiLabel={false}
+        multiLabel={true}
       />
     );
     fireEvent.click(screen.getByRole("button"));
