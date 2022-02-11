@@ -73,6 +73,7 @@ interface Props {
   labels: string[];
   defaultLabels: string[];
   restrictLabels: boolean;
+  multiLabel: boolean;
   imageName: string;
   updateLabels: (newLables: string[]) => void;
 }
@@ -93,7 +94,12 @@ export function LabelsPopover(props: Props): ReactElement {
   };
 
   const handleAddLabel = (label: string) => (): void => {
-    if (props.labels.includes(label) || label === "") return;
+    if (
+      props.labels.includes(label) ||
+      label === "" ||
+      (!props.multiLabel && props.labels.length > 0)
+    )
+      return;
     const oldLabels: string[] = props.labels;
     oldLabels.push(label);
     props.updateLabels(oldLabels);

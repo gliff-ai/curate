@@ -159,7 +159,8 @@ interface Props extends WithStyles<typeof styles> {
   defaultLabels?: string[];
   saveDefaultLabelsCallback?: (
     newLabels: string[],
-    restrictLabels: boolean
+    restrictLabels: boolean,
+    multiLabel: boolean
   ) => void;
   saveAssigneesCallback?: (
     imageUid: string[],
@@ -178,6 +179,7 @@ interface Props extends WithStyles<typeof styles> {
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
+  multiLabel?: boolean;
 }
 
 interface State {
@@ -194,6 +196,7 @@ interface State {
   sortedBy: string;
   isGrouped: boolean;
   restrictLabels: boolean;
+  multiLabel: boolean;
 }
 
 class UserInterface extends Component<Props, State> {
@@ -224,6 +227,7 @@ class UserInterface extends Component<Props, State> {
       sortedBy: null,
       isGrouped: false,
       restrictLabels: false,
+      multiLabel: true,
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
@@ -530,11 +534,16 @@ class UserInterface extends Component<Props, State> {
   updateDefaultLabels = (
     newLabels: string[],
     restrictLabels: boolean,
+    multiLabel: boolean,
     sync = false
   ): void => {
-    this.setState({ defaultLabels: newLabels, restrictLabels });
+    this.setState({ defaultLabels: newLabels, restrictLabels, multiLabel });
     if (sync && this.props.saveDefaultLabelsCallback) {
-      this.props.saveDefaultLabelsCallback(newLabels, restrictLabels);
+      this.props.saveDefaultLabelsCallback(
+        newLabels,
+        restrictLabels,
+        multiLabel
+      );
     }
   };
 
@@ -693,6 +702,7 @@ class UserInterface extends Component<Props, State> {
               <DefaultLabelsDialog
                 labels={this.state.defaultLabels}
                 restrictLabels={this.state.restrictLabels}
+                multiLabel={this.state.multiLabel}
                 updateDefaultLabels={this.updateDefaultLabels}
               />
             </Card>
@@ -995,6 +1005,7 @@ class UserInterface extends Component<Props, State> {
                               updateLabels={this.updateLabels(itemIndex)}
                               restrictLabels={this.state.restrictLabels}
                               defaultLabels={this.state.defaultLabels}
+                              multiLabel={this.state.multiLabel}
                             />
                           </div>
                         </Grid>

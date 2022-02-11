@@ -49,7 +49,7 @@ const useStyles = makeStyles({
   okButton: { position: "absolute", right: "10px", top: "75px" },
   input: {
     fontSize: 14,
-    width: "225px",
+    width: "325px",
     marginBottom: "20px",
     borderBottom: "solid 1px #dadde9",
   },
@@ -72,7 +72,7 @@ const useStyles = makeStyles({
   labelsCard: {
     borderRadius: "9px",
     backgroundColor: theme.palette.primary.light,
-    width: "300px",
+    width: "400px",
   },
   labelsCardHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -84,9 +84,11 @@ const useStyles = makeStyles({
 interface Props {
   labels: string[];
   restrictLabels: boolean;
+  multiLabel: boolean;
   updateDefaultLabels: (
     labels: string[],
     restrictLabels: boolean,
+    multiLabel: boolean,
     sync: boolean
   ) => void;
 }
@@ -96,6 +98,8 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   const [open, setOpen] = useState<boolean>(false);
   const [inputString, setInputString] = useState<string>("");
   const [oldLabels, setOldLabels] = useState<string[]>([]);
+  const [oldRestrictLabels, setOldRestrictLabels] = useState<boolean>(false);
+  const [oldMultiLabel, setOldMultiLabel] = useState<boolean>(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -110,6 +114,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
     props.updateDefaultLabels(
       props.labels.concat([label]),
       props.restrictLabels,
+      props.multiLabel,
       false
     );
     setInputString("");
@@ -118,7 +123,12 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   const handleDeleteLabel = (label: string) => (): void => {
     const oldLabels: string[] = props.labels;
     oldLabels.splice(oldLabels.indexOf(label), 1);
-    props.updateDefaultLabels(oldLabels, props.restrictLabels, false);
+    props.updateDefaultLabels(
+      oldLabels,
+      props.restrictLabels,
+      props.multiLabel,
+      false
+    );
   };
 
   return (
@@ -129,6 +139,8 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           setOpen(!open);
           // remember the original defaultLabels so we can revert if user hits Cancel:
           setOldLabels(props.labels);
+          setOldRestrictLabels(props.restrictLabels);
+          setOldMultiLabel(props.multiLabel);
         }}
         tooltipPlacement="top"
         id="set-default-labels"
@@ -206,12 +218,30 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                     props.updateDefaultLabels(
                       props.labels,
                       !props.restrictLabels,
+                      props.multiLabel,
                       false
                     );
                   }}
                 />
               }
               label="Restrict collaborators to these labels"
+              style={{ marginTop: "8px" }}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={props.multiLabel}
+                  onChange={(event) => {
+                    props.updateDefaultLabels(
+                      props.labels,
+                      props.restrictLabels,
+                      !props.multiLabel,
+                      false
+                    );
+                  }}
+                />
+              }
+              label="Allow multiple labels per image"
               style={{ marginTop: "8px" }}
             />
             <div className={classes.container}>
@@ -222,6 +252,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   props.updateDefaultLabels(
                     props.labels,
                     props.restrictLabels,
+                    props.multiLabel,
                     true
                   );
                   handleClose();
@@ -233,7 +264,8 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 onClick={() => {
                   props.updateDefaultLabels(
                     oldLabels,
-                    props.restrictLabels,
+                    oldRestrictLabels,
+                    oldMultiLabel,
                     false
                   );
                   handleClose();
