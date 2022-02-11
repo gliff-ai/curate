@@ -34,6 +34,7 @@ import {
   generateClassName,
   IconButton,
   Logo,
+  icons,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -51,6 +52,7 @@ import { Metadata, MetaItem, Filter } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 import { Profile } from "./components/interfaces";
+import { Plugin, PluginsAccordion } from "./components/plugins";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -113,15 +115,11 @@ const styles = () => ({
     marginBottom: "-10ox",
   },
   bottomLeftButtons: {
-    height: "53px",
-    backgroundColor: theme.palette.primary.light,
-    paddingTop: "1px",
-    width: "61px",
-    marginRight: "9px",
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: theme.palette.primary.light,
   },
+  bottomToolbar: { bottom: "10px", width: "274px" },
   collectionViewer: {
     height: "53px",
     backgroundColor: theme.palette.primary.light,
@@ -164,11 +162,8 @@ interface Props extends WithStyles<typeof styles> {
   downloadDatasetCallback?: () => void;
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
   setIsLoading?: (isLoading: boolean) => void;
-  trustedServiceButtonToolbar?:
-    | ((imageUid?: string, enabled?: boolean) => ReactNode)
-    | null;
-
-  plugins?: JSX.Element | null;
+  updateImagesCallback?: () => void;
+  plugins?: { [name: string]: any[] } | null;
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
 }
@@ -186,6 +181,7 @@ interface State {
   selectMultipleImagesMode: boolean;
   sortedBy: string;
   isGrouped: boolean;
+  showPluginsAccordion: boolean;
 }
 
 class UserInterface extends Component<Props, State> {
@@ -215,6 +211,7 @@ class UserInterface extends Component<Props, State> {
       selectMultipleImagesMode: false,
       sortedBy: null,
       isGrouped: false,
+      showPluginsAccordion: false,
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
@@ -719,64 +716,6 @@ class UserInterface extends Component<Props, State> {
 
                   {deleteImageCard}
 
-                  <div
-                    style={{
-                      display: "flex",
-                      bottom: "18px",
-                      position: "fixed",
-                      zIndex: 1,
-                    }}
-                  >
-                    <Card className={classes.bottomLeftButtons}>
-                      <IconButton
-                        tooltip={tooltips.viewCollection}
-                        icon={tooltips.viewCollection.icon}
-                        fill={null}
-                        tooltipPlacement="top"
-                      />
-                    </Card>
-                    {this.isOwnerOrMember() && (
-                      <Card className={classes.bottomLeftButtons}>
-                        <UploadImage
-                          setUploadedImage={this.addUploadedImages}
-                          multiple
-                          spanElement={
-                            <IconButton
-                              id="upload-image"
-                              tooltip={tooltips.uploadImage}
-                              icon={tooltips.uploadImage.icon}
-                              fill={null}
-                              tooltipPlacement="top"
-                              component="span"
-                            />
-                          }
-                        />
-                      </Card>
-                    )}
-                    <Card className={classes.bottomLeftButtons}>
-                      <IconButton
-                        tooltip={tooltips.downloadDataset}
-                        icon={tooltips.downloadDataset.icon}
-                        fill={null}
-                        tooltipPlacement="top"
-                        onClick={this.props.downloadDatasetCallback}
-                      />
-                    </Card>
-                    {this.props.trustedServiceButtonToolbar && (
-                      <Card className={classes.bottomLeftButtons}>
-                        {this.props.trustedServiceButtonToolbar(
-                          this.state.openImageUid,
-                          Boolean(this.state.openImageUid !== null)
-                        )}
-                      </Card>
-                    )}
-                    {this.props.plugins && (
-                      <Card className={classes.bottomLeftButtons}>
-                        {this.props.plugins}
-                      </Card>
-                    )}
-                  </div>
-
                   {(this.state.openImageUid == null ||
                     this.state.selectMultipleImagesMode) && (
                     <>
@@ -800,6 +739,19 @@ class UserInterface extends Component<Props, State> {
                         callbackOnLabelSelection={this.handleOnLabelSelection}
                         callbackOnAccordionExpanded={this.resetSearchFilters}
                       />
+                      {this.state.showPluginsAccordion && (
+                        <PluginsAccordion
+                          plugins={this.props.plugins}
+                          expanded={this.state.expanded === "plugins-toolbox"}
+                          handleToolboxChange={this.handleToolboxChange(
+                            "plugins-toolbox"
+                          )}
+                          isOwnerOrMember={this.isOwnerOrMember()}
+                          metadata={this.state.metadata}
+                          selectedImagesUid={this.state.selectedImagesUid}
+                          updateImagesCallback={this.props.updateImagesCallback}
+                        />
+                      )}
                     </>
                   )}
 
@@ -816,6 +768,65 @@ class UserInterface extends Component<Props, State> {
                         />
                       )}
                   </div>
+
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    position="fixed"
+                    className={classes.bottomToolbar}
+                  >
+                    <Card className={classes.bottomLeftButtons}>
+                      <IconButton
+                        tooltip={tooltips.viewCollection}
+                        icon={tooltips.viewCollection.icon}
+                        fill={null}
+                        tooltipPlacement="top"
+                      />
+                    </Card>
+
+                    <Card className={classes.bottomLeftButtons}>
+                      {this.isOwnerOrMember() && (
+                        <UploadImage
+                          setUploadedImage={this.addUploadedImages}
+                          multiple
+                          spanElement={
+                            <IconButton
+                              id="upload-image"
+                              tooltip={tooltips.uploadImage}
+                              icon={tooltips.uploadImage.icon}
+                              fill={null}
+                              tooltipPlacement="top"
+                              component="span"
+                            />
+                          }
+                        />
+                      )}
+                      <IconButton
+                        tooltip={tooltips.downloadDataset}
+                        icon={tooltips.downloadDataset.icon}
+                        fill={null}
+                        tooltipPlacement="top"
+                        onClick={this.props.downloadDatasetCallback}
+                      />
+                    </Card>
+
+                    <Card className={classes.bottomLeftButtons}>
+                      <IconButton
+                        icon={icons.plugins}
+                        tooltip={{ name: "Plugins" }}
+                        fill={this.state.showPluginsAccordion}
+                        disabled={this.props.plugins === null}
+                        tooltipPlacement="top"
+                        onClick={() =>
+                          this.setState((prevState) => ({
+                            expanded: "plugins-toolbox",
+                            showPluginsAccordion:
+                              !prevState.showPluginsAccordion,
+                          }))
+                        }
+                      />
+                    </Card>
+                  </Box>
                 </Grid>
 
                 <Grid
