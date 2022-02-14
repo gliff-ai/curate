@@ -685,7 +685,10 @@ class UserInterface extends Component<Props, State> {
           className={classes.toolBoxCard}
         >
           {this.isOwnerOrMember() && this.props.profiles && (
-            <Card className={classes.smallButton}>
+            <Card
+              className={classes.smallButton}
+              style={{ marginRight: "14px" }}
+            >
               <AutoAssignDialog
                 profiles={this.props.profiles}
                 metadata={this.state.metadata}
@@ -695,10 +698,7 @@ class UserInterface extends Component<Props, State> {
             </Card>
           )}
           {this.props.userAccess !== UserAccess.Collaborator && (
-            <Card
-              className={classes.smallButton}
-              style={{ marginLeft: "14px" }}
-            >
+            <Card className={classes.smallButton}>
               <DefaultLabelsDialog
                 labels={this.state.defaultLabels}
                 restrictLabels={this.state.restrictLabels}
