@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     textAlign: "center",
     marginTop: "20px",
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
   },
   card: {
     display: "flex",
@@ -277,6 +277,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   );
                   handleClose();
                 }}
+                variant="outlined"
               />
             </div>
           </CardContent>
