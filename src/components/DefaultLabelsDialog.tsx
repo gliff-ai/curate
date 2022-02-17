@@ -66,7 +66,7 @@ const useStyles = makeStyles({
     color: theme.palette.text.secondary,
   },
   cardContent: {
-    padding: "15px",
+    padding: "17px",
     paddingTop: "10px",
   },
   labelsCard: {
@@ -253,19 +253,6 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
             />
             <div className={classes.container}>
               <BaseTextButton
-                id="confirm-default-labels"
-                text="Confirm"
-                onClick={() => {
-                  props.updateDefaultLabels(
-                    props.labels,
-                    props.restrictLabels,
-                    props.multiLabel,
-                    true
-                  );
-                  handleClose();
-                }}
-              />
-              <BaseTextButton
                 id="cancel-default=labels"
                 text="Cancel"
                 onClick={() => {
@@ -278,6 +265,19 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   handleClose();
                 }}
                 variant="outlined"
+              />
+              <BaseTextButton
+                id="confirm-default-labels"
+                text="Confirm"
+                onClick={() => {
+                  props.updateDefaultLabels(
+                    props.labels,
+                    props.restrictLabels,
+                    props.multiLabel,
+                    true
+                  );
+                  handleClose();
+                }}
               />
             </div>
           </CardContent>
