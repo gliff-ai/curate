@@ -43,7 +43,7 @@ const useStyles = makeStyles({
   closeButton: {
     position: "absolute",
     top: "7px",
-    right: "5px",
+    right: "10px",
   },
   closeIcon: { width: "15px" },
   okButton: { position: "absolute", right: "10px", top: "75px" },
@@ -78,6 +78,9 @@ const useStyles = makeStyles({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.text.primary,
     height: "44px",
+  },
+  dialogPaper: {
+    borderRadius: "9px",
   },
 });
 
@@ -145,7 +148,11 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
         tooltipPlacement="top"
         id="set-default-labels"
       />
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        classes={{ paper: classes.dialogPaper }}
+      >
         <Card className={classes.labelsCard}>
           <CardHeader
             className={classes.labelsCardHeader}
