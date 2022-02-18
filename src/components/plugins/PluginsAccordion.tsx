@@ -13,17 +13,25 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
-import { theme, icons, IconButton, WarningSnackbar } from "@gliff-ai/style";
+import {
+  theme,
+  icons,
+  IconButton,
+  WarningSnackbar,
+  HtmlTooltip,
+  BaseTooltipTitle,
+} from "@gliff-ai/style";
 import type { PluginElement, PluginObject } from "./interfaces";
 import { Metadata } from "@/interfaces";
 import { PluginDialog } from "./PluginDialog";
 
 const useStyles = makeStyles({
   accordion: {
-    borderRadius: (accordionOpened) => (accordionOpened ? "9px 9px 0 0" : 0),
+    borderRadius: "9px",
   },
   paperHeader: {
-    borderRadius: "inherit",
+    borderRadius: (accordionOpened) =>
+      accordionOpened ? "9px 9px 0 0" : "9px",
     height: "49px",
     minHeight: "49px !important",
     backgroundColor: (accordionOpened) =>
@@ -157,9 +165,20 @@ export const PluginsAccordion = ({
           className={classes.menuItem}
           dense
         >
-          <Typography className={classes.truncate}>
-            {p.name}&nbsp;—&nbsp;{p.tooltip}
-          </Typography>
+          <HtmlTooltip
+            placement="top"
+            title={
+              <BaseTooltipTitle
+                tooltip={{
+                  name: `${p.name} — ${p.tooltip}`,
+                }}
+              />
+            }
+          >
+            <Typography className={classes.truncate}>
+              {p.name}&nbsp;—&nbsp;{p.tooltip}
+            </Typography>
+          </HtmlTooltip>
         </MenuItem>
       ));
     });
@@ -168,6 +187,7 @@ export const PluginsAccordion = ({
   return (
     <>
       <Accordion
+        disableGutters
         expanded={expanded}
         onChange={handleToolboxChange}
         className={classes.accordion}
@@ -185,7 +205,7 @@ export const PluginsAccordion = ({
         <AccordionDetails className={classes.accordionDetails}>
           <MenuList>{getPluginButtons()}</MenuList>
           <Divider className={classes.divider} />
-          <Paper elevation={0} square className={classes.paperFooter}>
+          <Paper elevation={0} className={classes.paperFooter}>
             <SVG src={icons.betaStatus} width="auto" height="25px" />
             <ButtonGroup
               className={classes.buttonGroup}
@@ -206,7 +226,7 @@ export const PluginsAccordion = ({
                 tooltip={{ name: "Docs" }}
                 icon={icons.documentHelp}
                 onClick={() => {
-                  // TODO: Redirect to docs
+                  document.location = "https://docs.gliff.app/";
                 }}
                 tooltipPlacement="top"
                 size="small"

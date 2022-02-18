@@ -16,7 +16,7 @@ import { theme, icons } from "@gliff-ai/style";
 
 const useStyles = makeStyles({
   accordion: {
-    borderRadius: (accordionOpened) => (accordionOpened ? "9px 9px 0 0" : 0),
+    borderRadius: "9px",
   },
   title: {
     paddingLeft: theme.spacing(1),
@@ -55,7 +55,8 @@ const useStyles = makeStyles({
     fontSize: "12px",
   },
   paper: {
-    borderRadius: "inherit",
+    borderRadius: (accordionOpened) =>
+      accordionOpened ? "9px 9px 0 0" : "9px",
     height: "49px",
     minHeight: "49px !important",
     backgroundColor: (accordionOpened) =>
@@ -137,6 +138,7 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
 
   return (
     <Accordion
+      disableGutters
       className={classes.accordion}
       expanded={props.expanded}
       onChange={props.handleToolboxChange}
