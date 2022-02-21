@@ -29,6 +29,19 @@ const profiles = [
   { name: "David Brown", email: "david@gliff.app" },
 ];
 
+const plugins = {
+  "Example plug-in": [
+    {
+      name: "Example plug-in",
+      tooltip: "Short description",
+      onClick: (data = {}) => {
+        alert("Some plug-in action.");
+        return Promise.resolve({});
+      },
+    },
+  ],
+};
+
 // get image promises:
 const promises: Array<Promise<string>> = [];
 for (let i = 0; i < 20; i += 1) {
@@ -56,6 +69,7 @@ fetch("metadata.json")
             showAppBar
             profiles={profiles}
             userAccess={UserAccess.Owner}
+            plugins={plugins}
           />,
           document.getElementById("react-container")
         );

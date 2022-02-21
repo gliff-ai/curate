@@ -9,7 +9,6 @@ const useStyles = makeStyles(() => ({
   card: {
     width: "100%",
     height: "auto",
-    marginBottom: "15px",
     backgroundColor: theme.palette.primary.light,
   },
 
