@@ -44,6 +44,7 @@ import Tile, {
   LabelsPopover,
   AssigneesDialog,
   AutoAssignDialog,
+  DefaultLabelsDialog,
 } from "@/components";
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
@@ -153,6 +154,12 @@ interface Props extends WithStyles<typeof styles> {
   ) => Promise<void>;
   showAppBar: boolean;
   saveLabelsCallback?: (imageUid: string, newLabels: string[]) => void;
+  defaultLabels?: string[];
+  saveDefaultLabelsCallback?: (
+    newLabels: string[],
+    restrictLabels: boolean,
+    multiLabel: boolean
+  ) => void;
   saveAssigneesCallback?: (
     imageUid: string[],
     newAssignees: string[][]
@@ -167,13 +174,15 @@ interface Props extends WithStyles<typeof styles> {
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
   launchPluginSettingsCallback?: (() => void) | null;
+  restrictLabels?: boolean; // restrict image labels to defaultLabels
+  multiLabel?: boolean;
 }
 
 interface State {
   metadata: Metadata;
   metadataKeys: string[];
   activeFilters: Filter[];
-  imageLabels: string[];
+  defaultLabels: string[];
   expanded: string | boolean;
   openImageUid: string; // Uid for the image whose metadata is shown in the drawer
   selectedImagesUid: string[]; // Uids for selected images
@@ -183,6 +192,8 @@ interface State {
   sortedBy: string;
   isGrouped: boolean;
   showPluginsAccordion: boolean;
+  restrictLabels: boolean;
+  multiLabel: boolean;
 }
 
 class UserInterface extends Component<Props, State> {
@@ -203,7 +214,7 @@ class UserInterface extends Component<Props, State> {
       metadataKeys: this.props.metadata?.length
         ? this.getMetadataKeys(this.props.metadata[0])
         : [],
-      imageLabels: this.getImageLabels(this.props.metadata),
+      defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
       openImageUid: null,
       selectedImagesUid: [],
@@ -214,6 +225,8 @@ class UserInterface extends Component<Props, State> {
       sortedBy: null,
       isGrouped: false,
       showPluginsAccordion: false,
+      restrictLabels: false,
+      multiLabel: true,
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
@@ -224,20 +237,18 @@ class UserInterface extends Component<Props, State> {
   componentDidMount(): void {}
 
   /* eslint-disable react/no-did-update-set-state */
-  // TODO: remove state.metadata, just use props.metadata
   componentDidUpdate = (prevProps: Props): void => {
-    if (
-      JSON.stringify(prevProps.metadata) !== JSON.stringify(this.props.metadata)
-    ) {
-      if (prevProps.metadata.length === 0) {
+    if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
+      if (this.props.metadata.length > 0) {
         this.setState({
           metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
         });
       }
-      this.setState({
+      this.setState((oldState) => ({
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
-        imageLabels: this.getImageLabels(this.props.metadata),
-      });
+        defaultLabels: this.props.defaultLabels || oldState.defaultLabels,
+        restrictLabels: this.props.restrictLabels,
+      }));
     }
   };
 
@@ -418,6 +429,7 @@ class UserInterface extends Component<Props, State> {
   };
 
   getImageLabels = (metadata: Metadata): string[] => {
+    // returns the set of all labels that are assigned to at least one image
     if (!metadata) return [];
     const labels: Set<string> = new Set();
     metadata.forEach((mitem) => {
@@ -472,7 +484,6 @@ class UserInterface extends Component<Props, State> {
         return {
           selectedImagesUid: [],
           metadata,
-          imageLabels: this.getImageLabels(metadata),
         };
       });
     }
@@ -515,10 +526,25 @@ class UserInterface extends Component<Props, State> {
         }
         return {
           metadata: state.metadata,
-          imageLabels: this.getImageLabels(state.metadata),
         };
       });
     };
+
+  updateDefaultLabels = (
+    newLabels: string[],
+    restrictLabels: boolean,
+    multiLabel: boolean,
+    sync = false
+  ): void => {
+    this.setState({ defaultLabels: newLabels, restrictLabels, multiLabel });
+    if (sync && this.props.saveDefaultLabelsCallback) {
+      this.props.saveDefaultLabelsCallback(
+        newLabels,
+        restrictLabels,
+        multiLabel
+      );
+    }
+  };
 
   updateAssignees = (imageUids: string[], newAssignees: string[][]): void => {
     // Update assignees for the images selected
@@ -654,16 +680,29 @@ class UserInterface extends Component<Props, State> {
         </Box>
         <Box
           display="flex"
-          justifyContent="space-between"
+          justifyContent="flex-start"
           className={classes.toolBoxCard}
         >
           {this.isOwnerOrMember() && this.props.profiles && (
-            <Card className={classes.smallButton}>
+            <Card
+              className={classes.smallButton}
+              style={{ marginRight: "14px" }}
+            >
               <AutoAssignDialog
                 profiles={this.props.profiles}
                 metadata={this.state.metadata}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
+              />
+            </Card>
+          )}
+          {this.props.userAccess !== UserAccess.Collaborator && (
+            <Card className={classes.smallButton}>
+              <DefaultLabelsDialog
+                labels={this.state.defaultLabels}
+                restrictLabels={this.state.restrictLabels}
+                multiLabel={this.state.multiLabel}
+                updateDefaultLabels={this.updateDefaultLabels}
               />
             </Card>
           )}
@@ -737,7 +776,7 @@ class UserInterface extends Component<Props, State> {
                         handleToolboxChange={this.handleToolboxChange(
                           "labels-filter-toolbox"
                         )}
-                        allLabels={this.state.imageLabels}
+                        allLabels={this.getImageLabels(this.state.metadata)}
                         callbackOnLabelSelection={this.handleOnLabelSelection}
                         callbackOnAccordionExpanded={this.resetSearchFilters}
                       />
@@ -980,6 +1019,9 @@ class UserInterface extends Component<Props, State> {
                               imageName={mitem.imageName as string}
                               labels={mitem.imageLabels as string[]}
                               updateLabels={this.updateLabels(itemIndex)}
+                              restrictLabels={this.state.restrictLabels}
+                              defaultLabels={this.state.defaultLabels}
+                              multiLabel={this.state.multiLabel}
                             />
                           </div>
                         </Grid>

@@ -13,6 +13,9 @@ describe("labels assignment", () => {
         imageName="sample0.png"
         labels={[prevLabel]}
         updateLabels={updateLabels}
+        defaultLabels={[]}
+        restrictLabels={false}
+        multiLabel={true}
       />
     );
     fireEvent.click(screen.getByRole("button"));
