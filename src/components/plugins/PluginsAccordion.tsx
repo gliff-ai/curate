@@ -110,47 +110,28 @@ export const PluginsAccordion = ({
   if (!plugins) return null;
 
   const runPlugin = async (plugin: PluginElement): Promise<void> => {
-    // TODO: delete when plug-in is updated
-    if (plugin.name === "Geolocation Map") {
-      try {
-        const onClick = plugin.onClick as unknown as (
-          metadata: Metadata
-        ) => Promise<JSX.Element | null>;
+    try {
+      const collectionUid = window.location.href.split("/").pop();
 
-        const response = await onClick(metadata);
+      const data = {
+        collectionUid,
+        imageUid: selectedImagesUid[0] || undefined,
+        metadata,
+      };
 
-        if (response === null) {
-          setError("No geolocation data found.");
-          return;
-        }
+      const response = await plugin.onClick(data);
+      updateImagesCallback();
+      console.log(response);
 
-        setDialogContent(response);
-      } catch (e) {
-        console.error(e);
+      if (response?.message) {
+        setError(response.message);
       }
-    } else {
-      try {
-        const collectionUid = window.location.href.split("/").pop();
 
-        const data = {
-          collectionUid,
-          imageUid: selectedImagesUid[0] || undefined,
-          metadata,
-        };
-
-        const response = await plugin.onClick(data);
-        updateImagesCallback();
-
-        if (response?.message) {
-          setError(response.message);
-        }
-
-        if (response?.domElement) {
-          setDialogContent(response.domElement);
-        }
-      } catch (e) {
-        console.error(e);
+      if (response?.domElement) {
+        setDialogContent(response.domElement);
       }
+    } catch (e) {
+      console.error(e);
     }
   };
 
