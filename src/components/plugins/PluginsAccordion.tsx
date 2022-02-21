@@ -27,6 +27,7 @@ import { PluginDialog } from "./PluginDialog";
 
 const useStyles = makeStyles({
   accordion: {
+    marginTop: "15px",
     borderRadius: "9px",
   },
   paperHeader: {
@@ -42,12 +43,11 @@ const useStyles = makeStyles({
   topography: {
     display: "inline",
     fontWeight: 500,
-    marginLeft: "10px",
   },
   menuItem: {
     margin: 0,
     fontSize: "16px",
-    paddingLeft: "20px",
+    paddingLeft: "12px",
     height: "40px",
     "&:hover": {
       backgroundColor: theme.palette.grey[300],
@@ -55,7 +55,8 @@ const useStyles = makeStyles({
   },
   divider: { margin: 0, width: "100%", lineHeight: "1px" },
   paperFooter: {
-    padding: "0 20px",
+    borderRadius: "9px",
+    padding: "0 12px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -205,7 +206,7 @@ export const PluginsAccordion = ({
         <AccordionDetails className={classes.accordionDetails}>
           <MenuList>{getPluginButtons()}</MenuList>
           <Divider className={classes.divider} />
-          <Paper elevation={0} className={classes.paperFooter}>
+          <Paper elevation={0} square className={classes.paperFooter}>
             <SVG src={icons.betaStatus} width="auto" height="25px" />
             <ButtonGroup
               className={classes.buttonGroup}
