@@ -8,7 +8,6 @@ import {
   Avatar,
   CardHeader,
   CardContent,
-  Checkbox,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
@@ -19,6 +18,7 @@ import {
   icons,
   Typography,
   FormControlLabel,
+  Checkbox,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 
