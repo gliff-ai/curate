@@ -1,7 +1,7 @@
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import {
   InputBase,
   Chip,
@@ -11,9 +11,11 @@ import {
   Avatar,
   Typography,
   IconButton,
+  TextField,
 } from "@mui/material";
 import { theme, BasePopover, icons } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
+import Autocomplete from "@mui/material/Autocomplete";
 
 const useStyles = makeStyles({
   cross: {
@@ -21,7 +23,7 @@ const useStyles = makeStyles({
     right: "10px",
     color: theme.palette.text.primary,
   },
-  addButton: { position: "absolute", right: "10px" },
+  addButton: { position: "absolute", right: "10px", top: "60px" },
   cardContent: {
     padding: "15px",
     paddingTop: "10px",
@@ -69,6 +71,9 @@ const useStyles = makeStyles({
 interface Props {
   id: string;
   labels: string[];
+  defaultLabels: string[];
+  restrictLabels: boolean;
+  multiLabel: boolean;
   imageName: string;
   updateLabels: (newLables: string[]) => void;
 }
@@ -89,7 +94,12 @@ export function LabelsPopover(props: Props): ReactElement {
   };
 
   const handleAddLabel = (label: string) => (): void => {
-    if (props.labels.includes(label)) return;
+    if (
+      props.labels.includes(label) ||
+      label === "" ||
+      (!props.multiLabel && props.labels.length > 0)
+    )
+      return;
     const oldLabels: string[] = props.labels;
     oldLabels.push(label);
     props.updateLabels(oldLabels);
@@ -102,7 +112,8 @@ export function LabelsPopover(props: Props): ReactElement {
         key={`button-close-${props.id}`}
         className={classes.cross}
         onClick={() => setClose((close) => close + 1)}
-        size="large">
+        size="large"
+      >
         <SVG className={classes.iconSize} src={icons.removeLabel} />
       </IconButton>
       <CardHeader
@@ -114,22 +125,59 @@ export function LabelsPopover(props: Props): ReactElement {
         }
       />
       <CardContent className={classes.cardContent}>
-        <InputBase
-          key={`input-${props.id}`}
-          placeholder="New label"
-          type="text"
-          value={newLabel}
-          onChange={handleNewLabelChange}
-          inputProps={{
-            className: classes.input,
-          }}
-        />
+        {props.defaultLabels.length > 0 ? (
+          <Autocomplete
+            onChange={(event, value) => {
+              setNewLabel(value);
+            }}
+            onInputChange={(event, value) => {
+              if (!props.restrictLabels) {
+                setNewLabel(value);
+              }
+            }}
+            options={props.defaultLabels}
+            freeSolo={!props.restrictLabels}
+            value={newLabel}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Label"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddLabel(newLabel)();
+                  }
+                }}
+                autoFocus
+                className={classes.input}
+              />
+            )}
+          />
+        ) : (
+          <InputBase
+            key={`input-${props.id}`}
+            placeholder="New label"
+            type="text"
+            value={newLabel}
+            onChange={handleNewLabelChange}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleAddLabel(newLabel)();
+              }
+            }}
+            inputProps={{
+              className: classes.input,
+            }}
+            autoFocus
+          />
+        )}
+
         <IconButton
           aria-label="add-label"
           key={`button-add-${props.id}`}
           className={classes.addButton}
           onClick={handleAddLabel(newLabel)}
-          size="large">
+          size="large"
+        >
           <SVG
             className={classes.iconSize}
             src={icons.add}

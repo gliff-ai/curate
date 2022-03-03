@@ -62,19 +62,6 @@ export function AssigneesDialog(props: Props): React.ReactElement {
     setAssignees(event.target.value as string[]);
   };
 
-  const handleChangeMultiple = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    const { options } = event.target as HTMLSelectElement;
-    const value: string[] = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setAssignees(value);
-  };
-
   const isEnabled = (): boolean =>
     props.profiles.length !== 0 && props.selectedImagesUids.length !== 0;
 

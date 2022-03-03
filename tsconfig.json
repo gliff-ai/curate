@@ -18,12 +18,12 @@
     "experimentalDecorators": true,
   },
   "include": [
-    "typings/**/*",
+    "typings/**/**/*",
     "examples/src/**/*.tsx",
-    "src/**/*.tsx",
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "typings/**/*.ts",
+    "src/**/**/*.tsx",
+    "src/**/**/*.ts",
+    "test/**/**/*.ts",
+    "typings/**/**/*.ts",
   ],
-  "exclude": ["src/**/*_.tsx"]
+  "exclude": ["src/**/**/*_.tsx"]
 }
