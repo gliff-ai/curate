@@ -248,6 +248,7 @@ class UserInterface extends Component<Props, State> {
         metadata: this.addFieldSelectedToMetadata(this.props.metadata),
         defaultLabels: this.props.defaultLabels || oldState.defaultLabels,
         restrictLabels: this.props.restrictLabels,
+        multiLabel: this.props.multiLabel,
       }));
     }
   };
