@@ -3,11 +3,9 @@ import SVG from "react-inlinesvg";
 import {
   Card,
   Paper,
-  FormControl,
   FormControlLabel,
   Radio,
   TextField,
-  MenuItem,
   IconButton,
   Checkbox,
 } from "@mui/material";
@@ -19,6 +17,8 @@ import {
   icons,
   RadioGroup,
   Typography,
+  MenuItem,
+  FormControl,
 } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";

@@ -5,8 +5,6 @@ import {
   Dialog,
   Input,
   InputLabel,
-  MenuItem,
-  FormControl,
   Select,
   Chip,
   IconButton,
@@ -20,6 +18,8 @@ import {
   icons,
   theme,
   Typography,
+  MenuItem,
+  FormControl,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
