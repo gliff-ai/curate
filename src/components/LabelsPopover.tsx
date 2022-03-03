@@ -9,13 +9,12 @@ import {
   CardHeader,
   CardContent,
   Avatar,
-  Typography,
   IconButton,
+  Autocomplete,
   TextField,
 } from "@mui/material";
-import { theme, BasePopover, icons } from "@gliff-ai/style";
+import { theme, BasePopover, icons, Typography } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
-import Autocomplete from "@mui/material/Autocomplete";
 
 const useStyles = makeStyles({
   cross: {

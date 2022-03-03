@@ -1,7 +1,6 @@
 import { ReactElement, ChangeEvent, useState } from "react";
 import {
   Paper,
-  Typography,
   Divider,
   MenuList,
   MenuItem,
@@ -20,6 +19,7 @@ import {
   WarningSnackbar,
   HtmlTooltip,
   BaseTooltipTitle,
+  Typography,
 } from "@gliff-ai/style";
 import type { PluginElement, PluginObject } from "./interfaces";
 import { Metadata } from "@/interfaces";

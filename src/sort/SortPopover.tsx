@@ -1,11 +1,9 @@
 import { ReactElement, useEffect, useState, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 import {
-  Typography,
   Card,
   Paper,
   FormControl,
-  RadioGroup,
   FormControlLabel,
   Radio,
   TextField,
@@ -14,7 +12,14 @@ import {
   Checkbox,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { BaseTextButton, theme, BasePopover, icons } from "@gliff-ai/style";
+import {
+  BaseTextButton,
+  theme,
+  BasePopover,
+  icons,
+  RadioGroup,
+  Typography,
+} from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
 
