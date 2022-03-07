@@ -167,7 +167,9 @@ interface Props extends WithStyles<typeof styles> {
   deleteImagesCallback?: (imageUids: string[]) => void;
   annotateCallback?: (id: string) => void;
   downloadDatasetCallback?: () => void;
+  // eslint-disable-next-line react/no-unused-prop-types
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
   setIsLoading?: (isLoading: boolean) => void;
   updateImagesCallback?: () => void;
   plugins?: PluginObject | null;
@@ -197,14 +199,26 @@ interface State {
 }
 
 class UserInterface extends Component<Props, State> {
-  static defaultProps = {
-    showAppBar: true,
-    trustedServiceButtonToolbar: null,
+  public static defaultProps: Omit<Props, "showAppBar" | "classes"> = {
+    metadata: null,
+    saveImageCallback: null,
+    saveLabelsCallback: null,
+    saveDefaultLabelsCallback: null,
+    saveAssigneesCallback: null,
+    deleteImagesCallback: null,
+    annotateCallback: null,
+    downloadDatasetCallback: null,
+    defaultLabels: null,
+    setTask: null,
+    setIsLoading: null,
     plugins: null,
+    updateImagesCallback: null,
     profiles: null,
     userAccess: UserAccess.Collaborator,
     launchPluginSettingsCallback: null,
-  } as Pick<Props, "showAppBar">;
+    restrictLabels: false,
+    multiLabel: true,
+  };
 
   constructor(props: Props) {
     super(props);
