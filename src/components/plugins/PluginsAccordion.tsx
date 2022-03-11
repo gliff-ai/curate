@@ -90,8 +90,9 @@ interface Props {
   plugins: PluginObject | null;
   metadata: Metadata;
   selectedImagesUid: string[];
-  updateImagesCallback: () => void;
+  updateImagesCallback: () => void | null;
   launchPluginSettingsCallback: (() => void) | null;
+  saveMetadataCallback: ((data: any) => void) | null;
 }
 
 export const PluginsAccordion = ({
@@ -101,6 +102,7 @@ export const PluginsAccordion = ({
   updateImagesCallback,
   metadata,
   selectedImagesUid,
+  saveMetadataCallback,
   launchPluginSettingsCallback,
 }: Props): ReactElement | null => {
   const classes = useStyles(expanded);
@@ -113,15 +115,29 @@ export const PluginsAccordion = ({
     try {
       const collectionUid = window.location.href.split("/").pop();
 
-      const data = {
-        collectionUid,
-        imageUid: selectedImagesUid[0] || undefined,
-        metadata,
-      };
+      let data;
+      if (plugin.type === "Javascript") {
+        data = {
+          metadata:
+            selectedImagesUid.length === 0
+              ? metadata
+              : metadata
+                  .filter((mitem) =>
+                    selectedImagesUid.includes(mitem.id as string)
+                  )
+                  .map(({ selected, ...mitem }) => mitem), // exclude some fields
+        };
+      } else {
+        data = {
+          collectionUid,
+          imageUid: selectedImagesUid[0] || undefined,
+        };
+      }
 
       const response = await plugin.onClick(data);
-      updateImagesCallback();
-      console.log(response);
+      if (updateImagesCallback) {
+        updateImagesCallback();
+      }
 
       if (response?.message) {
         setError(response.message);
@@ -129,6 +145,17 @@ export const PluginsAccordion = ({
 
       if (response?.domElement) {
         setDialogContent(response.domElement);
+      }
+
+      if (response?.data) {
+        const { metadata } = response?.data;
+
+        if (metadata !== undefined && saveMetadataCallback) {
+          saveMetadataCallback({
+            collectionUid,
+            metadata,
+          });
+        }
       }
     } catch (e) {
       console.error(e);
