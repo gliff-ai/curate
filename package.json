@@ -62,7 +62,7 @@
     "react-dom": "^17.0.1"
   },
   "dependencies": {
-    "@gliff-ai/style": "file:gliff-ai-style-4.0.1.tgz",
+    "@gliff-ai/style": "file:gliff-ai-style-4.0.0.tgz",
     "@gliff-ai/upload": "^0.3.2",
     "react-inlinesvg": "^2.3.0"
   }

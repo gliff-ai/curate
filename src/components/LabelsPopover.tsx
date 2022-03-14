@@ -3,7 +3,6 @@ import SVG from "react-inlinesvg";
 
 import makeStyles from "@mui/styles/makeStyles";
 import {
-  InputBase,
   Chip,
   Card,
   CardHeader,
@@ -13,7 +12,13 @@ import {
   Autocomplete,
   TextField,
 } from "@mui/material";
-import { theme, BasePopover, icons, Typography } from "@gliff-ai/style";
+import {
+  theme,
+  BasePopover,
+  icons,
+  Typography,
+  InputBase,
+} from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 
 const useStyles = makeStyles({

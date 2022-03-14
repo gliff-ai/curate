@@ -1,18 +1,16 @@
 import { ReactElement, useEffect, useState, ChangeEvent } from "react";
-import SVG from "react-inlinesvg";
-import { Card, Paper, TextField, IconButton, Checkbox } from "@mui/material";
+import { Paper, TextField, Checkbox } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   BaseTextButton,
   theme,
   BasePopover,
-  icons,
   RadioGroup,
-  Typography,
   MenuItem,
   FormControl,
   FormControlLabel,
   Radio,
+  GliffPopover,
 } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
@@ -78,7 +76,6 @@ export const SortPopover = ({
   toggleIsGrouped,
 }: Props): ReactElement => {
   const classes = useStyles();
-  const [close, setClose] = useState(0);
   const [inputKey, setInputKey] = useState<MetadataLabel>({
     key: "",
     label: "",
@@ -112,89 +109,82 @@ export const SortPopover = ({
   }, [metadataKeys]);
 
   const popoverContent = (
-    <Card className={classes.card}>
-      <IconButton
-        className={classes.closeButton}
-        onClick={() => setClose((close) => close + 1)}
-        size="small"
-      >
-        <SVG src={icons.removeLabel} className={classes.closeIcon} />
-      </IconButton>
-      <Paper
-        elevation={0}
-        variant="outlined"
-        square
-        className={classes.paperHeader}
-      >
-        <Typography className={classes.typography}>Sort</Typography>
-      </Paper>
-      <Paper elevation={0} square className={classes.paperPopover}>
-        {/* Form for selecting a metadata key */}
-        <FormControl component="fieldset">
-          <TextField
-            id="select-metadata-key"
-            select
-            value={inputKey.label}
-            onChange={handleChange(updateKey)}
-            helperText="Please select a metadata field"
-            variant="standard"
-          >
-            {metadataLabels &&
-              metadataLabels.map(({ key, label }) => (
-                <MenuItem key={key} value={label} className={classes.menuItem}>
-                  {label}
-                </MenuItem>
-              ))}
-          </TextField>
-        </FormControl>
-      </Paper>
-      <Paper elevation={0} square className={classes.paper}>
-        {/* Form for selecting a sort order */}
-        <FormControl component="fieldset">
-          <RadioGroup
-            aria-label="sort-order"
-            name="sort-order"
-            value={sortOrder}
-            onChange={handleChange(setSortOrder)}
-          >
+    <GliffPopover
+      title="Sort"
+      el={
+        <>
+          <FormControl component="fieldset">
+            <TextField
+              id="select-metadata-key"
+              select
+              value={inputKey.label}
+              onChange={handleChange(updateKey)}
+              helperText="Please select a metadata field"
+              variant="standard"
+            >
+              {metadataLabels &&
+                metadataLabels.map(({ key, label }) => (
+                  <MenuItem
+                    key={key}
+                    value={label}
+                    className={classes.menuItem}
+                  >
+                    {label}
+                  </MenuItem>
+                ))}
+            </TextField>
+          </FormControl>
+
+          <Paper elevation={0} square className={classes.paper}>
+            {/* Form for selecting a sort order */}
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="sort-order"
+                name="sort-order"
+                value={sortOrder}
+                onChange={handleChange(setSortOrder)}
+              >
+                <FormControlLabel
+                  value="asc"
+                  control={<Radio size="small" />}
+                  label="Sort by ASC"
+                  classes={{
+                    label: classes.sortLabel,
+                  }}
+                />
+                <FormControlLabel
+                  value="desc"
+                  control={<Radio size="small" />}
+                  label="Sort by DESC"
+                  classes={{
+                    label: classes.sortLabel,
+                  }}
+                />
+              </RadioGroup>
+            </FormControl>
             <FormControlLabel
-              value="asc"
-              control={<Radio size="small" />}
-              label="Sort by ASC"
-              classes={{
-                label: classes.sortLabel,
-              }}
+              control={
+                <Checkbox
+                  checked={isGrouped}
+                  onChange={toggleIsGrouped}
+                  name="group-by"
+                />
+              }
+              label="Group by value"
             />
-            <FormControlLabel
-              value="desc"
-              control={<Radio size="small" />}
-              label="Sort by DESC"
-              classes={{
-                label: classes.sortLabel,
-              }}
-            />
-          </RadioGroup>
-        </FormControl>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={isGrouped}
-              onChange={toggleIsGrouped}
-              name="group-by"
-            />
-          }
-          label="Group by value"
-        />
-      </Paper>
-      <BaseTextButton
-        text="Sort"
-        onClick={() => {
-          const { key } = inputKey;
-          if (key === "") return;
-          callbackSort(key, sortOrder);
-        }}
-      />
-    </Card>
+          </Paper>
+          <BaseTextButton
+            text="Sort"
+            onClick={() => {
+              const { key } = inputKey;
+              if (key === "") return;
+              callbackSort(key, sortOrder);
+            }}
+            style={{ display: "block", margin: "auto" }}
+          />
+        </>
+      }
+    />
   );
 
   return (
