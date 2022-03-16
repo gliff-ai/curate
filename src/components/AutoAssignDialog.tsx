@@ -445,7 +445,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         text="Assign"
         onClick={autoAssignImages}
         disabled={requiresConfirmation()}
-        style={{ margin: "auto", marginTop: "20px" }}
+        style={{ display: "block", margin: "auto", marginTop: "20px" }}
       />
     </div>
   );
