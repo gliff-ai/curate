@@ -1,58 +1,20 @@
 import { useEffect, useState } from "react";
 import {
-  Paper,
-  Card,
+  BaseIconButton,
+  BaseTextButton,
+  MenuItem,
+  FormControl,
+  GliffCard,
   Dialog,
   InputLabel,
   Select,
-  IconButton,
   Alert,
   Button,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import SVG from "react-inlinesvg";
-import {
-  BaseIconButton,
-  BaseTextButton,
-  theme,
-  icons,
-  Typography,
-  MenuItem,
-  FormControl,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
 import { Metadata, MetaItem } from "@/interfaces";
-
-const useStyles = makeStyles(() => ({
-  paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
-  paperBody: { margin: "15px", width: "450px" },
-  container: { textAlign: "center", marginTop: "20px" },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    width: "auto",
-    hegith: "400px",
-  },
-  topography: {
-    color: "#000000",
-    display: "inline",
-    fontSize: "21px",
-    marginRight: "125px",
-  },
-  alert: {
-    width: "auto",
-  },
-  contentContainer: { padding: "10px" },
-  closeButton: {
-    position: "absolute",
-    top: "7px",
-    right: "5px",
-  },
-  closeIcon: { width: "15px" },
-  okButton: { position: "absolute", right: "10px", top: "75px" },
-}));
 
 interface Props {
   profiles: Profile[];
@@ -91,7 +53,6 @@ interface AssignmentResult {
 }
 
 export function AutoAssignDialog(props: Props): React.ReactElement {
-  const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [imageSelectionType, setImageSelectionType] = useState<number>(
     SelectionType.All
@@ -432,7 +393,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   }, [props.profiles, assignmentType, info]);
 
   const dialogContent = (
-    <div className={classes.contentContainer}>
+    <div>
       {/* select images to assign */}
       <FormControl>
         <InputLabel>Images to assign:</InputLabel>
@@ -479,14 +440,13 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <div className={classes.container}>
-        <BaseTextButton
-          id="assign"
-          text="Assign"
-          onClick={autoAssignImages}
-          disabled={requiresConfirmation()}
-        />
-      </div>
+      <BaseTextButton
+        id="assign"
+        text="Assign"
+        onClick={autoAssignImages}
+        disabled={requiresConfirmation()}
+        style={{ margin: "auto", marginTop: "20px" }}
+      />
     </div>
   );
 
@@ -499,45 +459,35 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         id="auto-assign-images"
       />
       <Dialog open={open} onClose={handleClose}>
-        <Card className={classes.card}>
-          <Paper
-            elevation={0}
-            variant="outlined"
-            square
-            className={classes.paperHeader}
-          >
-            <Typography className={classes.topography}>
-              Auto-assign images
-            </Typography>
-            <IconButton
-              className={classes.closeButton}
-              onClick={handleClose}
-              size="small"
-            >
-              <SVG src={icons.removeLabel} className={classes.closeIcon} />
-            </IconButton>
-          </Paper>
-          <Paper elevation={0} square className={classes.paperBody}>
-            {message ? (
-              <>
-                <Alert className={classes.alert} severity={message.severity}>
-                  {message.text}
-                  {requiresConfirmation() && (
-                    <Button
-                      className={classes.okButton}
-                      onClick={resetDefaults}
-                      color="inherit"
-                    >
-                      Ok
-                    </Button>
-                  )}
-                </Alert>
-              </>
-            ) : null}
+        <GliffCard
+          title="Auto-assign images"
+          el={
+            <div style={{ margin: "15px", width: "450px" }}>
+              {message ? (
+                <>
+                  <Alert style={{ width: "auto" }} severity={message.severity}>
+                    {message.text}
+                    {requiresConfirmation() && (
+                      <Button
+                        style={{
+                          position: "absolute",
+                          right: "25px",
+                          top: "95px",
+                        }}
+                        onClick={resetDefaults}
+                        color="inherit"
+                      >
+                        Ok
+                      </Button>
+                    )}
+                  </Alert>
+                </>
+              ) : null}
 
-            {dialogContent}
-          </Paper>
-        </Card>
+              {dialogContent}
+            </div>
+          }
+        />
       </Dialog>
     </>
   );

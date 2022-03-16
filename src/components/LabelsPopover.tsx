@@ -7,10 +7,11 @@ import {
   BasePopover,
   icons,
   InputBase,
-  GliffPopover,
+  GliffCard,
   Chip,
   Autocomplete,
   Avatar,
+  TextField,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 
@@ -53,7 +54,7 @@ export function LabelsPopover(props: Props): ReactElement {
 
   const popoverContent = (
     <>
-      <GliffPopover
+      <GliffCard
         title={props.imageName}
         el={
           <div style={{ display: "table-caption" }}>
@@ -80,6 +81,12 @@ export function LabelsPopover(props: Props): ReactElement {
                       }
                     }}
                     autoFocus
+                    style={{
+                      fontSize: 14,
+                      width: "225px",
+                      marginBottom: "20px",
+                      borderBottom: "solid 1px #dadde9",
+                    }}
                   />
                 )}
               />

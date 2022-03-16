@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   Radio,
   Checkbox,
-  GliffPopover,
+  GliffCard,
 } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
@@ -61,7 +61,7 @@ export const SortPopover = ({
   }, [metadataKeys]);
 
   const popoverContent = (
-    <GliffPopover
+    <GliffCard
       title="Sort"
       el={
         <>
