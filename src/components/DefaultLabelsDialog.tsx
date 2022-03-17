@@ -29,7 +29,6 @@ interface Props {
 }
 
 export function DefaultLabelsDialog(props: Props): React.ReactElement {
-  const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [inputString, setInputString] = useState<string>("");
   const [oldLabels, setOldLabels] = useState<string[]>([]);

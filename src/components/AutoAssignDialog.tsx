@@ -395,6 +395,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   const dialogContent = (
     <div>
       {/* select images to assign */}
+      <br />
       <FormControl>
         <InputLabel>Images to assign:</InputLabel>
         <Select
@@ -408,6 +409,8 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           )}
         </Select>
       </FormControl>
+      <br />
+
       {/* select type of assignment */}
       {info && info.hasAssignedImages && (
         <FormControl>
@@ -465,7 +468,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
             <div style={{ margin: "15px", width: "450px" }}>
               {message ? (
                 <>
-                  <Alert style={{ width: "auto" }} severity={message.severity}>
+                  <Alert severity={message.severity}>
                     {message.text}
                     {requiresConfirmation() && (
                       <Button
