@@ -32,6 +32,7 @@ export const SortPopover = ({
     key: "",
     label: "",
   });
+  const [close, setClose] = useState(0);
 
   const [sortOrder, setSortOrder] = useState("");
   const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
@@ -130,6 +131,11 @@ export const SortPopover = ({
           />
         </>
       }
+      action={{
+        onClick: () => {
+          setClose((close) => close + 1);
+        },
+      }}
     />
   );
 

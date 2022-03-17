@@ -490,6 +490,11 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
               {dialogContent}
             </div>
           }
+          action={{
+            onClick: () => {
+              handleClose();
+            },
+          }}
         />
       </Dialog>
     </>

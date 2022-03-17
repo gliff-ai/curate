@@ -209,6 +209,11 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               </div>
             </div>
           }
+          action={{
+            onClick: () => {
+              handleClose();
+            },
+          }}
         />
       </Dialog>
     </>

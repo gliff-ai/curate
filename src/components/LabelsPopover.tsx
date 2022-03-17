@@ -144,6 +144,11 @@ export function LabelsPopover(props: Props): ReactElement {
             ))}
           </div>
         }
+        action={{
+          onClick: () => {
+            setClose((close) => close + 1);
+          },
+        }}
       />
     </>
   );
