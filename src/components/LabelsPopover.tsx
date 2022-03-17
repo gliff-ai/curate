@@ -68,6 +68,7 @@ export function LabelsPopover(props: Props): ReactElement {
                     setNewLabel(value);
                   }
                 }}
+                style={{ width: "300px" }}
                 options={props.defaultLabels}
                 freeSolo={!props.restrictLabels}
                 value={newLabel}
@@ -112,7 +113,7 @@ export function LabelsPopover(props: Props): ReactElement {
               key={`button-add-${props.id}`}
               onClick={handleAddLabel(newLabel)}
               size="large"
-              style={{ position: "absolute", right: "10px", top: "60px" }}
+              style={{ position: "absolute", right: "10px", top: "70px" }}
             >
               <SVG
                 src={icons.add}
