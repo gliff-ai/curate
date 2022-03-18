@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 16
       - name: setup dependencies
-        run: npm i -g eslint prettier && npm i
+        run: npm i -g eslint prettier && npm ci
       - name: lint
         run: npm run lint:ts
       - name: check formatting
@@ -29,12 +29,12 @@ jobs:
         with:
           node-version: 16
       - name: setup dependencies
-        run: npm i
+        run: npm ci
       - name: build
         run: npm run build
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: 16
       - name: setup dependencies
-        run: npm i
+        run: npm ci
       - name: run tests
         run: npm run test
   publish:
@@ -59,7 +59,7 @@ jobs:
         with:
           node-version: 16
       - name: setup dependencies
-        run: npm i --omit=peer
+        run: npm ci --omit=peer
       - name: build
         run: npm run build
       - name: publish
