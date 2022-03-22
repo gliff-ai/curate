@@ -1,22 +1,24 @@
 import { Metadata } from "@/interfaces";
 
 interface PluginElement {
+  type?: string;
   name: string;
   tooltip: string;
-  onClick: (data: DataIn) => Promise<DataOut>;
+  onClick: (data: PluginInput) => Promise<PluginOutput>;
 }
 
-interface DataIn {
-  collectionUid?: string;
-  imageUid?: string;
-  metadata?: Metadata;
-}
+type PluginInput = Partial<{
+  collectionUid: string;
+  imageUid: string;
+  metadata: Metadata;
+}>;
 
-interface DataOut {
-  status?: string;
-  message?: string;
-  domElement?: JSX.Element | null;
-}
+type PluginOutput = Partial<{
+  status: string;
+  message: string;
+  domElement: JSX.Element | null;
+  data: { metadata: Metadata };
+}>;
 
 type PluginObject = { [name: string]: PluginElement[] };
 
