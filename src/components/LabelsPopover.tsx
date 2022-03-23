@@ -1,17 +1,17 @@
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 
-import { IconButton } from "@mui/material"; // TODO Import from "@gliff-ai/style"
+// TODO Import from "@gliff-ai/style"
 import {
   theme,
-  BasePopover,
+  Dialog,
   icons,
   InputBase,
-  GliffCard,
   Chip,
   Autocomplete,
   Avatar,
   TextField,
+  IconButton,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 
@@ -52,111 +52,10 @@ export function LabelsPopover(props: Props): ReactElement {
     setNewLabel("");
   };
 
-  const popoverContent = (
-    <>
-      <GliffCard
-        title={props.imageName}
-        el={
-          <div style={{ display: "table-caption" }}>
-            {props.defaultLabels.length > 0 ? (
-              <Autocomplete
-                onChange={(event, value) => {
-                  setNewLabel(value);
-                }}
-                onInputChange={(event, value) => {
-                  if (!props.restrictLabels) {
-                    setNewLabel(value);
-                  }
-                }}
-                style={{ width: "300px" }}
-                options={props.defaultLabels}
-                freeSolo={!props.restrictLabels}
-                value={newLabel}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Label"
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        handleAddLabel(newLabel)();
-                      }
-                    }}
-                    autoFocus
-                    style={{
-                      fontSize: 14,
-                      width: "225px",
-                      marginBottom: "20px",
-                      borderBottom: "solid 1px #dadde9",
-                    }}
-                  />
-                )}
-              />
-            ) : (
-              <InputBase
-                key={`input-${props.id}`}
-                placeholder="New label"
-                type="text"
-                value={newLabel}
-                onChange={handleNewLabelChange}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddLabel(newLabel)();
-                  }
-                }}
-                size="small"
-                autoFocus
-              />
-            )}
-
-            <IconButton
-              aria-label="add-label"
-              key={`button-add-${props.id}`}
-              onClick={handleAddLabel(newLabel)}
-              size="large"
-              style={{ position: "absolute", right: "10px", top: "70px" }}
-            >
-              <SVG
-                src={icons.add}
-                fill={theme.palette.text.secondary}
-                width="15px"
-              />
-            </IconButton>
-            {props.labels.map((label) => (
-              <Chip
-                key={`chip-add-${label}`}
-                avatar={
-                  <Avatar
-                    variant="circular"
-                    style={{ cursor: "pointer" }}
-                    onClick={handleDeleteLabel(label)}
-                    data-testid={`delete-${label}`}
-                  >
-                    <SVG
-                      width="15px"
-                      src={icons.removeLabel}
-                      fill={theme.palette.text.secondary}
-                    />
-                  </Avatar>
-                }
-                label={label}
-                variant="outlined"
-              />
-            ))}
-          </div>
-        }
-        action={{
-          onClick: () => {
-            setClose((close) => close + 1);
-          },
-        }}
-      />
-    </>
-  );
-
   return (
-    <BasePopover
-      tooltip={tooltips.addLabels}
-      tooltipPlacement="top-start"
+    <Dialog
+      title="Labels Popover"
+      TriggerButton={<IconButton tooltip={tooltips.addLabels} size="medium" />}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "left",
@@ -167,7 +66,6 @@ export function LabelsPopover(props: Props): ReactElement {
       }}
       fill={true}
       iconColor="#ffffff"
-      children={popoverContent}
       triggerClosing={close}
       id="add-label"
       style={{
@@ -175,6 +73,93 @@ export function LabelsPopover(props: Props): ReactElement {
         bottom: theme.spacing(1),
         left: theme.spacing(2),
       }}
-    />
+    >
+      <div style={{ display: "table-caption" }}>
+        {props.defaultLabels.length > 0 ? (
+          <Autocomplete
+            onChange={(event, value) => {
+              setNewLabel(value);
+            }}
+            onInputChange={(event, value) => {
+              if (!props.restrictLabels) {
+                setNewLabel(value);
+              }
+            }}
+            style={{ width: "300px" }}
+            options={props.defaultLabels}
+            freeSolo={!props.restrictLabels}
+            value={newLabel}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Label"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddLabel(newLabel)();
+                  }
+                }}
+                autoFocus
+                style={{
+                  fontSize: 14,
+                  width: "225px",
+                  marginBottom: "20px",
+                  borderBottom: "solid 1px #dadde9",
+                }}
+              />
+            )}
+          />
+        ) : (
+          <InputBase
+            key={`input-${props.id}`}
+            placeholder="New label"
+            type="text"
+            value={newLabel}
+            onChange={handleNewLabelChange}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleAddLabel(newLabel)();
+              }
+            }}
+            size="small"
+            autoFocus
+          />
+        )}
+
+        <IconButton
+          aria-label="add-label"
+          key={`button-add-${props.id}`}
+          onClick={handleAddLabel(newLabel)}
+          size="large"
+          style={{ position: "absolute", right: "10px", top: "70px" }}
+        >
+          <SVG
+            src={icons.add}
+            fill={theme.palette.text.secondary}
+            width="15px"
+          />
+        </IconButton>
+        {props.labels.map((label) => (
+          <Chip
+            key={`chip-add-${label}`}
+            avatar={
+              <Avatar
+                variant="circular"
+                style={{ cursor: "pointer" }}
+                onClick={handleDeleteLabel(label)}
+                data-testid={`delete-${label}`}
+              >
+                <SVG
+                  width="15px"
+                  src={icons.removeLabel}
+                  fill={theme.palette.text.secondary}
+                />
+              </Avatar>
+            }
+            label={label}
+            variant="outlined"
+          />
+        ))}
+      </div>
+    </Dialog>
   );
 }
