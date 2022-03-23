@@ -32,7 +32,6 @@ export const SortPopover = ({
     key: "",
     label: "",
   });
-  const [close, setClose] = useState(0);
 
   const [sortOrder, setSortOrder] = useState("");
   const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
@@ -71,7 +70,7 @@ export const SortPopover = ({
             name: "Sort",
           }}
           icon="icon"
-          size="medium"
+          tooltipPlacement="bottom"
         />
       }
       anchorOrigin={{
@@ -82,7 +81,6 @@ export const SortPopover = ({
         vertical: "top",
         horizontal: "right",
       }}
-      triggerClosing={close}
     >
       <>
         <FormControl component="fieldset">

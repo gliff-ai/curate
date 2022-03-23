@@ -69,8 +69,11 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
       title="Default Labels"
       TriggerButton={
         <IconButton
-          tooltip={tooltips.defaultLabels}
-          size="medium"
+          tooltip={{
+            name: "Set default labels",
+          }}
+          icon="icon"
+          tooltipPlacement="top"
           onClick={() => {
             setOpen(!open);
             // remember the original defaultLabels so we can revert if user hits Cancel:

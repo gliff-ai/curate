@@ -54,7 +54,14 @@ export function LabelsPopover(props: Props): ReactElement {
   return (
     <Dialog
       title="Labels Popover"
-      TriggerButton={<IconButton tooltip={tooltips.addLabels} size="medium" />}
+      TriggerButton={
+        <IconButton
+          tooltip={{
+            name: "Update Image Labels",
+          }}
+          icon="icon"
+        />
+      }
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "left",

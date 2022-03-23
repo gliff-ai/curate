@@ -456,7 +456,15 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   return (
     <Dialog
       title="Auto Assign"
-      TriggerButton={<IconButton tooltip={tooltips.autoAssign} size="medium" />}
+      TriggerButton={
+        <IconButton
+          tooltip={{
+            name: "Auto-Assign Images",
+          }}
+          icon="icon"
+          tooltipPlacement="top"
+        />
+      }
     >
       <div style={{ margin: "15px", width: "450px" }}>
         {message ? (
