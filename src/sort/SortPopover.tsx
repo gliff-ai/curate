@@ -14,7 +14,6 @@ import {
   icons,
 } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
-import { tooltips } from "@/components/Tooltips";
 
 interface Props {
   metadataKeys: string[];

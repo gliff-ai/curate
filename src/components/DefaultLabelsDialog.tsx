@@ -12,6 +12,7 @@ import {
   InputBase,
   Avatar,
   IconButton,
+  MuiIconbutton,
 } from "@gliff-ai/style";
 
 interface Props {
@@ -104,7 +105,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           size="small"
           autoFocus
         />
-        <IconButton
+        <MuiIconbutton
           aria-label="add-label"
           key="button-add-default-label"
           style={{ position: "absolute", right: "10px" }}
@@ -115,7 +116,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
             fill={theme.palette.text.secondary}
             width="15px"
           />
-        </IconButton>
+        </MuiIconbutton>
         {props.labels.map((label) => (
           <Chip
             key={`chip-add-${label}`}
@@ -197,6 +198,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
             id="confirm-default-labels"
             text="Confirm"
             onClick={() => {
+              console.log("hello");
               props.updateDefaultLabels(
                 props.labels,
                 props.restrictLabels,

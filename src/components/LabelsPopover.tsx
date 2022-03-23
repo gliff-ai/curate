@@ -11,8 +11,8 @@ import {
   Avatar,
   TextField,
   IconButton,
+  MuiIconbutton,
 } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
 
 interface Props {
   id: string;
@@ -131,7 +131,7 @@ export function LabelsPopover(props: Props): ReactElement {
           />
         )}
 
-        <IconButton
+        <MuiIconbutton
           aria-label="add-label"
           key={`button-add-${props.id}`}
           onClick={handleAddLabel(newLabel)}
@@ -143,7 +143,7 @@ export function LabelsPopover(props: Props): ReactElement {
             fill={theme.palette.text.secondary}
             width="15px"
           />
-        </IconButton>
+        </MuiIconbutton>
         {props.labels.map((label) => (
           <Chip
             key={`chip-add-${label}`}
