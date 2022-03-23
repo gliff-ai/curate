@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState, ChangeEvent } from "react";
 import {
   BaseTextButton,
-  BasePopover,
   RadioGroup,
   MenuItem,
   Paper,
@@ -10,7 +9,8 @@ import {
   FormControlLabel,
   Radio,
   Checkbox,
-  GliffCard,
+  IconButton,
+  Dialog,
 } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
@@ -61,89 +61,19 @@ export const SortPopover = ({
     setMetadataLabels(labels);
   }, [metadataKeys]);
 
-  const popoverContent = (
-    <GliffCard
-      title="Sort"
-      el={
-        <>
-          <FormControl component="fieldset">
-            <TextField
-              id="select-metadata-key"
-              select
-              value={inputKey.label}
-              onChange={handleChange(updateKey)}
-              helperText="Please select a metadata field"
-              variant="standard"
-            >
-              {metadataLabels &&
-                metadataLabels.map(({ key, label }) => (
-                  <MenuItem key={key} value={label}>
-                    {label}
-                  </MenuItem>
-                ))}
-            </TextField>
-          </FormControl>
-
-          <Paper
-            elevation={0}
-            square
-            style={{ padding: "10px", marginLeft: "15px" }}
-          >
-            {/* Form for selecting a sort order */}
-            <FormControl component="fieldset">
-              <RadioGroup
-                aria-label="sort-order"
-                name="sort-order"
-                value={sortOrder}
-                onChange={handleChange(setSortOrder)}
-              >
-                <FormControlLabel
-                  value="asc"
-                  control={<Radio size="small" />}
-                  label="Sort by ASC"
-                />
-                <FormControlLabel
-                  value="desc"
-                  control={<Radio size="small" />}
-                  label="Sort by DESC"
-                />
-              </RadioGroup>
-            </FormControl>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isGrouped}
-                  onChange={toggleIsGrouped}
-                  name="group-by"
-                />
-              }
-              label="Group by value"
-            />
-          </Paper>
-          <BaseTextButton
-            text="Sort"
-            onClick={() => {
-              const { key } = inputKey;
-              if (key === "") return;
-              callbackSort(key, sortOrder);
-            }}
-            style={{ display: "block", margin: "auto" }}
-          />
-        </>
-      }
-      action={{
-        onClick: () => {
-          setClose((close) => close + 1);
-        },
-      }}
-    />
-  );
-
   return (
-    <BasePopover
-      tooltip={tooltips.sort}
-      tooltipPlacement="bottom"
-      id="sort"
+    <Dialog
+      title="Sort"
+      // id="sort"
+      TriggerButton={
+        <IconButton
+          tooltip={{
+            name: "Sort",
+          }}
+          icon="icon"
+          size="medium"
+        />
+      }
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "center",
@@ -152,8 +82,73 @@ export const SortPopover = ({
         vertical: "top",
         horizontal: "right",
       }}
-      children={popoverContent}
       triggerClosing={close}
-    />
+    >
+      <>
+        <FormControl component="fieldset">
+          <TextField
+            id="select-metadata-key"
+            select
+            value={inputKey.label}
+            onChange={handleChange(updateKey)}
+            helperText="Please select a metadata field"
+            variant="standard"
+          >
+            {metadataLabels &&
+              metadataLabels.map(({ key, label }) => (
+                <MenuItem key={key} value={label}>
+                  {label}
+                </MenuItem>
+              ))}
+          </TextField>
+        </FormControl>
+
+        <Paper
+          elevation={0}
+          square
+          style={{ padding: "10px", marginLeft: "15px" }}
+        >
+          {/* Form for selecting a sort order */}
+          <FormControl component="fieldset">
+            <RadioGroup
+              aria-label="sort-order"
+              name="sort-order"
+              value={sortOrder}
+              onChange={handleChange(setSortOrder)}
+            >
+              <FormControlLabel
+                value="asc"
+                control={<Radio size="small" />}
+                label="Sort by ASC"
+              />
+              <FormControlLabel
+                value="desc"
+                control={<Radio size="small" />}
+                label="Sort by DESC"
+              />
+            </RadioGroup>
+          </FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isGrouped}
+                onChange={toggleIsGrouped}
+                name="group-by"
+              />
+            }
+            label="Group by value"
+          />
+        </Paper>
+        <BaseTextButton
+          text="Sort"
+          onClick={() => {
+            const { key } = inputKey;
+            if (key === "") return;
+            callbackSort(key, sortOrder);
+          }}
+          style={{ display: "block", margin: "auto" }}
+        />
+      </>
+    </Dialog>
   );
 };
