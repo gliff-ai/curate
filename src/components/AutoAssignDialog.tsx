@@ -4,12 +4,12 @@ import {
   BaseTextButton,
   MenuItem,
   FormControl,
-  GliffCard,
   Dialog,
   InputLabel,
   Select,
   Alert,
   Button,
+  IconButton,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
@@ -454,49 +454,34 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   );
 
   return (
-    <>
-      <BaseIconButton
-        tooltip={tooltips.autoAssign}
-        onClick={() => setOpen(!open)}
-        tooltipPlacement="top"
-        id="auto-assign-images"
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <GliffCard
-          title="Auto-assign images"
-          el={
-            <div style={{ margin: "15px", width: "450px" }}>
-              {message ? (
-                <>
-                  <Alert severity={message.severity}>
-                    {message.text}
-                    {requiresConfirmation() && (
-                      <Button
-                        style={{
-                          position: "absolute",
-                          right: "25px",
-                          top: "95px",
-                        }}
-                        onClick={resetDefaults}
-                        color="inherit"
-                      >
-                        Ok
-                      </Button>
-                    )}
-                  </Alert>
-                </>
-              ) : null}
+    <Dialog
+      title="Auto Assign"
+      TriggerButton={<IconButton tooltip={tooltips.autoAssign} size="medium" />}
+    >
+      <div style={{ margin: "15px", width: "450px" }}>
+        {message ? (
+          <>
+            <Alert severity={message.severity}>
+              {message.text}
+              {requiresConfirmation() && (
+                <Button
+                  style={{
+                    position: "absolute",
+                    right: "25px",
+                    top: "95px",
+                  }}
+                  onClick={resetDefaults}
+                  color="inherit"
+                >
+                  Ok
+                </Button>
+              )}
+            </Alert>
+          </>
+        ) : null}
 
-              {dialogContent}
-            </div>
-          }
-          action={{
-            onClick: () => {
-              handleClose();
-            },
-          }}
-        />
-      </Dialog>
-    </>
+        {dialogContent}
+      </div>
+    </Dialog>
   );
 }

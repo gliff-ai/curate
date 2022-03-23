@@ -1,7 +1,6 @@
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 
-// TODO Import from "@gliff-ai/style"
 import {
   theme,
   Dialog,
