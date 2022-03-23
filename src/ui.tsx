@@ -176,6 +176,7 @@ interface Props extends WithStyles<typeof styles> {
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
   launchPluginSettingsCallback?: (() => void) | null;
+  saveMetadataCallback?: ((data: any) => void) | null;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
 }
@@ -218,6 +219,7 @@ class UserInterface extends Component<Props, State> {
     launchPluginSettingsCallback: null,
     restrictLabels: false,
     multiLabel: true,
+    saveMetadataCallback: null,
   };
 
   constructor(props: Props) {
@@ -609,7 +611,6 @@ class UserInterface extends Component<Props, State> {
       const today = new Date();
       newMetadata.push({
         imageName: imageFileInfo[i].fileName,
-        id: imageFileInfo[i].fileID,
         dateCreated: today.toLocaleDateString("gb-EN"),
         size: imageFileInfo[i].size.toString(),
         dimensions: `${imageFileInfo[i].width} x ${imageFileInfo[i].height}`,
@@ -808,6 +809,7 @@ class UserInterface extends Component<Props, State> {
                           launchPluginSettingsCallback={
                             this.props.launchPluginSettingsCallback
                           }
+                          saveMetadataCallback={this.props.saveMetadataCallback}
                         />
                       )}
                     </>
