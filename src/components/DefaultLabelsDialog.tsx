@@ -13,7 +13,6 @@ import {
   Avatar,
   IconButton,
 } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
 
 interface Props {
   labels: string[];
@@ -72,7 +71,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           tooltip={{
             name: "Set default labels",
           }}
-          icon="icon"
+          icon={icons.annotationLabels}
           tooltipPlacement="top"
           onClick={() => {
             setOpen(!open);

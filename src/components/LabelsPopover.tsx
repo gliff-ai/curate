@@ -59,7 +59,7 @@ export function LabelsPopover(props: Props): ReactElement {
           tooltip={{
             name: "Update Image Labels",
           }}
-          icon="icon"
+          icon={icons.annotationLabel}
         />
       }
       anchorOrigin={{

@@ -11,6 +11,7 @@ import {
   Checkbox,
   IconButton,
   Dialog,
+  icons,
 } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
 import { tooltips } from "@/components/Tooltips";
@@ -69,7 +70,7 @@ export const SortPopover = ({
           tooltip={{
             name: "Sort",
           }}
-          icon="icon"
+          icon={icons.searchFilter}
           tooltipPlacement="bottom"
         />
       }

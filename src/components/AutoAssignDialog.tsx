@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  BaseIconButton,
+  icons,
   BaseTextButton,
   MenuItem,
   FormControl,
@@ -11,7 +11,6 @@ import {
   Button,
   IconButton,
 } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
 import { Metadata, MetaItem } from "@/interfaces";
@@ -461,7 +460,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           tooltip={{
             name: "Auto-Assign Images",
           }}
-          icon="icon"
+          icon={icons.autoAssign}
           tooltipPlacement="top"
         />
       }
