@@ -60,6 +60,14 @@ export function LabelsPopover(props: Props): ReactElement {
             name: "Update Image Labels",
           }}
           icon={icons.annotationLabel}
+          style={{
+            position: "absolute",
+            bottom: theme.spacing(1),
+            left: theme.spacing(2),
+          }}
+          iconColor="#ffffff"
+          fill
+          id="add-label"
         />
       }
       anchorOrigin={{
@@ -70,15 +78,7 @@ export function LabelsPopover(props: Props): ReactElement {
         vertical: "top",
         horizontal: "left",
       }}
-      fill={true}
-      iconColor="#ffffff"
       triggerClosing={close}
-      id="add-label"
-      style={{
-        position: "absolute",
-        bottom: theme.spacing(1),
-        left: theme.spacing(2),
-      }}
     >
       <div style={{ display: "table-caption" }}>
         {props.defaultLabels.length > 0 ? (
