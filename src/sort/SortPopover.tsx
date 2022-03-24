@@ -10,7 +10,7 @@ import {
   Radio,
   Checkbox,
   IconButton,
-  Dialog,
+  Popover,
   icons,
 } from "@gliff-ai/style";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
@@ -61,7 +61,7 @@ export const SortPopover = ({
   }, [metadataKeys]);
 
   return (
-    <Dialog
+    <Popover
       title="Sort"
       // id="sort"
       TriggerButton={
@@ -147,6 +147,6 @@ export const SortPopover = ({
           style={{ display: "block", margin: "auto" }}
         />
       </>
-    </Dialog>
+    </Popover>
   );
 };

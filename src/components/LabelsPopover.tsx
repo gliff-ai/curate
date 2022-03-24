@@ -3,7 +3,7 @@ import SVG from "react-inlinesvg";
 
 import {
   theme,
-  Dialog,
+  Popover,
   icons,
   InputBase,
   Chip,
@@ -52,7 +52,7 @@ export function LabelsPopover(props: Props): ReactElement {
   };
 
   return (
-    <Dialog
+    <Popover
       title="Labels Popover"
       TriggerButton={
         <IconButton
@@ -166,6 +166,6 @@ export function LabelsPopover(props: Props): ReactElement {
           />
         ))}
       </div>
-    </Dialog>
+    </Popover>
   );
 }
