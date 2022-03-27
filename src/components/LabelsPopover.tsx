@@ -26,7 +26,6 @@ interface Props {
 
 export function LabelsPopover(props: Props): ReactElement {
   const [newLabel, setNewLabel] = useState("");
-  const [close, setClose] = useState(0);
 
   const handleNewLabelChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewLabel(event.target.value);
@@ -54,6 +53,7 @@ export function LabelsPopover(props: Props): ReactElement {
   return (
     <Popover
       title="Labels Popover"
+      // key={`button-add-${props.id}`}
       TriggerButton={
         <IconButton
           tooltip={{
@@ -78,7 +78,6 @@ export function LabelsPopover(props: Props): ReactElement {
         vertical: "top",
         horizontal: "left",
       }}
-      triggerClosing={close}
     >
       <div style={{ display: "table-caption" }}>
         {props.defaultLabels.length > 0 ? (
@@ -136,7 +135,7 @@ export function LabelsPopover(props: Props): ReactElement {
           key={`button-add-${props.id}`}
           onClick={handleAddLabel(newLabel)}
           size="large"
-          style={{ position: "absolute", right: "10px", top: "70px" }}
+          sx={{ position: "absolute", right: "10px", top: "70px" }}
         >
           <SVG
             src={icons.add}
