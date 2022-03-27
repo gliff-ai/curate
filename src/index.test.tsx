@@ -3,6 +3,10 @@ import { Metadata } from "@/interfaces";
 import UserInterface from "./index";
 import { UserAccess } from "./ui";
 
+jest.mock("@gliff-ai/upload", () => ({
+  UploadImage: () => <div id="upload-image">Upload</div>,
+}));
+
 const metadata = (require("../examples/samples/metadata.json") as Metadata).map(
   (mitem, i) => ({
     id: String(i),

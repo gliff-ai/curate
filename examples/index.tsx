@@ -32,6 +32,7 @@ const profiles = [
 const plugins = {
   "Example plug-in": [
     {
+      type: "Javascript",
       name: "Example plug-in",
       tooltip: "Short description",
       onClick: (data = {}) => {
