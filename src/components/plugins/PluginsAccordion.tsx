@@ -1,10 +1,8 @@
 import { ReactElement, ChangeEvent, useState } from "react";
 import {
   Paper,
-  Typography,
   Divider,
   MenuList,
-  MenuItem,
   ButtonGroup,
   Accordion,
   AccordionSummary,
@@ -20,6 +18,8 @@ import {
   WarningSnackbar,
   HtmlTooltip,
   BaseTooltipTitle,
+  Typography,
+  MenuItem,
 } from "@gliff-ai/style";
 import type { PluginElement, PluginObject } from "./interfaces";
 import { Metadata } from "@/interfaces";
@@ -244,7 +244,7 @@ export const PluginsAccordion = ({
                 tooltip={{ name: "Docs" }}
                 icon={icons.documentHelp}
                 onClick={() => {
-                  document.location = "https://docs.gliff.app/";
+                  window.open("https://docs.gliff.app/", "_blank");
                 }}
                 tooltipPlacement="top"
                 size="small"

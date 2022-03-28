@@ -41,17 +41,17 @@ describe("labels assignment", () => {
   test("cannot add duplicate labels", async () => {
     const addLabelButton = screen.getByRole("button", { name: "add-label" });
     const inputField = screen.getByPlaceholderText("New label");
-    expect(screen.getAllByText(/label*/i)).toHaveLength(1);
+    expect(screen.getAllByText(/label*/i)).toHaveLength(2);
 
     // after adding a new label the image should have two labels
     fireEvent.change(inputField, { target: { value: newLabel } });
     fireEvent.click(addLabelButton);
-    expect(screen.getAllByText(/label*/i)).toHaveLength(2);
+    expect(screen.getAllByText(/label*/i)).toHaveLength(3);
 
     // after adding a duplicate label the image should still have two labels
     fireEvent.change(inputField, { target: { value: newLabel } });
     fireEvent.click(addLabelButton);
-    expect(screen.getAllByText(/label*/i)).toHaveLength(2);
+    expect(screen.getAllByText(/label*/i)).toHaveLength(3);
   });
 
   test("delete a label", async () => {
