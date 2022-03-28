@@ -52,8 +52,7 @@ export function LabelsPopover(props: Props): ReactElement {
 
   return (
     <Popover
-      title="Labels Popover"
-      // key={`button-add-${props.id}`}
+      title={props.imageName}
       TriggerButton={
         <IconButton
           tooltip={{
