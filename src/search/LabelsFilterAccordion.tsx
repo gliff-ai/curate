@@ -4,7 +4,6 @@ import SVG from "react-inlinesvg";
 import {
   Accordion,
   AccordionSummary,
-  Typography,
   AccordionDetails,
   List,
   ListItem,
@@ -12,7 +11,7 @@ import {
   IconButton,
   Avatar,
 } from "@mui/material";
-import { theme, icons } from "@gliff-ai/style";
+import { theme, icons, Typography } from "@gliff-ai/style";
 
 const useStyles = makeStyles({
   accordion: {
