@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@gliff-ai/style": "^8.3.0",
-    "@gliff-ai/upload": "^0.3.2",
+    "@gliff-ai/upload": "^1.2.8",
     "react-inlinesvg": "^2.3.0"
   }
 }
