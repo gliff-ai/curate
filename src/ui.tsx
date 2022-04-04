@@ -167,13 +167,16 @@ interface Props extends WithStyles<typeof styles> {
   deleteImagesCallback?: (imageUids: string[]) => void;
   annotateCallback?: (id: string) => void;
   downloadDatasetCallback?: () => void;
+  // eslint-disable-next-line react/no-unused-prop-types
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
   setIsLoading?: (isLoading: boolean) => void;
   updateImagesCallback?: () => void;
   plugins?: PluginObject | null;
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
   launchPluginSettingsCallback?: (() => void) | null;
+  saveMetadataCallback?: ((data: any) => void) | null;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
 }
@@ -197,14 +200,27 @@ interface State {
 }
 
 class UserInterface extends Component<Props, State> {
-  static defaultProps = {
-    showAppBar: true,
-    trustedServiceButtonToolbar: null,
+  public static defaultProps: Omit<Props, "showAppBar" | "classes"> = {
+    metadata: null,
+    saveImageCallback: null,
+    saveLabelsCallback: null,
+    saveDefaultLabelsCallback: null,
+    saveAssigneesCallback: null,
+    deleteImagesCallback: null,
+    annotateCallback: null,
+    downloadDatasetCallback: null,
+    defaultLabels: null,
+    setTask: null,
+    setIsLoading: null,
     plugins: null,
+    updateImagesCallback: null,
     profiles: null,
     userAccess: UserAccess.Collaborator,
     launchPluginSettingsCallback: null,
-  } as Pick<Props, "showAppBar">;
+    restrictLabels: false,
+    multiLabel: true,
+    saveMetadataCallback: null,
+  };
 
   constructor(props: Props) {
     super(props);
@@ -598,7 +614,10 @@ class UserInterface extends Component<Props, State> {
       const today = new Date();
       newMetadata.push({
         imageName: imageFileInfo[i].fileName,
+<<<<<<< HEAD
         id: imageFileInfo[i].content_hash,
+=======
+>>>>>>> dfa0445e1c55fb2ef779a35de0f5844d9be1687c
         dateCreated: today.toLocaleDateString("gb-EN"),
         size: imageFileInfo[i].size.toString(),
         dimensions: `${imageFileInfo[i].width} x ${imageFileInfo[i].height}`,
@@ -797,6 +816,7 @@ class UserInterface extends Component<Props, State> {
                           launchPluginSettingsCallback={
                             this.props.launchPluginSettingsCallback
                           }
+                          saveMetadataCallback={this.props.saveMetadataCallback}
                         />
                       )}
                     </>

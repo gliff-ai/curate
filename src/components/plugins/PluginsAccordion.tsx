@@ -1,10 +1,8 @@
 import { ReactElement, ChangeEvent, useState } from "react";
 import {
   Paper,
-  Typography,
   Divider,
   MenuList,
-  MenuItem,
   ButtonGroup,
   Accordion,
   AccordionSummary,
@@ -20,6 +18,8 @@ import {
   WarningSnackbar,
   HtmlTooltip,
   BaseTooltipTitle,
+  Typography,
+  MenuItem,
 } from "@gliff-ai/style";
 import type { PluginElement, PluginObject } from "./interfaces";
 import { Metadata } from "@/interfaces";
@@ -90,8 +90,9 @@ interface Props {
   plugins: PluginObject | null;
   metadata: Metadata;
   selectedImagesUid: string[];
-  updateImagesCallback: () => void;
+  updateImagesCallback: () => void | null;
   launchPluginSettingsCallback: (() => void) | null;
+  saveMetadataCallback: ((data: any) => void) | null;
 }
 
 export const PluginsAccordion = ({
@@ -101,6 +102,7 @@ export const PluginsAccordion = ({
   updateImagesCallback,
   metadata,
   selectedImagesUid,
+  saveMetadataCallback,
   launchPluginSettingsCallback,
 }: Props): ReactElement | null => {
   const classes = useStyles(expanded);
@@ -113,15 +115,31 @@ export const PluginsAccordion = ({
     try {
       const collectionUid = window.location.href.split("/").pop();
 
-      const data = {
-        collectionUid,
-        imageUid: selectedImagesUid[0] || undefined,
-        metadata,
-      };
+      // If any image is selected, a JS plugin works on this selection,
+      // otherwise it works on all the images open in CURATE.
+      const imageUids =
+        selectedImagesUid.length === 0
+          ? metadata.map(({ id }) => id)
+          : selectedImagesUid;
+
+      let data;
+      if (plugin.type === "Javascript") {
+        data = {
+          metadata: metadata
+            .map(({ selected, newGroup, ...mitem }) => mitem) // exclude keys added in CURATE
+            .filter(({ id }) => imageUids.includes(id as string)),
+        };
+      } else {
+        data = {
+          collectionUid,
+          imageUid: selectedImagesUid[0] || undefined,
+        };
+      }
 
       const response = await plugin.onClick(data);
-      updateImagesCallback();
-      console.log(response);
+      if (updateImagesCallback) {
+        updateImagesCallback();
+      }
 
       if (response?.message) {
         setError(response.message);
@@ -129,6 +147,24 @@ export const PluginsAccordion = ({
 
       if (response?.domElement) {
         setDialogContent(response.domElement);
+      }
+
+      if (response?.data) {
+        // only allow to update the metadata for the selected images
+        const metadata = response?.data?.metadata?.filter(({ id }) =>
+          imageUids.includes(id as string)
+        );
+
+        if (
+          metadata !== undefined &&
+          Object.keys(metadata).length !== 0 &&
+          saveMetadataCallback
+        ) {
+          saveMetadataCallback({
+            collectionUid,
+            metadata,
+          });
+        }
       }
     } catch (e) {
       console.error(e);
@@ -208,7 +244,7 @@ export const PluginsAccordion = ({
                 tooltip={{ name: "Docs" }}
                 icon={icons.documentHelp}
                 onClick={() => {
-                  document.location = "https://docs.gliff.app/";
+                  window.open("https://docs.gliff.app/", "_blank");
                 }}
                 tooltipPlacement="top"
                 size="small"

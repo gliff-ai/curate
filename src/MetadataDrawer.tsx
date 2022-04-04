@@ -1,7 +1,6 @@
 import { ReactElement, useState, useEffect } from "react";
 import {
   ListItem,
-  Typography,
   ListItemText,
   List,
   IconButton,
@@ -11,7 +10,7 @@ import {
   Box,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { theme, HtmlTooltip, icons } from "@gliff-ai/style";
+import { theme, HtmlTooltip, icons, Typography } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/interfaces";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";

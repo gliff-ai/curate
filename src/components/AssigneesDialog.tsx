@@ -3,11 +3,8 @@ import {
   Paper,
   Card,
   Dialog,
-  Typography,
   Input,
   InputLabel,
-  MenuItem,
-  FormControl,
   Select,
   Chip,
   IconButton,
@@ -15,7 +12,15 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
-import { BaseIconButton, BaseTextButton, icons, theme } from "@gliff-ai/style";
+import {
+  BaseIconButton,
+  BaseTextButton,
+  icons,
+  theme,
+  Typography,
+  MenuItem,
+  FormControl,
+} from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
 

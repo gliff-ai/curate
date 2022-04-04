@@ -1,72 +1,18 @@
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 
-import makeStyles from "@mui/styles/makeStyles";
 import {
+  theme,
+  Popover,
+  icons,
   InputBase,
   Chip,
-  Card,
-  CardHeader,
-  CardContent,
+  Autocomplete,
   Avatar,
-  Typography,
-  IconButton,
   TextField,
-} from "@mui/material";
-import { theme, BasePopover, icons } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
-import Autocomplete from "@mui/material/Autocomplete";
-
-const useStyles = makeStyles({
-  cross: {
-    position: "absolute",
-    right: "10px",
-    color: theme.palette.text.primary,
-  },
-  addButton: { position: "absolute", right: "10px", top: "60px" },
-  cardContent: {
-    padding: "15px",
-    paddingTop: "10px",
-  },
-  labelsCard: {
-    borderRadius: "9px",
-    backgroundColor: theme.palette.primary.light,
-    width: "300px",
-  },
-  labelsCardHeader: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.text.primary,
-    height: "44px",
-  },
-  cardHeaderTypography: {
-    fontSize: "21px",
-    width: "240px",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
-  labelsChip: {
-    margin: "5px 5px 0 0 ",
-    borderRadius: "9px",
-    color: theme.palette.text.secondary,
-  },
-  inputGrid: {
-    width: "100%",
-  },
-  input: {
-    fontSize: 14,
-    width: "225px",
-    marginBottom: "20px",
-    borderBottom: "solid 1px #dadde9",
-  },
-  addLabelButton: {
-    position: "absolute",
-    bottom: theme.spacing(1),
-    left: theme.spacing(2),
-  },
-  svgSmall: { width: "10px", height: "100%" },
-  iconSize: { width: "15px" },
-});
+  IconButton,
+  MuiIconbutton,
+} from "@gliff-ai/style";
 
 interface Props {
   id: string;
@@ -79,9 +25,7 @@ interface Props {
 }
 
 export function LabelsPopover(props: Props): ReactElement {
-  const classes = useStyles();
   const [newLabel, setNewLabel] = useState("");
-  const [close, setClose] = useState(0);
 
   const handleNewLabelChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewLabel(event.target.value);
@@ -106,25 +50,35 @@ export function LabelsPopover(props: Props): ReactElement {
     setNewLabel("");
   };
 
-  const popoverContent = (
-    <Card className={classes.labelsCard}>
-      <IconButton
-        key={`button-close-${props.id}`}
-        className={classes.cross}
-        onClick={() => setClose((close) => close + 1)}
-        size="large"
-      >
-        <SVG className={classes.iconSize} src={icons.removeLabel} />
-      </IconButton>
-      <CardHeader
-        className={classes.labelsCardHeader}
-        title={
-          <Typography className={classes.cardHeaderTypography}>
-            {props.imageName}
-          </Typography>
-        }
-      />
-      <CardContent className={classes.cardContent}>
+  return (
+    <Popover
+      title={props.imageName}
+      TriggerButton={
+        <IconButton
+          tooltip={{
+            name: "Update Image Labels",
+          }}
+          icon={icons.annotationLabel}
+          style={{
+            position: "absolute",
+            bottom: theme.spacing(1),
+            left: theme.spacing(2),
+          }}
+          iconColor="#ffffff"
+          fill
+          id="add-label"
+        />
+      }
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "left",
+      }}
+    >
+      <div style={{ display: "table-caption" }}>
         {props.defaultLabels.length > 0 ? (
           <Autocomplete
             onChange={(event, value) => {
@@ -135,6 +89,7 @@ export function LabelsPopover(props: Props): ReactElement {
                 setNewLabel(value);
               }
             }}
+            style={{ width: "300px" }}
             options={props.defaultLabels}
             freeSolo={!props.restrictLabels}
             value={newLabel}
@@ -148,7 +103,12 @@ export function LabelsPopover(props: Props): ReactElement {
                   }
                 }}
                 autoFocus
-                className={classes.input}
+                style={{
+                  fontSize: 14,
+                  width: "225px",
+                  marginBottom: "20px",
+                  borderBottom: "solid 1px #dadde9",
+                }}
               />
             )}
           />
@@ -164,26 +124,24 @@ export function LabelsPopover(props: Props): ReactElement {
                 handleAddLabel(newLabel)();
               }
             }}
-            inputProps={{
-              className: classes.input,
-            }}
+            size="small"
             autoFocus
           />
         )}
 
-        <IconButton
+        <MuiIconbutton
           aria-label="add-label"
           key={`button-add-${props.id}`}
-          className={classes.addButton}
           onClick={handleAddLabel(newLabel)}
           size="large"
+          sx={{ position: "absolute", right: "10px", top: "70px" }}
         >
           <SVG
-            className={classes.iconSize}
             src={icons.add}
             fill={theme.palette.text.secondary}
+            width="15px"
           />
-        </IconButton>
+        </MuiIconbutton>
         {props.labels.map((label) => (
           <Chip
             key={`chip-add-${label}`}
@@ -195,40 +153,17 @@ export function LabelsPopover(props: Props): ReactElement {
                 data-testid={`delete-${label}`}
               >
                 <SVG
-                  className={classes.iconSize}
+                  width="15px"
                   src={icons.removeLabel}
                   fill={theme.palette.text.secondary}
                 />
               </Avatar>
             }
-            className={classes.labelsChip}
             label={label}
             variant="outlined"
           />
         ))}
-      </CardContent>
-    </Card>
-  );
-
-  return (
-    <div className={classes.addLabelButton}>
-      <BasePopover
-        tooltip={tooltips.addLabels}
-        tooltipPlacement="top-start"
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        fill={true}
-        iconColor="#ffffff"
-        children={popoverContent}
-        triggerClosing={close}
-        id="add-label"
-      />
-    </div>
+      </div>
+    </Popover>
   );
 }

@@ -12,9 +12,14 @@ import {
   Button,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { Alert } from "@mui/material";
 import SVG from "react-inlinesvg";
-import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
+import {
+  BaseIconButton,
+  BaseTextButton,
+  theme,
+  icons,
+  Alert,
+} from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
@@ -443,6 +448,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         </Select>
       </FormControl>
       {/* select type of assignment */}
+      <br />
       {info && info.hasAssignedImages && (
         <FormControl>
           <InputLabel>Type of assignment:</InputLabel>
