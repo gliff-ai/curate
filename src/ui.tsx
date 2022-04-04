@@ -614,10 +614,6 @@ class UserInterface extends Component<Props, State> {
       const today = new Date();
       newMetadata.push({
         imageName: imageFileInfo[i].fileName,
-<<<<<<< HEAD
-        id: imageFileInfo[i].content_hash,
-=======
->>>>>>> dfa0445e1c55fb2ef779a35de0f5844d9be1687c
         dateCreated: today.toLocaleDateString("gb-EN"),
         size: imageFileInfo[i].size.toString(),
         dimensions: `${imageFileInfo[i].width} x ${imageFileInfo[i].height}`,
