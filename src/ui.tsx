@@ -472,17 +472,20 @@ class UserInterface extends Component<Props, State> {
       canvas.height / imageHeight
     );
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(
-      image[0][0],
-      0,
-      0,
-      imageWidth,
-      imageHeight,
-      (canvas.width - imageWidth * ratio) / 2,
-      (canvas.height - imageHeight * ratio) / 2,
-      imageWidth * ratio,
-      imageHeight * ratio
-    );
+    ctx.globalCompositeOperation = "lighter";
+    image[0].forEach((channel) => {
+      ctx.drawImage(
+        channel,
+        0,
+        0,
+        imageWidth,
+        imageHeight,
+        (canvas.width - imageWidth * ratio) / 2,
+        (canvas.height - imageHeight * ratio) / 2,
+        imageWidth * ratio,
+        imageHeight * ratio
+      );
+    });
     return canvas.toDataURL();
   };
 
@@ -615,7 +618,7 @@ class UserInterface extends Component<Props, State> {
         size: imageFileInfo[i].size.toString(),
         dimensions: `${imageFileInfo[i].width} x ${imageFileInfo[i].height}`,
         numberOfDimensions: images.length === 1 ? "2" : "3",
-        numberOfChannels: images[0].length.toString(),
+        numberOfChannels: images[i][0].length.toString(),
         imageLabels: [] as Array<string>,
         thumbnail,
         selected: true,

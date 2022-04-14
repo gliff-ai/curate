@@ -28,7 +28,7 @@
     "@emotion/styled": "^11.6.0",
     "@gliff-ai/eslint-config": "^0.2.1",
     "@gliff-ai/style": "^9.0.0",
-    "@gliff-ai/upload": "1.2.5",
+    "@gliff-ai/upload": "^1.2.5",
     "@mui/icons-material": "<5.4.4",
     "@mui/material": "<5.4.4",
     "@mui/styles": "<5.4.4",
