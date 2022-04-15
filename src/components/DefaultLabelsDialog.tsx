@@ -8,7 +8,6 @@ import {
   FormControlLabel,
   Box,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import {
   BaseTextButton,
@@ -18,72 +17,6 @@ import {
   IconButton,
   MuiIconbutton,
 } from "@gliff-ai/style";
-
-const useStyles = makeStyles({
-  container: {
-    textAlign: "center",
-    marginTop: "20px",
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    width: "auto",
-    hegith: "400px",
-  },
-  typography: {
-    color: "#000000",
-    display: "inline",
-    fontSize: "21px",
-    marginRight: "125px",
-  },
-  alert: {
-    width: "auto",
-  },
-  contentContainer: { padding: "10px" },
-  closeButton: {
-    position: "absolute",
-    top: "7px",
-    right: "10px",
-  },
-  closeIcon: { width: "15px" },
-  okButton: { position: "absolute", right: "10px", top: "75px" },
-  input: {
-    fontSize: 14,
-    width: "325px",
-    marginBottom: "20px",
-    borderBottom: "solid 1px #dadde9",
-  },
-  addLabelButton: {
-    position: "absolute",
-    bottom: theme.spacing(1),
-    left: theme.spacing(2),
-  },
-  addButton: { position: "absolute", right: "15px" },
-  iconSize: { width: "15px" },
-  labelsChip: {
-    margin: "5px 5px 0 0 ",
-    borderRadius: "9px",
-    color: theme.palette.text.secondary,
-  },
-  cardContent: {
-    padding: "17px",
-    paddingTop: "10px",
-  },
-  labelsCard: {
-    borderRadius: "9px",
-    backgroundColor: theme.palette.primary.light,
-  },
-  labelsCardHeader: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.text.primary,
-    height: "44px",
-  },
-  dialogPaper: {
-    borderRadius: "9px",
-  },
-});
 
 interface Props {
   labels: string[];
@@ -98,7 +31,6 @@ interface Props {
 }
 
 export function DefaultLabelsDialog(props: Props): React.ReactElement {
-  const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [inputString, setInputString] = useState<string>("");
   const [oldLabels, setOldLabels] = useState<string[]>([]);
@@ -168,9 +100,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   handleAddLabel(inputString)();
                 }
               }}
-              inputProps={{
-                className: classes.input,
-              }}
+              size="small"
               autoFocus
             />
             <MuiIconbutton
@@ -180,7 +110,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               onClick={handleAddLabel(inputString)}
             >
               <SVG
-                className={classes.iconSize}
+                width="15px"
                 src={icons.add}
                 fill={theme.palette.text.secondary}
               />
@@ -196,13 +126,12 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                     data-testid={`delete-${label}`}
                   >
                     <SVG
-                      className={classes.iconSize}
+                      width="15px"
                       src={icons.removeLabel}
                       fill={theme.palette.text.secondary}
                     />
                   </Avatar>
                 }
-                className={classes.labelsChip}
                 label={label}
                 variant="outlined"
               />
@@ -240,9 +169,15 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 />
               }
               label="Allow multiple labels per image"
-              style={{ marginTop: "8px" }}
+              sx={{ marginTop: "8px" }}
             />
-            <div className={classes.container}>
+            <Box
+              sx={{
+                display: "flex",
+                marginTop: "20px",
+                justifyContent: "space-between",
+              }}
+            >
               <BaseTextButton
                 id="cancel-default=labels"
                 text="Cancel"
@@ -270,7 +205,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   handleClose();
                 }}
               />
-            </div>
+            </Box>
           </CardContent>
         </Box>
       </Dialog>
