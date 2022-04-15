@@ -1,21 +1,23 @@
 import { useState, ChangeEvent } from "react";
 import {
-  Card,
-  Dialog,
-  Typography,
-  IconButton,
   InputBase,
   Chip,
   Avatar,
-  CardHeader,
   CardContent,
   Checkbox,
   FormControlLabel,
+  Box,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
-import { BaseIconButton, BaseTextButton, theme, icons } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
+import {
+  BaseTextButton,
+  theme,
+  icons,
+  Dialog,
+  IconButton,
+  MuiIconbutton,
+} from "@gliff-ai/style";
 
 const useStyles = makeStyles({
   container: {
@@ -58,7 +60,7 @@ const useStyles = makeStyles({
     bottom: theme.spacing(1),
     left: theme.spacing(2),
   },
-  addButton: { position: "absolute", right: "10px" },
+  addButton: { position: "absolute", right: "15px" },
   iconSize: { width: "15px" },
   labelsChip: {
     margin: "5px 5px 0 0 ",
@@ -72,7 +74,6 @@ const useStyles = makeStyles({
   labelsCard: {
     borderRadius: "9px",
     backgroundColor: theme.palette.primary.light,
-    width: "400px",
   },
   labelsCardHeader: {
     backgroundColor: theme.palette.primary.main,
@@ -136,36 +137,26 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
 
   return (
     <>
-      <BaseIconButton
-        tooltip={tooltips.defaultLabels}
-        onClick={() => {
-          setOpen(!open);
-          // remember the original defaultLabels so we can revert if user hits Cancel:
-          setOldLabels(props.labels);
-          setOldRestrictLabels(props.restrictLabels);
-          setOldMultiLabel(props.multiLabel);
-        }}
-        tooltipPlacement="top"
-        id="set-default-labels"
-      />
       <Dialog
-        open={open}
-        onClose={handleClose}
-        classes={{ paper: classes.dialogPaper }}
-      >
-        <Card className={classes.labelsCard}>
-          <CardHeader
-            className={classes.labelsCardHeader}
-            title={
-              <Typography className={classes.typography}>
-                Set default labels
-              </Typography>
-            }
+        title="Set default labels"
+        TriggerButton={
+          <IconButton
+            tooltip={{
+              name: "Open Dialog",
+            }}
+            icon={icons.annotationLabel}
+            size="small"
+            id="set-default-labels"
+            onClick={() => {
+              setOldLabels(props.labels);
+              setOldRestrictLabels(props.restrictLabels);
+              setOldMultiLabel(props.multiLabel);
+            }}
           />
-          <IconButton className={classes.closeButton} onClick={handleClose}>
-            <SVG src={icons.removeLabel} className={classes.closeIcon} />
-          </IconButton>
-          <CardContent className={classes.cardContent}>
+        }
+      >
+        <Box sx={{ width: "400px" }}>
+          <CardContent>
             <InputBase
               key="input-new-default-label"
               placeholder="New label"
@@ -182,10 +173,10 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               }}
               autoFocus
             />
-            <IconButton
+            <MuiIconbutton
               aria-label="add-label"
               key={"button-add-default-label"}
-              className={classes.addButton}
+              // className={classes.addButton}
               onClick={handleAddLabel(inputString)}
             >
               <SVG
@@ -193,7 +184,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                 src={icons.add}
                 fill={theme.palette.text.secondary}
               />
-            </IconButton>
+            </MuiIconbutton>
             {props.labels.map((label) => (
               <Chip
                 key={`chip-add-${label}`}
@@ -281,7 +272,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               />
             </div>
           </CardContent>
-        </Card>
+        </Box>
       </Dialog>
     </>
   );
