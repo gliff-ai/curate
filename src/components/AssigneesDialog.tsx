@@ -1,15 +1,4 @@
 import { useEffect, useState } from "react";
-import {
-  Paper,
-  Card,
-  Dialog,
-  Input,
-  InputLabel,
-  Select,
-  Chip,
-  IconButton,
-  SelectChangeEvent,
-} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import {
@@ -20,6 +9,15 @@ import {
   Typography,
   MenuItem,
   FormControl,
+  Paper,
+  Card,
+  Dialog,
+  Input,
+  InputLabel,
+  Select,
+  Chip,
+  IconButton,
+  SelectChangeEvent,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";

@@ -7,7 +7,18 @@ import {
   Fragment,
 } from "react";
 
+import { WithStyles } from "@mui/styles";
+import withStyles from "@mui/styles/withStyles";
+import StylesProvider from "@mui/styles/StylesProvider";
+
+import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import {
+  theme,
+  BaseIconButton,
+  generateClassName,
+  IconButton,
+  Logo,
+  icons,
   AppBar,
   CssBaseline,
   Toolbar,
@@ -21,20 +32,6 @@ import {
   ThemeProvider,
   Theme,
   StyledEngineProvider,
-} from "@mui/material";
-
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
-import StylesProvider from "@mui/styles/StylesProvider";
-
-import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
-import {
-  theme,
-  BaseIconButton,
-  generateClassName,
-  IconButton,
-  Logo,
-  icons,
 } from "@gliff-ai/style";
 
 import Tile, {

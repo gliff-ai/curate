@@ -2,9 +2,15 @@
 import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
 import makeStyles from "@mui/styles/makeStyles";
-import { Card, CardContent, Paper, TextField } from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
-import { BaseIconButton, theme } from "@gliff-ai/style";
+import {
+  BaseIconButton,
+  theme,
+  Autocomplete,
+  Card,
+  CardContent,
+  Paper,
+  TextField,
+} from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
 import { Metadata, MetaItem, Filter } from "@/interfaces";

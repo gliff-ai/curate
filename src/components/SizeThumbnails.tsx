@@ -1,6 +1,5 @@
 import { ReactElement, useState, useEffect } from "react";
-import { IconButton, theme } from "@gliff-ai/style";
-import { ButtonGroup } from "@mui/material";
+import { IconButton, theme, ButtonGroup } from "@gliff-ai/style";
 import makeStyles from "@mui/styles/makeStyles";
 import { thumbnailSizes, ThumbnailSizes } from "@/components/Tooltips";
 

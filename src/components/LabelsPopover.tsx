@@ -1,6 +1,5 @@
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
-
 import {
   theme,
   Popover,

@@ -1,8 +1,7 @@
 import { ReactElement } from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { List, ListItem, ListItemText, Card } from "@mui/material";
 import { Clear } from "@mui/icons-material";
-import { theme } from "@gliff-ai/style";
+import { theme, List, ListItem, ListItemText, Card } from "@gliff-ai/style";
 import { Filter } from "@/interfaces";
 
 const useStyles = makeStyles(() => ({
