@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
-import { Grid } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { Grid } from "@gliff-ai/style";
+import makeStyles from "@mui/styles/makeStyles";
 import { MetaItem } from "@/interfaces";
 
 const useStyles = makeStyles({

@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
+
+import makeStyles from "@mui/styles/makeStyles";
+import SVG from "react-inlinesvg";
 import {
+  BaseIconButton,
+  BaseTextButton,
+  theme,
+  icons,
+  Alert,
   Paper,
   Card,
   Dialog,
@@ -10,15 +18,6 @@ import {
   Select,
   IconButton,
   Button,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import SVG from "react-inlinesvg";
-import {
-  BaseIconButton,
-  BaseTextButton,
-  theme,
-  icons,
-  Alert,
 } from "@gliff-ai/style";
 import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";

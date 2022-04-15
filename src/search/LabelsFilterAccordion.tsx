@@ -1,17 +1,20 @@
 import { ChangeEvent, useEffect, useState, ReactElement } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
+
 import {
+  theme,
+  icons,
+  Typography,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   List,
   ListItem,
   ListItemText,
-  IconButton,
+  MuiIconbutton,
   Avatar,
-} from "@mui/material";
-import { theme, icons, Typography } from "@gliff-ai/style";
+} from "@gliff-ai/style";
 
 const useStyles = makeStyles({
   accordion: {
@@ -190,7 +193,7 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
         </List>
         <List component="span" disablePadding className={classes.buttonsList}>
           <ListItem className={classes.buttonsListItem}>
-            <IconButton
+            <MuiIconbutton
               className={classes.iconButton}
               onClick={selectAll}
               onMouseOver={() => setInfoOnHover("Select all labels")}
@@ -200,9 +203,9 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
               <Avatar variant="circular">
                 <SVG className={classes.svgLarge} src={icons.selectAllLabels} />
               </Avatar>
-            </IconButton>
+            </MuiIconbutton>
 
-            <IconButton
+            <MuiIconbutton
               className={classes.iconButton}
               onClick={() => setLabels([])}
               onMouseOver={() => setInfoOnHover("Deselect all labels")}
@@ -215,8 +218,8 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                   src={icons.deselectAllLabels}
                 />
               </Avatar>
-            </IconButton>
-            <IconButton
+            </MuiIconbutton>
+            <MuiIconbutton
               className={classes.iconButton}
               onClick={() => setLabels(null)}
               onMouseOver={() => setInfoOnHover("Select all unlabelled images")}
@@ -230,7 +233,7 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                   fill={labels === null ? theme.palette.primary.main : null}
                 />
               </Avatar>
-            </IconButton>
+            </MuiIconbutton>
           </ListItem>
           <ListItem className={classes.infoOnHover}>{infoOnHover}</ListItem>
         </List>

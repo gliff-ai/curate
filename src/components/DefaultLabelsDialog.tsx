@@ -1,13 +1,5 @@
 import { useState, ChangeEvent } from "react";
-import {
-  InputBase,
-  Chip,
-  Avatar,
-  CardContent,
-  Checkbox,
-  FormControlLabel,
-  Box,
-} from "@mui/material";
+import {} from "@mui/material";
 import SVG from "react-inlinesvg";
 import {
   BaseTextButton,
@@ -16,6 +8,13 @@ import {
   Dialog,
   IconButton,
   MuiIconbutton,
+  InputBase,
+  Chip,
+  CardContent,
+  Checkbox,
+  FormControlLabel,
+  Avatar,
+  Box,
 } from "@gliff-ai/style";
 
 interface Props {

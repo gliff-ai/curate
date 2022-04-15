@@ -1,5 +1,11 @@
 import { ReactElement, useState, useEffect } from "react";
+
+import makeStyles from "@mui/styles/makeStyles";
 import {
+  theme,
+  HtmlTooltip,
+  icons,
+  Typography,
   ListItem,
   ListItemText,
   List,
@@ -8,9 +14,7 @@ import {
   Card,
   Avatar,
   Box,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import { theme, HtmlTooltip, icons, Typography } from "@gliff-ai/style";
+} from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/interfaces";
 import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
