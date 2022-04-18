@@ -1,26 +1,21 @@
 import { useEffect, useState } from "react";
 import {
-  Paper,
-  Card,
-  Dialog,
-  Typography,
   InputLabel,
   MenuItem,
   FormControl,
   Select,
-  IconButton,
   Button,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import SVG from "react-inlinesvg";
 import {
-  BaseIconButton,
   BaseTextButton,
   theme,
   icons,
   Alert,
+  Dialog,
+  Box,
+  IconButton,
 } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
 import { Metadata, MetaItem } from "@/interfaces";
@@ -493,32 +488,22 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
 
   return (
     <>
-      <BaseIconButton
-        tooltip={tooltips.autoAssign}
-        onClick={() => setOpen(!open)}
-        tooltipPlacement="top"
-        id="auto-assign-images"
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <Card className={classes.card}>
-          <Paper
-            elevation={0}
-            variant="outlined"
-            square
-            className={classes.paperHeader}
-          >
-            <Typography className={classes.topography}>
-              Auto-assign images
-            </Typography>
-            <IconButton
-              className={classes.closeButton}
-              onClick={handleClose}
-              size="small"
-            >
-              <SVG src={icons.removeLabel} className={classes.closeIcon} />
-            </IconButton>
-          </Paper>
-          <Paper elevation={0} square className={classes.paperBody}>
+      <Dialog
+        title="Auto-Assign Images"
+        TriggerButton={
+          <IconButton
+            tooltip={{
+              name: "Auto-Assign Images",
+            }}
+            icon={icons.autoAssign}
+            size="small"
+            id="auto-assign-images"
+            tooltipPlacement="top"
+          />
+        }
+      >
+        <>
+          <Box sx={{ width: "450px" }}>
             {message ? (
               <>
                 <Alert className={classes.alert} severity={message.severity}>
@@ -537,8 +522,8 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
             ) : null}
 
             {dialogContent}
-          </Paper>
-        </Card>
+          </Box>
+        </>
       </Dialog>
     </>
   );
