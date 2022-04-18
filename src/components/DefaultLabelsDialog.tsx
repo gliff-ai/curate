@@ -74,9 +74,9 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
         TriggerButton={
           <IconButton
             tooltip={{
-              name: "Open Dialog",
+              name: "Set default labels",
             }}
-            icon={icons.annotationLabel}
+            icon={icons.annotationLabels}
             size="small"
             id="set-default-labels"
             onClick={() => {
