@@ -1,53 +1,20 @@
 import { useEffect, useState } from "react";
 import {
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  Button,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import {
   BaseTextButton,
-  theme,
   icons,
   Alert,
   Dialog,
   Box,
+  MenuItem,
   IconButton,
+  InputLabel,
+  FormControl,
+  Select,
+  Button,
 } from "@gliff-ai/style";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
 import { Metadata, MetaItem } from "@/interfaces";
-
-const useStyles = makeStyles(() => ({
-  paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
-  paperBody: { margin: "15px", width: "450px" },
-  container: { textAlign: "center", marginTop: "20px" },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    width: "auto",
-    hegith: "400px",
-  },
-  topography: {
-    color: "#000000",
-    display: "inline",
-    fontSize: "21px",
-    marginRight: "125px",
-  },
-  alert: {
-    width: "auto",
-  },
-  contentContainer: { padding: "10px" },
-  closeButton: {
-    position: "absolute",
-    top: "7px",
-    right: "5px",
-  },
-  closeIcon: { width: "15px" },
-  okButton: { position: "absolute", right: "10px", top: "75px" },
-}));
 
 interface Props {
   profiles: Profile[];
@@ -86,7 +53,6 @@ interface AssignmentResult {
 }
 
 export function AutoAssignDialog(props: Props): React.ReactElement {
-  const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [imageSelectionType, setImageSelectionType] = useState<number>(
     SelectionType.All
@@ -399,8 +365,6 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       text: "Images assigned.",
       severity: "success",
     });
-
-    // console.log(assignmentCount);
   }
 
   useEffect(() => {
@@ -427,7 +391,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   }, [props.profiles, assignmentType, info]);
 
   const dialogContent = (
-    <div className={classes.contentContainer}>
+    <Box sx={{ padding: "10px" }}>
       {/* select images to assign */}
       <FormControl>
         <InputLabel>Images to assign:</InputLabel>
@@ -475,15 +439,14 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <div className={classes.container}>
-        <BaseTextButton
-          id="assign"
-          text="Assign"
-          onClick={autoAssignImages}
-          disabled={requiresConfirmation()}
-        />
-      </div>
-    </div>
+      <BaseTextButton
+        id="assign"
+        text="Assign"
+        onClick={autoAssignImages}
+        disabled={requiresConfirmation()}
+        sx={{ display: "block", margin: "auto", marginTop: "20px" }}
+      />
+    </Box>
   );
 
   return (
@@ -503,17 +466,25 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
         }
       >
         <>
-          <Box sx={{ width: "450px" }}>
+          <Box
+            sx={{
+              width: "450px",
+              "&.MuiAlert-root": {
+                width: "auto",
+                "&.MuiButton-root": {
+                  position: "absolute",
+                  right: "10px",
+                  top: "75px",
+                },
+              },
+            }}
+          >
             {message ? (
               <>
-                <Alert className={classes.alert} severity={message.severity}>
+                <Alert severity={message.severity}>
                   {message.text}
                   {requiresConfirmation() && (
-                    <Button
-                      className={classes.okButton}
-                      onClick={resetDefaults}
-                      color="inherit"
-                    >
+                    <Button onClick={resetDefaults} color="inherit">
                       Ok
                     </Button>
                   )}
