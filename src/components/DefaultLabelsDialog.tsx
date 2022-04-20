@@ -1,4 +1,10 @@
-import { useState, ChangeEvent } from "react";
+import {
+  useState,
+  ChangeEvent,
+  forwardRef,
+  RefObject,
+  ReactElement,
+} from "react";
 import {
   InputBase,
   Chip,
@@ -7,6 +13,7 @@ import {
   Checkbox,
   FormControlLabel,
   Box,
+  DialogProps,
 } from "@mui/material";
 import SVG from "react-inlinesvg";
 import {
@@ -32,6 +39,7 @@ interface Props {
 
 export function DefaultLabelsDialog(props: Props): React.ReactElement {
   const [open, setOpen] = useState<boolean>(false);
+
   const [inputString, setInputString] = useState<string>("");
   const [oldLabels, setOldLabels] = useState<string[]>([]);
   const [oldRestrictLabels, setOldRestrictLabels] = useState<boolean>(false);
@@ -67,148 +75,155 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
     );
   };
 
-  return (
-    <>
-      <Dialog
-        title="Set default labels"
-        TriggerButton={
-          <IconButton
-            tooltip={{
-              name: "Set default labels",
-            }}
-            icon={icons.annotationLabels}
-            size="small"
-            id="set-default-labels"
-            onClick={() => {
-              setOldLabels(props.labels);
-              setOldRestrictLabels(props.restrictLabels);
-              setOldMultiLabel(props.multiLabel);
-            }}
-          />
-        }
-      >
-        <Box sx={{ width: "400px" }}>
-          <CardContent>
-            <InputBase
-              key="input-new-default-label"
-              placeholder="New label"
-              type="text"
-              value={inputString}
-              onChange={handleNewLabelChange}
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  handleAddLabel(inputString)();
-                }
-              }}
-              size="small"
-              autoFocus
-            />
-            <MuiIconbutton
-              aria-label="add-label"
-              key={"button-add-default-label"}
-              // className={classes.addButton}
-              onClick={handleAddLabel(inputString)}
-            >
-              <SVG
-                width="15px"
-                src={icons.add}
-                fill={theme.palette.text.secondary}
-              />
-            </MuiIconbutton>
-            {props.labels.map((label) => (
-              <Chip
-                key={`chip-add-${label}`}
-                avatar={
-                  <Avatar
-                    variant="circular"
-                    style={{ cursor: "pointer" }}
-                    onClick={handleDeleteLabel(label)}
-                    data-testid={`delete-${label}`}
-                  >
-                    <SVG
-                      width="15px"
-                      src={icons.removeLabel}
-                      fill={theme.palette.text.secondary}
-                    />
-                  </Avatar>
-                }
-                label={label}
-                variant="outlined"
-              />
-            ))}
+  // const dialogRef = useRef();
+  // console.log("🚀 ~ dialogRef", dialogRef);
 
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={props.restrictLabels}
-                  onChange={(event) => {
-                    props.updateDefaultLabels(
-                      props.labels,
-                      !props.restrictLabels,
-                      props.multiLabel,
-                      false
-                    );
-                  }}
-                />
+  // 1. Create a custom motion component from Box
+  const DialogBox: React.ForwardRefExoticComponent<
+    React.RefAttributes<ReactElement<DialogProps>>
+  > = forwardRef((props, ref: RefObject<HTMLDivElement>) => {
+    return <Dialog ref={ref} children={props.children as any} {...props} />;
+  });
+
+  return (
+    <DialogBox
+      title="Set default labels"
+      TriggerButton={
+        <IconButton
+          tooltip={{
+            name: "Set default labels",
+          }}
+          icon={icons.annotationLabels}
+          size="small"
+          id="set-default-labels"
+          onClick={() => {
+            setOldLabels(props.labels);
+            setOldRestrictLabels(props.restrictLabels);
+            setOldMultiLabel(props.multiLabel);
+          }}
+        />
+      }
+    >
+      <Box sx={{ width: "400px" }}>
+        <CardContent>
+          <InputBase
+            key="input-new-default-label"
+            placeholder="New label"
+            type="text"
+            value={inputString}
+            onChange={handleNewLabelChange}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleAddLabel(inputString)();
               }
-              label="Restrict collaborators to these labels"
-              style={{ marginTop: "8px" }}
+            }}
+            size="small"
+            autoFocus
+          />
+          <MuiIconbutton
+            aria-label="add-label"
+            key={"button-add-default-label"}
+            onClick={handleAddLabel(inputString)}
+          >
+            <SVG
+              width="15px"
+              src={icons.add}
+              fill={theme.palette.text.secondary}
             />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={props.multiLabel}
-                  onChange={(event) => {
-                    props.updateDefaultLabels(
-                      props.labels,
-                      props.restrictLabels,
-                      !props.multiLabel,
-                      false
-                    );
-                  }}
-                />
+          </MuiIconbutton>
+          {props.labels.map((label) => (
+            <Chip
+              key={`chip-add-${label}`}
+              avatar={
+                <Avatar
+                  variant="circular"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleDeleteLabel(label)}
+                  data-testid={`delete-${label}`}
+                >
+                  <SVG
+                    width="15px"
+                    src={icons.removeLabel}
+                    fill={theme.palette.text.secondary}
+                  />
+                </Avatar>
               }
-              label="Allow multiple labels per image"
-              sx={{ marginTop: "8px" }}
+              label={label}
+              variant="outlined"
             />
-            <Box
-              sx={{
-                display: "flex",
-                marginTop: "20px",
-                justifyContent: "space-between",
-              }}
-            >
-              <BaseTextButton
-                id="cancel-default=labels"
-                text="Cancel"
-                onClick={() => {
+          ))}
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={props.restrictLabels}
+                onChange={(event) => {
                   props.updateDefaultLabels(
-                    oldLabels,
-                    oldRestrictLabels,
-                    oldMultiLabel,
+                    props.labels,
+                    !props.restrictLabels,
+                    props.multiLabel,
                     false
                   );
-                  handleClose();
                 }}
-                variant="outlined"
               />
-              <BaseTextButton
-                id="confirm-default-labels"
-                text="Confirm"
-                onClick={() => {
+            }
+            label="Restrict collaborators to these labels"
+            sx={{ marginTop: "8px" }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={props.multiLabel}
+                onChange={(event) => {
                   props.updateDefaultLabels(
                     props.labels,
                     props.restrictLabels,
-                    props.multiLabel,
-                    true
+                    !props.multiLabel,
+                    false
                   );
-                  handleClose();
                 }}
               />
-            </Box>
-          </CardContent>
-        </Box>
-      </Dialog>
-    </>
+            }
+            label="Allow multiple labels per image"
+            sx={{ marginTop: "8px" }}
+          />
+          <Box
+            sx={{
+              display: "flex",
+              marginTop: "20px",
+              justifyContent: "space-between",
+            }}
+          >
+            <BaseTextButton
+              id="cancel-default=labels"
+              text="Cancel"
+              onClick={() => {
+                props.updateDefaultLabels(
+                  oldLabels,
+                  oldRestrictLabels,
+                  oldMultiLabel,
+                  false
+                );
+                handleClose();
+              }}
+              variant="outlined"
+            />
+            <BaseTextButton
+              id="confirm-default-labels"
+              text="Confirm"
+              onClick={() => {
+                props.updateDefaultLabels(
+                  props.labels,
+                  props.restrictLabels,
+                  props.multiLabel,
+                  true
+                );
+                handleClose();
+              }}
+            />
+          </Box>
+        </CardContent>
+      </Box>
+    </DialogBox>
   );
 }
