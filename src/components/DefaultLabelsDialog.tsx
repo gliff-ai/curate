@@ -1,20 +1,4 @@
-import {
-  useState,
-  ChangeEvent,
-  forwardRef,
-  RefObject,
-  ReactElement,
-} from "react";
-import {
-  InputBase,
-  Chip,
-  Avatar,
-  CardContent,
-  Checkbox,
-  FormControlLabel,
-  Box,
-  DialogProps,
-} from "@mui/material";
+import { useState, ChangeEvent, forwardRef } from "react";
 import SVG from "react-inlinesvg";
 import {
   BaseTextButton,
@@ -23,6 +7,13 @@ import {
   Dialog,
   IconButton,
   MuiIconbutton,
+  Box,
+  FormControlLabel,
+  Checkbox,
+  CardContent,
+  Avatar,
+  Chip,
+  InputBase,
 } from "@gliff-ai/style";
 
 interface Props {
@@ -78,12 +69,16 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   // const dialogRef = useRef();
   // console.log("🚀 ~ dialogRef", dialogRef);
 
-  // 1. Create a custom motion component from Box
-  const DialogBox: React.ForwardRefExoticComponent<
-    React.RefAttributes<ReactElement<DialogProps>>
-  > = forwardRef((props, ref: RefObject<HTMLDivElement>) => {
-    return <Dialog ref={ref} children={props.children as any} {...props} />;
-  });
+  // eslint-disable-next-line react/display-name
+  const DialogBox = forwardRef<ReactElement>(
+    // eslint-disable-next-line react/prop-types
+    ({ children, ...rest }, ref) => (
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <Dialog ref={ref} {...rest}>
+        {children}
+      </Dialog>
+    )
+  );
 
   return (
     <DialogBox
@@ -204,7 +199,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   oldMultiLabel,
                   false
                 );
-                handleClose();
+                // handleClose();
               }}
               variant="outlined"
             />
@@ -218,7 +213,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   props.multiLabel,
                   true
                 );
-                handleClose();
+                // handleClose();
               }}
             />
           </Box>
