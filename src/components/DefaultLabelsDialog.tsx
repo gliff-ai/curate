@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, forwardRef } from "react";
+import { useState, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 import {
   BaseTextButton,
@@ -29,16 +29,12 @@ interface Props {
 }
 
 export function DefaultLabelsDialog(props: Props): React.ReactElement {
-  const [open, setOpen] = useState<boolean>(false);
+  const [closeDialog, setCloseDialog] = useState<boolean>();
 
   const [inputString, setInputString] = useState<string>("");
   const [oldLabels, setOldLabels] = useState<string[]>([]);
   const [oldRestrictLabels, setOldRestrictLabels] = useState<boolean>(false);
   const [oldMultiLabel, setOldMultiLabel] = useState<boolean>(false);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleNewLabelChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputString(event.target.value);
@@ -66,22 +62,9 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
     );
   };
 
-  // const dialogRef = useRef();
-  // console.log("🚀 ~ dialogRef", dialogRef);
-
-  // eslint-disable-next-line react/display-name
-  const DialogBox = forwardRef<ReactElement>(
-    // eslint-disable-next-line react/prop-types
-    ({ children, ...rest }, ref) => (
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      <Dialog ref={ref} {...rest}>
-        {children}
-      </Dialog>
-    )
-  );
-
   return (
-    <DialogBox
+    <Dialog
+      close={closeDialog}
       title="Set default labels"
       TriggerButton={
         <IconButton
@@ -199,7 +182,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   oldMultiLabel,
                   false
                 );
-                // handleClose();
+                setCloseDialog((prevState) => !prevState);
               }}
               variant="outlined"
             />
@@ -213,12 +196,13 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   props.multiLabel,
                   true
                 );
-                // handleClose();
+
+                setCloseDialog((prevState) => !prevState);
               }}
             />
           </Box>
         </CardContent>
       </Box>
-    </DialogBox>
+    </Dialog>
   );
 }
