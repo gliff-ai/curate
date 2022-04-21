@@ -23,7 +23,7 @@ interface Props {
 }
 
 export function AssigneesDialog(props: Props): React.ReactElement {
-  const [open, setOpen] = useState<boolean>(false);
+  const [closeDialog, setCloseDialog] = useState<boolean>();
   const [assignees, setAssignees] = useState<string[]>([]);
 
   const handleChange = (
@@ -73,7 +73,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             props.selectedImagesUids,
             props.selectedImagesUids.map(() => assignees)
           );
-          setOpen(false);
+          setCloseDialog((prevState) => !prevState);
         }}
         sx={{
           margin: "0 auto",
@@ -88,6 +88,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
     <>
       <Dialog
         title="Assign selected images"
+        close={closeDialog}
         TriggerButton={
           <IconButton
             tooltip={{

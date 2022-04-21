@@ -188,6 +188,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
             />
             <BaseTextButton
               id="confirm-default-labels"
+              disabled={props.labels.length < 1}
               text="Confirm"
               onClick={() => {
                 props.updateDefaultLabels(
