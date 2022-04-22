@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import SVG from "react-inlinesvg";
 import {
   BaseTextButton,
@@ -29,7 +29,7 @@ interface Props {
 }
 
 export function DefaultLabelsDialog(props: Props): React.ReactElement {
-  const [closeDialog, setCloseDialog] = useState<boolean>();
+  const [closeDialog, setCloseDialog] = useState<boolean>(false);
 
   const [inputString, setInputString] = useState<string>("");
   const [oldLabels, setOldLabels] = useState<string[]>([]);
@@ -39,6 +39,12 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   const handleNewLabelChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputString(event.target.value);
   };
+
+  useEffect(() => {
+    if (closeDialog) {
+      setCloseDialog(false);
+    }
+  }, [closeDialog]);
 
   const handleAddLabel = (label: string) => (): void => {
     if (props.labels.includes(label)) return;
@@ -182,7 +188,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   oldMultiLabel,
                   false
                 );
-                setCloseDialog((prevState) => !prevState);
+                setCloseDialog(!closeDialog);
               }}
               variant="outlined"
             />
@@ -198,7 +204,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
                   true
                 );
 
-                setCloseDialog((prevState) => !prevState);
+                setCloseDialog(!closeDialog);
               }}
             />
           </Box>

@@ -23,7 +23,7 @@ interface Props {
 }
 
 export function AssigneesDialog(props: Props): React.ReactElement {
-  const [closeDialog, setCloseDialog] = useState<boolean>();
+  const [closeDialog, setCloseDialog] = useState<boolean>(false);
   const [assignees, setAssignees] = useState<string[]>([]);
 
   const handleChange = (
@@ -31,6 +31,12 @@ export function AssigneesDialog(props: Props): React.ReactElement {
   ) => {
     setAssignees(event.target.value as string[]);
   };
+
+  useEffect(() => {
+    if (closeDialog) {
+      setCloseDialog(false);
+    }
+  }, [closeDialog]);
 
   const isEnabled = (): boolean =>
     props.profiles.length !== 0 && props.selectedImagesUids.length !== 0;
@@ -73,7 +79,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
             props.selectedImagesUids,
             props.selectedImagesUids.map(() => assignees)
           );
-          setCloseDialog((prevState) => !prevState);
+          setCloseDialog(!closeDialog);
         }}
         sx={{
           margin: "0 auto",
