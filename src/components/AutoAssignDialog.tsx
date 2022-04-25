@@ -53,7 +53,6 @@ interface AssignmentResult {
 }
 
 export function AutoAssignDialog(props: Props): React.ReactElement {
-  const [open, setOpen] = useState<boolean>(false);
   const [imageSelectionType, setImageSelectionType] = useState<number>(
     SelectionType.All
   );
@@ -368,9 +367,9 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   }
 
   useEffect(() => {
-    if (!open) return; // always runs when dialog opens
+    // always runs when dialog opens
     updateImageUids();
-  }, [props.metadata, open, imageSelectionType]);
+  }, [props.metadata, imageSelectionType]);
 
   useEffect(() => {
     updateInfo();
