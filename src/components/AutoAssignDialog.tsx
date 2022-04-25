@@ -86,19 +86,13 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     setAssignmentType(Number(event.target.value));
   }
 
-  function handleClose() {
-    // Close dialog
-    setOpen(false);
-    resetDefaults();
-  }
-
-  function resetDefaults(): void {
+  const resetDefaults = (): void => {
     // Reset defaults values
     setMessage(null);
     updateInfo();
     setImageSelectionType(SelectionType.All);
     setImageSelectionType(AssignmentType.New);
-  }
+  };
 
   function updateImageUids(): void {
     const newImageUids: string[] =
@@ -463,6 +457,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
             tooltipPlacement="top"
           />
         }
+        resetDefaults={resetDefaults}
       >
         <>
           <Box
