@@ -468,12 +468,13 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           <Box
             sx={{
               width: "450px",
-              "&.MuiAlert-root": {
+              "& .MuiAlert-root": {
                 width: "auto",
-                "&.MuiButton-root": {
+                marginBottom: "10px",
+                "& .MuiButton-root": {
                   position: "absolute",
                   right: "10px",
-                  top: "75px",
+                  top: "80px",
                 },
               },
             }}
