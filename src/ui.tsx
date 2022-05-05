@@ -7,21 +7,7 @@ import {
   Fragment,
 } from "react";
 
-import {
-  AppBar,
-  CssBaseline,
-  Toolbar,
-  Grid,
-  List,
-  ListItem,
-  Button,
-  Container,
-  Card,
-  Box,
-  ThemeProvider,
-  Theme,
-  StyledEngineProvider,
-} from "@mui/material";
+import { Theme } from "@mui/material";
 
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
@@ -35,6 +21,18 @@ import {
   IconButton,
   Logo,
   icons,
+  MuiCard,
+  Box,
+  AppBar,
+  CssBaseline,
+  Toolbar,
+  Grid,
+  List,
+  ListItem,
+  Button,
+  Container,
+  ThemeProvider,
+  StyledEngineProvider,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -61,11 +59,6 @@ declare module "@mui/styles/defaultTheme" {
 }
 
 const styles = () => ({
-  appBar: {
-    backgroundColor: theme.palette.secondary.light,
-    height: "90px",
-    paddingTop: "9px",
-  },
   sideBar: {
     width: "290px",
   },
@@ -650,7 +643,7 @@ class UserInterface extends Component<Props, State> {
     const { classes, showAppBar } = this.props;
 
     const appBar = !showAppBar ? null : (
-      <AppBar position="fixed" className={classes.appBar} elevation={0}>
+      <AppBar position="fixed" elevation={0}>
         <Toolbar>
           <Grid container direction="row">
             <Grid item className={classes.logo}>
@@ -668,19 +661,20 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           className={classes.toolBoxCard}
         >
-          <Card>
+          <MuiCard>
             <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
-          </Card>
-          <Card className={classes.smallButton}>
+          </MuiCard>
+
+          <MuiCard className={classes.smallButton}>
             <SortPopover
               metadataKeys={this.state.metadataKeys}
               callbackSort={this.handleOnSortSubmit}
               isGrouped={this.state.isGrouped}
               toggleIsGrouped={this.toggleIsGrouped}
             />
-          </Card>
+          </MuiCard>
 
-          <Card className={classes.smallButton}>
+          <MuiCard className={classes.smallButton}>
             <IconButton
               tooltip={tooltips.selectMultipleImages}
               fill={this.state.selectMultipleImagesMode}
@@ -695,7 +689,7 @@ class UserInterface extends Component<Props, State> {
               id="select-multiple-images"
               size="small"
             />
-          </Card>
+          </MuiCard>
         </Box>
         <Box
           display="flex"
@@ -703,7 +697,7 @@ class UserInterface extends Component<Props, State> {
           className={classes.toolBoxCard}
         >
           {this.isOwnerOrMember() && this.props.profiles && (
-            <Card
+            <MuiCard
               className={classes.smallButton}
               style={{ marginRight: "14px" }}
             >
@@ -713,24 +707,24 @@ class UserInterface extends Component<Props, State> {
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
               />
-            </Card>
+            </MuiCard>
           )}
           {this.props.userAccess !== UserAccess.Collaborator && (
-            <Card className={classes.smallButton}>
+            <MuiCard className={classes.smallButton}>
               <DefaultLabelsDialog
                 labels={this.state.defaultLabels}
                 restrictLabels={this.state.restrictLabels}
                 multiLabel={this.state.multiLabel}
                 updateDefaultLabels={this.updateDefaultLabels}
               />
-            </Card>
+            </MuiCard>
           )}
         </Box>
       </>
     );
 
     const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
-      <Card className={classes.deleteImageCard}>
+      <MuiCard className={classes.deleteImageCard}>
         <List component="div" style={{ display: "flex" }}>
           <ListItem
             className={classes.infoSelection}
@@ -755,7 +749,7 @@ class UserInterface extends Component<Props, State> {
             />
           </ListItem>
         </List>
-      </Card>
+      </MuiCard>
     );
 
     return (
@@ -838,16 +832,16 @@ class UserInterface extends Component<Props, State> {
                     position="fixed"
                     className={classes.bottomToolbar}
                   >
-                    <Card className={classes.bottomLeftButtons}>
+                    <MuiCard className={classes.bottomLeftButtons}>
                       <IconButton
                         tooltip={tooltips.viewCollection}
                         icon={tooltips.viewCollection.icon}
                         fill={null}
                         tooltipPlacement="top"
                       />
-                    </Card>
+                    </MuiCard>
 
-                    <Card className={classes.bottomLeftButtons}>
+                    <MuiCard className={classes.bottomLeftButtons}>
                       {this.isOwnerOrMember() && (
                         <UploadImage
                           setUploadedImage={this.addUploadedImages}
@@ -871,9 +865,9 @@ class UserInterface extends Component<Props, State> {
                         tooltipPlacement="top"
                         onClick={this.props.downloadDatasetCallback}
                       />
-                    </Card>
+                    </MuiCard>
 
-                    <Card className={classes.bottomLeftButtons}>
+                    <MuiCard className={classes.bottomLeftButtons}>
                       <IconButton
                         icon={icons.plugins}
                         tooltip={{ name: "Plugins" }}
@@ -889,7 +883,7 @@ class UserInterface extends Component<Props, State> {
                           }))
                         }
                       />
-                    </Card>
+                    </MuiCard>
                   </Box>
                 </Grid>
 
