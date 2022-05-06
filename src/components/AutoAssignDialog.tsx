@@ -1,58 +1,20 @@
 import { useEffect, useState } from "react";
 import {
-  Paper,
-  Card,
-  Dialog,
-  Typography,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  IconButton,
-  Button,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import SVG from "react-inlinesvg";
-import {
-  BaseIconButton,
   BaseTextButton,
-  theme,
   icons,
   Alert,
+  Dialog,
+  Box,
+  MenuItem,
+  IconButton,
+  InputLabel,
+  FormControl,
+  Select,
+  Button,
 } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
 import { Metadata, MetaItem } from "@/interfaces";
-
-const useStyles = makeStyles(() => ({
-  paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
-  paperBody: { margin: "15px", width: "450px" },
-  container: { textAlign: "center", marginTop: "20px" },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    width: "auto",
-    hegith: "400px",
-  },
-  topography: {
-    color: "#000000",
-    display: "inline",
-    fontSize: "21px",
-    marginRight: "125px",
-  },
-  alert: {
-    width: "auto",
-  },
-  contentContainer: { padding: "10px" },
-  closeButton: {
-    position: "absolute",
-    top: "7px",
-    right: "5px",
-  },
-  closeIcon: { width: "15px" },
-  okButton: { position: "absolute", right: "10px", top: "75px" },
-}));
 
 interface Props {
   profiles: Profile[];
@@ -91,8 +53,6 @@ interface AssignmentResult {
 }
 
 export function AutoAssignDialog(props: Props): React.ReactElement {
-  const classes = useStyles();
-  const [open, setOpen] = useState<boolean>(false);
   const [imageSelectionType, setImageSelectionType] = useState<number>(
     SelectionType.All
   );
@@ -126,19 +86,13 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     setAssignmentType(Number(event.target.value));
   }
 
-  function handleClose() {
-    // Close dialog
-    setOpen(false);
-    resetDefaults();
-  }
-
-  function resetDefaults(): void {
+  const resetDefaults = (): void => {
     // Reset defaults values
     setMessage(null);
     updateInfo();
     setImageSelectionType(SelectionType.All);
     setImageSelectionType(AssignmentType.New);
-  }
+  };
 
   function updateImageUids(): void {
     const newImageUids: string[] =
@@ -404,14 +358,12 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       text: "Images assigned.",
       severity: "success",
     });
-
-    // console.log(assignmentCount);
   }
 
   useEffect(() => {
-    if (!open) return; // always runs when dialog opens
+    // always runs when dialog opens
     updateImageUids();
-  }, [props.metadata, open, imageSelectionType]);
+  }, [props.metadata, imageSelectionType]);
 
   useEffect(() => {
     updateInfo();
@@ -432,7 +384,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   }, [props.profiles, assignmentType, info]);
 
   const dialogContent = (
-    <div className={classes.contentContainer}>
+    <Box sx={{ padding: "10px" }}>
       {/* select images to assign */}
       <FormControl>
         <InputLabel>Images to assign:</InputLabel>
@@ -480,55 +432,54 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <div className={classes.container}>
-        <BaseTextButton
-          id="assign"
-          text="Assign"
-          onClick={autoAssignImages}
-          disabled={requiresConfirmation()}
-        />
-      </div>
-    </div>
+      <BaseTextButton
+        id="assign"
+        text="Assign"
+        onClick={autoAssignImages}
+        disabled={requiresConfirmation()}
+        sx={{ display: "block", margin: "auto", marginTop: "20px" }}
+      />
+    </Box>
   );
 
   return (
     <>
-      <BaseIconButton
-        tooltip={tooltips.autoAssign}
-        onClick={() => setOpen(!open)}
-        tooltipPlacement="top"
-        id="auto-assign-images"
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <Card className={classes.card}>
-          <Paper
-            elevation={0}
-            variant="outlined"
-            square
-            className={classes.paperHeader}
+      <Dialog
+        title="Auto-Assign Images"
+        TriggerButton={
+          <IconButton
+            tooltip={{
+              name: "Auto-Assign Images",
+            }}
+            icon={icons.autoAssign}
+            size="small"
+            id="auto-assign-images"
+            tooltipPlacement="top"
+          />
+        }
+        resetDefaults={resetDefaults}
+      >
+        <>
+          <Box
+            sx={{
+              width: "450px",
+              "& .MuiAlert-root": {
+                width: "auto",
+                marginBottom: "10px",
+                "& .MuiButton-root": {
+                  position: "absolute",
+                  right: "10px",
+                  top: "80px",
+                },
+              },
+            }}
           >
-            <Typography className={classes.topography}>
-              Auto-assign images
-            </Typography>
-            <IconButton
-              className={classes.closeButton}
-              onClick={handleClose}
-              size="small"
-            >
-              <SVG src={icons.removeLabel} className={classes.closeIcon} />
-            </IconButton>
-          </Paper>
-          <Paper elevation={0} square className={classes.paperBody}>
             {message ? (
               <>
-                <Alert className={classes.alert} severity={message.severity}>
+                <Alert severity={message.severity}>
                   {message.text}
                   {requiresConfirmation() && (
-                    <Button
-                      className={classes.okButton}
-                      onClick={resetDefaults}
-                      color="inherit"
-                    >
+                    <Button onClick={resetDefaults} color="inherit">
                       Ok
                     </Button>
                   )}
@@ -537,8 +488,8 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
             ) : null}
 
             {dialogContent}
-          </Paper>
-        </Card>
+          </Box>
+        </>
       </Dialog>
     </>
   );

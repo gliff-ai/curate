@@ -1,53 +1,19 @@
 import { useEffect, useState } from "react";
+import { SelectChangeEvent } from "@mui/material";
 import {
-  Paper,
-  Card,
+  BaseTextButton,
+  icons,
+  MenuItem,
+  FormControl,
   Dialog,
+  IconButton,
+  Chip,
+  Box,
   Input,
   InputLabel,
   Select,
-  Chip,
-  IconButton,
-  SelectChangeEvent,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import SVG from "react-inlinesvg";
-import {
-  BaseIconButton,
-  BaseTextButton,
-  icons,
-  theme,
-  Typography,
-  MenuItem,
-  FormControl,
 } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
 import { Profile } from "./interfaces";
-
-const useStyles = makeStyles(() => ({
-  paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
-  paperBody: { margin: "15px" },
-  container: { textAlign: "center", marginTop: "20px" },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    width: "auto",
-    hegith: "400px",
-  },
-  topography: {
-    color: "#000000",
-    display: "inline",
-    fontSize: "21px",
-    marginRight: "125px",
-  },
-  selectInput: { maxWidth: "400px" },
-  chip: {
-    margin: "5px 5px 0 0",
-    borderRadius: "9px",
-    color: theme.palette.text.secondary,
-  },
-  closeIcon: { width: "15px" },
-}));
 
 interface Props {
   profiles: Profile[];
@@ -57,8 +23,7 @@ interface Props {
 }
 
 export function AssigneesDialog(props: Props): React.ReactElement {
-  const classes = useStyles();
-  const [open, setOpen] = useState<boolean>(false);
+  const [closeDialog, setCloseDialog] = useState<boolean>(false);
   const [assignees, setAssignees] = useState<string[]>([]);
 
   const handleChange = (
@@ -67,9 +32,14 @@ export function AssigneesDialog(props: Props): React.ReactElement {
     setAssignees(event.target.value as string[]);
   };
 
+  useEffect(() => {
+    if (closeDialog) {
+      setCloseDialog(false);
+    }
+  }, [closeDialog]);
+
   const isEnabled = (): boolean =>
     props.profiles.length !== 0 && props.selectedImagesUids.length !== 0;
-
   useEffect(() => {
     setAssignees(props.getCurrentAssignees());
   }, [props.selectedImagesUids, props.getCurrentAssignees]);
@@ -79,7 +49,6 @@ export function AssigneesDialog(props: Props): React.ReactElement {
       <FormControl>
         <InputLabel>Assignees:</InputLabel>
         <Select
-          className={classes.selectInput}
           multiple
           value={assignees}
           onChange={handleChange}
@@ -89,7 +58,6 @@ export function AssigneesDialog(props: Props): React.ReactElement {
               {(selected as string[]).map((value) => (
                 <Chip
                   key={`chip-assignee-${value}`}
-                  className={classes.chip}
                   label={value}
                   variant="outlined"
                 />
@@ -104,53 +72,48 @@ export function AssigneesDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <div className={classes.container}>
-        <BaseTextButton
-          text="Assign"
-          onClick={() => {
-            props.updateAssignees(
-              props.selectedImagesUids,
-              props.selectedImagesUids.map(() => assignees)
-            );
-            setOpen(false);
-          }}
-        />
-      </div>
+      <BaseTextButton
+        text="Assign"
+        onClick={() => {
+          props.updateAssignees(
+            props.selectedImagesUids,
+            props.selectedImagesUids.map(() => assignees)
+          );
+          setCloseDialog(!closeDialog);
+        }}
+        sx={{
+          margin: "0 auto",
+          marginTop: "20px",
+          display: "block",
+        }}
+      />
     </>
   );
 
   return (
     <>
-      <BaseIconButton
-        tooltip={tooltips.addAssignees}
-        onClick={() => {
-          if (isEnabled()) {
-            setOpen(!open);
-          }
-        }}
-        tooltipPlacement="top"
-        enabled={isEnabled()}
-        id="update-assignees"
-      />
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <Card className={classes.card}>
-          <Paper
-            elevation={0}
-            variant="outlined"
-            square
-            className={classes.paperHeader}
-          >
-            <Typography className={classes.topography}>
-              Assign selected images
-            </Typography>
-            <IconButton onClick={() => setOpen(false)} size="large">
-              <SVG src={icons.removeLabel} className={classes.closeIcon} />
-            </IconButton>
-          </Paper>
-          <Paper elevation={0} square className={classes.paperBody}>
-            {multiInputForm}
-          </Paper>
-        </Card>
+      <Dialog
+        title="Assign selected images"
+        close={closeDialog}
+        TriggerButton={
+          <IconButton
+            tooltip={{
+              name: "Assign selected images",
+            }}
+            icon={icons.usersPage}
+            size="small"
+            id="update-assignees"
+            disabled={!isEnabled()}
+          />
+        }
+      >
+        <Box
+          sx={{
+            width: "400px",
+          }}
+        >
+          {multiInputForm}
+        </Box>
       </Dialog>
     </>
   );
