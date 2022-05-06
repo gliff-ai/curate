@@ -59,19 +59,6 @@ declare module "@mui/styles/defaultTheme" {
 }
 
 const styles = () => ({
-  sideBar: {
-    width: "290px",
-  },
-  toolBoxCard: {
-    marginBottom: "10px",
-  },
-  imagesContainer: {
-    display: "flex",
-    width: "calc(100% - 310px)",
-    justifyContent: "flex-start",
-    marginBottom: "auto",
-    marginLeft: "20px",
-  },
   assigneeDialog: {
     padding: "0px !important",
     justifyContent: "center",
@@ -124,7 +111,6 @@ const styles = () => ({
     bottom: "18px",
     left: "15px",
   },
-  infoSelection: { fontWeight: 500, width: "1000px" },
   divButton: {
     position: "relative" as const,
     "& > button": {
@@ -659,7 +645,7 @@ class UserInterface extends Component<Props, State> {
         <Box
           display="flex"
           justifyContent="space-between"
-          className={classes.toolBoxCard}
+          sx={{ marginBottom: "10px" }}
         >
           <MuiCard>
             <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
@@ -694,7 +680,7 @@ class UserInterface extends Component<Props, State> {
         <Box
           display="flex"
           justifyContent="flex-start"
-          className={classes.toolBoxCard}
+          sx={{ marginBottom: "10px" }}
         >
           {this.isOwnerOrMember() && this.props.profiles && (
             <MuiCard
@@ -725,13 +711,23 @@ class UserInterface extends Component<Props, State> {
 
     const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
       <MuiCard className={classes.deleteImageCard}>
-        <List component="div" style={{ display: "flex" }}>
+        <List component="div" sx={{ display: "flex" }}>
           <ListItem
-            className={classes.infoSelection}
-            style={{ fontWeight: 500, justifyContent: "left" }}
+            sx={{
+              fontWeight: 500,
+              justifyContent: "left",
+              width: "1000px",
+            }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
           {this.isOwnerOrMember() && this.props.profiles && (
-            <ListItem className={classes.assigneeDialog}>
+            <ListItem
+              sx={{
+                padding: "0px",
+                justifyContent: "center",
+                width: "280px",
+                border: "none",
+              }}
+            >
               <AssigneesDialog
                 profiles={this.props.profiles}
                 selectedImagesUids={this.state.selectedImagesUid}
@@ -765,7 +761,7 @@ class UserInterface extends Component<Props, State> {
                 spacing={2}
                 style={{ marginTop: this.props.showAppBar ? "108px" : 0 }}
               >
-                <Grid item className={classes.sideBar}>
+                <Grid item sx={{ width: "290px" }}>
                   {toolBoxCard}
 
                   {deleteImageCard}
@@ -888,8 +884,14 @@ class UserInterface extends Component<Props, State> {
                 </Grid>
 
                 <Grid
-                  className={classes.imagesContainer}
-                  style={{ flexWrap: "wrap" }}
+                  sx={{
+                    display: "flex",
+                    width: "calc(100% - 310px)",
+                    justifyContent: "flex-start",
+                    marginBottom: "auto",
+                    marginLeft: "20px",
+                    flexWrap: "wrap",
+                  }}
                 >
                   {this.state.metadata
                     .filter((mitem) => mitem.selected)
