@@ -1,7 +1,7 @@
 enum UserAccess {
-  Owner = 0,
-  Member = 1,
-  Collaborator = 2,
+  Owner = "owner",
+  Member = "member",
+  Collaborator = "collaborator",
 }
 
 type Profile = {

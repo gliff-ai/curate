@@ -374,7 +374,19 @@ export function AutoAssignDialog(props: Props): ReactElement {
 
   useEffect(() => {
     // update users included in the assignment
-    setAssignees(props.profiles.filter((p) => p.access >= assigneesType));
+    let newAssignees;
+    if (assigneesType === AssigneesType.EntireTeam) {
+      newAssignees = props.profiles;
+    } else if (assigneesType === AssigneesType.MembersAndCollaborators) {
+      newAssignees = props.profiles.filter(
+        (p) => p.access !== UserAccess.Owner
+      );
+    } else {
+      newAssignees = props.profiles.filter(
+        (p) => p.access === UserAccess.Collaborator
+      );
+    }
+    setAssignees(newAssignees);
   }, [props.profiles, assigneesType]);
 
   useEffect(() => {
@@ -392,8 +404,11 @@ export function AutoAssignDialog(props: Props): ReactElement {
         ? info?.maxNumOfAssignees
         : 1;
     const newOptions = getOptions(assignees.length, start);
-    setAssigneesPerImage(newOptions[0]);
-    setOptions(newOptions);
+
+    if (newOptions.length > 0) {
+      setAssigneesPerImage(newOptions[0]);
+      setOptions(newOptions);
+    }
   }, [assignees, assignmentType, info]);
 
   const dialogContent = (
