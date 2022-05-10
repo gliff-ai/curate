@@ -440,9 +440,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
           <MenuItem value={AssigneesType.MembersAndCollaborators}>
             Members And Collaborators
           </MenuItem>
-          <MenuItem value={AssigneesType.Collaborators}>
-            Collaborators Only
-          </MenuItem>
+          <MenuItem value={AssigneesType.Collaborators}>Collaborators</MenuItem>
         </Select>
       </FormControl>
       {/* select type of assignment */}
