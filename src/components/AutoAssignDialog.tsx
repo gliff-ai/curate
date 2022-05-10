@@ -493,13 +493,16 @@ export function AutoAssignDialog(props: Props): ReactElement {
         sx={{
           width: "450px",
           "& .MuiAlert-root": {
-            width: "auto",
             marginBottom: "10px",
-            "& .MuiButton-root": {
-              position: "absolute",
-              right: "10px",
-              top: "80px",
-            },
+            display: "flex",
+            alignItems: "center",
+          },
+          "& .MuiAlert-message": {
+            marginLeft: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
           },
         }}
       >
