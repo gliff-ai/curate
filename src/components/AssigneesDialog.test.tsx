@@ -1,3 +1,4 @@
+import { UserAccess } from "@/interfaces";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { AssigneesDialog } from "./AssigneesDialog";
 
@@ -6,11 +7,23 @@ const updateAssignees = jest.fn(
 );
 
 const profiles = [
-  { name: "Mike Jones", email: "mike@gliff.app" },
-  { name: "John Smith", email: "john@gliff.app" },
-  { name: "Sarah Williams", email: "sarah@gliff.app" },
-  { name: "Elisabeth Johnson", email: "elisabeth@gliff.app" },
-  { name: "David Brown", email: "david@gliff.app" },
+  { name: "Mike Jones", email: "mike@gliff.app", access: UserAccess.Owner },
+  { name: "John Smith", email: "john@gliff.app", access: UserAccess.Member },
+  {
+    name: "Sarah Williams",
+    email: "sarah@gliff.app",
+    access: UserAccess.Collaborator,
+  },
+  {
+    name: "Elisabeth Johnson",
+    email: "elisabeth@gliff.app",
+    access: UserAccess.Member,
+  },
+  {
+    name: "David Brown",
+    email: "david@gliff.app",
+    access: UserAccess.Collaborator,
+  },
 ];
 
 const prevAssignee = { name: "Mike Jones", email: "mike@gliff.app" };
