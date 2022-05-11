@@ -102,6 +102,7 @@ const styles = () => ({
   deleteImageCard: {
     backgroundColor: theme.palette.primary.light,
     height: "auto",
+    marginBottom: "15px",
   },
   deleteImageList: {
     display: "flex",
@@ -185,7 +186,6 @@ interface State {
   activeFilters: Filter[];
   defaultLabels: string[];
   expanded: string | boolean;
-  openImageUid: string; // Uid for the image whose metadata is shown in the drawer
   selectedImagesUid: string[]; // Uids for selected images
   thumbnailWidth: number;
   thumbnailHeight: number;
@@ -230,7 +230,6 @@ class UserInterface extends Component<Props, State> {
         : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
-      openImageUid: null,
       selectedImagesUid: [],
       activeFilters: [],
       thumbnailWidth: thumbnailSizes[2].size,
@@ -271,14 +270,6 @@ class UserInterface extends Component<Props, State> {
   // metadata items are displayed on the dashboard.
   addFieldSelectedToMetadata = (metadata: Metadata = []): Metadata =>
     metadata.map((mitem) => ({ ...mitem, selected: true }));
-
-  handleMetadataHide = (): void => {
-    this.setState({ openImageUid: null });
-  };
-
-  handleMetadataShow = (imageUid: string): void => {
-    this.setState({ openImageUid: imageUid });
-  };
 
   handleToolboxChange =
     (panel: string) =>
@@ -687,7 +678,6 @@ class UserInterface extends Component<Props, State> {
               onClick={() => {
                 this.setState((prevState) => ({
                   selectMultipleImagesMode: !prevState.selectMultipleImagesMode,
-                  openImageUid: null,
                 }));
               }}
               id="select-multiple-images"
@@ -727,7 +717,7 @@ class UserInterface extends Component<Props, State> {
       </>
     );
 
-    const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
+    const deleteImageCard = (
       <MuiCard className={classes.deleteImageCard}>
         <List component="div" style={{ display: "flex" }}>
           <ListItem
@@ -774,8 +764,18 @@ class UserInterface extends Component<Props, State> {
 
                   {deleteImageCard}
 
-                  {(this.state.openImageUid == null ||
-                    this.state.selectMultipleImagesMode) && (
+                  {this.state.selectedImagesUid.length === 1 &&
+                  !this.state.selectMultipleImagesMode ? (
+                    <MetadataDrawer
+                      metadata={this.state.metadata.find(
+                        ({ id }) => id === this.state.selectedImagesUid[0]
+                      )}
+                      close={() => {
+                        // deselect the image to close the drawer
+                        this.setState({ selectedImagesUid: [] });
+                      }}
+                    />
+                  ) : (
                     <>
                       <SearchBar
                         metadata={this.state.metadata}
@@ -815,21 +815,6 @@ class UserInterface extends Component<Props, State> {
                       )}
                     </>
                   )}
-
-                  <div>
-                    {this.state.openImageUid !== null &&
-                      !this.state.selectMultipleImagesMode && (
-                        <MetadataDrawer
-                          metadata={
-                            this.state.metadata.filter(
-                              (mitem) => mitem.id === this.state.openImageUid
-                            )[0]
-                          }
-                          handleMetadataHide={this.handleMetadataHide}
-                        />
-                      )}
-                  </div>
-
                   <Box
                     display="flex"
                     justifyContent="space-between"
@@ -920,7 +905,6 @@ class UserInterface extends Component<Props, State> {
                               id="images"
                               onClick={(e: MouseEvent) => {
                                 const imageUid = mitem.id as string;
-                                this.handleMetadataShow(imageUid);
 
                                 if (e.metaKey || e.ctrlKey) {
                                   // Add clicked image to the selection if unselected; remove it if already selected
