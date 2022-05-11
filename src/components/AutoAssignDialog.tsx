@@ -28,11 +28,10 @@ enum SelectionType {
 }
 
 enum AssigneesType {
-  "EntireTeam" = 0,
-  "MembersAndCollaborators" = 1,
-  "Collaborators" = 2,
+  "EntireTeam",
+  "MembersAndCollaborators",
+  "Collaborators",
 }
-
 enum AssignmentType {
   "New" = 0,
   "Integrative" = 1,
