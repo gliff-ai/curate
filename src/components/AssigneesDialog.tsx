@@ -13,7 +13,7 @@ import {
   InputLabel,
   Select,
 } from "@gliff-ai/style";
-import { Profile } from "./interfaces";
+import { Profile } from "@/interfaces";
 
 interface Props {
   profiles: Profile[];
