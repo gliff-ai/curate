@@ -47,10 +47,10 @@ import Tile, {
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
-import { Metadata, MetaItem, Filter } from "./interfaces";
+import { UserAccess } from "./interfaces";
+import type { Metadata, MetaItem, Filter, Profile } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
-import { Profile } from "./components/interfaces";
 import { PluginObject, PluginsAccordion } from "./components/plugins";
 
 declare module "@mui/styles/defaultTheme" {
@@ -137,12 +137,6 @@ const styles = () => ({
     },
   },
 });
-
-export enum UserAccess {
-  Owner = "owner",
-  Member = "member",
-  Collaborator = "collaborator",
-}
 
 interface Props extends WithStyles<typeof styles> {
   metadata?: Metadata;
