@@ -1,58 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactElement, ChangeEvent } from "react";
 import {
-  Paper,
-  Card,
-  Dialog,
-  Typography,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  IconButton,
-  Button,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import SVG from "react-inlinesvg";
-import {
-  BaseIconButton,
   BaseTextButton,
-  theme,
   icons,
   Alert,
+  Dialog,
+  Box,
+  MenuItem,
+  IconButton,
+  InputLabel,
+  FormControl,
+  Select,
+  Button,
 } from "@gliff-ai/style";
-import { tooltips } from "./Tooltips";
-import { Profile } from "./interfaces";
 import { kCombinations, shuffle } from "../helpers";
-import { Metadata, MetaItem } from "@/interfaces";
-
-const useStyles = makeStyles(() => ({
-  paperHeader: { padding: "10px", backgroundColor: theme.palette.primary.main },
-  paperBody: { margin: "15px", width: "450px" },
-  container: { textAlign: "center", marginTop: "20px" },
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    width: "auto",
-    hegith: "400px",
-  },
-  topography: {
-    color: "#000000",
-    display: "inline",
-    fontSize: "21px",
-    marginRight: "125px",
-  },
-  alert: {
-    width: "auto",
-  },
-  contentContainer: { padding: "10px" },
-  closeButton: {
-    position: "absolute",
-    top: "7px",
-    right: "5px",
-  },
-  closeIcon: { width: "15px" },
-  okButton: { position: "absolute", right: "10px", top: "75px" },
-}));
+import { Metadata, MetaItem, Profile, UserAccess } from "@/interfaces";
 
 interface Props {
   profiles: Profile[];
@@ -66,6 +27,11 @@ enum SelectionType {
   "Selected" = 1,
 }
 
+enum AssigneesType {
+  "EntireTeam",
+  "MembersAndCollaborators",
+  "Collaborators",
+}
 enum AssignmentType {
   "New" = 0,
   "Integrative" = 1,
@@ -90,11 +56,12 @@ interface AssignmentResult {
   hasError?: boolean;
 }
 
-export function AutoAssignDialog(props: Props): React.ReactElement {
-  const classes = useStyles();
-  const [open, setOpen] = useState<boolean>(false);
+export function AutoAssignDialog(props: Props): ReactElement {
   const [imageSelectionType, setImageSelectionType] = useState<number>(
     SelectionType.All
+  );
+  const [assigneesType, setAssigneesType] = useState<AssigneesType>(
+    AssigneesType.EntireTeam
   );
   const [assignmentType, setAssignmentType] = useState<AssignmentType>(
     AssignmentType.New
@@ -105,40 +72,33 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   );
 
   const [imageUids, setImageUids] = useState<string[] | null>(null);
+  const [assignees, setAssignees] = useState<Profile[] | null>(null);
   const [info, setInfo] = useState<Info | null>(null);
   const [message, setMessage] = useState<Message | null>(null);
 
-  function onChangeOfImageSelectionType(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+  function onChangeOfImageSelectionType(event: ChangeEvent<HTMLInputElement>) {
     setImageSelectionType(Number(event.target.value));
   }
 
-  function onChangeOfAssigneesPerImage(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+  function onChangeAssigneesType(event: ChangeEvent<HTMLInputElement>) {
+    setAssigneesType(Number(event.target.value));
+  }
+
+  function onChangeOfAssigneesPerImage(event: ChangeEvent<HTMLInputElement>) {
     setAssigneesPerImage(Number(event.target.value));
   }
 
-  function onChangeOfAssignmentType(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+  function onChangeOfAssignmentType(event: ChangeEvent<HTMLInputElement>) {
     setAssignmentType(Number(event.target.value));
   }
 
-  function handleClose() {
-    // Close dialog
-    setOpen(false);
-    resetDefaults();
-  }
-
-  function resetDefaults(): void {
+  const resetDefaults = (): void => {
     // Reset defaults values
     setMessage(null);
     updateInfo();
     setImageSelectionType(SelectionType.All);
     setImageSelectionType(AssignmentType.New);
-  }
+  };
 
   function updateImageUids(): void {
     const newImageUids: string[] =
@@ -174,7 +134,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   function updateMessage(): void {
     if (!info || requiresConfirmation()) return;
 
-    if (props.profiles.length === 0) {
+    if (assignees.length === 0) {
       setMessage({
         text: "No collaborator or member has been added to this project.",
         severity: "error",
@@ -228,7 +188,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
     kCombs.forEach((combination, i) => {
       let newCounts: number[] = [];
       // and each profile, calculate new image count
-      props.profiles.forEach(({ email }) => {
+      assignees.forEach(({ email }) => {
         newCounts.push(
           combination.includes(email)
             ? assignmentCount[email] + 1
@@ -370,7 +330,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
   function autoAssignImages(): void {
     // get all combinations of k profiles
     const kCombs: string[][] = kCombinations(
-      props.profiles.map(({ email }) => email),
+      assignees.map(({ email }) => email),
       assigneesPerImage // number of profiles each image is assigned to
     ).map((comb) => comb.sort());
 
@@ -378,7 +338,7 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
 
     // initialise assignment count
     const assignmentCount: AssignmentCount = {};
-    props.profiles.forEach(({ email }) => {
+    assignees.forEach(({ email }) => {
       assignmentCount[email] = 0;
     });
 
@@ -404,14 +364,29 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
       text: "Images assigned.",
       severity: "success",
     });
-
-    // console.log(assignmentCount);
   }
 
   useEffect(() => {
-    if (!open) return; // always runs when dialog opens
+    // always runs when dialog opens
     updateImageUids();
-  }, [props.metadata, open, imageSelectionType]);
+  }, [props.metadata, imageSelectionType]);
+
+  useEffect(() => {
+    // update users included in the assignment
+    let newAssignees;
+    if (assigneesType === AssigneesType.EntireTeam) {
+      newAssignees = props.profiles;
+    } else if (assigneesType === AssigneesType.MembersAndCollaborators) {
+      newAssignees = props.profiles.filter(
+        (p) => p.access !== UserAccess.Owner
+      );
+    } else {
+      newAssignees = props.profiles.filter(
+        (p) => p.access === UserAccess.Collaborator
+      );
+    }
+    setAssignees(newAssignees);
+  }, [props.profiles, assigneesType]);
 
   useEffect(() => {
     updateInfo();
@@ -419,20 +394,24 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
 
   useEffect(() => {
     updateMessage();
-  }, [info, props.profiles, assignmentType]);
+  }, [info, assignees, assignmentType]);
 
   useEffect(() => {
+    if (!assignees) return;
     const start =
       assignmentType === AssignmentType.Integrative
         ? info?.maxNumOfAssignees
         : 1;
-    const newOptions = getOptions(props.profiles.length, start);
-    setAssigneesPerImage(newOptions[0]);
-    setOptions(newOptions);
-  }, [props.profiles, assignmentType, info]);
+    const newOptions = getOptions(assignees.length, start);
+
+    if (newOptions.length > 0) {
+      setAssigneesPerImage(newOptions[0]);
+      setOptions(newOptions);
+    }
+  }, [assignees, assignmentType, info]);
 
   const dialogContent = (
-    <div className={classes.contentContainer}>
+    <Box sx={{ padding: "10px" }}>
       {/* select images to assign */}
       <FormControl>
         <InputLabel>Images to assign:</InputLabel>
@@ -445,6 +424,22 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           {props.selectedImagesUids.length && (
             <MenuItem value={SelectionType.Selected}>Selected</MenuItem>
           )}
+        </Select>
+      </FormControl>
+      <br />
+      {/* select assignees */}
+      <FormControl>
+        <InputLabel>Assignees:</InputLabel>
+        <Select
+          value={assigneesType}
+          onChange={onChangeAssigneesType}
+          variant="standard"
+        >
+          <MenuItem value={AssigneesType.EntireTeam}>Entire Team</MenuItem>
+          <MenuItem value={AssigneesType.MembersAndCollaborators}>
+            Members And Collaborators
+          </MenuItem>
+          <MenuItem value={AssigneesType.Collaborators}>Collaborators</MenuItem>
         </Select>
       </FormControl>
       {/* select type of assignment */}
@@ -480,66 +475,62 @@ export function AutoAssignDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <div className={classes.container}>
-        <BaseTextButton
-          id="assign"
-          text="Assign"
-          onClick={autoAssignImages}
-          disabled={requiresConfirmation()}
-        />
-      </div>
-    </div>
+      <BaseTextButton
+        id="assign"
+        text="Assign"
+        onClick={autoAssignImages}
+        disabled={requiresConfirmation()}
+        sx={{ display: "block", margin: "auto", marginTop: "20px" }}
+      />
+    </Box>
   );
 
   return (
-    <>
-      <BaseIconButton
-        tooltip={tooltips.autoAssign}
-        onClick={() => setOpen(!open)}
-        tooltipPlacement="top"
-        id="auto-assign-images"
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <Card className={classes.card}>
-          <Paper
-            elevation={0}
-            variant="outlined"
-            square
-            className={classes.paperHeader}
-          >
-            <Typography className={classes.topography}>
-              Auto-assign images
-            </Typography>
-            <IconButton
-              className={classes.closeButton}
-              onClick={handleClose}
-              size="small"
-            >
-              <SVG src={icons.removeLabel} className={classes.closeIcon} />
-            </IconButton>
-          </Paper>
-          <Paper elevation={0} square className={classes.paperBody}>
-            {message ? (
-              <>
-                <Alert className={classes.alert} severity={message.severity}>
-                  {message.text}
-                  {requiresConfirmation() && (
-                    <Button
-                      className={classes.okButton}
-                      onClick={resetDefaults}
-                      color="inherit"
-                    >
-                      Ok
-                    </Button>
-                  )}
-                </Alert>
-              </>
-            ) : null}
+    <Dialog
+      title="Auto-Assign Images"
+      TriggerButton={
+        <IconButton
+          tooltip={{
+            name: "Auto-Assign Images",
+          }}
+          icon={icons.autoAssign}
+          size="small"
+          id="auto-assign-images"
+          tooltipPlacement="top"
+        />
+      }
+      resetDefaults={resetDefaults}
+    >
+      <Box
+        sx={{
+          width: "450px",
+          "& .MuiAlert-root": {
+            marginBottom: "10px",
+            display: "flex",
+            alignItems: "center",
+          },
+          "& .MuiAlert-message": {
+            marginLeft: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          },
+        }}
+      >
+        {message ? (
+          <Alert severity={message.severity}>
+            {message.text}
+            {requiresConfirmation() && (
+              <Button onClick={resetDefaults} color="inherit">
+                Ok
+              </Button>
+            )}
+          </Alert>
+        ) : null}
 
-            {dialogContent}
-          </Paper>
-        </Card>
-      </Dialog>
-    </>
+        {dialogContent}
+      </Box>
+    </Dialog>
   );
 }

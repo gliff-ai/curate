@@ -12,6 +12,7 @@ import {
   TextField,
   IconButton,
   MuiIconbutton,
+  Box,
 } from "@gliff-ai/style";
 
 interface Props {
@@ -59,7 +60,7 @@ export function LabelsPopover(props: Props): ReactElement {
             name: "Update Image Labels",
           }}
           icon={icons.annotationLabel}
-          style={{
+          sx={{
             position: "absolute",
             bottom: theme.spacing(1),
             left: theme.spacing(2),
@@ -78,7 +79,7 @@ export function LabelsPopover(props: Props): ReactElement {
         horizontal: "left",
       }}
     >
-      <div style={{ display: "table-caption" }}>
+      <Box sx={{ display: "table-caption" }}>
         {props.defaultLabels.length > 0 ? (
           <Autocomplete
             onChange={(event, value) => {
@@ -89,7 +90,7 @@ export function LabelsPopover(props: Props): ReactElement {
                 setNewLabel(value);
               }
             }}
-            style={{ width: "300px" }}
+            sx={{ width: "300px" }}
             options={props.defaultLabels}
             freeSolo={!props.restrictLabels}
             value={newLabel}
@@ -103,7 +104,7 @@ export function LabelsPopover(props: Props): ReactElement {
                   }
                 }}
                 autoFocus
-                style={{
+                sx={{
                   fontSize: 14,
                   width: "225px",
                   marginBottom: "20px",
@@ -148,7 +149,7 @@ export function LabelsPopover(props: Props): ReactElement {
             avatar={
               <Avatar
                 variant="circular"
-                style={{ cursor: "pointer" }}
+                sx={{ cursor: "pointer" }}
                 onClick={handleDeleteLabel(label)}
                 data-testid={`delete-${label}`}
               >
@@ -163,7 +164,7 @@ export function LabelsPopover(props: Props): ReactElement {
             variant="outlined"
           />
         ))}
-      </div>
+      </Box>
     </Popover>
   );
 }
