@@ -499,7 +499,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
           tooltipPlacement="top"
         />
       }
-      resetDefaults={resetDefaults}
+      afterClose={resetDefaults}
     >
       <Box
         sx={{
