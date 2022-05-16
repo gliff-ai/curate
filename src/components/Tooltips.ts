@@ -23,7 +23,7 @@ const datasetType: DatasetType[] = [
   },
   {
     name: "View Dataset as Table",
-    icon: icons.mediumImageGrid, //TODO Needs to be replaced with the right icon
+    icon: icons.tableViewer as string,
     id: "table-dataset-view",
   },
 ];
