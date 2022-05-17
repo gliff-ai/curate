@@ -43,6 +43,7 @@ import Tile, {
   AssigneesDialog,
   AutoAssignDialog,
   DefaultLabelsDialog,
+  ViewAnnotationsDialog,
 } from "@/components";
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
@@ -823,6 +824,25 @@ class UserInterface extends Component<Props, State> {
                         />
                       )}
                   </div>
+
+                  {this.state.selectedImagesUid.length === 1 && (
+                    <Box
+                      display="flex"
+                      justifyContent="flex-end"
+                      sx={{ marginTop: "10px", marginBottom: "5px" }}
+                    >
+                      <MuiCard>
+                        <ViewAnnotationsDialog
+                          users={
+                            this.props.metadata.find(
+                              (mitem) =>
+                                mitem["id"] === this.state.selectedImagesUid[0]
+                            )["assignees"] as string[]
+                          }
+                        />
+                      </MuiCard>
+                    </Box>
+                  )}
 
                   <Box
                     display="flex"

@@ -57,7 +57,11 @@ const tooltips: Tooltips = {
   defaultLabels: {
     name: "Set default labels",
     icon: icons.annotationLabels,
-  }
+  },
+  viewAnnotations: {
+    name: "View Annotations",
+    icon: icons.imageViewer,
+  },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [
