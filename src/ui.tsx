@@ -60,68 +60,22 @@ declare module "@mui/styles/defaultTheme" {
   interface DefaultTheme extends Theme {}
 }
 
-const styles = () => ({
-  assigneeDialog: {
-    padding: "0px !important",
-    justifyContent: "center",
-    width: "280px !important",
-    border: "none !important",
-  },
-  uploadButton: {
-    bottom: "18px",
-    right: "18px",
-  },
-  logo: {
-    marginBottom: "5px",
-    marginTop: "7px",
-  },
-  smallButton: {
-    backgroundColor: theme.palette.primary.light,
-    height: "48px",
-    width: "48px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  deleteImageCard: {
-    backgroundColor: theme.palette.primary.light,
-    height: "auto",
-  },
-  deleteImageList: {
-    display: "flex",
-    justifyContent: "space-around",
-    marginTop: "-14px",
-  },
-  deleteImageListItem: {
-    width: "auto",
-    marginRight: "-10px",
-    marginBottom: "-10ox",
-  },
-  bottomLeftButtons: {
-    display: "flex",
-    justifyContent: "space-between",
-    backgroundColor: theme.palette.primary.light,
-  },
-  bottomToolbar: { bottom: "10px", width: "274px" },
-  collectionViewer: {
-    height: "53px",
-    backgroundColor: theme.palette.primary.light,
-    paddingTop: "1px",
-    marginLeft: "10px",
-    width: "61px",
-    paddingRight: "9px",
-    bottom: "18px",
-    left: "15px",
-  },
-  divButton: {
-    position: "relative" as const,
-    "& > button": {
-      margin: "5px",
-    },
-  },
-});
+const bottomLeftButtons = {
+  display: "flex",
+  justifyContent: "space-between",
+  backgroundColor: theme.palette.primary.light,
+};
 
-interface Props extends WithStyles<typeof styles> {
+const smallButton = {
+  backgroundColor: theme.palette.primary.light,
+  height: "48px",
+  width: "48px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+interface Props {
   metadata?: Metadata;
   saveImageCallback?: (
     imageFileInfo: ImageFileInfo[],
@@ -630,13 +584,13 @@ class UserInterface extends Component<Props, State> {
   }
 
   render = (): ReactNode => {
-    const { classes, showAppBar } = this.props;
+    const { showAppBar } = this.props;
 
     const appBar = !showAppBar ? null : (
       <AppBar position="fixed" elevation={0}>
         <Toolbar>
           <Grid container direction="row">
-            <Grid item className={classes.logo}>
+            <Grid item sx={{ marginBottom: "5px", marginTop: "7px" }}>
               <Logo />
             </Grid>
           </Grid>
@@ -659,7 +613,7 @@ class UserInterface extends Component<Props, State> {
             <DatasetView changeDatasetViewType={this.changeDatasetViewType} />
           </MuiCard>
 
-          {/* <MuiCard className={classes.smallButton}>
+          {/* <MuiCard sx={{...smallButton}}>
             <SortPopover
               metadataKeys={this.state.metadataKeys}
               callbackSort={this.handleOnSortSubmit}
@@ -668,7 +622,7 @@ class UserInterface extends Component<Props, State> {
             />
           </MuiCard>
 
-          <MuiCard className={classes.smallButton}>
+          <MuiCard sx={{...smallButton}}>
             <IconButton
               tooltip={tooltips.selectMultipleImages}
               fill={this.state.selectMultipleImagesMode}
@@ -690,10 +644,7 @@ class UserInterface extends Component<Props, State> {
           justifyContent="flex-start"
           sx={{ marginBottom: "10px" }}
         >
-          <MuiCard
-            className={classes.smallButton}
-            style={{ marginRight: "14px", width: "144px" }}
-          >
+          <MuiCard sx={{ ...smallButton, marginRight: "14px", width: "144px" }}>
             {this.isOwnerOrMember() && this.props.profiles && (
               <AutoAssignDialog
                 profiles={this.props.profiles}
@@ -753,7 +704,7 @@ class UserInterface extends Component<Props, State> {
     );
 
     const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
-      <MuiCard className={classes.deleteImageCard}>
+      <MuiCard>
         <List component="div" sx={{ display: "flex" }}>
           <ListItem
             sx={{
@@ -890,7 +841,14 @@ class UserInterface extends Component<Props, State> {
                 theme.palette.primary.main,
             }}
           >
-            <div className={classes.divButton}>
+            <Box
+              sx={{
+                position: "relative" as const,
+                "& > button": {
+                  margin: "5px",
+                },
+              }}
+            >
               <Button
                 id="images"
                 onClick={(e: MouseEvent) => {
@@ -994,7 +952,7 @@ class UserInterface extends Component<Props, State> {
                 defaultLabels={this.state.defaultLabels}
                 multiLabel={this.state.multiLabel}
               />
-            </div>
+            </Box>
           </Grid>
         </Fragment>
       ));
@@ -1077,9 +1035,9 @@ class UserInterface extends Component<Props, State> {
                     display="flex"
                     justifyContent="space-between"
                     position="fixed"
-                    className={classes.bottomToolbar}
+                    sx={{ bottom: "10px", width: "274px" }}
                   >
-                    <MuiCard className={classes.bottomLeftButtons}>
+                    <MuiCard sx={{ ...bottomLeftButtons }}>
                       <IconButton
                         tooltip={tooltips.viewCollection}
                         icon={tooltips.viewCollection.icon}
@@ -1088,7 +1046,7 @@ class UserInterface extends Component<Props, State> {
                       />
                     </MuiCard>
 
-                    <MuiCard className={classes.bottomLeftButtons}>
+                    <MuiCard sx={{ ...bottomLeftButtons }}>
                       {this.isOwnerOrMember() && (
                         <UploadImage
                           setUploadedImage={this.addUploadedImages}
@@ -1114,7 +1072,7 @@ class UserInterface extends Component<Props, State> {
                       />
                     </MuiCard>
 
-                    <MuiCard className={classes.bottomLeftButtons}>
+                    <MuiCard sx={{ ...bottomLeftButtons }}>
                       <IconButton
                         icon={icons.plugins}
                         tooltip={{ name: "Plugins" }}
@@ -1158,4 +1116,4 @@ class UserInterface extends Component<Props, State> {
 }
 
 export { UserInterface as UI };
-export default withStyles(styles)(UserInterface);
+export default UserInterface;
