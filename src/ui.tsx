@@ -33,6 +33,7 @@ import {
   Container,
   ThemeProvider,
   StyledEngineProvider,
+  DataGrid,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -690,7 +691,42 @@ class UserInterface extends Component<Props, State> {
           justifyContent="flex-start"
           sx={{ marginBottom: "10px" }}
         >
-          {this.isOwnerOrMember() && this.props.profiles && (
+          <MuiCard
+            className={classes.smallButton}
+            style={{ marginRight: "14px", width: "144px" }}
+          >
+            {this.isOwnerOrMember() && this.props.profiles && (
+              <AutoAssignDialog
+                profiles={this.props.profiles}
+                metadata={this.state.metadata}
+                selectedImagesUids={this.state.selectedImagesUid}
+                updateAssignees={this.updateAssignees}
+              />
+            )}
+            {this.props.userAccess !== UserAccess.Collaborator && (
+              <DefaultLabelsDialog
+                labels={this.state.defaultLabels}
+                restrictLabels={this.state.restrictLabels}
+                multiLabel={this.state.multiLabel}
+                updateDefaultLabels={this.updateDefaultLabels}
+              />
+            )}
+            <IconButton
+              icon={icons.plugins}
+              tooltip={{ name: "Plugins" }}
+              fill={this.state.showPluginsAccordion}
+              disabled={this.props.plugins === null}
+              tooltipPlacement="top"
+              onClick={() =>
+                this.setState((prevState) => ({
+                  expanded: "plugins-toolbox",
+                  selectMultipleImagesMode: true, // to keep metadata drawer closed
+                  showPluginsAccordion: !prevState.showPluginsAccordion,
+                }))
+              }
+            />
+          </MuiCard>
+          {/* {this.isOwnerOrMember() && this.props.profiles && (
             <MuiCard
               className={classes.smallButton}
               style={{ marginRight: "14px" }}
@@ -712,7 +748,7 @@ class UserInterface extends Component<Props, State> {
                 updateDefaultLabels={this.updateDefaultLabels}
               />
             </MuiCard>
-          )}
+          )} */}
         </Box>
       </>
     );
@@ -754,6 +790,80 @@ class UserInterface extends Component<Props, State> {
           </ListItem>
         </List>
       </MuiCard>
+    );
+
+    const defaultColumns = [
+      {
+        headerName: "Image Name",
+        field: "imageName",
+        width: 150,
+        editable: false,
+      },
+      {
+        headerName: "Annotation Progress",
+        field: "annotationProgress",
+        width: 150,
+        editable: false,
+      },
+      {
+        headerName: "Assignees",
+        field: "assignees",
+        width: 150,
+        editable: false,
+      },
+      {
+        headerName: "Labels",
+        field: "labels",
+        width: 150,
+        editable: false,
+      },
+
+      {
+        headerName: "Pixels",
+        field: "dimensions",
+        width: 150,
+        editable: false,
+      },
+      {
+        headerName: "Size",
+        field: "size",
+        width: 150,
+        editable: false,
+      },
+    ];
+    const ignoreMetaColumns = [
+      "imageName",
+      "annotationProgress",
+      "assignees",
+      "labels",
+      "pixels",
+      "size",
+      "id",
+      "dimensions",
+    ];
+
+    const colsObj = this.state.metadata.reduce((acc, el) => {
+      Object.keys(el).forEach((k) => {
+        if (!ignoreMetaColumns.includes(k)) {
+          acc[k] = {
+            field: k,
+            headerName: k, // TODO split on capital, make pretty
+            width: 150,
+            editable: false,
+            hide: true,
+          };
+        }
+      });
+
+      return acc;
+    }, {});
+
+    const allCols = [...defaultColumns, ...Object.values(colsObj)];
+
+    const tableView = (
+      <Box sx={{ width: "100%", height: "100%" }}>
+        <DataGrid columns={allCols} rows={this.state.metadata} />
+      </Box>
     );
 
     const imagesView = this.state.metadata
@@ -1031,7 +1141,7 @@ class UserInterface extends Component<Props, State> {
                 >
                   {this.state.datasetViewType === "View Dataset as Images"
                     ? imagesView
-                    : null}
+                    : tableView}
                 </Grid>
               </Grid>
             </Container>
