@@ -7,8 +7,6 @@ import {
   Fragment,
 } from "react";
 
-import { Theme } from "@mui/material";
-
 import { WithStyles } from "@mui/styles";
 import withStyles from "@mui/styles/withStyles";
 import StylesProvider from "@mui/styles/StylesProvider";
@@ -34,6 +32,7 @@ import {
   ThemeProvider,
   StyledEngineProvider,
   DataGrid,
+  Chip,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -814,8 +813,14 @@ class UserInterface extends Component<Props, State> {
       {
         headerName: "Labels",
         field: "labels",
-        width: 150,
+        width: 250,
         editable: false,
+        renderCell: (params) =>
+          params.row.imageLabels
+            .slice(0, 2)
+            .map((imageLabel: string) => (
+              <Chip label={imageLabel} key={imageLabel} variant="outlined" />
+            )),
       },
 
       {
