@@ -21,6 +21,7 @@ import { tooltips } from "@/components";
 
 interface Props {
   users: string[];
+  annotateCallback: (username: string) => void;
 }
 
 export function ViewAnnotationsDialog(props: Props): React.ReactElement {
@@ -91,7 +92,9 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
               id="confirm-view-annotations"
               disabled={!props.users.includes(username1)}
               text="Confirm"
-              onClick={() => {}}
+              onClick={() => {
+                props.annotateCallback(username1);
+              }}
             />
           </Box>
         </CardContent>

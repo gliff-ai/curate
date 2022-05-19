@@ -158,7 +158,7 @@ interface Props extends WithStyles<typeof styles> {
     newAssignees: string[][]
   ) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
-  annotateCallback?: (id: string) => void;
+  annotateCallback?: (imageUid: string, username?: string) => void;
   downloadDatasetCallback?: () => void;
   // eslint-disable-next-line react/no-unused-prop-types
   setTask?: (task: { isLoading: boolean; description?: string }) => void;
@@ -841,6 +841,12 @@ class UserInterface extends Component<Props, State> {
                                   mitem["id"] ===
                                   this.state.selectedImagesUid[0]
                               )["assignees"] as string[]
+                            }
+                            annotateCallback={(username: string) =>
+                              this.props.annotateCallback(
+                                this.state.selectedImagesUid[0],
+                                username
+                              )
                             }
                           />
                         </MuiCard>
