@@ -7,8 +7,6 @@ import {
   Fragment,
 } from "react";
 
-import { WithStyles } from "@mui/styles";
-import withStyles from "@mui/styles/withStyles";
 import StylesProvider from "@mui/styles/StylesProvider";
 
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
@@ -33,6 +31,7 @@ import {
   StyledEngineProvider,
   DataGrid,
   Chip,
+  ButtonGroup,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -614,15 +613,6 @@ class UserInterface extends Component<Props, State> {
           </MuiCard>
 
           {/* <MuiCard sx={{...smallButton}}>
-            <SortPopover
-              metadataKeys={this.state.metadataKeys}
-              callbackSort={this.handleOnSortSubmit}
-              isGrouped={this.state.isGrouped}
-              toggleIsGrouped={this.toggleIsGrouped}
-            />
-          </MuiCard>
-
-          <MuiCard sx={{...smallButton}}>
             <IconButton
               tooltip={tooltips.selectMultipleImages}
               fill={this.state.selectMultipleImagesMode}
@@ -641,39 +631,57 @@ class UserInterface extends Component<Props, State> {
         </Box>
         <Box
           display="flex"
-          justifyContent="flex-start"
+          justifyContent="space-between"
           sx={{ marginBottom: "10px" }}
         >
-          <MuiCard sx={{ ...smallButton, marginRight: "14px", width: "144px" }}>
-            {this.isOwnerOrMember() && this.props.profiles && (
-              <AutoAssignDialog
-                profiles={this.props.profiles}
-                metadata={this.state.metadata}
-                selectedImagesUids={this.state.selectedImagesUid}
-                updateAssignees={this.updateAssignees}
+          <MuiCard>
+            <ButtonGroup
+              orientation="horizontal"
+              variant="text"
+              sx={{
+                alignItems: "center",
+                height: "48px",
+                border: "none",
+              }}
+            >
+              {this.isOwnerOrMember() && this.props.profiles && (
+                <AutoAssignDialog
+                  profiles={this.props.profiles}
+                  metadata={this.state.metadata}
+                  selectedImagesUids={this.state.selectedImagesUid}
+                  updateAssignees={this.updateAssignees}
+                />
+              )}
+              {this.props.userAccess !== UserAccess.Collaborator && (
+                <DefaultLabelsDialog
+                  labels={this.state.defaultLabels}
+                  restrictLabels={this.state.restrictLabels}
+                  multiLabel={this.state.multiLabel}
+                  updateDefaultLabels={this.updateDefaultLabels}
+                />
+              )}
+              <IconButton
+                icon={icons.plugins}
+                tooltip={{ name: "Plugins" }}
+                fill={this.state.showPluginsAccordion}
+                disabled={this.props.plugins === null}
+                tooltipPlacement="top"
+                onClick={() =>
+                  this.setState((prevState) => ({
+                    expanded: "plugins-toolbox",
+                    selectMultipleImagesMode: true, // to keep metadata drawer closed
+                    showPluginsAccordion: !prevState.showPluginsAccordion,
+                  }))
+                }
               />
-            )}
-            {this.props.userAccess !== UserAccess.Collaborator && (
-              <DefaultLabelsDialog
-                labels={this.state.defaultLabels}
-                restrictLabels={this.state.restrictLabels}
-                multiLabel={this.state.multiLabel}
-                updateDefaultLabels={this.updateDefaultLabels}
-              />
-            )}
-            <IconButton
-              icon={icons.plugins}
-              tooltip={{ name: "Plugins" }}
-              fill={this.state.showPluginsAccordion}
-              disabled={this.props.plugins === null}
-              tooltipPlacement="top"
-              onClick={() =>
-                this.setState((prevState) => ({
-                  expanded: "plugins-toolbox",
-                  selectMultipleImagesMode: true, // to keep metadata drawer closed
-                  showPluginsAccordion: !prevState.showPluginsAccordion,
-                }))
-              }
+            </ButtonGroup>
+          </MuiCard>
+          <MuiCard sx={{ ...smallButton }}>
+            <SortPopover
+              metadataKeys={this.state.metadataKeys}
+              callbackSort={this.handleOnSortSubmit}
+              isGrouped={this.state.isGrouped}
+              toggleIsGrouped={this.toggleIsGrouped}
             />
           </MuiCard>
           {/* {this.isOwnerOrMember() && this.props.profiles && (
@@ -817,8 +825,12 @@ class UserInterface extends Component<Props, State> {
     const allCols = [...defaultColumns, ...Object.values(colsObj)];
 
     const tableView = (
-      <Box sx={{ width: "100%", height: "100%" }}>
-        <DataGrid columns={allCols} rows={this.state.metadata} />
+      <Box sx={{ width: "100%" }}>
+        <DataGrid
+          title="Dataset Details"
+          columns={allCols}
+          rows={this.state.metadata}
+        />
       </Box>
     );
 
@@ -1038,15 +1050,6 @@ class UserInterface extends Component<Props, State> {
                     sx={{ bottom: "10px", width: "274px" }}
                   >
                     <MuiCard sx={{ ...bottomLeftButtons }}>
-                      <IconButton
-                        tooltip={tooltips.viewCollection}
-                        icon={tooltips.viewCollection.icon}
-                        fill={null}
-                        tooltipPlacement="top"
-                      />
-                    </MuiCard>
-
-                    <MuiCard sx={{ ...bottomLeftButtons }}>
                       {this.isOwnerOrMember() && (
                         <UploadImage
                           setUploadedImage={this.addUploadedImages}
@@ -1069,24 +1072,6 @@ class UserInterface extends Component<Props, State> {
                         fill={null}
                         tooltipPlacement="top"
                         onClick={this.props.downloadDatasetCallback}
-                      />
-                    </MuiCard>
-
-                    <MuiCard sx={{ ...bottomLeftButtons }}>
-                      <IconButton
-                        icon={icons.plugins}
-                        tooltip={{ name: "Plugins" }}
-                        fill={this.state.showPluginsAccordion}
-                        disabled={this.props.plugins === null}
-                        tooltipPlacement="top"
-                        onClick={() =>
-                          this.setState((prevState) => ({
-                            expanded: "plugins-toolbox",
-                            selectMultipleImagesMode: true, // to keep metadata drawer closed
-                            showPluginsAccordion:
-                              !prevState.showPluginsAccordion,
-                          }))
-                        }
                       />
                     </MuiCard>
                   </Box>
