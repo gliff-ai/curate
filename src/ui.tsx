@@ -826,14 +826,15 @@ class UserInterface extends Component<Props, State> {
                       )}
                   </div>
 
-                  {this.state.selectedImagesUid.length === 1 &&
-                    this.isOwnerOrMember() && (
-                      <Box
-                        display="flex"
-                        justifyContent="flex-end"
-                        sx={{ marginTop: "10px", marginBottom: "5px" }}
-                      >
-                        <MuiCard>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    position="fixed"
+                    className={classes.bottomToolbar}
+                  >
+                    {this.state.selectedImagesUid.length === 1 &&
+                      this.isOwnerOrMember() && (
+                        <MuiCard className={classes.bottomLeftButtons}>
                           <ViewAnnotationsDialog
                             users={
                               this.props.metadata.find(
@@ -850,23 +851,7 @@ class UserInterface extends Component<Props, State> {
                             }
                           />
                         </MuiCard>
-                      </Box>
-                    )}
-
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    position="fixed"
-                    className={classes.bottomToolbar}
-                  >
-                    <MuiCard className={classes.bottomLeftButtons}>
-                      <IconButton
-                        tooltip={tooltips.viewCollection}
-                        icon={tooltips.viewCollection.icon}
-                        fill={null}
-                        tooltipPlacement="top"
-                      />
-                    </MuiCard>
+                      )}
 
                     <MuiCard className={classes.bottomLeftButtons}>
                       {this.isOwnerOrMember() && (
