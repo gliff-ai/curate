@@ -32,6 +32,8 @@ import {
   DataGrid,
   Chip,
   ButtonGroup,
+  GridValueGetterParams,
+  Typography,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -774,12 +776,19 @@ class UserInterface extends Component<Props, State> {
         field: "labels",
         width: 250,
         editable: false,
-        renderCell: (params) =>
-          params.row.imageLabels
-            .slice(0, 2)
-            .map((imageLabel: string) => (
-              <Chip label={imageLabel} key={imageLabel} variant="outlined" />
-            )),
+        renderCell: (params: GridValueGetterParams) => {
+          const chipsLimit = 2;
+          const chips = params.row.imageLabels.slice(0, chipsLimit);
+          const moreLabelsCount = params.row.imageLabels.length - 2;
+          const showPlaceholder =
+            moreLabelsCount > 0 ? (
+              <Typography>+ {moreLabelsCount} more</Typography>
+            ) : null;
+          const test = chips.map((imageLabel: string) => (
+            <Chip label={imageLabel} key={imageLabel} variant="outlined" />
+          ));
+          return [test, showPlaceholder];
+        },
       },
 
       {
