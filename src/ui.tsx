@@ -32,9 +32,9 @@ import {
   DataGrid,
   Chip,
   ButtonGroup,
-  MuiTooltip,
   Typography,
   GridRenderCellParams,
+  HtmlTooltip,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -614,28 +614,11 @@ class UserInterface extends Component<Props, State> {
           <MuiCard>
             <DatasetView changeDatasetViewType={this.changeDatasetViewType} />
           </MuiCard>
-
-          {/* <MuiCard sx={{...smallButton}}>
-            <IconButton
-              tooltip={tooltips.selectMultipleImages}
-              fill={this.state.selectMultipleImagesMode}
-              icon={tooltips.selectMultipleImages.icon}
-              tooltipPlacement="bottom"
-              onClick={() => {
-                this.setState((prevState) => ({
-                  selectMultipleImagesMode: !prevState.selectMultipleImagesMode,
-                  openImageUid: null,
-                }));
-              }}
-              id="select-multiple-images"
-              size="small"
-            />
-          </MuiCard> */}
         </Box>
         <Box
           display="flex"
           justifyContent="space-between"
-          sx={{ marginBottom: "10px" }}
+          sx={{ margin: "15px 0 15px" }}
         >
           <MuiCard>
             <ButtonGroup
@@ -687,29 +670,6 @@ class UserInterface extends Component<Props, State> {
               toggleIsGrouped={this.toggleIsGrouped}
             />
           </MuiCard>
-          {/* {this.isOwnerOrMember() && this.props.profiles && (
-            <MuiCard
-              className={classes.smallButton}
-              style={{ marginRight: "14px" }}
-            >
-              <AutoAssignDialog
-                profiles={this.props.profiles}
-                metadata={this.state.metadata}
-                selectedImagesUids={this.state.selectedImagesUid}
-                updateAssignees={this.updateAssignees}
-              />
-            </MuiCard>
-          )}
-          {this.props.userAccess !== UserAccess.Collaborator && (
-            <MuiCard className={classes.smallButton}>
-              <DefaultLabelsDialog
-                labels={this.state.defaultLabels}
-                restrictLabels={this.state.restrictLabels}
-                multiLabel={this.state.multiLabel}
-                updateDefaultLabels={this.updateDefaultLabels}
-              />
-            </MuiCard>
-          )} */}
         </Box>
       </>
     );
@@ -777,22 +737,23 @@ class UserInterface extends Component<Props, State> {
         field: "labels",
         width: 250,
         editable: false,
-        renderCell: (params: GridRenderCellParams) => {
+        renderCell: (params: GridRenderCellParams<Array<T>>) => {
           const chipsLimit = 2;
-          const chips = params.row.imageLabels.slice(0, chipsLimit);
+          const chips: string[] = params.row.imageLabels.slice(0, chipsLimit);
           const moreLabelsCount = params.row.imageLabels.length - 2;
           const showPlaceholder =
             moreLabelsCount > 0 ? (
-              <MuiTooltip
+              <HtmlTooltip
                 title={params.row.imageLabels.join(", ")}
                 placement="bottom"
               >
                 <Typography>+ {moreLabelsCount} more</Typography>
-              </MuiTooltip>
+              </HtmlTooltip>
             ) : null;
           const test = chips.map((imageLabel: string) => (
             <Chip label={imageLabel} key={imageLabel} variant="outlined" />
           ));
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           return [test, showPlaceholder];
         },
       },
@@ -1087,6 +1048,24 @@ class UserInterface extends Component<Props, State> {
                         fill={null}
                         tooltipPlacement="top"
                         onClick={this.props.downloadDatasetCallback}
+                      />
+                    </MuiCard>
+
+                    <MuiCard sx={{ ...smallButton }}>
+                      <IconButton
+                        tooltip={tooltips.selectMultipleImages}
+                        fill={this.state.selectMultipleImagesMode}
+                        icon={tooltips.selectMultipleImages.icon}
+                        tooltipPlacement="bottom"
+                        onClick={() => {
+                          this.setState((prevState) => ({
+                            selectMultipleImagesMode:
+                              !prevState.selectMultipleImagesMode,
+                            openImageUid: null,
+                          }));
+                        }}
+                        id="select-multiple-images"
+                        size="small"
                       />
                     </MuiCard>
                   </Box>
