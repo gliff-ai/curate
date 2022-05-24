@@ -32,7 +32,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
       title="View Annotations"
       TriggerButton={
         <IconButton
-          icon={icons.plugins}
+          icon={icons.viewSingleAnnotation}
           tooltip={tooltips.viewAnnotations}
           size="small"
           id="view-annotations"
