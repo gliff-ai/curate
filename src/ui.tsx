@@ -18,7 +18,6 @@ import {
   CssBaseline,
   AppBar,
   theme,
-  BaseIconButton,
   generateClassName,
   IconButton,
   Logo,
@@ -30,6 +29,7 @@ import {
   Button,
   Container,
   MuiCard,
+  ButtonGroup,
   Box,
   ThemeProvider,
   StyledEngineProvider,
@@ -77,16 +77,6 @@ const styles = () => ({
     marginBottom: "auto",
     marginLeft: "20px",
   },
-  assigneeDialog: {
-    padding: "0px !important",
-    justifyContent: "center",
-    width: "280px !important",
-    border: "none !important",
-  },
-  uploadButton: {
-    bottom: "18px",
-    right: "18px",
-  },
   logo: {
     marginBottom: "5px",
     marginTop: "7px",
@@ -104,32 +94,12 @@ const styles = () => ({
     height: "auto",
     marginBottom: "15px",
   },
-  deleteImageList: {
-    display: "flex",
-    justifyContent: "space-around",
-    marginTop: "-14px",
-  },
-  deleteImageListItem: {
-    width: "auto",
-    marginRight: "-10px",
-    marginBottom: "-10ox",
-  },
   bottomLeftButtons: {
     display: "flex",
     justifyContent: "space-between",
     backgroundColor: theme.palette.primary.light,
   },
   bottomToolbar: { bottom: "10px", width: "274px" },
-  collectionViewer: {
-    height: "53px",
-    backgroundColor: theme.palette.primary.light,
-    paddingTop: "1px",
-    marginLeft: "10px",
-    width: "61px",
-    paddingRight: "9px",
-    bottom: "18px",
-    left: "15px",
-  },
   infoSelection: { fontWeight: 500, width: "1000px" },
   divButton: {
     position: "relative" as const,
@@ -718,24 +688,31 @@ class UserInterface extends Component<Props, State> {
             className={classes.infoSelection}
             style={{ fontWeight: 500, justifyContent: "left" }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-          {this.isOwnerOrMember() && this.props.profiles && (
-            <ListItem className={classes.assigneeDialog}>
+          <ButtonGroup
+            orientation="horizontal"
+            size="small"
+            sx={{
+              border: "none",
+              backgroundColor: "transparent",
+            }}
+          >
+            {this.isOwnerOrMember() && this.props.profiles && (
               <AssigneesDialog
                 profiles={this.props.profiles}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
               />
-            </ListItem>
-          )}
-          <ListItem style={{ padding: 0 }}>
-            <BaseIconButton
+            )}
+            <IconButton
               tooltip={tooltips.deleteImages}
+              icon={icons.delete}
               fill={null}
               onClick={this.deleteSelectedImages}
+              disabled={this.state.selectedImagesUid.length === 0}
               tooltipPlacement="bottom"
             />
-          </ListItem>
+          </ButtonGroup>
         </List>
       </MuiCard>
     );
