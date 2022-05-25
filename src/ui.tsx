@@ -839,9 +839,8 @@ class UserInterface extends Component<Props, State> {
                             users={
                               this.props.metadata.find(
                                 (mitem) =>
-                                  mitem["id"] ===
-                                  this.state.selectedImagesUid[0]
-                              )["assignees"] as string[]
+                                  mitem.id === this.state.selectedImagesUid[0]
+                              ).assignees as string[]
                             }
                             annotateCallback={(username: string) =>
                               this.props.annotateCallback(
