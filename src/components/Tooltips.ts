@@ -100,4 +100,11 @@ const thumbnailSizes: ThumbnailSizes[] = [
   },
 ];
 
-export { tooltips, thumbnailSizes, datasetType, ThumbnailSizes, Tooltips };
+export {
+  tooltips,
+  thumbnailSizes,
+  datasetType,
+  DatasetType,
+  ThumbnailSizes,
+  Tooltips,
+};
