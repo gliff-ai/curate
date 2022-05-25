@@ -35,6 +35,7 @@ import {
   Typography,
   GridRenderCellParams,
   HtmlTooltip,
+  GridColDef,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -47,6 +48,7 @@ import Tile, {
   DefaultLabelsDialog,
   datasetType,
 } from "@/components";
+
 import { SortPopover, GroupBySeparator } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
@@ -56,11 +58,6 @@ import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 import { PluginObject, PluginsAccordion } from "./components/plugins";
 import { DatasetView } from "./components/DatasetView";
-
-declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
 
 const bottomLeftButtons = {
   display: "flex",
@@ -589,7 +586,11 @@ class UserInterface extends Component<Props, State> {
     const { showAppBar } = this.props;
 
     const appBar = !showAppBar ? null : (
-      <AppBar position="fixed" elevation={0}>
+      <AppBar
+        position="fixed"
+        elevation={0}
+        sx={{ height: "90px", paddingTop: "9px" }}
+      >
         <Toolbar>
           <Grid container direction="row">
             <Grid item sx={{ marginBottom: "5px", marginTop: "7px" }}>
@@ -737,24 +738,22 @@ class UserInterface extends Component<Props, State> {
         field: "labels",
         width: 250,
         editable: false,
-        renderCell: (params: GridRenderCellParams<Array<T>>) => {
+        renderCell: (params: GridRenderCellParams<any, any, any>) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          const imageLabels: string[] = params?.row?.imageLabels || [];
           const chipsLimit = 2;
-          const chips: string[] = params.row.imageLabels.slice(0, chipsLimit);
-          const moreLabelsCount = params.row.imageLabels.length - 2;
+          const chipsContent: string[] = imageLabels.slice(0, chipsLimit);
+          const moreLabelsCount = imageLabels.length - 2;
           const showPlaceholder =
             moreLabelsCount > 0 ? (
-              <HtmlTooltip
-                title={params.row.imageLabels.join(", ")}
-                placement="bottom"
-              >
+              <HtmlTooltip title={imageLabels.join(", ")} placement="bottom">
                 <Typography>+ {moreLabelsCount} more</Typography>
               </HtmlTooltip>
             ) : null;
-          const test = chips.map((imageLabel: string) => (
+          const chips = chipsContent.map((imageLabel: string) => (
             <Chip label={imageLabel} key={imageLabel} variant="outlined" />
           ));
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return [test, showPlaceholder];
+          return [chips, showPlaceholder];
         },
       },
 
@@ -796,16 +795,17 @@ class UserInterface extends Component<Props, State> {
       });
 
       return acc;
-    }, {});
+    }, {} as { [index: string]: GridColDef });
 
     const allCols = [...defaultColumns, ...Object.values(colsObj)];
 
     const tableView = (
-      <Box sx={{ width: "100%", marginTop: "14px" }}>
+      <Box sx={{ width: "100%", marginTop: "14px", height: "700px" }}>
         <DataGrid
           title="Dataset Details"
           columns={allCols}
           rows={this.state.metadata}
+          sx={{ height: "600px" }}
         />
       </Box>
     );
