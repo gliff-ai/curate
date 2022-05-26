@@ -7,7 +7,11 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label1"],
-    "assignees": [],
+    "assignees": [
+      "user1@company.com",
+      "user2@company.com",
+      "user3@company.com"
+    ],
     "fileMetaVersion": "1.0.0",
     "width": 1230,
     "height": 2402
@@ -20,7 +24,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label1", "label2"],
-    "assignees": [],
+    "assignees": ["user3@company.com", "user1@company.com"],
     "fileMetaVersion": "1.0.0",
     "width": 1500,
     "height": 3402
@@ -33,7 +37,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label1", "label2", "label3"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user2@company.com"],
     "fileMetaVersion": "1.0.0",
     "width": 396,
     "height": 297
@@ -46,7 +50,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com"],
     "fileMetaVersion": "1.0.0",
     "width": 252,
     "height": 169
@@ -59,7 +63,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label4"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -70,7 +74,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -81,7 +85,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user2@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -92,7 +96,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user2@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -103,7 +107,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -114,7 +118,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user2@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -125,7 +129,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -136,7 +140,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -147,7 +151,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -158,7 +162,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -169,7 +173,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   },
   {
@@ -180,7 +184,7 @@
     "numberOfDimensions": "2",
     "numberOfChannels": "1",
     "imageLabels": ["label2", "label7"],
-    "assignees": [],
+    "assignees": ["user1@company.com", "user3@company.com"],
     "fileMetaVersion": "1.0.0"
   }
 ]
