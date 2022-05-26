@@ -14,6 +14,10 @@ type Metadata = MetaItem[];
 
 type MetaItem = {
   [index: string]: string | string[] | boolean | number;
+} & {
+  id?: string;
+  imageName?: string;
+  imageLabels?: string[];
 };
 
 type Filter = {
