@@ -17,7 +17,7 @@ type MetaItem = {
 } & {
   id?: string;
   imageName?: string;
-  imageLabels?: string[]
+  imageLabels?: string[];
 };
 
 type Filter = {

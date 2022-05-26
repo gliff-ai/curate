@@ -272,9 +272,9 @@ class UserInterface extends Component<Props, State> {
       prevState.metadata.forEach((mitem) => {
         if (selectedLabels === null) {
           // select all unlabelled images
-          mitem.selected = (mitem.imageLabels).length === 0;
+          mitem.selected = mitem.imageLabels.length === 0;
         } else {
-          const intersection = (mitem.imageLabels).filter((l) =>
+          const intersection = mitem.imageLabels.filter((l) =>
             selectedLabels.includes(l)
           );
           mitem.selected = intersection.length === selectedLabels.length;
@@ -386,7 +386,7 @@ class UserInterface extends Component<Props, State> {
     if (!metadata) return [];
     const labels: Set<string> = new Set();
     metadata.forEach((mitem) => {
-      (mitem.imageLabels).forEach((l) => labels.add(l));
+      mitem.imageLabels.forEach((l) => labels.add(l));
     });
     return Array.from(labels);
   };
@@ -739,14 +739,13 @@ class UserInterface extends Component<Props, State> {
         width: 250,
         editable: false,
         renderCell: (params: GridRenderCellParams<unknown, MetaItem>) => {
-          const {imageLabels = []} = params.row;
+          const { imageLabels = [] } = params.row;
           const chipsLimit = 2;
           const chipsContent: string[] = imageLabels.slice(0, chipsLimit);
           const moreLabelsCount = imageLabels.length - 2;
           const showPlaceholder =
             moreLabelsCount > 0 ? (
               <HtmlTooltip title={imageLabels.join(", ")} placement="bottom">
-                
                 <Typography>+ {moreLabelsCount} more</Typography>
               </HtmlTooltip>
             ) : null;
@@ -875,14 +874,8 @@ class UserInterface extends Component<Props, State> {
                       const endIdx = prevIdx < currIdx ? currIdx : prevIdx;
 
                       for (let i = startIdx; i <= endIdx; i += 1) {
-                        if (
-                          !selectedImagesUid.includes(
-                            state.metadata[i].id
-                          )
-                        ) {
-                          selectedImagesUid.push(
-                            state.metadata[i].id
-                          );
+                        if (!selectedImagesUid.includes(state.metadata[i].id)) {
+                          selectedImagesUid.push(state.metadata[i].id);
                         }
                       }
                       return { selectedImagesUid };
