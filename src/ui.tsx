@@ -35,8 +35,9 @@ import {
   Typography,
   GridRenderCellParams,
   HtmlTooltip,
-  GridColDef,
 } from "@gliff-ai/style";
+
+import type {GridColDef} from "@mui/x-data-grid"
 
 import Tile, {
   tooltips,
@@ -272,9 +273,9 @@ class UserInterface extends Component<Props, State> {
       prevState.metadata.forEach((mitem) => {
         if (selectedLabels === null) {
           // select all unlabelled images
-          mitem.selected = (mitem.imageLabels as string[]).length === 0;
+          mitem.selected = (mitem.imageLabels).length === 0;
         } else {
-          const intersection = (mitem.imageLabels as string[]).filter((l) =>
+          const intersection = (mitem.imageLabels).filter((l) =>
             selectedLabels.includes(l)
           );
           mitem.selected = intersection.length === selectedLabels.length;
@@ -386,7 +387,7 @@ class UserInterface extends Component<Props, State> {
     if (!metadata) return [];
     const labels: Set<string> = new Set();
     metadata.forEach((mitem) => {
-      (mitem.imageLabels as string[]).forEach((l) => labels.add(l));
+      (mitem.imageLabels).forEach((l) => labels.add(l));
     });
     return Array.from(labels);
   };
@@ -395,7 +396,7 @@ class UserInterface extends Component<Props, State> {
     Object.keys(mitem).filter((k) => k !== "selected");
 
   getImageNames = (data: Metadata): string[] =>
-    data.map((mitem: MetaItem) => mitem.imageName as string);
+    data.map((mitem: MetaItem) => mitem.imageName);
 
   makeThumbnail = (image: Array<Array<ImageBitmap>>): string => {
     const canvas = document.createElement("canvas");
@@ -434,7 +435,7 @@ class UserInterface extends Component<Props, State> {
       // running standalone, so remove images here and now rather than waiting for store to update:
       this.setState((state) => {
         const metadata: Metadata = state.metadata.filter(
-          (mitem) => !state.selectedImagesUid.includes(mitem.id as string)
+          (mitem) => !state.selectedImagesUid.includes(mitem.id)
         );
 
         return {
@@ -476,7 +477,7 @@ class UserInterface extends Component<Props, State> {
         state.metadata[itemIndex].imageLabels = newLabels;
         if (this.props.saveLabelsCallback) {
           this.props.saveLabelsCallback(
-            state.metadata[itemIndex].id as string,
+            state.metadata[itemIndex].id,
             newLabels
           );
         }
@@ -508,7 +509,7 @@ class UserInterface extends Component<Props, State> {
 
     this.setState((prevState) => ({
       metadata: prevState.metadata.map((mitem) => {
-        const index = imageUids.indexOf(mitem.id as string);
+        const index = imageUids.indexOf(mitem.id);
         if (index !== -1) {
           mitem.assignees = newAssignees[index];
         }
@@ -526,7 +527,7 @@ class UserInterface extends Component<Props, State> {
 
     let currentAssignees: string[] = [];
     this.state.metadata.forEach(({ id, assignees }) => {
-      if (this.state.selectedImagesUid.includes(id as string)) {
+      if (this.state.selectedImagesUid.includes(id)) {
         currentAssignees = currentAssignees.concat(assignees as string[]);
       }
     });
@@ -738,15 +739,15 @@ class UserInterface extends Component<Props, State> {
         field: "labels",
         width: 250,
         editable: false,
-        renderCell: (params: GridRenderCellParams<any, any, any>) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          const imageLabels: string[] = params?.row?.imageLabels || [];
+        renderCell: (params: GridRenderCellParams<unknown, MetaItem, unknown>) => {
+          const imageLabels = params.row.imageLabels;
           const chipsLimit = 2;
           const chipsContent: string[] = imageLabels.slice(0, chipsLimit);
           const moreLabelsCount = imageLabels.length - 2;
           const showPlaceholder =
             moreLabelsCount > 0 ? (
               <HtmlTooltip title={imageLabels.join(", ")} placement="bottom">
+                
                 <Typography>+ {moreLabelsCount} more</Typography>
               </HtmlTooltip>
             ) : null;
@@ -813,7 +814,7 @@ class UserInterface extends Component<Props, State> {
     const imagesView = this.state.metadata
       .filter((mitem) => mitem.selected)
       .map((mitem: MetaItem, itemIndex) => (
-        <Fragment key={mitem.id as string}>
+        <Fragment key={mitem.id}>
           {this.state.isGrouped && (
             <GroupBySeparator
               mitem={mitem}
@@ -825,7 +826,7 @@ class UserInterface extends Component<Props, State> {
             item
             style={{
               backgroundColor:
-                this.state.selectedImagesUid.includes(mitem.id as string) &&
+                this.state.selectedImagesUid.includes(mitem.id) &&
                 theme.palette.primary.main,
             }}
           >
@@ -840,7 +841,7 @@ class UserInterface extends Component<Props, State> {
               <Button
                 id="images"
                 onClick={(e: MouseEvent) => {
-                  const imageUid = mitem.id as string;
+                  const imageUid = mitem.id;
                   this.handleMetadataShow(imageUid);
 
                   if (e.metaKey || e.ctrlKey) {
@@ -877,11 +878,11 @@ class UserInterface extends Component<Props, State> {
                       for (let i = startIdx; i <= endIdx; i += 1) {
                         if (
                           !selectedImagesUid.includes(
-                            state.metadata[i].id as string
+                            state.metadata[i].id
                           )
                         ) {
                           selectedImagesUid.push(
-                            state.metadata[i].id as string
+                            state.metadata[i].id
                           );
                         }
                       }
@@ -895,7 +896,7 @@ class UserInterface extends Component<Props, State> {
                   }
                 }}
                 onDoubleClick={() => {
-                  this.props.annotateCallback?.(mitem.id as string);
+                  this.props.annotateCallback?.(mitem.id);
                 }}
                 onKeyDown={(e: KeyboardEvent) => {
                   if (
@@ -908,7 +909,7 @@ class UserInterface extends Component<Props, State> {
                     );
                     if (index !== null) {
                       this.setState((state) => {
-                        const uid = state.metadata[index].id as string;
+                        const uid = state.metadata[index].id;
                         if (state.selectedImagesUid.includes(uid)) {
                           state.selectedImagesUid.pop();
                         } else {
@@ -932,9 +933,9 @@ class UserInterface extends Component<Props, State> {
                 />
               </Button>
               <LabelsPopover
-                id={mitem.id as string}
-                imageName={mitem.imageName as string}
-                labels={mitem.imageLabels as string[]}
+                id={mitem.id}
+                imageName={mitem.imageName}
+                labels={mitem.imageLabels}
                 updateLabels={this.updateLabels(itemIndex)}
                 restrictLabels={this.state.restrictLabels}
                 defaultLabels={this.state.defaultLabels}
