@@ -34,10 +34,9 @@ import {
   ButtonGroup,
   Typography,
   GridRenderCellParams,
+  GridColDef,
   HtmlTooltip,
 } from "@gliff-ai/style";
-
-import type {GridColDef} from "@mui/x-data-grid"
 
 import Tile, {
   tooltips,
@@ -739,8 +738,8 @@ class UserInterface extends Component<Props, State> {
         field: "labels",
         width: 250,
         editable: false,
-        renderCell: (params: GridRenderCellParams<unknown, MetaItem, unknown>) => {
-          const imageLabels = params.row.imageLabels;
+        renderCell: (params: GridRenderCellParams<unknown, MetaItem>) => {
+          const {imageLabels = []} = params.row;
           const chipsLimit = 2;
           const chipsContent: string[] = imageLabels.slice(0, chipsLimit);
           const moreLabelsCount = imageLabels.length - 2;
