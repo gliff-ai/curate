@@ -1,6 +1,6 @@
 import { ReactElement, useState, useEffect } from "react";
 import { IconButton, ButtonGroup } from "@gliff-ai/style";
-import { datasetType, DatasetType } from "@/components/Tooltips";
+import { datasetType, DatasetViewType } from "@/components/Tooltips";
 
 interface Props {
   changeDatasetViewType: (name: string) => void;
@@ -25,7 +25,7 @@ export function DatasetView({ changeDatasetViewType }: Props): ReactElement {
         border: "none",
       }}
     >
-      {datasetType.map(({ name, icon, id }: DatasetType) => (
+      {datasetType.map(({ name, icon, id }: DatasetViewType) => (
         <IconButton
           id={id}
           key={name}

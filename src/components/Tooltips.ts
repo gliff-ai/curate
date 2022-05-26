@@ -9,13 +9,13 @@ interface ThumbnailSizes {
   id?: string;
 }
 
-interface DatasetType {
+interface DatasetViewType {
   name: string;
   icon: string;
   id?: string;
 }
 
-const datasetType: DatasetType[] = [
+const datasetType: DatasetViewType[] = [
   {
     name: "View Dataset as Images",
     icon: icons.imageViewer,
@@ -104,7 +104,7 @@ export {
   tooltips,
   thumbnailSizes,
   datasetType,
-  DatasetType,
+  DatasetViewType,
   ThumbnailSizes,
   Tooltips,
 };

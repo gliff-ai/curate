@@ -724,13 +724,13 @@ class UserInterface extends Component<Props, State> {
       {
         headerName: "Annotation Progress",
         field: "annotationProgress",
-        width: 150,
+        width: 250,
         editable: false,
       },
       {
         headerName: "Assignees",
         field: "assignees",
-        width: 150,
+        width: 300,
         editable: false,
       },
       {
@@ -742,7 +742,7 @@ class UserInterface extends Component<Props, State> {
           const { imageLabels = [] } = params.row;
           const chipsLimit = 2;
           const chipsContent: string[] = imageLabels.slice(0, chipsLimit);
-          const moreLabelsCount = imageLabels.length - 2;
+          const moreLabelsCount = imageLabels.length - chipsLimit;
           const showPlaceholder =
             moreLabelsCount > 0 ? (
               <HtmlTooltip title={imageLabels.join(", ")} placement="bottom">
@@ -799,12 +799,12 @@ class UserInterface extends Component<Props, State> {
     const allCols = [...defaultColumns, ...Object.values(colsObj)];
 
     const tableView = (
-      <Box sx={{ width: "100%", marginTop: "14px", height: "700px" }}>
+      <Box sx={{ width: "100%", marginTop: "14px" }}>
         <DataGrid
           title="Dataset Details"
           columns={allCols}
           rows={this.state.metadata}
-          sx={{ height: "600px" }}
+          sx={{ height: "82.7vh" }}
         />
       </Box>
     );
@@ -1063,7 +1063,6 @@ class UserInterface extends Component<Props, State> {
                     </MuiCard>
                   </Box>
                 </Grid>
-
                 <Grid
                   sx={{
                     display: "flex",

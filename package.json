@@ -27,7 +27,7 @@
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@gliff-ai/eslint-config": "^0.2.4",
-    "@gliff-ai/style": "^13.5.1",
+    "@gliff-ai/style": "^13.6.0",
     "@gliff-ai/upload": "^1.2.11",
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.1",
@@ -56,7 +56,7 @@
   "peerDependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
-    "@gliff-ai/style": "^13.5.1",
+    "@gliff-ai/style": "^13.6.0",
     "@gliff-ai/upload": "^1.2.5",
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.1",
