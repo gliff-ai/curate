@@ -46,58 +46,56 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
       close={close}
     >
       <Box sx={{ width: "400px" }}>
-        <CardContent>
-          <Autocomplete
-            onChange={(event, value) => {
-              setUsername1(value);
-            }}
-            onInputChange={(event, value) => {
-              setUsername1(value);
-            }}
-            key="input-user1"
-            placeholder=""
-            value={username1}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Username"
-                autoFocus
-                sx={{
-                  fontSize: 14,
-                  width: "225px",
-                  marginBottom: "20px",
-                  borderBottom: "solid 1px #dadde9",
-                }}
-              />
-            )}
-            options={props.users}
-          />
+        <Autocomplete
+          onChange={(event, value) => {
+            setUsername1(value);
+          }}
+          onInputChange={(event, value) => {
+            setUsername1(value);
+          }}
+          key="input-user1"
+          placeholder=""
+          value={username1}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Username"
+              autoFocus
+              sx={{
+                fontSize: 14,
+                marginBottom: "20px",
+                borderBottom: "solid 1px #dadde9",
+              }}
+            />
+          )}
+          options={props.users}
+          fullWidth
+        />
 
-          <Box
-            sx={{
-              display: "flex",
-              marginTop: "20px",
-              justifyContent: "space-between",
+        <Box
+          sx={{
+            display: "flex",
+            marginTop: "20px",
+            justifyContent: "space-between",
+          }}
+        >
+          <BaseTextButton
+            id="cancel-view-annotations"
+            text="Cancel"
+            onClick={() => {
+              setClose(true);
             }}
-          >
-            <BaseTextButton
-              id="cancel-view-annotations"
-              text="Cancel"
-              onClick={() => {
-                setClose(true);
-              }}
-              variant="outlined"
-            />
-            <BaseTextButton
-              id="confirm-view-annotations"
-              disabled={!props.users.includes(username1)}
-              text="Confirm"
-              onClick={() => {
-                props.annotateCallback(username1);
-              }}
-            />
-          </Box>
-        </CardContent>
+            variant="outlined"
+          />
+          <BaseTextButton
+            id="confirm-view-annotations"
+            disabled={!props.users.includes(username1)}
+            text="Confirm"
+            onClick={() => {
+              props.annotateCallback(username1);
+            }}
+          />
+        </Box>
       </Box>
     </Dialog>
   );
