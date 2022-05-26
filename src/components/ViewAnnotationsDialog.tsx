@@ -26,6 +26,11 @@ interface Props {
 
 export function ViewAnnotationsDialog(props: Props): React.ReactElement {
   const [username1, setUsername1] = useState<string>("");
+  const [close, setClose] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (close) setClose(false);
+  }, [close]);
 
   return (
     <Dialog
@@ -36,11 +41,9 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           tooltip={tooltips.viewAnnotations}
           size="small"
           id="view-annotations"
-          onClick={() => {
-            //
-          }}
         ></IconButton>
       }
+      close={close}
     >
       <Box sx={{ width: "400px" }}>
         <CardContent>
@@ -58,11 +61,6 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
               <TextField
                 {...params}
                 label="Username"
-                // onKeyPress={(e) => {
-                //   if (e.key === "Enter") {
-                //     handleAddLabel(newLabel)();
-                //   }
-                // }}
                 autoFocus
                 sx={{
                   fontSize: 14,
@@ -85,7 +83,9 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
             <BaseTextButton
               id="cancel-view-annotations"
               text="Cancel"
-              onClick={() => {}}
+              onClick={() => {
+                setClose(true);
+              }}
               variant="outlined"
             />
             <BaseTextButton
