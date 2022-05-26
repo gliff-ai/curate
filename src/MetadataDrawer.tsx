@@ -100,6 +100,7 @@ export const metadataNameMap: MetadataNameMap = {
   resolution_x: "X Resolution",
   resolution_y: "Y Resolution",
   resolution_z: "Z Resolution",
+  assignees: "Assignees",
 };
 
 interface Props {
