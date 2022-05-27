@@ -584,7 +584,6 @@ class UserInterface extends Component<Props, State> {
 
   render = (): ReactNode => {
     const { showAppBar } = this.props;
-
     const appBar = !showAppBar ? null : (
       <AppBar
         position="fixed"
@@ -805,6 +804,8 @@ class UserInterface extends Component<Props, State> {
           columns={allCols}
           rows={this.state.metadata}
           sx={{ height: "82.7vh" }}
+          hideFooterPagination
+          pageSize={this.state.metadata.length}
         />
       </Box>
     );
