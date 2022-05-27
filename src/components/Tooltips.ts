@@ -9,6 +9,25 @@ interface ThumbnailSizes {
   id?: string;
 }
 
+interface DatasetViewType {
+  name: string;
+  icon: string;
+  id?: string;
+}
+
+const datasetType: DatasetViewType[] = [
+  {
+    name: "View Dataset as Images",
+    icon: icons.imageViewer,
+    id: "image-dataset-view",
+  },
+  {
+    name: "View Dataset as Table",
+    icon: icons.tableViewer as string,
+    id: "table-dataset-view",
+  },
+];
+
 const tooltips: Tooltips = {
   deleteImages: {
     name: "Delete Images",
@@ -57,7 +76,7 @@ const tooltips: Tooltips = {
   defaultLabels: {
     name: "Set default labels",
     icon: icons.annotationLabels,
-  }
+  },
 };
 
 const thumbnailSizes: ThumbnailSizes[] = [
@@ -81,4 +100,11 @@ const thumbnailSizes: ThumbnailSizes[] = [
   },
 ];
 
-export { tooltips, thumbnailSizes, ThumbnailSizes, Tooltips };
+export {
+  tooltips,
+  thumbnailSizes,
+  datasetType,
+  DatasetViewType,
+  ThumbnailSizes,
+  Tooltips,
+};

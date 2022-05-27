@@ -1,7 +1,7 @@
 import * as ReactDOM from "react-dom";
 
-import UserInterface, { UserAccess } from "../src/ui";
-
+import UserInterface from "../src/ui";
+import { UserAccess } from "../src/interfaces";
 import type { Metadata, MetaItem } from "../src/interfaces";
 
 // load the sample images, construct an array of tiles:
@@ -22,11 +22,23 @@ const loadImage = (filename: string): Promise<string> =>
   });
 
 const profiles = [
-  { name: "Mike Jones", email: "mike@gliff.app" },
-  { name: "John Smith", email: "john@gliff.app" },
-  { name: "Sarah Williams", email: "sarah@gliff.app" },
-  { name: "Elisabeth Johnson", email: "elisabeth@gliff.app" },
-  { name: "David Brown", email: "david@gliff.app" },
+  { name: "Mike Jones", email: "mike@gliff.app", access: UserAccess.Owner },
+  { name: "John Smith", email: "john@gliff.app", access: UserAccess.Member },
+  {
+    name: "Sarah Williams",
+    email: "sarah@gliff.app",
+    access: UserAccess.Collaborator,
+  },
+  {
+    name: "Elisabeth Johnson",
+    email: "elisabeth@gliff.app",
+    access: UserAccess.Member,
+  },
+  {
+    name: "David Brown",
+    email: "david@gliff.app",
+    access: UserAccess.Collaborator,
+  },
 ];
 
 const plugins = {

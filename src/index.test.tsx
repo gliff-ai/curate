@@ -1,7 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
-import { Metadata } from "@/interfaces";
+import { Metadata, UserAccess } from "@/interfaces";
 import UserInterface from "./index";
-import { UserAccess } from "./ui";
 
 jest.mock("@gliff-ai/upload", () => ({
   UploadImage: () => <div id="upload-image">Upload</div>,
@@ -19,7 +18,9 @@ const getComponent = (userAccess: UserAccess): JSX.Element => (
   <UserInterface
     metadata={metadata}
     showAppBar
-    profiles={[{ name: "Mike Jones", email: "mike@gliff.app" }]}
+    profiles={[
+      { name: "Mike Jones", email: "mike@gliff.app", access: UserAccess.Owner },
+    ]}
     userAccess={userAccess}
   />
 );
