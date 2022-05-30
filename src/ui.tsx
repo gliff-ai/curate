@@ -828,10 +828,14 @@ class UserInterface extends Component<Props, State> {
               <Button
                 id="images"
                 onClick={(e: MouseEvent) => {
-                  const imageUid = mitem.id as string;
+                  const imageUid = mitem.id;
 
-                  if (e.metaKey || e.ctrlKey) {
-                    // Add clicked image to the selection if unselected; remove it if already selected
+                  if (
+                    e.metaKey ||
+                    e.ctrlKey ||
+                    this.state.selectMultipleImagesMode
+                  ) {
+                    // Add image to selection if not included, otherwise remove it
                     this.setState((state) => {
                       if (state.selectedImagesUid.includes(imageUid)) {
                         state.selectedImagesUid.splice(
