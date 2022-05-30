@@ -50,7 +50,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Username"
+              label="User email"
               autoFocus
               sx={{
                 fontSize: 14,
