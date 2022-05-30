@@ -55,7 +55,6 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
               sx={{
                 fontSize: 14,
                 marginBottom: "20px",
-                borderBottom: "solid 1px #dadde9",
               }}
             />
           )}
