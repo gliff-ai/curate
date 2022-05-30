@@ -127,7 +127,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
 
   return (
     <>
-      <Card className={classes.card}>
+      <Card className={classes.card} sx={{ marginTop: "15px" }}>
         <Paper elevation={0} variant="outlined" className={classes.paperHeader}>
           <Typography className={classes.typographyHeader}>Metadata</Typography>
           <HtmlTooltip
