@@ -76,6 +76,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
       TriggerButton={
         <IconButton
           tooltip={tooltips.defaultLabels}
+          tooltipPlacement="top"
           icon={icons.annotationLabels}
           size="small"
           id="set-default-labels"

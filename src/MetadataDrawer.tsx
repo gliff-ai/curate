@@ -105,7 +105,7 @@ export const metadataNameMap: MetadataNameMap = {
 
 interface Props {
   metadata: MetaItem;
-  handleMetadataHide: () => void;
+  close: () => void;
 }
 
 export default function MetadataDrawer(props: Props): ReactElement {
@@ -156,7 +156,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                 sethover(true);
               }}
             >
-              <IconButton onClick={props.handleMetadataHide} size="large">
+              <IconButton onClick={props.close} size="large">
                 <SVG
                   src={icons.removeLabel}
                   className={classes.svgSmall}

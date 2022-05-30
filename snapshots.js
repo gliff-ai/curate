@@ -1,74 +1,85 @@
-module.exports = [{
-  name: 'Curate Home',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
+module.exports = [
+  {
+    name: "Curate Home",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
 
-  additionalSnapshots: [{
-    suffix: '-large-thumbnail',
-    execute() {
-    document.querySelector('#large-thumbnail').click() 
+    additionalSnapshots: [
+      {
+        suffix: "-large-thumbnail",
+        execute() {
+          document.querySelector("#large-thumbnail").click();
+        },
+      },
 
-    }
+      {
+        suffix: "-medium-thumbnail",
+        execute() {
+          document.querySelector("#medium-thumbnail").click();
+        },
+      },
+    ],
   },
 
   {
-    suffix: '-medium-thumbnail',
+    name: "Curate Select",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
     execute() {
-    document.querySelector('#medium-thumbnail').click() 
-    }
-},
-],},
-
-{
-  name: 'Curate Select',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
-execute() {
-    document.querySelector('#select-multiple-images').click() 
+      document.querySelector("#select-multiple-images").click();
     },
-},
+  },
 
-{
-  name: 'Curate Image',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
- execute() {
-    document.querySelector('#images').click()
-},},
-
-{
-  name: 'Curate Sort',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
- execute() {
-    document.querySelector('#sort').click() 
-    }
-},
-
-{
-  name: 'Curate Assign Image',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
+  {
+    name: "Curate Image",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
     execute() {
-    document.querySelector('#auto-assign-images').click() 
-    }
-},
+      document.querySelector("#images").click();
+    },
+  },
 
-{
-  name: 'Curate Add Label',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
-     execute() {
-    document.querySelector('#add-label').click() 
-    }
-},
-
-{
-  name: 'Curate Metadata Key',
-  url: 'http://localhost:3000',
-  waitForSelector: '#large-thumbnail',
+  {
+    name: "Curate Sort",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
     execute() {
-    document.querySelector('#combobox-metadata-key').click() 
-    }
-},
-]
+      document.querySelector("#sort").click();
+    },
+  },
+
+  {
+    name: "Curate Assign Image",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
+    execute() {
+      document.querySelector("#auto-assign-images").click();
+    },
+  },
+
+  {
+    name: "Curate Add Label",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
+    execute() {
+      document.querySelector("#add-label").click();
+    },
+  },
+
+  {
+    name: "Curate Metadata Key",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
+    execute() {
+      document.querySelector("#combobox-metadata-key").click();
+    },
+  },
+  {
+    name: "Curate DataGrid View",
+    url: "http://localhost:3000",
+    waitForSelector: "#large-thumbnail",
+    execute() {
+      document.querySelector("#table-dataset-view").click();
+    },
+  },
+];
