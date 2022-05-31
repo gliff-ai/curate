@@ -190,7 +190,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                     title={props.metadata[key] as string}
                     primary={
                       key === "imageLabels"
-                        ? (props.metadata[key] as string[]).join(", ")
+                        ? props.metadata[key].join(", ")
                         : props.metadata[key].toString()
                     }
                     classes={{
