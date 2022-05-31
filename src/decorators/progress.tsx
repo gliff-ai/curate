@@ -27,10 +27,9 @@ function logTaskExecution(taskDescription: string) {
       const result: unknown = await targetMethod.apply(this, args);
 
       if (typeof setTask === "function") {
-        setTask({
-          isLoading: false,
-          description: "",
-        });
+        setTimeout(() => {
+          setTask({ isLoading: false, description: "" });
+        }, 3000);
       }
 
       return result;
