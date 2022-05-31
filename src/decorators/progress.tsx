@@ -21,6 +21,7 @@ function logTaskExecution(taskDescription: string) {
         setTask({
           isLoading: true,
           description: taskDescription,
+          progress: 0,
         });
       }
 
