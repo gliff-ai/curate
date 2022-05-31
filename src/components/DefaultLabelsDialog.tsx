@@ -77,6 +77,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           tooltip={{
             name: "Set default labels",
           }}
+          tooltipPlacement="top"
           icon={icons.annotationLabels}
           size="small"
           id="set-default-labels"

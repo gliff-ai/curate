@@ -3,7 +3,7 @@ import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
 import makeStyles from "@mui/styles/makeStyles";
 import { Card, CardContent, Paper, TextField } from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
+import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
@@ -47,7 +47,7 @@ interface MetadataLabel {
 }
 
 // To be able to style the dropdown list
-const CustomPaper = (props: unknown) => (
+const CustomPaper = (props: Record<string, unknown>) => (
   <Paper
     elevation={8}
     {...props}
@@ -139,7 +139,7 @@ function SearchBar({
             setInputKey(metaLabel?.[0]);
           }}
           options={metadataLabels}
-          renderInput={(params: unknown) => (
+          renderInput={(params: AutocompleteRenderInputParams) => (
             <TextField {...params} label="Search Category" variant="standard" />
           )}
           PaperComponent={CustomPaper}
@@ -153,7 +153,7 @@ function SearchBar({
             setInputValue(newInputValue);
           }}
           options={inputOptions}
-          renderInput={(params: unknown) => (
+          renderInput={(params: AutocompleteRenderInputParams) => (
             <TextField {...params} label="..." variant="standard" />
           )}
           PaperComponent={CustomPaper}
