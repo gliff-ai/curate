@@ -1011,12 +1011,20 @@ class UserInterface extends Component<Props, State> {
                       >
                         <MuiCard>
                           <ViewAnnotationsDialog
-                            users={
-                              this.props.metadata.find(
-                                (mitem) =>
-                                  mitem.id === this.state.selectedImagesUid[0]
-                              ).assignees as string[]
-                            }
+                            users={this.props.profiles
+                              .filter((profile) =>
+                                (
+                                  this.props.metadata.find(
+                                    (mitem) =>
+                                      mitem.id ===
+                                      this.state.selectedImagesUid[0]
+                                  ).assignees as string[]
+                                ).includes(profile.email)
+                              )
+                              .map((profile) => ({
+                                label: `${profile.name} - ${profile.email}`,
+                                email: profile.email,
+                              }))}
                             annotateCallback={(username: string) =>
                               this.props.annotateCallback(
                                 this.state.selectedImagesUid[0],

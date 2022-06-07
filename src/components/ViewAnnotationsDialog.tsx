@@ -11,17 +11,23 @@ import {
 import { tooltips } from "@/components";
 
 interface Props {
-  users: string[];
+  users: { label: string; email: string }[];
   annotateCallback: (username: string) => void;
 }
 
 export function ViewAnnotationsDialog(props: Props): React.ReactElement {
-  const [username1, setUsername1] = useState<string>("");
+  const [username1, setUsername1] = useState<{ label: string; email: string }>(
+    props.users[0]
+  );
   const [close, setClose] = useState<boolean>(false);
 
   useEffect(() => {
     if (close) setClose(false);
   }, [close]);
+
+  useEffect(() => {
+    if (props.users.length === 0) setUsername1({ label: "", email: "" });
+  }, [props.users]);
 
   return (
     <Dialog
@@ -39,10 +45,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
       <Box sx={{ width: "400px" }}>
         <Autocomplete
           onChange={(event, value) => {
-            setUsername1(value);
-          }}
-          onInputChange={(event, value) => {
-            setUsername1(value);
+            setUsername1(value as { label: string; email: string });
           }}
           key="input-user1"
           placeholder=""
@@ -79,10 +82,12 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           />
           <BaseTextButton
             id="confirm-view-annotations"
-            disabled={!props.users.includes(username1)}
+            disabled={
+              !props.users.map((user) => user.email).includes(username1?.email)
+            }
             text="Confirm"
             onClick={() => {
-              props.annotateCallback(username1);
+              props.annotateCallback(username1.email);
             }}
           />
         </Box>
