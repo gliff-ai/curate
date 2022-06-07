@@ -41,7 +41,7 @@
     "@types/resize-observer-browser": "^0.1.7",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
-    "esbuild": "^0.14.39",
+    "esbuild": "^0.14.42",
     "eslint": "^7.32.0",
     "history": "5.0.1",
     "jest": "^27.5.1",

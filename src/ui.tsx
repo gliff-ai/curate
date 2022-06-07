@@ -14,19 +14,18 @@ import {
   CssBaseline,
   AppBar,
   theme,
-  BaseIconButton,
   generateClassName,
   IconButton,
   Logo,
   icons,
-  MuiCard,
-  Box,
   Toolbar,
   Grid,
   List,
   ListItem,
   Button,
   Container,
+  MuiCard,
+  Box,
   ThemeProvider,
   StyledEngineProvider,
   DataGrid,
@@ -115,7 +114,6 @@ interface State {
   activeFilters: Filter[];
   defaultLabels: string[];
   expanded: string | boolean;
-  openImageUid: string; // Uid for the image whose metadata is shown in the drawer
   selectedImagesUid: string[]; // Uids for selected images
   thumbnailWidth: number;
   thumbnailHeight: number;
@@ -161,7 +159,6 @@ class UserInterface extends Component<Props, State> {
         : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
-      openImageUid: null,
       selectedImagesUid: [],
       activeFilters: [],
       thumbnailWidth: thumbnailSizes[2].size,
@@ -203,14 +200,6 @@ class UserInterface extends Component<Props, State> {
   // metadata items are displayed on the dashboard.
   addFieldSelectedToMetadata = (metadata: Metadata = []): Metadata =>
     metadata.map((mitem) => ({ ...mitem, selected: true }));
-
-  handleMetadataHide = (): void => {
-    this.setState({ openImageUid: null });
-  };
-
-  handleMetadataShow = (imageUid: string): void => {
-    this.setState({ openImageUid: imageUid });
-  };
 
   handleToolboxChange =
     (panel: string) =>
@@ -610,7 +599,6 @@ class UserInterface extends Component<Props, State> {
           <MuiCard>
             <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
           </MuiCard>
-
           <MuiCard>
             <DatasetView changeDatasetViewType={this.changeDatasetViewType} />
           </MuiCard>
@@ -674,9 +662,9 @@ class UserInterface extends Component<Props, State> {
       </>
     );
 
-    const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
+    const deleteImageCard = (
       <MuiCard>
-        <List component="div" sx={{ display: "flex" }}>
+        <List component="div" style={{ display: "flex" }}>
           <ListItem
             sx={{
               fontWeight: 500,
@@ -684,31 +672,31 @@ class UserInterface extends Component<Props, State> {
               width: "1000px",
             }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-          {this.isOwnerOrMember() && this.props.profiles && (
-            <ListItem
-              sx={{
-                padding: "0px",
-                justifyContent: "center",
-                width: "280px",
-                border: "none",
-              }}
-            >
+          <ButtonGroup
+            orientation="horizontal"
+            size="small"
+            sx={{
+              border: "none",
+              backgroundColor: "transparent",
+            }}
+          >
+            {this.isOwnerOrMember() && this.props.profiles && (
               <AssigneesDialog
                 profiles={this.props.profiles}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
               />
-            </ListItem>
-          )}
-          <ListItem style={{ padding: 0 }}>
-            <BaseIconButton
+            )}
+            <IconButton
               tooltip={tooltips.deleteImages}
+              icon={icons.delete}
               fill={null}
               onClick={this.deleteSelectedImages}
+              disabled={this.state.selectedImagesUid.length === 0}
               tooltipPlacement="bottom"
             />
-          </ListItem>
+          </ButtonGroup>
         </List>
       </MuiCard>
     );
@@ -841,10 +829,13 @@ class UserInterface extends Component<Props, State> {
                 id="images"
                 onClick={(e: MouseEvent) => {
                   const imageUid = mitem.id;
-                  this.handleMetadataShow(imageUid);
 
-                  if (e.metaKey || e.ctrlKey) {
-                    // Add clicked image to the selection if unselected; remove it if already selected
+                  if (
+                    e.metaKey ||
+                    e.ctrlKey ||
+                    this.state.selectMultipleImagesMode
+                  ) {
+                    // Add image to selection if not included, otherwise remove it
                     this.setState((state) => {
                       if (state.selectedImagesUid.includes(imageUid)) {
                         state.selectedImagesUid.splice(
@@ -957,8 +948,18 @@ class UserInterface extends Component<Props, State> {
 
                   {deleteImageCard}
 
-                  {(this.state.openImageUid == null ||
-                    this.state.selectMultipleImagesMode) && (
+                  {this.state.selectedImagesUid.length === 1 &&
+                  !this.state.selectMultipleImagesMode ? (
+                    <MetadataDrawer
+                      metadata={this.state.metadata.find(
+                        ({ id }) => id === this.state.selectedImagesUid[0]
+                      )}
+                      close={() => {
+                        // deselect the image to close the drawer
+                        this.setState({ selectedImagesUid: [] });
+                      }}
+                    />
+                  ) : (
                     <>
                       <SearchBar
                         metadata={this.state.metadata}
@@ -998,21 +999,6 @@ class UserInterface extends Component<Props, State> {
                       )}
                     </>
                   )}
-
-                  <div>
-                    {this.state.openImageUid !== null &&
-                      !this.state.selectMultipleImagesMode && (
-                        <MetadataDrawer
-                          metadata={
-                            this.state.metadata.filter(
-                              (mitem) => mitem.id === this.state.openImageUid
-                            )[0]
-                          }
-                          handleMetadataHide={this.handleMetadataHide}
-                        />
-                      )}
-                  </div>
-
                   <Box
                     display="flex"
                     justifyContent="space-between"
@@ -1044,7 +1030,6 @@ class UserInterface extends Component<Props, State> {
                         onClick={this.props.downloadDatasetCallback}
                       />
                     </MuiCard>
-
                     <MuiCard sx={{ ...smallButton }}>
                       <IconButton
                         tooltip={tooltips.selectMultipleImages}
@@ -1055,7 +1040,6 @@ class UserInterface extends Component<Props, State> {
                           this.setState((prevState) => ({
                             selectMultipleImagesMode:
                               !prevState.selectMultipleImagesMode,
-                            openImageUid: null,
                           }));
                         }}
                         id="select-multiple-images"
