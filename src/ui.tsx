@@ -90,7 +90,11 @@ interface Props {
   annotateCallback?: (id: string) => void;
   downloadDatasetCallback?: () => void;
   // eslint-disable-next-line react/no-unused-prop-types
-  setTask?: (task: { isLoading: boolean; description?: string }) => void;
+  setTask?: (task: {
+    isLoading: boolean;
+    description?: string;
+    progress?: number;
+  }) => void;
   // eslint-disable-next-line react/no-unused-prop-types
   setIsLoading?: (isLoading: boolean) => void;
   updateImagesCallback?: () => void;
