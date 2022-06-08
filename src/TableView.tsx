@@ -1,5 +1,5 @@
-import { ReactElement, useState } from "react";
-import type { GridSelectionModel } from "@mui/x-data-grid";
+import { ReactElement } from "react";
+
 import {
   DataGrid,
   Chip,
