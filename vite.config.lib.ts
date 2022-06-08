@@ -8,7 +8,7 @@ export default defineConfig({
     minify: false, // TODO maybe?
     lib: {
       entry: path.resolve(__dirname, "src/index.tsx"),
-      name: "@gliff-ai/manage",
+      name: "@gliff-ai/curate",
       formats: ["es"],
       fileName: "index",
     },
@@ -21,9 +21,11 @@ export default defineConfig({
         "@mui/icons-material",
         "@mui/styles",
         "@mui/system",
+        "@mui/x-data-grid",
         "@emotion/react",
         "@emotion/styled",
         "@gliff-ai/style",
+        "@gliff-ai/upload",
       ],
       output: {
         globals: {},
