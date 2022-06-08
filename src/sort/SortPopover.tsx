@@ -33,15 +33,15 @@ export const SortPopover = ({
     label: "",
   });
 
-  const [sortOrder, setSortOrder] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
 
   const handleChange =
-    (func: (value: string) => void) =>
+    <T extends string>(func: (value: T) => void) =>
     (event: ChangeEvent<HTMLInputElement>): void => {
       event.preventDefault();
       const { value } = event.target as HTMLButtonElement;
-      func(value);
+      func(value as T);
     };
 
   const updateKey = (selectedLabel: string): void => {
@@ -88,8 +88,8 @@ export const SortPopover = ({
             id="select-metadata-key"
             select
             value={inputKey.label}
-            onChange={handleChange(updateKey)}
-            helperText="Please select a metadata field"
+            onChange={handleChange<string>(updateKey)}
+            helperText={!inputKey.label ? "Please select a metadata field" : ""}
             variant="standard"
           >
             {metadataLabels &&
@@ -106,36 +106,42 @@ export const SortPopover = ({
           square
           style={{ padding: "10px", marginLeft: "15px" }}
         >
-          {/* Form for selecting a sort order */}
-          <FormControl component="fieldset">
-            <RadioGroup
-              aria-label="sort-order"
-              name="sort-order"
-              value={sortOrder}
-              onChange={handleChange(setSortOrder)}
-            >
+          {inputKey.label ? (
+            <>
+              {/* Form for selecting a sort order */}
+              <FormControl component="fieldset">
+                <RadioGroup
+                  aria-label="sort-order"
+                  name="sort-order"
+                  value={sortOrder}
+                  onChange={handleChange<"asc" | "desc">(setSortOrder)}
+                >
+                  <FormControlLabel
+                    value="asc"
+                    control={<Radio size="small" />}
+                    label="Sort by ASC"
+                  />
+                  <FormControlLabel
+                    value="desc"
+                    control={<Radio size="small" />}
+                    label="Sort by DESC"
+                  />
+                </RadioGroup>
+              </FormControl>
               <FormControlLabel
-                value="asc"
-                control={<Radio size="small" />}
-                label="Sort by ASC"
+                control={
+                  <Checkbox
+                    checked={isGrouped}
+                    onChange={toggleIsGrouped}
+                    name="group-by"
+                  />
+                }
+                label="Group by value"
               />
-              <FormControlLabel
-                value="desc"
-                control={<Radio size="small" />}
-                label="Sort by DESC"
-              />
-            </RadioGroup>
-          </FormControl>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={isGrouped}
-                onChange={toggleIsGrouped}
-                name="group-by"
-              />
-            }
-            label="Group by value"
-          />
+            </>
+          ) : (
+            <></>
+          )}
         </Paper>
         <BaseTextButton
           text="Sort"
