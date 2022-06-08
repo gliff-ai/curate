@@ -67,8 +67,9 @@ function getKeyType(metadata: Metadata, key: string): string {
 function sortMetadata(
   metadata: Metadata,
   key: string,
-  acending = true
+  ascending = true
 ): Metadata | null {
+  const metaCopy = [...metadata];
   const metaType = getKeyType(metadata, key);
 
   function toDate(value: string): Date {
@@ -77,28 +78,28 @@ function sortMetadata(
 
   switch (metaType) {
     case "number":
-      metadata.sort((a: MetaItem, b: MetaItem): number =>
-        compare(a[key] as number, b[key] as number, acending)
+      metaCopy.sort((a: MetaItem, b: MetaItem): number =>
+        compare(a[key] as number, b[key] as number, ascending)
       );
-      return metadata;
+      return metaCopy;
     case "date":
-      metadata.sort((a, b): number =>
-        compare(toDate(a[key] as string), toDate(b[key] as string), acending)
+      metaCopy.sort((a, b): number =>
+        compare(toDate(a[key] as string), toDate(b[key] as string), ascending)
       );
-      return metadata;
+      return metaCopy;
 
     case "string":
-      metadata.sort((a: MetaItem, b: MetaItem): number =>
-        compare(a[key] as number, b[key] as number, acending)
+      metaCopy.sort((a: MetaItem, b: MetaItem): number =>
+        compare(a[key] as number, b[key] as number, ascending)
       );
-      return metadata;
+      return metaCopy;
 
     case "undefined":
-      console.log(`No values set for metadata key "${key}".`);
+      console.warn(`No values set for metadata key "${key}".`);
       return null;
 
     default:
-      console.log(`Cannot sort values with type "${metaType}".`);
+      console.warn(`Cannot sort values with type "${metaType}".`);
       return null;
   }
 }
