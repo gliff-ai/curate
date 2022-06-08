@@ -591,7 +591,10 @@ class UserInterface extends Component<Props, State> {
           sx={{ marginBottom: "10px" }}
         >
           <MuiCard>
-            <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
+            <SizeThumbnails
+              disabled={this.state.datasetViewType !== "View Dataset as Images"}
+              resizeThumbnails={this.resizeThumbnails}
+            />
           </MuiCard>
           <MuiCard>
             <DatasetViewToggle
