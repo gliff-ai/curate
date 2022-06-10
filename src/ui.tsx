@@ -216,7 +216,7 @@ class UserInterface extends Component<Props, State> {
     // Select all items and empty active filters array.
     this.setState((prevState) => {
       prevState.metadata.forEach((mitem) => {
-        mitem.selected = true;
+        mitem.filterShow = true;
       });
       return { activeFilters: [], metadata: prevState.metadata };
     });
@@ -259,12 +259,12 @@ class UserInterface extends Component<Props, State> {
       prevState.metadata.forEach((mitem) => {
         if (selectedLabels === null) {
           // select all unlabelled images
-          mitem.selected = mitem.imageLabels.length === 0;
+          mitem.filterShow = mitem.imageLabels.length === 0;
         } else {
           const intersection = mitem.imageLabels.filter((l) =>
             selectedLabels.includes(l)
           );
-          mitem.selected = intersection.length === selectedLabels.length;
+          mitem.filterShow = intersection.length === selectedLabels.length;
         }
       });
 
@@ -342,7 +342,7 @@ class UserInterface extends Component<Props, State> {
     let prevValue: unknown = null;
     this.setState(({ metadata }) => {
       metadata.forEach((mitem) => {
-        if (!mitem.selected) return;
+        if (!mitem.filterShow) return;
         // Number.MAX_VALUE added to handle missing values
         const value = (mitem[key] as string) || Number.MAX_VALUE;
         if (!prevValue || areValuesEqual(value, prevValue)) {
@@ -705,7 +705,7 @@ class UserInterface extends Component<Props, State> {
     );
 
     const imagesView = this.state.metadata
-      .filter((mitem) => mitem.selected)
+      .filter((mitem) => mitem.filterShow)
       .map((mitem: MetaItem, itemIndex) => (
         <Fragment key={mitem.id}>
           {this.state.isGrouped && (
@@ -973,7 +973,7 @@ class UserInterface extends Component<Props, State> {
                   ) : (
                     <TableView
                       metadata={this.state.metadata.filter(
-                        (mitem) => mitem.selected
+                        (mitem) => mitem.filterShow
                       )}
                     />
                   )}

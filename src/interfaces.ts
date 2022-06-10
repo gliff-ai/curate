@@ -18,7 +18,7 @@ type MetaItem = {
   id?: string;
   imageName?: string;
   imageLabels?: string[];
-  selected?: boolean; // TODO change this to "filtered" or something
+  filterShow?: boolean;
 };
 
 type Filter = {
