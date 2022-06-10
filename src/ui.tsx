@@ -14,28 +14,21 @@ import {
   CssBaseline,
   AppBar,
   theme,
-  BaseIconButton,
   generateClassName,
   IconButton,
   Logo,
   icons,
-  MuiCard,
-  Box,
   Toolbar,
   Grid,
   List,
   ListItem,
   Button,
   Container,
+  MuiCard,
+  Box,
   ThemeProvider,
   StyledEngineProvider,
-  DataGrid,
-  Chip,
   ButtonGroup,
-  Typography,
-  GridRenderCellParams,
-  GridColDef,
-  HtmlTooltip,
 } from "@gliff-ai/style";
 
 import Tile, {
@@ -57,7 +50,8 @@ import type { Metadata, MetaItem, Filter, Profile } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
 import { sortMetadata, filterMetadata } from "@/helpers";
 import { PluginObject, PluginsAccordion } from "./components/plugins";
-import { DatasetView } from "./components/DatasetView";
+import { DatasetView as DatasetViewToggle } from "./components/DatasetView";
+import { TableView } from "./TableView";
 
 const bottomLeftButtons = {
   display: "flex",
@@ -96,7 +90,11 @@ interface Props {
   annotateCallback?: (id: string) => void;
   downloadDatasetCallback?: () => void;
   // eslint-disable-next-line react/no-unused-prop-types
-  setTask?: (task: { isLoading: boolean; description?: string }) => void;
+  setTask?: (task: {
+    isLoading: boolean;
+    description?: string;
+    progress?: number;
+  }) => void;
   // eslint-disable-next-line react/no-unused-prop-types
   setIsLoading?: (isLoading: boolean) => void;
   updateImagesCallback?: () => void;
@@ -115,7 +113,6 @@ interface State {
   activeFilters: Filter[];
   defaultLabels: string[];
   expanded: string | boolean;
-  openImageUid: string; // Uid for the image whose metadata is shown in the drawer
   selectedImagesUid: string[]; // Uids for selected images
   thumbnailWidth: number;
   thumbnailHeight: number;
@@ -161,7 +158,6 @@ class UserInterface extends Component<Props, State> {
         : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
-      openImageUid: null,
       selectedImagesUid: [],
       activeFilters: [],
       thumbnailWidth: thumbnailSizes[2].size,
@@ -203,14 +199,6 @@ class UserInterface extends Component<Props, State> {
   // metadata items are displayed on the dashboard.
   addFieldSelectedToMetadata = (metadata: Metadata = []): Metadata =>
     metadata.map((mitem) => ({ ...mitem, selected: true }));
-
-  handleMetadataHide = (): void => {
-    this.setState({ openImageUid: null });
-  };
-
-  handleMetadataShow = (imageUid: string): void => {
-    this.setState({ openImageUid: imageUid });
-  };
 
   handleToolboxChange =
     (panel: string) =>
@@ -257,7 +245,6 @@ class UserInterface extends Component<Props, State> {
   applySearchFiltersToMetadata = (): void => {
     this.setState(({ metadata, activeFilters }) => {
       const newMetadata = filterMetadata(metadata, activeFilters);
-
       return newMetadata ? { metadata } : undefined;
     });
 
@@ -329,9 +316,7 @@ class UserInterface extends Component<Props, State> {
   };
 
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
-    // Handle sort by key
-
-    if (key === "") return; // for some reason this function is being called on startup with an empty key
+    if (key === "") return;
 
     this.setState(({ metadata }: State) => {
       const newMetadata = sortMetadata(metadata, key, sortOrder === "asc");
@@ -341,6 +326,8 @@ class UserInterface extends Component<Props, State> {
     if (this.state.isGrouped) {
       this.groupByValue(key);
     }
+
+    // TODO: Close the sort popup?
   };
 
   groupByValue = (key: string): void => {
@@ -608,11 +595,15 @@ class UserInterface extends Component<Props, State> {
           sx={{ marginBottom: "10px" }}
         >
           <MuiCard>
-            <SizeThumbnails resizeThumbnails={this.resizeThumbnails} />
+            <SizeThumbnails
+              disabled={this.state.datasetViewType !== "View Dataset as Images"}
+              resizeThumbnails={this.resizeThumbnails}
+            />
           </MuiCard>
-
           <MuiCard>
-            <DatasetView changeDatasetViewType={this.changeDatasetViewType} />
+            <DatasetViewToggle
+              changeDatasetViewType={this.changeDatasetViewType}
+            />
           </MuiCard>
         </Box>
         <Box
@@ -674,9 +665,9 @@ class UserInterface extends Component<Props, State> {
       </>
     );
 
-    const deleteImageCard = !this.state.selectMultipleImagesMode ? null : (
+    const deleteImageCard = (
       <MuiCard>
-        <List component="div" sx={{ display: "flex" }}>
+        <List component="div" style={{ display: "flex" }}>
           <ListItem
             sx={{
               fontWeight: 500,
@@ -684,130 +675,33 @@ class UserInterface extends Component<Props, State> {
               width: "1000px",
             }}
           >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
-          {this.isOwnerOrMember() && this.props.profiles && (
-            <ListItem
-              sx={{
-                padding: "0px",
-                justifyContent: "center",
-                width: "280px",
-                border: "none",
-              }}
-            >
+          <ButtonGroup
+            orientation="horizontal"
+            size="small"
+            sx={{
+              border: "none",
+              backgroundColor: "transparent",
+            }}
+          >
+            {this.isOwnerOrMember() && this.props.profiles && (
               <AssigneesDialog
                 profiles={this.props.profiles}
                 selectedImagesUids={this.state.selectedImagesUid}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
               />
-            </ListItem>
-          )}
-          <ListItem style={{ padding: 0 }}>
-            <BaseIconButton
+            )}
+            <IconButton
               tooltip={tooltips.deleteImages}
+              icon={icons.delete}
               fill={null}
               onClick={this.deleteSelectedImages}
+              disabled={this.state.selectedImagesUid.length === 0}
               tooltipPlacement="bottom"
             />
-          </ListItem>
+          </ButtonGroup>
         </List>
       </MuiCard>
-    );
-
-    const defaultColumns = [
-      {
-        headerName: "Image Name",
-        field: "imageName",
-        width: 150,
-        editable: false,
-      },
-      {
-        headerName: "Annotation Progress",
-        field: "annotationProgress",
-        width: 250,
-        editable: false,
-      },
-      {
-        headerName: "Assignees",
-        field: "assignees",
-        width: 300,
-        editable: false,
-      },
-      {
-        headerName: "Labels",
-        field: "labels",
-        width: 250,
-        editable: false,
-        renderCell: (params: GridRenderCellParams<unknown, MetaItem>) => {
-          const { imageLabels = [] } = params.row;
-          const chipsLimit = 2;
-          const chipsContent: string[] = imageLabels.slice(0, chipsLimit);
-          const moreLabelsCount = imageLabels.length - chipsLimit;
-          const showPlaceholder =
-            moreLabelsCount > 0 ? (
-              <HtmlTooltip title={imageLabels.join(", ")} placement="bottom">
-                <Typography>+ {moreLabelsCount} more</Typography>
-              </HtmlTooltip>
-            ) : null;
-          const chips = chipsContent.map((imageLabel: string) => (
-            <Chip label={imageLabel} key={imageLabel} variant="outlined" />
-          ));
-          return [chips, showPlaceholder];
-        },
-      },
-
-      {
-        headerName: "Pixels",
-        field: "dimensions",
-        width: 150,
-        editable: false,
-      },
-      {
-        headerName: "Size",
-        field: "size",
-        width: 150,
-        editable: false,
-      },
-    ];
-    const ignoreMetaColumns = [
-      "imageName",
-      "annotationProgress",
-      "assignees",
-      "labels",
-      "pixels",
-      "size",
-      "id",
-      "dimensions",
-    ];
-
-    const colsObj = this.state.metadata.reduce((acc, el) => {
-      Object.keys(el).forEach((k) => {
-        if (!ignoreMetaColumns.includes(k)) {
-          acc[k] = {
-            field: k,
-            headerName: k, // TODO split on capital, make pretty
-            width: 150,
-            editable: false,
-            hide: true,
-          };
-        }
-      });
-
-      return acc;
-    }, {} as { [index: string]: GridColDef });
-
-    const allCols = [...defaultColumns, ...Object.values(colsObj)];
-
-    const tableView = (
-      <Box sx={{ width: "100%", marginTop: "14px" }}>
-        <DataGrid
-          title="Dataset Details"
-          columns={allCols}
-          rows={this.state.metadata}
-          sx={{ height: "82.7vh" }}
-          hideFooterPagination
-          pageSize={this.state.metadata.length}
-        />
-      </Box>
     );
 
     const imagesView = this.state.metadata
@@ -841,10 +735,13 @@ class UserInterface extends Component<Props, State> {
                 id="images"
                 onClick={(e: MouseEvent) => {
                   const imageUid = mitem.id;
-                  this.handleMetadataShow(imageUid);
 
-                  if (e.metaKey || e.ctrlKey) {
-                    // Add clicked image to the selection if unselected; remove it if already selected
+                  if (
+                    e.metaKey ||
+                    e.ctrlKey ||
+                    this.state.selectMultipleImagesMode
+                  ) {
+                    // Add image to selection if not included, otherwise remove it
                     this.setState((state) => {
                       if (state.selectedImagesUid.includes(imageUid)) {
                         state.selectedImagesUid.splice(
@@ -957,8 +854,18 @@ class UserInterface extends Component<Props, State> {
 
                   {deleteImageCard}
 
-                  {(this.state.openImageUid == null ||
-                    this.state.selectMultipleImagesMode) && (
+                  {this.state.selectedImagesUid.length === 1 &&
+                  !this.state.selectMultipleImagesMode ? (
+                    <MetadataDrawer
+                      metadata={this.state.metadata.find(
+                        ({ id }) => id === this.state.selectedImagesUid[0]
+                      )}
+                      close={() => {
+                        // deselect the image to close the drawer
+                        this.setState({ selectedImagesUid: [] });
+                      }}
+                    />
+                  ) : (
                     <>
                       <SearchBar
                         metadata={this.state.metadata}
@@ -998,21 +905,6 @@ class UserInterface extends Component<Props, State> {
                       )}
                     </>
                   )}
-
-                  <div>
-                    {this.state.openImageUid !== null &&
-                      !this.state.selectMultipleImagesMode && (
-                        <MetadataDrawer
-                          metadata={
-                            this.state.metadata.filter(
-                              (mitem) => mitem.id === this.state.openImageUid
-                            )[0]
-                          }
-                          handleMetadataHide={this.handleMetadataHide}
-                        />
-                      )}
-                  </div>
-
                   <Box
                     display="flex"
                     justifyContent="space-between"
@@ -1044,24 +936,26 @@ class UserInterface extends Component<Props, State> {
                         onClick={this.props.downloadDatasetCallback}
                       />
                     </MuiCard>
-
-                    <MuiCard sx={{ ...smallButton }}>
-                      <IconButton
-                        tooltip={tooltips.selectMultipleImages}
-                        fill={this.state.selectMultipleImagesMode}
-                        icon={tooltips.selectMultipleImages.icon}
-                        tooltipPlacement="bottom"
-                        onClick={() => {
-                          this.setState((prevState) => ({
-                            selectMultipleImagesMode:
-                              !prevState.selectMultipleImagesMode,
-                            openImageUid: null,
-                          }));
-                        }}
-                        id="select-multiple-images"
-                        size="small"
-                      />
-                    </MuiCard>
+                    {this.state.datasetViewType !== "View Dataset as Table" ? (
+                      <MuiCard sx={{ ...smallButton }}>
+                        <IconButton
+                          tooltip={tooltips.selectMultipleImages}
+                          fill={this.state.selectMultipleImagesMode}
+                          icon={tooltips.selectMultipleImages.icon}
+                          tooltipPlacement="bottom"
+                          onClick={() => {
+                            this.setState((prevState) => ({
+                              selectMultipleImagesMode:
+                                !prevState.selectMultipleImagesMode,
+                            }));
+                          }}
+                          id="select-multiple-images"
+                          size="small"
+                        />
+                      </MuiCard>
+                    ) : (
+                      ""
+                    )}
                   </Box>
                 </Grid>
                 <Grid
@@ -1074,9 +968,15 @@ class UserInterface extends Component<Props, State> {
                     flexWrap: "wrap",
                   }}
                 >
-                  {this.state.datasetViewType === "View Dataset as Images"
-                    ? imagesView
-                    : tableView}
+                  {this.state.datasetViewType === "View Dataset as Images" ? (
+                    imagesView
+                  ) : (
+                    <TableView
+                      metadata={this.state.metadata.filter(
+                        (mitem) => mitem.selected
+                      )}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </Container>
