@@ -118,16 +118,16 @@ function filterMetadata(metadata: Metadata, activeFilters: Filter[]): Metadata {
         );
 
         // selection for all filters up to current
-        const prevSel = fi === 0 ? 1 : Number(mitem.selected);
+        const prevSel = fi === 0 ? 1 : Number(mitem.filterShow);
 
-        // update 'selected' field
-        mitem.selected = Boolean(prevSel * currentSel);
+        // update 'filterShow' field
+        mitem.filterShow = Boolean(prevSel * currentSel);
       });
     });
   } else {
     // all items selected
     metadata.forEach((mitem: MetaItem) => {
-      mitem.selected = true;
+      mitem.filterShow = true;
     });
   }
   return metadata;
