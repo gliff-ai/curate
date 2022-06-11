@@ -113,7 +113,7 @@ export function TableView({ metadata }: Props): ReactElement {
         disableColumnFilter /* Sorting and filtering is handled externally */
         title="Dataset Details"
         columns={allCols}
-        rows={metadata}
+        rows={metadata.filter((mitem) => mitem.filterShow)}
         sx={{ height: "82.7vh" }}
         hideFooterPagination
         pageSize={metadata.length}

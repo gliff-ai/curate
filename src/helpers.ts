@@ -133,4 +133,47 @@ function filterMetadata(metadata: Metadata, activeFilters: Filter[]): Metadata {
   return metadata;
 }
 
-export { kCombinations, shuffle, sortMetadata, filterMetadata };
+const makeThumbnail = (image: Array<Array<ImageBitmap>>): string => {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const imageWidth = image[0][0].width;
+  const imageHeight = image[0][0].height;
+  const ratio = Math.min(
+    canvas.width / imageWidth,
+    canvas.height / imageHeight
+  );
+  const ctx = canvas.getContext("2d");
+  ctx.globalCompositeOperation = "lighter";
+  image[0].forEach((channel) => {
+    ctx.drawImage(
+      channel,
+      0,
+      0,
+      imageWidth,
+      imageHeight,
+      (canvas.width - imageWidth * ratio) / 2,
+      (canvas.height - imageHeight * ratio) / 2,
+      imageWidth * ratio,
+      imageHeight * ratio
+    );
+  });
+  return canvas.toDataURL();
+};
+
+const getMonthAndYear = (date: string): string =>
+  date !== undefined
+    ? new Date(date).toLocaleDateString("en-GB", {
+        month: "short",
+        year: "numeric",
+      })
+    : "";
+
+export {
+  kCombinations,
+  shuffle,
+  sortMetadata,
+  filterMetadata,
+  makeThumbnail,
+  getMonthAndYear,
+};

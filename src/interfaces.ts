@@ -19,6 +19,9 @@ type MetaItem = {
   imageName?: string;
   imageLabels?: string[];
   filterShow?: boolean;
+  numberOfDimensions: "2" | "3"; // Not sure why these are strings?
+  dimensions: string;
+  size: string;
 };
 
 type Filter = {
