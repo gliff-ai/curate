@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeEvent,
-  ReactNode,
-  KeyboardEvent,
-  MouseEvent,
-  Fragment,
-} from "react";
+import { Component, ChangeEvent, ReactNode } from "react";
 
 import StylesProvider from "@mui/styles/StylesProvider";
 
@@ -22,7 +15,6 @@ import {
   Grid,
   List,
   ListItem,
-  Button,
   Container,
   MuiCard,
   Box,
@@ -114,7 +106,6 @@ interface State {
   activeFilters: Filter[];
   defaultLabels: string[];
   expanded: string | boolean;
-  selectedImagesUid: string[]; // Uids for selected images
   thumbnailSize: number;
   selectMultipleImagesMode: boolean;
   sortedBy: string;
@@ -123,7 +114,18 @@ interface State {
   restrictLabels: boolean;
   multiLabel: boolean;
   datasetViewType: string;
+  selectedImagesUid: Set<string>;
 }
+
+type SelectedImagesAction =
+  | {
+      type: "add" | "delete" | "toggle";
+      id: string;
+    }
+  | {
+      type: "set";
+      id: string[];
+    };
 
 class UserInterface extends Component<Props, State> {
   public static defaultProps: Omit<Props, "showAppBar" | "classes"> = {
@@ -161,7 +163,6 @@ class UserInterface extends Component<Props, State> {
         : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
-      selectedImagesUid: [],
       activeFilters: [],
       thumbnailSize: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
@@ -171,6 +172,7 @@ class UserInterface extends Component<Props, State> {
       restrictLabels: false,
       multiLabel: true,
       datasetViewType: datasetType[0].name,
+      selectedImagesUid: new Set<string>(),
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
@@ -220,6 +222,39 @@ class UserInterface extends Component<Props, State> {
       });
       return { activeFilters: [], metadata: prevState.metadata };
     });
+  };
+
+  // This can be swapped out for useReducer when this is a functional
+  dispatchSelectedImagesUid = (action: SelectedImagesAction) => {
+    function reducer(
+      oldState: Set<string>,
+      { type, id }: SelectedImagesAction
+    ): Set<string> {
+      const state = new Set([...oldState]);
+      switch (type) {
+        case "add":
+          return state.add(id);
+        case "delete":
+          state.delete(id);
+          return state;
+        case "toggle":
+          if (state.has(id)) {
+            state.delete(id);
+          } else {
+            state.add(id);
+          }
+
+          return state;
+        case "set":
+          return new Set(id);
+        default:
+          throw new Error();
+      }
+    }
+
+    this.setState((oldState) => ({
+      selectedImagesUid: reducer(oldState.selectedImagesUid, action),
+    }));
   };
 
   setActiveFilter = (filter: Filter): void => {
@@ -386,17 +421,17 @@ class UserInterface extends Component<Props, State> {
   deleteSelectedImages = (): void => {
     if (!this.state.selectedImagesUid) return;
 
-    this.props.deleteImagesCallback?.(this.state.selectedImagesUid);
+    this.props.deleteImagesCallback?.([...this.state.selectedImagesUid]);
 
     if (!this.props.deleteImagesCallback) {
       // running standalone, so remove images here and now rather than waiting for store to update:
       this.setState((state) => {
         const metadata: Metadata = state.metadata.filter(
-          (mitem) => !state.selectedImagesUid.includes(mitem.id)
+          (mitem) => !state.selectedImagesUid.has(mitem.id)
         );
 
         return {
-          selectedImagesUid: [],
+          selectedImagesUid: new Set(),
           metadata,
         };
       });
@@ -459,7 +494,7 @@ class UserInterface extends Component<Props, State> {
     // Get assignees for the images selected
     let currentAssignees: string[] = [];
     this.state.metadata.forEach(({ id, assignees }) => {
-      if (this.state.selectedImagesUid.includes(id)) {
+      if (this.state.selectedImagesUid.has(id)) {
         currentAssignees = currentAssignees.concat(assignees as string[]);
       }
     });
@@ -571,7 +606,7 @@ class UserInterface extends Component<Props, State> {
                 <AutoAssignDialog
                   profiles={this.props.profiles}
                   metadata={this.state.metadata}
-                  selectedImagesUids={this.state.selectedImagesUid}
+                  selectedImagesUids={[...this.state.selectedImagesUid]}
                   updateAssignees={this.updateAssignees}
                 />
               )}
@@ -620,7 +655,7 @@ class UserInterface extends Component<Props, State> {
               justifyContent: "left",
               width: "1000px",
             }}
-          >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
+          >{`${this.state.selectedImagesUid.size} images selected`}</ListItem>
           <ButtonGroup
             orientation="horizontal"
             size="small"
@@ -632,7 +667,7 @@ class UserInterface extends Component<Props, State> {
             {this.isOwnerOrMember() && this.props.profiles && (
               <AssigneesDialog
                 profiles={this.props.profiles}
-                selectedImagesUids={this.state.selectedImagesUid}
+                selectedImagesUids={[...this.state.selectedImagesUid]}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
               />
@@ -642,7 +677,7 @@ class UserInterface extends Component<Props, State> {
               icon={icons.delete}
               fill={null}
               onClick={this.deleteSelectedImages}
-              disabled={this.state.selectedImagesUid.length === 0}
+              disabled={this.state.selectedImagesUid.size === 0}
               tooltipPlacement="bottom"
             />
           </ButtonGroup>
@@ -668,15 +703,23 @@ class UserInterface extends Component<Props, State> {
 
                   {deleteImageCard}
 
-                  {this.state.selectedImagesUid.length === 1 &&
+                  {this.state.selectedImagesUid.size === 1 &&
                   !this.state.selectMultipleImagesMode ? (
                     <MetadataDrawer
-                      metadata={this.state.metadata.find(
-                        ({ id }) => id === this.state.selectedImagesUid[0]
-                      )}
+                      metadata={this.state.metadata.find(({ id }) => {
+                        console.log("drawer");
+                        console.log(id);
+                        console.log(this.state.selectedImagesUid);
+
+                        // TODO fix selectiong single item when filterd
+                        return (
+                          id ===
+                          [...this.state.selectedImagesUid.values()].pop()
+                        );
+                      })}
                       close={() => {
                         // deselect the image to close the drawer
-                        this.setState({ selectedImagesUid: [] });
+                        this.setState({ selectedImagesUid: new Set() });
                       }}
                     />
                   ) : (
@@ -709,7 +752,7 @@ class UserInterface extends Component<Props, State> {
                             "plugins-toolbox"
                           )}
                           metadata={this.state.metadata}
-                          selectedImagesUid={this.state.selectedImagesUid}
+                          selectedImagesUid={[...this.state.selectedImagesUid]}
                           updateImagesCallback={this.props.updateImagesCallback}
                           launchPluginSettingsCallback={
                             this.props.launchPluginSettingsCallback
@@ -785,6 +828,10 @@ class UserInterface extends Component<Props, State> {
                   {this.state.datasetViewType === "View Dataset as Images" ? (
                     <TileView
                       metadata={this.state.metadata}
+                      selectedImagesUid={[
+                        this.state.selectedImagesUid,
+                        this.dispatchSelectedImagesUid,
+                      ]}
                       thumbnailSize={this.state.thumbnailSize}
                       isGrouped={this.state.isGrouped}
                       selectMultipleImagesMode={
@@ -807,7 +854,13 @@ class UserInterface extends Component<Props, State> {
                       )}
                     />
                   ) : (
-                    <TableView metadata={this.state.metadata} />
+                    <TableView
+                      metadata={this.state.metadata}
+                      selectedImagesUid={[
+                        this.state.selectedImagesUid,
+                        this.dispatchSelectedImagesUid,
+                      ]}
+                    />
                   )}
                 </Grid>
               </Grid>

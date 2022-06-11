@@ -177,7 +177,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                   <ListItemText
                     primaryTypographyProps={{ variant: "h6" }}
                     className={classes.metaKey}
-                    title={metadataNameMap[key] || key}
+                    title={`${metadataNameMap[key] || key}`}
                     primary={`${metadataNameMap[key] || key}:`}
                     classes={{
                       primary: classes.metaKey,
@@ -186,7 +186,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                   />
                   <ListItemText
                     className={classes.metaValue}
-                    title={props.metadata[key] as string}
+                    title={`${props.metadata[key] as string}`}
                     primary={
                       key === "imageLabels"
                         ? props.metadata[key].join(", ")

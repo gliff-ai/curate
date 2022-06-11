@@ -1,18 +1,23 @@
 import { ReactElement } from "react";
 
-import {
-  DataGrid,
-  Chip,
-  Box,
-  Typography,
-  GridRenderCellParams,
-  GridColDef,
-  HtmlTooltip,
-} from "@gliff-ai/style";
-import { Metadata, MetaItem } from "@/interfaces";
+import { DataGrid, Chip, Box, Typography, HtmlTooltip } from "@gliff-ai/style";
+
+import type { GridRenderCellParams, GridColDef } from "@gliff-ai/style";
+import type { Metadata, MetaItem } from "@/interfaces";
+
+type SelectedImagesAction =
+  | {
+      type: "add" | "delete" | "toggle";
+      id: string;
+    }
+  | {
+      type: "set";
+      id: string[];
+    };
 
 interface Props {
   metadata: Metadata;
+  selectedImagesUid: [Set<string>, (action: SelectedImagesAction) => void];
 }
 
 const defaultColumns = [
@@ -76,6 +81,7 @@ const defaultColumns = [
     sortable: false,
   },
 ];
+
 const ignoreMetaColumns = [
   "imageName",
   "annotationProgress",
@@ -85,9 +91,12 @@ const ignoreMetaColumns = [
   "size",
   "id",
   "dimensions",
+  "filterShow",
 ];
 
-export function TableView({ metadata }: Props): ReactElement {
+export function TableView({ metadata, ...props }: Props): ReactElement {
+  const [selectedImagesUid, dispatch] = props.selectedImagesUid;
+
   const colsObj = metadata.reduce((acc, el) => {
     Object.keys(el).forEach((field) => {
       if (!ignoreMetaColumns.includes(field)) {
@@ -106,6 +115,7 @@ export function TableView({ metadata }: Props): ReactElement {
   }, {} as { [index: string]: GridColDef });
 
   const allCols = [...defaultColumns, ...Object.values(colsObj)];
+  const shownMeta = metadata.filter((mitem) => mitem.filterShow);
 
   return (
     <Box sx={{ width: "100%", marginTop: "14px" }}>
@@ -113,10 +123,20 @@ export function TableView({ metadata }: Props): ReactElement {
         disableColumnFilter /* Sorting and filtering is handled externally */
         title="Dataset Details"
         columns={allCols}
-        rows={metadata.filter((mitem) => mitem.filterShow)}
+        rows={shownMeta}
         sx={{ height: "82.7vh" }}
         hideFooterPagination
-        pageSize={metadata.length}
+        pageSize={shownMeta.length}
+        onSelectionModelChange={(newSelectionModel) => {
+          // NewSelectionModel is indexes, we want to use our ids
+          dispatch({
+            type: "set",
+            id: newSelectionModel.map(
+              (rowIndex: number) => shownMeta?.[rowIndex]?.id
+            ),
+          });
+        }}
+        selectionModel={[...selectedImagesUid]}
       />
     </Box>
   );
