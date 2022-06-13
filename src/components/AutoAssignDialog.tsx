@@ -4,6 +4,7 @@ import {
   ReactElement,
   ChangeEvent,
   useCallback,
+  useMemo,
 } from "react";
 import {
   BaseTextButton,
@@ -135,13 +136,13 @@ export function AutoAssignDialog(props: Props): ReactElement {
     });
   }, [imageUids, props.metadata, setInfo]);
 
-  const resetDefaults = (): void => {
+  const resetDefaults = useCallback((): void => {
     // Reset defaults values
     setMessage(null);
     updateInfo();
     setImageSelectionType(SelectionType.All);
     setImageSelectionType(AssignmentType.New);
-  };
+  }, [setMessage, updateInfo, setImageSelectionType, setImageSelectionType]);
 
   const updateImageUids = useCallback((): void => {
     const newImageUids: string[] =
@@ -159,7 +160,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
     setImageUids,
   ]);
 
-  const requiresConfirmation = useCallback(
+  const requiresConfirmation = useMemo(
     (): boolean =>
       (message && message?.severity === "success") ||
       message?.severity === "error",
@@ -167,7 +168,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
   );
 
   const updateMessage = useCallback((): void => {
-    if (!info || requiresConfirmation()) return;
+    if (!info || requiresConfirmation) return;
 
     if (assignees.length === 0) {
       setMessage({
@@ -196,7 +197,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
     } else {
       setMessage(null);
     }
-  }, [setMessage, assignmentType, assignees, requiresConfirmation, info]);
+  }, [assignmentType, assignees, info, requiresConfirmation]);
 
   function selectNextCombination(
     assignmentCount: { [name: string]: number },
@@ -426,7 +427,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
       );
     }
     setAssignees(newAssignees);
-  }, [props.profiles, assigneesType]);
+  }, [props.profiles, assigneesType, setAssignees]);
 
   useEffect(() => {
     updateInfo();
@@ -448,7 +449,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
       setAssigneesPerImage(newOptions[0]);
       setOptions(newOptions);
     }
-  }, [assignees, assignmentType, info, setAssigneesPerImage]);
+  }, [assignees, assignmentType, info, setAssigneesPerImage, setOptions]);
 
   const dialogContent = (
     <Box sx={{ padding: "10px" }}>
@@ -519,7 +520,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
         id="assign"
         text="Assign"
         onClick={autoAssignImages}
-        disabled={requiresConfirmation()}
+        disabled={requiresConfirmation}
         sx={{ display: "block", margin: "auto", marginTop: "20px" }}
       />
     </Box>
@@ -561,7 +562,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
         {message ? (
           <Alert severity={message.severity}>
             {message.text}
-            {requiresConfirmation() && (
+            {requiresConfirmation && (
               <Button onClick={resetDefaults} color="inherit">
                 Ok
               </Button>
