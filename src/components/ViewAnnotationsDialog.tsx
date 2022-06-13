@@ -23,12 +23,11 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
   const [close, setClose] = useState<boolean>(false);
 
   useEffect(() => {
-    if (close) setClose(false);
+    if (close) {
+      setClose(false);
+      setUsername1({ label: "", email: "" });
+    }
   }, [close]);
-
-  useEffect(() => {
-    setUsername1({ label: "", email: "" });
-  }, [props.users]);
 
   return (
     <Dialog
