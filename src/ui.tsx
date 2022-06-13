@@ -759,7 +759,7 @@ class UserInterface extends Component<Props, State> {
                     </>
                   )}
 
-                  {this.state.selectedImagesUid.length === 1 &&
+                  {this.state.selectedImagesUid.size === 1 &&
                     this.isOwnerOrMember() && (
                       <Box
                         display="flex"
@@ -774,8 +774,8 @@ class UserInterface extends Component<Props, State> {
                                   this.props.metadata.find(
                                     (mitem) =>
                                       mitem.id ===
-                                      this.state.selectedImagesUid[0]
-                                  ).assignees as string[]
+                                      [...this.state.selectedImagesUid.values()].pop()
+                                  ).assignees
                                 ).includes(profile.email)
                               )
                               .map((profile) => ({
@@ -784,7 +784,7 @@ class UserInterface extends Component<Props, State> {
                               }))}
                             annotateCallback={(username: string) =>
                               this.props.annotateCallback(
-                                this.state.selectedImagesUid[0],
+                                [...this.state.selectedImagesUid.values()].pop(),
                                 username
                               )
                             }
