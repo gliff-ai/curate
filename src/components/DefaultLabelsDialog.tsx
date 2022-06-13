@@ -58,10 +58,10 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   };
 
   const handleDeleteLabel = (label: string) => (): void => {
-    const oldLabels: string[] = props.labels;
-    oldLabels.splice(oldLabels.indexOf(label), 1);
+    const oldLabelsCopy: string[] = props.labels;
+    oldLabelsCopy.splice(oldLabelsCopy.indexOf(label), 1);
     props.updateDefaultLabels(
-      oldLabels,
+      oldLabelsCopy,
       props.restrictLabels,
       props.multiLabel,
       false
@@ -107,7 +107,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           />
           <MuiIconbutton
             aria-label="add-label"
-            key={"button-add-default-label"}
+            key="button-add-default-label"
             onClick={handleAddLabel(inputString)}
           >
             <SVG

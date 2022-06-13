@@ -196,7 +196,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
     } else {
       setMessage(null);
     }
-  }, [setMessage, assignmentType, requiresConfirmation, info]);
+  }, [setMessage, assignmentType, assignees, requiresConfirmation, info]);
 
   function selectNextCombination(
     assignmentCount: { [name: string]: number },
