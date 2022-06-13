@@ -95,7 +95,7 @@ interface Props {
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
   launchPluginSettingsCallback?: (() => void) | null;
-  saveMetadataCallback?: ((data: any) => void) | null;
+  saveMetadataCallback?: ((data: unknown) => void) | null;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
 }
@@ -225,7 +225,7 @@ class UserInterface extends Component<Props, State> {
   };
 
   // This can be swapped out for useReducer when this is a functional
-  dispatchSelectedImagesUid = (action: SelectedImagesAction) => {
+  dispatchSelectedImagesUid = (action: SelectedImagesAction): void => {
     function reducer(
       oldState: Set<string>,
       { type, id }: SelectedImagesAction
@@ -495,7 +495,7 @@ class UserInterface extends Component<Props, State> {
     let currentAssignees: string[] = [];
     this.state.metadata.forEach(({ id, assignees }) => {
       if (this.state.selectedImagesUid.has(id)) {
-        currentAssignees = currentAssignees.concat(assignees as string[]);
+        currentAssignees = currentAssignees.concat(assignees);
       }
     });
     return Array.from(new Set(currentAssignees));
@@ -706,17 +706,11 @@ class UserInterface extends Component<Props, State> {
                   {this.state.selectedImagesUid.size === 1 &&
                   !this.state.selectMultipleImagesMode ? (
                     <MetadataDrawer
-                      metadata={this.state.metadata.find(({ id }) => {
-                        console.log("drawer");
-                        console.log(id);
-                        console.log(this.state.selectedImagesUid);
-
-                        // TODO fix selectiong single item when filterd
-                        return (
+                      metadata={this.state.metadata.find(
+                        ({ id }) =>
                           id ===
                           [...this.state.selectedImagesUid.values()].pop()
-                        );
-                      })}
+                      )}
                       close={() => {
                         // deselect the image to close the drawer
                         this.setState({ selectedImagesUid: new Set() });
@@ -827,7 +821,9 @@ class UserInterface extends Component<Props, State> {
                 >
                   {this.state.datasetViewType === "View Dataset as Images" ? (
                     <TileView
-                      metadata={this.state.metadata}
+                      metadata={this.state.metadata.filter(
+                        (mitem) => mitem.filterShow
+                      )}
                       selectedImagesUid={[
                         this.state.selectedImagesUid,
                         this.dispatchSelectedImagesUid,
@@ -855,7 +851,9 @@ class UserInterface extends Component<Props, State> {
                     />
                   ) : (
                     <TableView
-                      metadata={this.state.metadata}
+                      metadata={this.state.metadata.filter(
+                        (mitem) => mitem.filterShow
+                      )}
                       selectedImagesUid={[
                         this.state.selectedImagesUid,
                         this.dispatchSelectedImagesUid,

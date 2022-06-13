@@ -64,88 +64,88 @@ export function TileView({
 
   return (
     <>
-      {metadata
-        .filter((mitem) => mitem.filterShow)
-        .map((mitem: MetaItem, itemIndex) => (
-          <Fragment key={mitem.id}>
-            {isGrouped && (
-              <GroupBySeparator mitem={mitem} sortedBy={sortedBy} />
-            )}
-            <Grid
-              item
-              style={{
-                backgroundColor:
-                  selectedImagesUid.has(mitem.id) && theme.palette.primary.main,
+      {metadata.map((mitem: MetaItem, itemIndex) => (
+        <Fragment key={mitem.id}>
+          {isGrouped && <GroupBySeparator mitem={mitem} sortedBy={sortedBy} />}
+          <Grid
+            item
+            style={{
+              backgroundColor:
+                selectedImagesUid.has(mitem.id) && theme.palette.primary.main,
+            }}
+          >
+            <Box
+              sx={{
+                position: "relative" as const,
+                "& > button": {
+                  margin: "5px",
+                },
               }}
             >
-              <Box
-                sx={{
-                  position: "relative" as const,
-                  "& > button": {
-                    margin: "5px",
-                  },
+              <Button
+                id="images"
+                onClick={(e: MouseEvent) => {
+                  const { id } = mitem;
+                  if (e.metaKey || e.ctrlKey || selectMultipleImagesMode) {
+                    // Add image to selection if not included, otherwise remove it
+                    dispatch({ type: "toggle", id });
+                  } else if (e.shiftKey && selectedImagesUid.size > 0) {
+                    // Selected all images between a pair of clicked images.
+                    const currIdx = getIndexFromUid(id);
+                    const prevIdx = getIndexFromUid(getLastSelection());
+                    dispatch({ type: "add", id: metadata[prevIdx].id });
+                    const startIdx = prevIdx < currIdx ? prevIdx : currIdx;
+                    const endIdx = prevIdx < currIdx ? currIdx : prevIdx;
+
+                    for (let i = startIdx; i <= endIdx; i += 1) {
+                      dispatch({ type: "add", id: metadata[i].id });
+                    }
+                  } else {
+                    // Select single item
+                    dispatch({ type: "set", id: [id] });
+                  }
+                }}
+                onDoubleClick={() => {
+                  onDoubleClick(mitem.id);
+                }}
+                onKeyDown={(e: KeyboardEvent) => {
+                  if (e.key === "Escape") {
+                    // Deselect all
+                    dispatch({ type: "set", id: [] });
+                    return;
+                  }
+
+                  if (
+                    e.shiftKey &&
+                    (e.key === "ArrowLeft" || e.key === "ArrowRight")
+                  ) {
+                    // Select consecutive images to the left or to the right of the clicked image.
+                    const index = getItemUidNextToLastSelected(
+                      e.key === "ArrowRight"
+                    );
+
+                    if (index !== null) {
+                      const { id } = metadata[index];
+                      if (selectedImagesUid.has(id)) {
+                        dispatch({ type: "delete", id: getLastSelection() });
+                      } else {
+                        dispatch({ type: "add", id });
+                      }
+                    }
+                  }
                 }}
               >
-                <Button
-                  id="images"
-                  onClick={(e: MouseEvent) => {
-                    const { id } = mitem;
-                    if (e.metaKey || e.ctrlKey || selectMultipleImagesMode) {
-                      // Add image to selection if not included, otherwise remove it
-                      dispatch({ type: "toggle", id });
-                    } else if (e.shiftKey && selectedImagesUid.size > 0) {
-                      // Selected all images between a pair of clicked images.
-                      const currIdx = getIndexFromUid(id);
-                      const prevIdx = getIndexFromUid(getLastSelection());
-                      dispatch({ type: "add", id: metadata[prevIdx].id });
-                      const startIdx = prevIdx < currIdx ? prevIdx : currIdx;
-                      const endIdx = prevIdx < currIdx ? currIdx : prevIdx;
-
-                      for (let i = startIdx; i <= endIdx; i += 1) {
-                        dispatch({ type: "add", id: metadata[i].id });
-                      }
-                    } else {
-                      // Select single item
-                      dispatch({ type: "set", id: [id] });
-                    }
-                  }}
-                  onDoubleClick={() => {
-                    onDoubleClick(mitem.id);
-                  }}
-                  onKeyDown={(e: KeyboardEvent) => {
-                    if (
-                      e.shiftKey &&
-                      (e.key === "ArrowLeft" || e.key === "ArrowRight")
-                    ) {
-                      // Select consecutive images to the left or to the right of the clicked image.
-                      const index = getItemUidNextToLastSelected(
-                        e.key === "ArrowRight"
-                      );
-                      if (index !== null) {
-                        const { id } = metadata[index];
-                        if (selectedImagesUid.has(id)) {
-                          dispatch({ type: "delete", id: getLastSelection() });
-                        } else {
-                          dispatch({ type: "add", id: getLastSelection() });
-                        }
-                      }
-                    } else if (e.key === "Escape") {
-                      // Deselect all
-                      dispatch({ type: "set", id: [] });
-                    }
-                  }}
-                >
-                  <Tile
-                    mitem={mitem}
-                    width={thumbnailSize}
-                    height={thumbnailSize}
-                  />
-                </Button>
-                {labelsPopover(mitem, itemIndex)}
-              </Box>
-            </Grid>
-          </Fragment>
-        ))}
+                <Tile
+                  mitem={mitem}
+                  width={thumbnailSize}
+                  height={thumbnailSize}
+                />
+              </Button>
+              {labelsPopover(mitem, itemIndex)}
+            </Box>
+          </Grid>
+        </Fragment>
+      ))}
     </>
   );
 }

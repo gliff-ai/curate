@@ -17,7 +17,7 @@ const metadata: Partial<MetaItem>[] = [
 ];
 
 function cloneMetadata() {
-  return metadata.map((mitem) => ({ ...mitem, selected: true } as MetaItem));
+  return metadata.map((mitem) => ({ ...mitem, filterShow: true } as MetaItem));
 }
 
 describe("sort metadata with missing values", () => {
@@ -52,8 +52,8 @@ const testFilter = (filters: Filter[], outcome: TestMetaData): void => {
   const newMetadata = filterMetadata(cloneMetadata(), filters);
   expect(
     newMetadata
-      .filter(({ selected }) => selected)
-      .map(({ selected, ...rest }) => rest)
+      .filter(({ filterShow }) => filterShow)
+      .map(({ filterShow, ...rest }) => rest)
   ).toEqual(outcome);
 };
 

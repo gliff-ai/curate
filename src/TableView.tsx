@@ -115,7 +115,6 @@ export function TableView({ metadata, ...props }: Props): ReactElement {
   }, {} as { [index: string]: GridColDef });
 
   const allCols = [...defaultColumns, ...Object.values(colsObj)];
-  const shownMeta = metadata.filter((mitem) => mitem.filterShow);
 
   return (
     <Box sx={{ width: "100%", marginTop: "14px" }}>
@@ -123,19 +122,16 @@ export function TableView({ metadata, ...props }: Props): ReactElement {
         disableColumnFilter /* Sorting and filtering is handled externally */
         title="Dataset Details"
         columns={allCols}
-        rows={shownMeta}
+        rows={metadata}
         sx={{ height: "82.7vh" }}
         hideFooterPagination
-        pageSize={shownMeta.length}
-        onSelectionModelChange={(newSelectionModel) => {
-          // NewSelectionModel is indexes, we want to use our ids
+        pageSize={metadata.length}
+        onSelectionModelChange={(newSelectionModel) =>
           dispatch({
             type: "set",
-            id: newSelectionModel.map(
-              (rowIndex: number) => shownMeta?.[rowIndex]?.id
-            ),
-          });
-        }}
+            id: newSelectionModel as string[], // MetaItem.id is a string
+          })
+        }
         selectionModel={[...selectedImagesUid]}
       />
     </Box>
