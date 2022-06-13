@@ -100,6 +100,7 @@ export const metadataNameMap: MetadataNameMap = {
   resolution_x: "X Resolution",
   resolution_y: "Y Resolution",
   resolution_z: "Z Resolution",
+  assignees: "Assignees",
 };
 
 interface Props {
@@ -126,7 +127,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
 
   return (
     <>
-      <Card className={classes.card}>
+      <Card className={classes.card} sx={{ marginTop: "15px" }}>
         <Paper elevation={0} variant="outlined" className={classes.paperHeader}>
           <Typography className={classes.typographyHeader}>Metadata</Typography>
           <HtmlTooltip

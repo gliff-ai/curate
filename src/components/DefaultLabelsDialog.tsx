@@ -15,6 +15,7 @@ import {
   Chip,
   InputBase,
 } from "@gliff-ai/style";
+import { tooltips } from "./Tooltips";
 
 interface Props {
   labels: string[];
@@ -74,9 +75,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
       title="Set default labels"
       TriggerButton={
         <IconButton
-          tooltip={{
-            name: "Set default labels",
-          }}
+          tooltip={tooltips.defaultLabels}
           tooltipPlacement="top"
           icon={icons.annotationLabels}
           size="small"
