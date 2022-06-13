@@ -23,10 +23,7 @@ interface Props {
   selectMultipleImagesMode: boolean;
   onDoubleClick: (id: string) => void;
   labelsPopover: (mitem: MetaItem, i: number) => JSX.Element;
-  selectedImagesUid: [
-    Set<string>,
-    (action: SelectedImagesAction) => Set<string>
-  ];
+  selectedImagesUid: [Set<string>, (action: SelectedImagesAction) => void];
 }
 
 export function TileView({

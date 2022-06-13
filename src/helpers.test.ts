@@ -1,7 +1,8 @@
-import { Metadata, Filter } from "@/interfaces";
+import { Filter, MetaItem } from "@/interfaces";
 import { sortMetadata, filterMetadata } from "./helpers";
 
-const metadata: Metadata = [
+type TestMetaData = Partial<MetaItem>[];
+const metadata: Partial<MetaItem>[] = [
   {
     string: "through",
     date: "01-26-1920",
@@ -16,7 +17,7 @@ const metadata: Metadata = [
 ];
 
 function cloneMetadata() {
-  return metadata.map((mitem) => ({ ...mitem, selected: true }));
+  return metadata.map((mitem) => ({ ...mitem, selected: true } as MetaItem));
 }
 
 describe("sort metadata with missing values", () => {
@@ -47,7 +48,7 @@ describe("sort metadata with missing values", () => {
   );
 });
 
-const testFilter = (filters: Filter[], outcome: Metadata): void => {
+const testFilter = (filters: Filter[], outcome: TestMetaData): void => {
   const newMetadata = filterMetadata(cloneMetadata(), filters);
   expect(
     newMetadata
