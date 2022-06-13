@@ -3,10 +3,14 @@ import { IconButton, ButtonGroup } from "@gliff-ai/style";
 import { thumbnailSizes, ThumbnailSizes } from "@/components/Tooltips";
 
 interface Props {
+  disabled: boolean;
   resizeThumbnails: (size: number) => void;
 }
 
-export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
+export function SizeThumbnails({
+  resizeThumbnails,
+  disabled,
+}: Props): ReactElement {
   const [buttonClicked, setButtonClicked] = useState("Small Thumbnails");
 
   useEffect(() => {
@@ -27,6 +31,7 @@ export function SizeThumbnails({ resizeThumbnails }: Props): ReactElement {
     >
       {thumbnailSizes.map(({ name, icon, id }: ThumbnailSizes) => (
         <IconButton
+          disabled={disabled}
           id={id}
           key={name}
           sx={{ padding: "5px" }}

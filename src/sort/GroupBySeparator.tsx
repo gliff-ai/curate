@@ -1,18 +1,14 @@
 import { ReactElement } from "react";
-import { Grid } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { Grid, Box } from "@gliff-ai/style";
 import { MetaItem } from "@/interfaces";
 
-const useStyles = makeStyles({
-  container: { width: "100%", height: "100%" },
-  separator: {
-    margin: "0 10px",
-    paddingLeft: "5px",
-    fontSize: "20px",
-    fontWeigth: 500,
-    borderBottom: "solid 2px",
-  },
-});
+const separator = {
+  margin: "0 10px",
+  paddingLeft: "5px",
+  fontSize: "20px",
+  fontWeigth: 500,
+  borderBottom: "solid 2px",
+};
 
 interface Props {
   mitem: MetaItem;
@@ -25,15 +21,13 @@ function GroupBySeparator({
   sortedBy,
   getMonthAndYear,
 }: Props): ReactElement {
-  const classes = useStyles();
-
   return sortedBy && mitem.newGroup ? (
-    <Grid className={classes.container}>
-      <div className={classes.separator}>
+    <Grid sx={{ width: "100%", height: "100%" }}>
+      <Box sx={{ ...separator }}>
         {sortedBy?.toLowerCase().includes("date")
           ? getMonthAndYear(mitem[sortedBy] as string)
           : mitem[sortedBy]}
-      </div>
+      </Box>
     </Grid>
   ) : null;
 }
