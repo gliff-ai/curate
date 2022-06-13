@@ -45,7 +45,14 @@ const getLabelsFromKeys = (
 ): MetadataLabel[] => {
   // Just an example of how to exclude metadata from the list if we need
   if (
-    ["fileMetaVersion", "id", "thumbnail", "selected", "newGroup"].includes(key)
+    [
+      "fileMetaVersion",
+      "id",
+      "thumbnail",
+      "selected",
+      "newGroup",
+      "filterShow",
+    ].includes(key)
   )
     return acc;
 
@@ -71,7 +78,7 @@ function SearchBar({
     if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
-      if (mitem.selected && mitem[inputKey.key] !== undefined) {
+      if (mitem.filterShow && mitem[inputKey.key] !== undefined) {
         const value = mitem[inputKey.key];
         if (Array.isArray(value)) {
           value.forEach((v) => options.add(v));
