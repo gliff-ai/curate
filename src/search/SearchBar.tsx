@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
-import makeStyles from "@mui/styles/makeStyles";
 import { Card, CardContent, Paper, TextField } from "@mui/material";
 import Autocomplete, {
   AutocompleteRenderInputParams,
@@ -11,31 +10,14 @@ import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
 import { Metadata, MetaItem, Filter } from "@/interfaces";
 
-const useStyles = makeStyles({
-  root: {
-    display: "inline",
-  },
-  cardContent: {
-    backgroundColor: theme.palette.primary.light,
-    borderRadius: "9px",
-    marginTop: "15px",
-    height: "110px",
-    padding: "inherit",
-    marginBottom: "15px",
-  },
-  input1: {
-    paddingLeft: "10px",
-    width: "90%",
-  },
-  input2: {
-    paddingLeft: "10px",
-    width: "80%",
-    display: "inline-block",
-  },
-  inputField: {
-    fontSize: "11px",
-  },
-});
+const cardContent = {
+  backgroundColor: theme.palette.primary.light,
+  borderRadius: "9px",
+  marginTop: "15px",
+  height: "110px",
+  padding: "inherit",
+  marginBottom: "15px",
+};
 
 interface Props {
   metadata: Metadata;
@@ -87,7 +69,6 @@ function SearchBar({
   metadataKeys,
   callbackSearch,
 }: Props): ReactElement {
-  const classes = useStyles();
   const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -131,12 +112,12 @@ function SearchBar({
         callbackSearch({ key: inputKey.key, value: inputValue });
         e.preventDefault();
       }}
-      className={classes.root}
+      sx={{ display: "inline" }}
     >
-      <CardContent className={classes.cardContent}>
+      <CardContent sx={{ ...cardContent }}>
         <Autocomplete
           id="combobox-metadata-key"
-          className={classes.input1}
+          sx={{ paddingLeft: "10px", width: "90%" }}
           getOptionLabel={(option: MetadataLabel) => option.label}
           isOptionEqualToValue={(option, value) => option.label === value.label}
           onInputChange={(e: ChangeEvent, newInputKey: string) => {
@@ -155,7 +136,7 @@ function SearchBar({
         />
         <Autocomplete
           id="combobox-metadata-value"
-          className={classes.input2}
+          sx={{ paddingLeft: "10px", width: "80%", display: "inline-block" }}
           inputValue={inputValue}
           freeSolo
           onInputChange={(e: ChangeEvent, newInputValue: string) => {
