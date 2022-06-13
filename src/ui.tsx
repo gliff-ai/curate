@@ -31,6 +31,7 @@ import {
   AssigneesDialog,
   AutoAssignDialog,
   DefaultLabelsDialog,
+  ViewAnnotationsDialog,
   datasetType,
 } from "@/components";
 
@@ -80,7 +81,7 @@ interface Props {
     newAssignees: string[][]
   ) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
-  annotateCallback?: (id: string) => void;
+  annotateCallback?: (imageUid: string, username?: string) => void;
   downloadDatasetCallback?: () => void;
   // eslint-disable-next-line react/no-unused-prop-types
   setTask?: (task: {
@@ -685,6 +686,7 @@ class UserInterface extends Component<Props, State> {
         </List>
       </MuiCard>
     );
+    this.isOwnerOrMember();
 
     return (
       <StylesProvider generateClassName={generateClassName("curate")}>
@@ -757,6 +759,45 @@ class UserInterface extends Component<Props, State> {
                       )}
                     </>
                   )}
+
+                  {this.state.selectedImagesUid.size === 1 &&
+                    this.isOwnerOrMember() && (
+                      <Box
+                        display="flex"
+                        justifyContent="left"
+                        sx={{ marginTop: "10px" }}
+                      >
+                        <MuiCard>
+                          <ViewAnnotationsDialog
+                            users={this.props.profiles
+                              .filter((profile) =>
+                                this.props.metadata
+                                  .find(
+                                    (mitem) =>
+                                      mitem.id ===
+                                      [
+                                        ...this.state.selectedImagesUid.values(),
+                                      ].pop()
+                                  )
+                                  .assignees.includes(profile.email)
+                              )
+                              .map((profile) => ({
+                                label: `${profile.name} - ${profile.email}`,
+                                email: profile.email,
+                              }))}
+                            annotateCallback={(username: string) =>
+                              this.props.annotateCallback(
+                                [
+                                  ...this.state.selectedImagesUid.values(),
+                                ].pop(),
+                                username
+                              )
+                            }
+                          />
+                        </MuiCard>
+                      </Box>
+                    )}
+
                   <Box
                     display="flex"
                     justifyContent="space-between"

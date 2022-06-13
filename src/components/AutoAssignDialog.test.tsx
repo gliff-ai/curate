@@ -30,8 +30,8 @@ const data = require("../../examples/samples/metadata.json") as Metadata;
 
 const metadata: Metadata = data.map((mitem, i) => ({
   id: String(i),
-  assignees: [], // no image assigned
   ...mitem,
+  assignees: [], // no image assigned
 }));
 const selectedUids = ["1", "2", "3", "4", "5"];
 
