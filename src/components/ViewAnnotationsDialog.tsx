@@ -16,9 +16,10 @@ interface Props {
 }
 
 export function ViewAnnotationsDialog(props: Props): React.ReactElement {
-  const [username1, setUsername1] = useState<{ label: string; email: string }>(
-    props.users[0]
-  );
+  const [username1, setUsername1] = useState<{ label: string; email: string }>({
+    label: "",
+    email: "",
+  });
   const [close, setClose] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
   }, [close]);
 
   useEffect(() => {
-    if (props.users.length === 0) setUsername1({ label: "", email: "" });
+    setUsername1({ label: "", email: "" });
   }, [props.users]);
 
   return (
