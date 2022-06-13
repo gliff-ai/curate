@@ -26,7 +26,8 @@ const profiles = [
   },
 ];
 
-const data: Metadata = require("../../examples/samples/metadata.json");
+const data = require("../../examples/samples/metadata.json") as Metadata;
+
 const metadata: Metadata = data.map((mitem, i) => ({
   id: String(i),
   assignees: [], // no image assigned
@@ -64,9 +65,9 @@ describe("new auto-assignment", () => {
   test("assignment on all images", () => {
     fireEvent.click(screen.getByText("Assign"));
 
-    expect(updateAssignees.mock.calls[0][0]).toHaveLength(metadata.length); //imageUids and metadata should have the same length
+    expect(updateAssignees.mock.calls[0][0]).toHaveLength(metadata.length); // imageUids and metadata should have the same length
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(
-      updateAssignees.mock.calls[0][1].length //imageUids and newAssignees should have the same length
+      updateAssignees.mock.calls[0][1].length // imageUids and newAssignees should have the same length
     );
   });
 
@@ -74,9 +75,9 @@ describe("new auto-assignment", () => {
     changeOption("All", "Selected");
     fireEvent.click(screen.getByText("Assign"));
 
-    expect(updateAssignees.mock.calls[0][0]).toHaveLength(selectedUids.length); //imageUids and selectedUids should have the same length
+    expect(updateAssignees.mock.calls[0][0]).toHaveLength(selectedUids.length); // imageUids and selectedUids should have the same length
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(
-      updateAssignees.mock.calls[0][1].length //imageUids and newAssignees should have the same length
+      updateAssignees.mock.calls[0][1].length // imageUids and newAssignees should have the same length
     );
   });
 
@@ -97,9 +98,11 @@ describe("new auto-assignment", () => {
       fireEvent.click(screen.getByText("Assign"));
 
       const assignmentCount: AssignmentCount = initAssignmentCount();
-      const values = updateAssignees.mock.results[0].value.forEach(
+      (updateAssignees.mock.results[0].value as string[][]).forEach(
         (assignees: string[]) => {
-          assignees.forEach((email) => (assignmentCount[email] += 1)); //update assignees count
+          assignees.forEach((email) => {
+            assignmentCount[email] += 1;
+          }); // update assignees count
 
           // each image should be assigned to N = assigneesPerImage different profiles
           const uniqueAssignees = new Set(assignees);
@@ -110,8 +113,7 @@ describe("new auto-assignment", () => {
       // the difference between profiles in the number of images assigned should be of 1 image max
       const imagesPerCollab = Object.values(assignmentCount);
       expect(
-        Math.max.apply(Math, imagesPerCollab) -
-          Math.min.apply(Math, imagesPerCollab)
+        Math.max(...imagesPerCollab) - Math.min(...imagesPerCollab)
       ).toBeLessThanOrEqual(1);
     }
   );
@@ -144,7 +146,7 @@ describe("integrative auto-assignment", () => {
     fireEvent.click(screen.getByText("Assign"));
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(metadata.length - 1); // the already assigned image should not be reassigned
     expect(updateAssignees.mock.calls[0][0]).toHaveLength(
-      updateAssignees.mock.calls[0][1].length //imageUids and newAssignees should have the same length
+      updateAssignees.mock.calls[0][1].length // imageUids and newAssignees should have the same length
     );
   });
 
@@ -162,28 +164,29 @@ describe("integrative auto-assignment", () => {
       fireEvent.click(screen.getByText("Assign"));
 
       const assignmentCount: AssignmentCount = initAssignmentCount();
-      const values = updateAssignees.mock.results[0].value.forEach(
+      (updateAssignees.mock.results[0].value as string[][]).forEach(
         (assignees: string[]) => {
           // each image should be assigned to N = assigneesPerImage different profiles
           const uniqueAssignees = new Set(assignees);
-          assignees.forEach((email) => (assignmentCount[email] += 1)); //update assignees count
+          assignees.forEach((email) => {
+            assignmentCount[email] += 1;
+          }); // update assignees count
           expect(uniqueAssignees.size).toBe(assigneesPerImage);
         }
       );
 
       metadata.forEach(({ assignees }) => {
         if ((assignees as string[]).length === assigneesPerImage) {
-          (assignees as string[]).forEach(
-            (email) => (assignmentCount[email] += 1)
-          ); //update assignees count
+          (assignees as string[]).forEach((email) => {
+            assignmentCount[email] += 1;
+          }); // update assignees count
         }
       });
 
       // the difference between profiles in the number of images assigned should be of 1 image max
       const imagesPerCollab = Object.values(assignmentCount);
       expect(
-        Math.max.apply(Math, imagesPerCollab) -
-          Math.min.apply(Math, imagesPerCollab)
+        Math.max(...imagesPerCollab) - Math.min(...imagesPerCollab)
       ).toBeLessThanOrEqual(1);
     }
   );
