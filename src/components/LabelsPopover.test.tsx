@@ -38,7 +38,7 @@ describe("labels assignment", () => {
     expect(chipElement).toBeDefined();
   });
 
-  test("cannot add duplicate labels", async () => {
+  test("cannot add duplicate labels", () => {
     const addLabelButton = screen.getByRole("button", { name: "add-label" });
     const inputField = screen.getByPlaceholderText("New label");
     expect(screen.getAllByText(/label*/i)).toHaveLength(1);
