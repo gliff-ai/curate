@@ -119,7 +119,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
   const updateInfo = useCallback((): void => {
     if (!imageUids) return;
 
-    const assigneesLenghts = props.metadata
+    const assigneesLengths = props.metadata
       .filter(
         (mitem) =>
           imageUids.includes(mitem.id) &&
@@ -128,11 +128,11 @@ export function AutoAssignDialog(props: Props): ReactElement {
       .map((mitem) => (mitem.assignees as string[]).length);
 
     setInfo({
-      hasAssignedImages: assigneesLenghts.length > 0,
-      hasUnevenNumOfAssignees: assigneesLenghts.some(
-        (l) => l !== assigneesLenghts[0]
+      hasAssignedImages: assigneesLengths.length > 0,
+      hasUnevenNumOfAssignees: assigneesLengths.some(
+        (l) => l !== assigneesLengths[0]
       ),
-      maxNumOfAssignees: Math.max(...assigneesLenghts, 1),
+      maxNumOfAssignees: Math.max(...assigneesLengths, 1),
     });
   }, [imageUids, props.metadata, setInfo]);
 
@@ -297,10 +297,10 @@ export function AutoAssignDialog(props: Props): ReactElement {
         assignees: string[];
       };
 
-      const assigneesLenght = currAssignees.length;
+      const assigneesLength = currAssignees.length;
 
       // if image is fully assigned
-      if (assigneesLenght === assigneesPerImage) {
+      if (assigneesLength === assigneesPerImage) {
         const index = allCombs.indexOf(JSON.stringify(currAssignees.sort()));
 
         if (index === -1) {
@@ -315,7 +315,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
         // if image is partially assigned
       } else {
         let currComb: string[];
-        if (assigneesLenght > 0 && assigneesLenght < assigneesPerImage) {
+        if (assigneesLength > 0 && assigneesLength < assigneesPerImage) {
           const viableCombs: string[][] = allCombs
             .filter(
               (comb, j, newCombs) =>
