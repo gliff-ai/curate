@@ -176,8 +176,8 @@ describe("integrative auto-assignment", () => {
       );
 
       metadata.forEach(({ assignees }) => {
-        if ((assignees as string[]).length === assigneesPerImage) {
-          (assignees as string[]).forEach((email) => {
+        if (assignees.length === assigneesPerImage) {
+          assignees.forEach((email) => {
             assignmentCount[email] += 1;
           }); // update assignees count
         }

@@ -121,11 +121,9 @@ export function AutoAssignDialog(props: Props): ReactElement {
 
     const assigneesLengths = props.metadata
       .filter(
-        (mitem) =>
-          imageUids.includes(mitem.id) &&
-          (mitem.assignees as string[]).length !== 0
+        (mitem) => imageUids.includes(mitem.id) && mitem.assignees.length !== 0
       )
-      .map((mitem) => (mitem.assignees as string[]).length);
+      .map((mitem) => mitem.assignees.length);
 
     setInfo({
       hasAssignedImages: assigneesLengths.length > 0,
@@ -281,9 +279,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
     const metadata = props.metadata
       .filter(({ id }) => imageUids.includes(id))
       .sort((a: MetaItem, b: MetaItem): number =>
-        (a.assignees as string[]).length > (b.assignees as string[]).length
-          ? -1
-          : 1
+        a.assignees.length > b.assignees.length ? -1 : 1
       );
 
     const newImageUids: string[] = [];
