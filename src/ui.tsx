@@ -770,13 +770,15 @@ class UserInterface extends Component<Props, State> {
                           <ViewAnnotationsDialog
                             users={this.props.profiles
                               .filter((profile) =>
-                                (
-                                  this.props.metadata.find(
+                                this.props.metadata
+                                  .find(
                                     (mitem) =>
                                       mitem.id ===
-                                      [...this.state.selectedImagesUid.values()].pop()
-                                  ).assignees
-                                ).includes(profile.email)
+                                      [
+                                        ...this.state.selectedImagesUid.values(),
+                                      ].pop()
+                                  )
+                                  .assignees.includes(profile.email)
                               )
                               .map((profile) => ({
                                 label: `${profile.name} - ${profile.email}`,
@@ -784,7 +786,9 @@ class UserInterface extends Component<Props, State> {
                               }))}
                             annotateCallback={(username: string) =>
                               this.props.annotateCallback(
-                                [...this.state.selectedImagesUid.values()].pop(),
+                                [
+                                  ...this.state.selectedImagesUid.values(),
+                                ].pop(),
                                 username
                               )
                             }
