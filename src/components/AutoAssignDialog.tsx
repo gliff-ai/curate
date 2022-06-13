@@ -1,4 +1,10 @@
-import { useEffect, useState, ReactElement, ChangeEvent } from "react";
+import {
+  useEffect,
+  useState,
+  ReactElement,
+  ChangeEvent,
+  useCallback,
+} from "react";
 import {
   BaseTextButton,
   icons,
@@ -67,6 +73,11 @@ export function AutoAssignDialog(props: Props): ReactElement {
     AssignmentType.New
   );
   const [assigneesPerImage, setAssigneesPerImage] = useState<number>(1);
+
+  function getOptions(end: number, start = 1): number[] {
+    return Array.from(Array(end - start + 1), (_, i) => i + start);
+  }
+
   const [options, setOptions] = useState<number[]>(
     getOptions(props.profiles.length)
   );
@@ -76,21 +87,53 @@ export function AutoAssignDialog(props: Props): ReactElement {
   const [info, setInfo] = useState<Info | null>(null);
   const [message, setMessage] = useState<Message | null>(null);
 
-  function onChangeOfImageSelectionType(event: ChangeEvent<HTMLInputElement>) {
-    setImageSelectionType(Number(event.target.value));
-  }
+  const onChangeOfImageSelectionType = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setImageSelectionType(Number(event.target.value));
+    },
+    [setImageSelectionType]
+  );
 
-  function onChangeAssigneesType(event: ChangeEvent<HTMLInputElement>) {
-    setAssigneesType(Number(event.target.value));
-  }
+  const onChangeAssigneesType = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setAssigneesType(Number(event.target.value));
+    },
+    [setAssigneesType]
+  );
 
-  function onChangeOfAssigneesPerImage(event: ChangeEvent<HTMLInputElement>) {
-    setAssigneesPerImage(Number(event.target.value));
-  }
+  const onChangeOfAssigneesPerImage = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setAssigneesPerImage(Number(event.target.value));
+    },
+    [setAssigneesPerImage]
+  );
 
-  function onChangeOfAssignmentType(event: ChangeEvent<HTMLInputElement>) {
-    setAssignmentType(Number(event.target.value));
-  }
+  const onChangeOfAssignmentType = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setAssignmentType(Number(event.target.value));
+    },
+    [setAssignmentType]
+  );
+
+  const updateInfo = useCallback((): void => {
+    if (!imageUids) return;
+
+    const assigneesLenghts = props.metadata
+      .filter(
+        (mitem) =>
+          imageUids.includes(mitem.id) &&
+          (mitem.assignees as string[]).length !== 0
+      )
+      .map((mitem) => (mitem.assignees as string[]).length);
+
+    setInfo({
+      hasAssignedImages: assigneesLenghts.length > 0,
+      hasUnevenNumOfAssignees: assigneesLenghts.some(
+        (l) => l !== assigneesLenghts[0]
+      ),
+      maxNumOfAssignees: Math.max(...assigneesLenghts, 1),
+    });
+  }, [imageUids, props.metadata, setInfo]);
 
   const resetDefaults = (): void => {
     // Reset defaults values
@@ -100,38 +143,30 @@ export function AutoAssignDialog(props: Props): ReactElement {
     setImageSelectionType(AssignmentType.New);
   };
 
-  function updateImageUids(): void {
+  const updateImageUids = useCallback((): void => {
     const newImageUids: string[] =
       imageSelectionType === SelectionType.Selected
         ? props.selectedImagesUids
-        : props.metadata.map(({ id }) => id as string);
+        : props.metadata.map(({ id }) => id);
 
     shuffle(newImageUids);
 
     setImageUids(newImageUids);
-  }
+  }, [
+    imageSelectionType,
+    props.selectedImagesUids,
+    props.metadata,
+    setImageUids,
+  ]);
 
-  function updateInfo(): void {
-    if (!imageUids) return;
+  const requiresConfirmation = useCallback(
+    (): boolean =>
+      (message && message?.severity === "success") ||
+      message?.severity === "error",
+    [message]
+  );
 
-    const assigneesLenghts = props.metadata
-      .filter(
-        ({ id, assignees }) =>
-          imageUids.includes(id as string) &&
-          (assignees as string[]).length !== 0
-      )
-      .map(({ assignees }) => (assignees as string[]).length);
-
-    setInfo({
-      hasAssignedImages: assigneesLenghts.length > 0,
-      hasUnevenNumOfAssignees: assigneesLenghts.some(
-        (l) => l !== assigneesLenghts[0]
-      ),
-      maxNumOfAssignees: Math.max(Math.max.apply(Math, assigneesLenghts), 1),
-    });
-  }
-
-  function updateMessage(): void {
+  const updateMessage = useCallback((): void => {
     if (!info || requiresConfirmation()) return;
 
     if (assignees.length === 0) {
@@ -161,18 +196,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
     } else {
       setMessage(null);
     }
-  }
-
-  function getOptions(end: number, start: number = 1): number[] {
-    return Array.from(Array(end - start + 1), (_, i) => i + start);
-  }
-
-  function requiresConfirmation(): boolean {
-    return (
-      (message && message?.severity === "success") ||
-      message?.severity === "error"
-    );
-  }
+  }, [setMessage, assignmentType, requiresConfirmation, info]);
 
   function selectNextCombination(
     assignmentCount: { [name: string]: number },
@@ -186,7 +210,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
 
     // for each combination..
     kCombs.forEach((combination, i) => {
-      let newCounts: number[] = [];
+      const newCounts: number[] = [];
       // and each profile, calculate new image count
       assignees.forEach(({ email }) => {
         newCounts.push(
@@ -197,8 +221,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
       });
 
       // calculate range of number of images assigned to each profiles
-      const newRange =
-        Math.max.apply(Math, newCounts) - Math.min.apply(Math, newCounts);
+      const newRange = Math.max(...newCounts) - Math.min(...newCounts);
 
       // update minimum range, if required
       if (newRange < minRange) {
@@ -229,7 +252,9 @@ export function AutoAssignDialog(props: Props): ReactElement {
       }
 
       // update count and store result
-      currComb.forEach((email) => (assignmentCount[email] += 1));
+      currComb.forEach((email) => {
+        assignmentCount[email] += 1;
+      });
       newAssignees.push(currComb);
     });
 
@@ -253,7 +278,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
     // Filter and sort metadata items by the length of assignees (descending), so
     // as to process assigned images first, partially assigned second, unassigned last.
     const metadata = props.metadata
-      .filter(({ id }) => imageUids.includes(id as string))
+      .filter(({ id }) => imageUids.includes(id))
       .sort((a: MetaItem, b: MetaItem): number =>
         (a.assignees as string[]).length > (b.assignees as string[]).length
           ? -1
@@ -265,22 +290,25 @@ export function AutoAssignDialog(props: Props): ReactElement {
     let lastCombs: string[][];
     let hasError = false;
 
-    for (let i = 0; i < metadata.length; i++) {
-      const { id, assignees } = metadata[i] as {
+    for (let i = 0; i < metadata.length; i += 1) {
+      const { id, assignees: currAssignees } = metadata[i] as {
         id: string;
         assignees: string[];
       };
-      const assigneesLenght = assignees.length;
+
+      const assigneesLenght = currAssignees.length;
 
       // if image is fully assigned
       if (assigneesLenght === assigneesPerImage) {
-        const index = allCombs.indexOf(JSON.stringify(assignees.sort()));
+        const index = allCombs.indexOf(JSON.stringify(currAssignees.sort()));
 
         if (index === -1) {
           hasError = true; // imbalanced assignment
           break;
         }
-        assignees.forEach((email) => (assignmentCount[email] += 1)); // update assignees count
+        currAssignees.forEach((email) => {
+          assignmentCount[email] += 1;
+        }); // update currAssignees count
         allCombs.splice(index, 1); // remove used combination
 
         // if image is partially assigned
@@ -289,11 +317,11 @@ export function AutoAssignDialog(props: Props): ReactElement {
         if (assigneesLenght > 0 && assigneesLenght < assigneesPerImage) {
           const viableCombs: string[][] = allCombs
             .filter(
-              (comb, i, newCombs) =>
-                newCombs.indexOf(comb) === i && // unique combinations
-                assignees.every((email) => comb.includes(email))
+              (comb, j, newCombs) =>
+                newCombs.indexOf(comb) === j && // unique combinations
+                currAssignees.every((email) => comb.includes(email))
             )
-            .map((comb) => JSON.parse(comb));
+            .map((comb) => JSON.parse(comb) as string[]);
 
           if (viableCombs.length === 0) {
             hasError = true; // imbalanced assignment
@@ -305,10 +333,10 @@ export function AutoAssignDialog(props: Props): ReactElement {
           allCombs.splice(allCombs.indexOf(JSON.stringify(currComb)), 1); // remove used combination
 
           // if image is unassigned
-        } else if (assignees.length === 0) {
+        } else if (currAssignees.length === 0) {
           if (lastCombs === undefined) {
             // convert conbinations from string to string[]
-            lastCombs = allCombs.map((comb) => JSON.parse(comb)) as string[][];
+            lastCombs = allCombs.map((comb) => JSON.parse(comb) as string[]);
           }
           const index =
             i < startLastRound
@@ -318,7 +346,9 @@ export function AutoAssignDialog(props: Props): ReactElement {
         }
 
         // update count and store result
-        currComb.forEach((email) => (assignmentCount[email] += 1));
+        currComb.forEach((email) => {
+          assignmentCount[email] += 1;
+        });
         newImageUids.push(id);
         newAssignees.push(currComb);
       }
@@ -327,12 +357,12 @@ export function AutoAssignDialog(props: Props): ReactElement {
     return { newImageUids, newAssignees, hasError };
   }
 
-  function autoAssignImages(): void {
+  const autoAssignImages = useCallback((): void => {
     // get all combinations of k profiles
     const kCombs: string[][] = kCombinations(
       assignees.map(({ email }) => email),
       assigneesPerImage // number of profiles each image is assigned to
-    ).map((comb) => comb.sort());
+    ).map((comb) => comb.sort()) as string[][];
 
     shuffle(kCombs);
 
@@ -364,12 +394,22 @@ export function AutoAssignDialog(props: Props): ReactElement {
       text: "Images assigned.",
       severity: "success",
     });
-  }
+  }, [
+    props.updateAssignees,
+    setMessage,
+    assignees,
+    assignmentType,
+    info,
+    assigneesPerImage,
+    imageUids,
+    initialAssignment,
+    integrativeAssignment,
+  ]);
 
   useEffect(() => {
     // always runs when dialog opens
     updateImageUids();
-  }, [props.metadata, imageSelectionType]);
+  }, [updateImageUids]);
 
   useEffect(() => {
     // update users included in the assignment
@@ -390,11 +430,11 @@ export function AutoAssignDialog(props: Props): ReactElement {
 
   useEffect(() => {
     updateInfo();
-  }, [props.metadata, imageUids]);
+  }, [updateInfo]);
 
   useEffect(() => {
     updateMessage();
-  }, [info, assignees, assignmentType]);
+  }, [updateMessage]);
 
   useEffect(() => {
     if (!assignees) return;
@@ -408,7 +448,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
       setAssigneesPerImage(newOptions[0]);
       setOptions(newOptions);
     }
-  }, [assignees, assignmentType, info]);
+  }, [assignees, assignmentType, info, setAssigneesPerImage]);
 
   const dialogContent = (
     <Box sx={{ padding: "10px" }}>

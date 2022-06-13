@@ -1,6 +1,6 @@
 import { Metadata, MetaItem, Filter } from "@/interfaces";
 
-function kCombinations(set: any[], k: number): any[][] {
+function kCombinations(set: unknown[], k: number): unknown[][] {
   if (k > set.length || k <= 0) {
     return [];
   }

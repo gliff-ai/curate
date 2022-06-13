@@ -127,7 +127,7 @@ export const PluginsAccordion = ({
         data = {
           metadata: metadata
             .map(({ selected, newGroup, ...mitem }) => mitem) // exclude keys added in CURATE
-            .filter(({ id }) => imageUids.includes(id as string)),
+            .filter(({ id }) => imageUids.includes(id)),
         };
       } else {
         data = {
@@ -151,18 +151,18 @@ export const PluginsAccordion = ({
 
       if (response?.data) {
         // only allow to update the metadata for the selected images
-        const metadata = response?.data?.metadata?.filter(({ id }) =>
-          imageUids.includes(id as string)
+        const newMetadata = response?.data?.metadata?.filter(({ id }) =>
+          imageUids.includes(id)
         );
 
         if (
-          metadata !== undefined &&
-          Object.keys(metadata).length !== 0 &&
+          newMetadata !== undefined &&
+          Object.keys(newMetadata).length !== 0 &&
           saveMetadataCallback
         ) {
           saveMetadataCallback({
             collectionUid,
-            metadata,
+            metadata: newMetadata,
           });
         }
       }
@@ -179,6 +179,7 @@ export const PluginsAccordion = ({
 
       return plugin.map((p) => (
         <MenuItem
+          key={p.name}
           onClick={() => runPlugin(p)}
           className={classes.menuItem}
           dense
