@@ -23,7 +23,7 @@ const datasetType: DatasetViewType[] = [
   },
   {
     name: "View Dataset as Table",
-    icon: icons.tableViewer as string,
+    icon: icons.tableViewer,
     id: "table-dataset-view",
   },
 ];

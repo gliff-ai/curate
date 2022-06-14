@@ -53,17 +53,15 @@ export function AssigneesDialog(props: Props): React.ReactElement {
           value={assignees}
           onChange={handleChange}
           input={<Input />}
-          renderValue={(selected) => (
-            <>
-              {(selected as string[]).map((value) => (
-                <Chip
-                  key={`chip-assignee-${value}`}
-                  label={value}
-                  variant="outlined"
-                />
-              ))}
-            </>
-          )}
+          renderValue={(selected) =>
+            selected.map((value) => (
+              <Chip
+                key={`chip-assignee-${value}`}
+                label={value}
+                variant="outlined"
+              />
+            ))
+          }
         >
           {props.profiles.map(({ name, email }) => (
             <MenuItem key={name} value={email}>

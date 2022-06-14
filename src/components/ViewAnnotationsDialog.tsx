@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { useState, useEffect } from "react";
 import {
   BaseTextButton,
@@ -38,7 +39,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           tooltip={tooltips.viewAnnotations}
           size="small"
           id="view-annotations"
-        ></IconButton>
+        />
       }
       close={close}
     >

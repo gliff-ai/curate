@@ -1,5 +1,5 @@
-import { UserAccess } from "@/interfaces";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { UserAccess } from "@/interfaces";
 import { AssigneesDialog } from "./AssigneesDialog";
 
 const updateAssignees = jest.fn(

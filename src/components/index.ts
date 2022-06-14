@@ -6,4 +6,3 @@ export { AutoAssignDialog } from "./AutoAssignDialog";
 export { DefaultLabelsDialog } from "./DefaultLabelsDialog";
 export { ViewAnnotationsDialog } from "./ViewAnnotationsDialog";
 export { Tile } from "./Tile";
-

@@ -11,7 +11,7 @@ export function Tile(props: {
       width={props.width}
       height={props.height}
       src={props.mitem.thumbnail as string}
-      alt={props.mitem.imageName as string}
+      alt={props.mitem.imageName}
       data-private
     />
   );

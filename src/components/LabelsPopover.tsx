@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 

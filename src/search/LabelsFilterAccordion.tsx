@@ -79,9 +79,8 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
   const toggleLabelSelection = (label: string) => (): void => {
     // Add label to labels if it is not included, otherwise remove it.
     setLabels((prevLabels) => {
-      if (prevLabels === null) prevLabels = [];
       /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-      const newLabels: string[] = [...prevLabels];
+      const newLabels: string[] = [...(prevLabels || [])];
       if (newLabels.includes(label)) {
         newLabels.splice(newLabels.indexOf(label), 1);
       } else {

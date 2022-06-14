@@ -525,6 +525,7 @@ class UserInterface extends Component<Props, State> {
         numberOfDimensions: images.length === 1 ? "2" : "3",
         numberOfChannels: images[i][0].length.toString(),
         imageLabels: [] as Array<string>,
+        assignees: [],
         thumbnail,
         selected: true,
         newGroup: false,
