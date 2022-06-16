@@ -1,4 +1,4 @@
 import UserInterface from "./ui";
 
-export { MetaItem } from "./interfaces";
+export type { MetaItem } from "./interfaces";
 export default UserInterface;
