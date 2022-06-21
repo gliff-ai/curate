@@ -196,6 +196,11 @@ class UserInterface extends Component<Props, State> {
           ...mitem,
           filterShow: true,
         })),
+        selectedImagesUid: new Set( // deselect images that have been deleted
+          [...this.state.selectedImagesUid.values()].filter((id: string) =>
+            this.props.metadata.map((mitem) => mitem.id).includes(id)
+          )
+        ),
         defaultLabels: this.props.defaultLabels || oldState.defaultLabels,
         restrictLabels: this.props.restrictLabels,
         multiLabel: this.props.multiLabel,
@@ -771,7 +776,7 @@ class UserInterface extends Component<Props, State> {
                           <ViewAnnotationsDialog
                             users={this.props.profiles
                               .filter((profile) =>
-                                this.props.metadata
+                                this.state.metadata
                                   .find(
                                     (mitem) =>
                                       mitem.id ===
