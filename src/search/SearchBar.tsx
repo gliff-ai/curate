@@ -8,7 +8,8 @@ import Autocomplete, {
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
-import { Metadata, MetaItem, Filter } from "@/interfaces";
+import { Metadata, MetaItem } from "@/interfaces";
+import { Filter } from "@/filter";
 
 const cardContent = {
   backgroundColor: theme.palette.primary.light,

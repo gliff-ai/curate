@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 
 import { theme, MuiCard, List, ListItem, ListItemText } from "@gliff-ai/style";
-import { Filter } from "@/interfaces";
+import { Filter } from "@/filter";
 
 const list = {
   display: "flex",

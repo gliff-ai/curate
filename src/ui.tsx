@@ -39,13 +39,15 @@ import { SortPopover } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import { UserAccess } from "./interfaces";
-import type { Metadata, MetaItem, Filter, Profile } from "./interfaces";
+import type { Metadata, MetaItem, Profile } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
-import { sortMetadata, filterMetadata, makeThumbnail } from "@/helpers";
+import { makeThumbnail } from "@/helpers";
 import { PluginObject, PluginsAccordion } from "./components/plugins";
 import { DatasetView as DatasetViewToggle } from "./components/DatasetView";
 import { TableView } from "./TableView";
 import { TileView } from "@/TileView";
+import { Filters, Filter } from "@/filter";
+import { Data } from "./filter/interfaces";
 
 const bottomLeftButtons = {
   display: "flex",
@@ -104,7 +106,6 @@ interface Props {
 interface State {
   metadata: Metadata;
   metadataKeys: string[];
-  activeFilters: Filter[];
   defaultLabels: string[];
   expanded: string | boolean;
   thumbnailSize: number;
@@ -129,6 +130,8 @@ type SelectedImagesAction =
     };
 
 class UserInterface extends Component<Props, State> {
+  private filters: Filters;
+
   public static defaultProps: Omit<Props, "showAppBar" | "classes"> = {
     metadata: null,
     saveImageCallback: null,
@@ -164,7 +167,6 @@ class UserInterface extends Component<Props, State> {
         : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
-      activeFilters: [],
       thumbnailSize: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
       sortedBy: null,
@@ -175,6 +177,7 @@ class UserInterface extends Component<Props, State> {
       datasetViewType: datasetType[0].name,
       selectedImagesUid: new Set<string>(),
     };
+    this.filters = new Filters();
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
     this.addUploadedImages = this.addUploadedImages.bind(this);
@@ -214,22 +217,6 @@ class UserInterface extends Component<Props, State> {
       this.setState({ expanded: isExpanded ? panel : false });
     };
 
-  hasSearchFilter = (activeFilters: Filter[], filter: Filter): boolean =>
-    // Check whether active filters includes filter.
-    activeFilters.some(
-      (filt) => filt.key === filter.key && filt.value === filter.value
-    );
-
-  resetSearchFilters = (): void => {
-    // Select all items and empty active filters array.
-    this.setState((prevState) => {
-      prevState.metadata.forEach((mitem) => {
-        mitem.filterShow = true;
-      });
-      return { activeFilters: [], metadata: prevState.metadata };
-    });
-  };
-
   // This can be swapped out for useReducer when this is a functional
   dispatchSelectedImagesUid = (action: SelectedImagesAction): void => {
     function reducer(
@@ -263,31 +250,10 @@ class UserInterface extends Component<Props, State> {
     }));
   };
 
-  setActiveFilter = (filter: Filter): void => {
-    // Add or remove filter from the list of active filters
-    this.setState(
-      (prevState) => {
-        if (this.hasSearchFilter(prevState.activeFilters, filter)) {
-          prevState.activeFilters.splice(
-            prevState.activeFilters.indexOf(filter),
-            1
-          );
-        } else {
-          prevState.activeFilters.push(filter);
-        }
-        return { activeFilters: prevState.activeFilters };
-      },
-      () => {
-        this.applySearchFiltersToMetadata();
-      }
-    );
-  };
-
   applySearchFiltersToMetadata = (): void => {
-    this.setState(({ metadata, activeFilters }) => {
-      const newMetadata = filterMetadata(metadata, activeFilters);
-      return newMetadata ? { metadata } : undefined;
-    });
+    this.setState((prevState) => ({
+      metadata: this.filters.filterData(prevState.metadata as Data) as Metadata,
+    }));
 
     if (this.state.isGrouped) {
       this.groupByValue(this.state.sortedBy);
@@ -317,27 +283,6 @@ class UserInterface extends Component<Props, State> {
     }
   };
 
-  handleOnSearchSubmit = (filter: Filter): void => {
-    // Filter metadata based on filter's key-value pairs
-
-    // Open search-filters-toolbox, if closed
-    if (this.state.expanded !== "search-filter-toolbox") {
-      this.setState({ expanded: "search-filter-toolbox" });
-    }
-
-    // Add new filter
-    if (
-      filter.value === "All values" ||
-      filter.key === "" ||
-      filter.value === ""
-    ) {
-      this.resetSearchFilters();
-    } else if (!this.hasSearchFilter(this.state.activeFilters, filter)) {
-      // Apply new filter if not present already in the list of active filters
-      this.setActiveFilter(filter);
-    }
-  };
-
   resizeThumbnails = (size: number): void => {
     this.setState({
       thumbnailSize: size,
@@ -350,16 +295,15 @@ class UserInterface extends Component<Props, State> {
     });
   };
 
-  handleOnActiveFiltersChange = (filter: Filter): void => {
-    // If a filter is removed, update list of active filters and metadata selection.
-    this.setActiveFilter(filter);
-  };
-
   handleOnSortSubmit = (key: string, sortOrder: string): void => {
     if (key === "") return;
 
-    this.setState(({ metadata }: State) => {
-      const newMetadata = sortMetadata(metadata, key, sortOrder === "asc");
+    this.setState((prevState) => {
+      const newMetadata = this.filters.sortData(
+        prevState.metadata as Data,
+        key,
+        sortOrder === "asc"
+      ) as Metadata;
       return newMetadata ? { metadata: newMetadata, sortedBy: key } : undefined;
     });
 
@@ -729,11 +673,30 @@ class UserInterface extends Component<Props, State> {
                       <SearchBar
                         metadata={this.state.metadata}
                         metadataKeys={this.state.metadataKeys}
-                        callbackSearch={this.handleOnSearchSubmit}
+                        callbackSearch={(filter: Filter): void => {
+                          // Filter metadata based on filter's key-value pairs
+
+                          // Open search-filters-toolbox, if closed
+                          if (this.state.expanded !== "search-filter-toolbox") {
+                            this.setState({
+                              expanded: "search-filter-toolbox",
+                            });
+                          }
+
+                          // Apply filter
+                          this.setState((prevState) => ({
+                            metadata: this.filters.applyFilter(
+                              prevState.metadata as Data,
+                              filter
+                            ) as Metadata,
+                          }));
+                        }}
                       />
                       <SearchFilterCard
-                        activeFilters={this.state.activeFilters}
-                        callback={this.handleOnActiveFiltersChange}
+                        activeFilters={this.filters.activeFilters}
+                        callback={(filter: Filter): void =>
+                          this.filters.toggleFilter(filter)
+                        }
                       />
                       <LabelsFilterAccordion
                         expanded={
@@ -744,7 +707,13 @@ class UserInterface extends Component<Props, State> {
                         )}
                         allLabels={this.getImageLabels(this.state.metadata)}
                         callbackOnLabelSelection={this.handleOnLabelSelection}
-                        callbackOnAccordionExpanded={this.resetSearchFilters}
+                        callbackOnAccordionExpanded={() =>
+                          this.setState((prevState) => ({
+                            metadata: this.filters.resetFilters(
+                              prevState.metadata as Data
+                            ) as Metadata,
+                          }))
+                        }
                       />
                       {this.state.showPluginsAccordion && (
                         <PluginsAccordion
