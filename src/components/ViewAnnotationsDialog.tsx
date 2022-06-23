@@ -8,17 +8,22 @@ import {
   Box,
   Autocomplete,
   TextField,
+  Typography,
 } from "@gliff-ai/style";
 import { tooltips } from "@/components";
 
 interface Props {
   users: { label: string; email: string }[];
-  annotateCallback: (username: string) => void;
+  annotateCallback: (username1: string, username2: string) => void;
 }
 
 export function ViewAnnotationsDialog(props: Props): React.ReactElement {
   const [username1, setUsername1] = useState<{ label: string; email: string }>({
     label: "",
+    email: "",
+  });
+  const [username2, setUsername2] = useState<{ label: string; email: string }>({
+    label: "Nobody",
     email: "",
   });
   const [close, setClose] = useState<boolean>(false);
@@ -54,7 +59,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="User email"
+              label="User"
               autoFocus
               sx={{
                 fontSize: 14,
@@ -63,6 +68,29 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
             />
           )}
           options={props.users}
+          fullWidth
+        />
+
+        <Typography sx={{ marginBottom: "20px" }}>Compare with:</Typography>
+
+        <Autocomplete
+          onChange={(event, value) => {
+            setUsername2(value as { label: string; email: string });
+          }}
+          key="input-user2"
+          placeholder=""
+          value={username2}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="User"
+              sx={{
+                fontSize: 14,
+                marginBottom: "20px",
+              }}
+            />
+          )}
+          options={[...props.users, { label: "Nobody", email: "" }]}
           fullWidth
         />
 
@@ -88,7 +116,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
             }
             text="Confirm"
             onClick={() => {
-              props.annotateCallback(username1.email);
+              props.annotateCallback(username1.email, username2.email);
             }}
           />
         </Box>

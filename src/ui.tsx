@@ -81,7 +81,11 @@ interface Props {
     newAssignees: string[][]
   ) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
-  annotateCallback?: (imageUid: string, username?: string) => void;
+  annotateCallback?: (
+    imageUid: string,
+    username1?: string,
+    usernam2?: string
+  ) => void;
   downloadDatasetCallback?: () => void;
   // eslint-disable-next-line react/no-unused-prop-types
   setTask?: (task: {
@@ -790,12 +794,16 @@ class UserInterface extends Component<Props, State> {
                                 label: `${profile.name} - ${profile.email}`,
                                 email: profile.email,
                               }))}
-                            annotateCallback={(username: string) =>
+                            annotateCallback={(
+                              username1: string,
+                              username2: string
+                            ) =>
                               this.props.annotateCallback(
                                 [
                                   ...this.state.selectedImagesUid.values(),
                                 ].pop(),
-                                username
+                                username1,
+                                username2
                               )
                             }
                           />
