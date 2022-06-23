@@ -1,7 +1,6 @@
 import { ReactElement } from "react";
-
 import { theme, MuiCard, List, ListItem, ListItemText } from "@gliff-ai/style";
-import { Filter } from "@/filter";
+import { Filters, FilterData } from "@/filter";
 
 const list = {
   display: "flex",
@@ -21,14 +20,11 @@ const listItem = {
 };
 
 interface Props {
-  activeFilters: Filter[];
-  callback: (filter: Filter) => void;
+  filters: Filters;
+  updateData: (func: (data: FilterData) => FilterData) => void;
 }
 
-export function SearchFilterCard({
-  activeFilters,
-  callback,
-}: Props): ReactElement {
+export function SearchFilterCard({ filters, updateData }: Props): ReactElement {
   return (
     <MuiCard
       sx={{
@@ -37,17 +33,14 @@ export function SearchFilterCard({
         backgroundColor: theme.palette.primary.light,
       }}
     >
-      <List
-        component="div"
-        disablePadding
-        sx={{
-          ...list,
-        }}
-      >
-        {activeFilters.map((f) => (
+      <List component="div" disablePadding sx={{ ...list }}>
+        {filters.activeFilters.map((f) => (
           <ListItem
             key={`${f.key}: ${f.value}`}
-            onClick={() => callback(f)}
+            onClick={() => {
+              filters.toggleFilter(f);
+              updateData(filters.filterData);
+            }}
             sx={{ ...listItem }}
             button
             dense

@@ -37,17 +37,16 @@ import {
 
 import { SortPopover } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
-import MetadataDrawer from "./MetadataDrawer";
+import MetadataDrawer, { dataNameMap } from "./MetadataDrawer";
 import { UserAccess } from "./interfaces";
 import type { Metadata, MetaItem, Profile } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
-import { makeThumbnail } from "@/helpers";
+import { getLabelsFromKeys, makeThumbnail } from "@/helpers";
 import { PluginObject, PluginsAccordion } from "./components/plugins";
 import { DatasetView as DatasetViewToggle } from "./components/DatasetView";
 import { TableView } from "./TableView";
 import { TileView } from "@/TileView";
-import { Filters, Filter } from "@/filter";
-import { Data } from "./filter/interfaces";
+import { Filters, FilterData } from "@/filter";
 
 const bottomLeftButtons = {
   display: "flex",
@@ -110,8 +109,6 @@ interface State {
   expanded: string | boolean;
   thumbnailSize: number;
   selectMultipleImagesMode: boolean;
-  sortedBy: string;
-  isGrouped: boolean;
   showPluginsAccordion: boolean;
   restrictLabels: boolean;
   multiLabel: boolean;
@@ -169,8 +166,6 @@ class UserInterface extends Component<Props, State> {
       expanded: "labels-filter-toolbox",
       thumbnailSize: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
-      sortedBy: null,
-      isGrouped: false,
       showPluginsAccordion: false,
       restrictLabels: false,
       multiLabel: true,
@@ -251,13 +246,17 @@ class UserInterface extends Component<Props, State> {
   };
 
   applySearchFiltersToMetadata = (): void => {
-    this.setState((prevState) => ({
-      metadata: this.filters.filterData(prevState.metadata as Data) as Metadata,
-    }));
+    this.setState((prevState) => {
+      // filter the data
+      let newMetadata = this.filters.filterData(
+        prevState.metadata as FilterData
+      );
 
-    if (this.state.isGrouped) {
-      this.groupByValue(this.state.sortedBy);
-    }
+      // group data by value
+      newMetadata = this.filters.groupByValue(newMetadata);
+
+      return { metadata: newMetadata as Metadata };
+    });
   };
 
   handleOnLabelSelection = (selectedLabels: string[] | null): void => {
@@ -275,12 +274,12 @@ class UserInterface extends Component<Props, State> {
         }
       });
 
-      return { metadata: prevState.metadata };
-    });
+      const newMetadata = this.filters.groupByValue(
+        prevState.metadata as FilterData
+      ) as Metadata;
 
-    if (this.state.isGrouped) {
-      this.groupByValue(this.state.sortedBy);
-    }
+      return { metadata: newMetadata };
+    });
   };
 
   resizeThumbnails = (size: number): void => {
@@ -293,63 +292,6 @@ class UserInterface extends Component<Props, State> {
     this.setState({
       datasetViewType: name,
     });
-  };
-
-  handleOnSortSubmit = (key: string, sortOrder: string): void => {
-    if (key === "") return;
-
-    this.setState((prevState) => {
-      const newMetadata = this.filters.sortData(
-        prevState.metadata as Data,
-        key,
-        sortOrder === "asc"
-      ) as Metadata;
-      return newMetadata ? { metadata: newMetadata, sortedBy: key } : undefined;
-    });
-
-    if (this.state.isGrouped) {
-      this.groupByValue(key);
-    }
-
-    // TODO: Close the sort popup?
-  };
-
-  groupByValue = (key: string): void => {
-    // Assign the newGroup field to all items, based on the same key used for sort
-    if (!key) return;
-    const areValuesEqual = key?.toLowerCase().includes("date")
-      ? (value: unknown, previousValue: unknown) =>
-          this.getMonthAndYear(value as string) !==
-          this.getMonthAndYear(previousValue as string)
-      : (value: unknown, previousValue: unknown) => value !== previousValue;
-
-    let prevValue: unknown = null;
-    this.setState(({ metadata }) => {
-      metadata.forEach((mitem) => {
-        if (!mitem.filterShow) return;
-        // Number.MAX_VALUE added to handle missing values
-        const value = (mitem[key] as string) || Number.MAX_VALUE;
-        if (!prevValue || areValuesEqual(value, prevValue)) {
-          mitem.newGroup = true;
-        } else {
-          mitem.newGroup = false;
-        }
-        prevValue = value;
-      });
-      return { metadata };
-    });
-  };
-
-  getMonthAndYear = (date: string): string =>
-    date !== undefined
-      ? new Date(date).toLocaleDateString("en-GB", {
-          month: "short",
-          year: "numeric",
-        })
-      : "";
-
-  toggleIsGrouped = (): void => {
-    this.setState(({ isGrouped }) => ({ isGrouped: !isGrouped }));
   };
 
   getImageLabels = (metadata: Metadata): string[] => {
@@ -484,7 +426,7 @@ class UserInterface extends Component<Props, State> {
     if (this.props.saveImageCallback) {
       // Store uploaded image
       await this.props.saveImageCallback(imageFileInfo, images);
-      this.setState({ sortedBy: null });
+      this.filters.resetSort();
     } else {
       // add the uploaded image directly to state.metadata
       this.setState((state) => {
@@ -495,11 +437,19 @@ class UserInterface extends Component<Props, State> {
         return {
           metadata: state.metadata.concat(newMetadata),
           metadataKeys: metaKeys,
-          sortedBy: null,
         };
       });
+      this.filters.resetSort();
     }
   }
+
+  updateMetadata = (func: (data: FilterData) => FilterData) => {
+    this.setState((prevState) => {
+      const newMetadata = func(prevState.metadata as FilterData) as Metadata;
+
+      return { metadata: newMetadata ? newMetadata : undefined };
+    });
+  };
 
   render = (): ReactNode => {
     const { showAppBar } = this.props;
@@ -587,10 +537,12 @@ class UserInterface extends Component<Props, State> {
           </MuiCard>
           <MuiCard sx={{ ...smallButton }}>
             <SortPopover
-              metadataKeys={this.state.metadataKeys}
-              callbackSort={this.handleOnSortSubmit}
-              isGrouped={this.state.isGrouped}
-              toggleIsGrouped={this.toggleIsGrouped}
+              data={this.state.metadata as FilterData}
+              filters={this.filters}
+              updateData={this.updateMetadata}
+              getLabelsFromKeys={getLabelsFromKeys(dataNameMap)([
+                "imageLabels",
+              ])}
             />
           </MuiCard>
         </Box>
@@ -671,32 +623,24 @@ class UserInterface extends Component<Props, State> {
                   ) : (
                     <>
                       <SearchBar
-                        metadata={this.state.metadata}
-                        metadataKeys={this.state.metadataKeys}
-                        callbackSearch={(filter: Filter): void => {
-                          // Filter metadata based on filter's key-value pairs
-
-                          // Open search-filters-toolbox, if closed
+                        data={this.state.metadata as FilterData}
+                        filters={this.filters}
+                        updateData={(
+                          func: (data: FilterData) => FilterData
+                        ): void => {
                           if (this.state.expanded !== "search-filter-toolbox") {
                             this.setState({
                               expanded: "search-filter-toolbox",
                             });
                           }
 
-                          // Apply filter
-                          this.setState((prevState) => ({
-                            metadata: this.filters.applyFilter(
-                              prevState.metadata as Data,
-                              filter
-                            ) as Metadata,
-                          }));
+                          this.updateMetadata(func);
                         }}
+                        getLabelsFromKeys={getLabelsFromKeys(dataNameMap)()}
                       />
                       <SearchFilterCard
-                        activeFilters={this.filters.activeFilters}
-                        callback={(filter: Filter): void =>
-                          this.filters.toggleFilter(filter)
-                        }
+                        filters={this.filters}
+                        updateData={this.updateMetadata}
                       />
                       <LabelsFilterAccordion
                         expanded={
@@ -710,7 +654,7 @@ class UserInterface extends Component<Props, State> {
                         callbackOnAccordionExpanded={() =>
                           this.setState((prevState) => ({
                             metadata: this.filters.resetFilters(
-                              prevState.metadata as Data
+                              prevState.metadata as FilterData
                             ) as Metadata,
                           }))
                         }
@@ -845,11 +789,11 @@ class UserInterface extends Component<Props, State> {
                         this.dispatchSelectedImagesUid,
                       ]}
                       thumbnailSize={this.state.thumbnailSize}
-                      isGrouped={this.state.isGrouped}
+                      isGrouped={this.filters.isGrouped}
                       selectMultipleImagesMode={
                         this.state.selectMultipleImagesMode
                       }
-                      sortedBy={this.state.sortedBy}
+                      sortedBy={this.filters.sortedBy}
                       onDoubleClick={(id) => {
                         this.props.annotateCallback?.(id);
                       }}

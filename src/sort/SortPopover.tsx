@@ -13,28 +13,30 @@ import {
   Popover,
   icons,
 } from "@gliff-ai/style";
-import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
+import { Filters, FilterData } from "@/filter";
+
+type DataKeyLabel = { key: string; label: string };
 
 interface Props {
-  metadataKeys: string[];
-  callbackSort: (key: string, sortOrder: string) => void;
-  isGrouped: boolean;
-  toggleIsGrouped: () => void;
+  data: FilterData;
+  filters: Filters;
+  updateData: (func: (data: FilterData) => FilterData) => void;
+  getLabelsFromKeys: (acc: DataKeyLabel[], key: string) => DataKeyLabel[];
 }
 
 export const SortPopover = ({
-  metadataKeys,
-  callbackSort,
-  isGrouped,
-  toggleIsGrouped,
+  data,
+  filters,
+  updateData,
+  getLabelsFromKeys,
 }: Props): ReactElement => {
-  const [inputKey, setInputKey] = useState<MetadataLabel>({
+  const [inputKey, setInputKey] = useState<DataKeyLabel>({
     key: "",
     label: "",
   });
-
+  const [dataKeyLabels, setDataKeyLabels] = useState<DataKeyLabel[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
+  const [isGrouped, setIsGrouped] = useState<boolean>(filters.isGrouped); // added to trigger re-rendering
 
   const handleChange =
     <T extends string>(func: (value: T) => void) =>
@@ -45,25 +47,26 @@ export const SortPopover = ({
     };
 
   const updateKey = (selectedLabel: string): void => {
-    const metaLabel = metadataLabels.filter(
+    const metaLabel = dataKeyLabels.filter(
       ({ label }) => label === selectedLabel
     );
     setInputKey(metaLabel?.[0]);
   };
 
   useEffect(() => {
-    if (!metadataKeys || metadataKeys.length === 0) return;
-    const labels = metadataKeys
-      .reduce(getLabelsFromKeys, [] as MetadataLabel[])
-      .filter(({ key }) => key !== "imageLabels");
+    if (data.length > 0) {
+      const newKeys = filters.getDataKeys(data[0]);
 
-    setMetadataLabels(labels);
-  }, [metadataKeys]);
+      if (newKeys && newKeys.length > 0) {
+        const labels = newKeys.reduce(getLabelsFromKeys, [] as DataKeyLabel[]);
+        setDataKeyLabels(labels);
+      }
+    }
+  }, [data, filters, getLabelsFromKeys]);
 
   return (
     <Popover
       title="Sort"
-      // id="sort"
       TriggerButton={
         <IconButton
           tooltip={{
@@ -92,8 +95,8 @@ export const SortPopover = ({
             helperText={!inputKey.label ? "Please select a metadata field" : ""}
             variant="standard"
           >
-            {metadataLabels &&
-              metadataLabels.map(({ key, label }) => (
+            {dataKeyLabels &&
+              dataKeyLabels.map(({ key, label }) => (
                 <MenuItem key={key} value={label}>
                   {label}
                 </MenuItem>
@@ -106,7 +109,7 @@ export const SortPopover = ({
           square
           style={{ padding: "10px", marginLeft: "15px" }}
         >
-          {inputKey.label ? (
+          {inputKey.label && (
             <>
               {/* Form for selecting a sort order */}
               <FormControl component="fieldset">
@@ -132,23 +135,35 @@ export const SortPopover = ({
                 control={
                   <Checkbox
                     checked={isGrouped}
-                    onChange={toggleIsGrouped}
+                    onChange={() => {
+                      filters.toggleIsGrouped();
+                      setIsGrouped((value) => !value);
+                    }}
                     name="group-by"
                   />
                 }
                 label="Group by value"
               />
             </>
-          ) : (
-            <></>
           )}
         </Paper>
         <BaseTextButton
           text="Sort"
           onClick={() => {
             const { key } = inputKey;
-            if (key === "") return;
-            callbackSort(key, sortOrder);
+            if (!key) return;
+
+            updateData((metadata: FilterData): FilterData => {
+              let newMetadata = filters.sortData(
+                metadata,
+                key,
+                sortOrder === "asc"
+              );
+
+              newMetadata = filters.groupByValue(newMetadata || metadata);
+
+              return newMetadata;
+            });
           }}
           style={{ display: "block", margin: "auto" }}
         />

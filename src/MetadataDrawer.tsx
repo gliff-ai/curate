@@ -13,9 +13,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { theme, HtmlTooltip, icons, Typography } from "@gliff-ai/style";
 import SVG from "react-inlinesvg";
 import { MetaItem } from "@/interfaces";
-import { getLabelsFromKeys, MetadataLabel } from "@/search/SearchBar";
-
-type MetadataNameMap = { [index: string]: string };
+import { getLabelsFromKeys } from "@/helpers";
 
 const useStyles = makeStyles({
   paperHeader: {
@@ -85,7 +83,7 @@ const useStyles = makeStyles({
   svgSmall: { width: "12px", height: "100%" },
 });
 
-export const metadataNameMap: MetadataNameMap = {
+export const dataNameMap: { [index: string]: string } = {
   imageName: "Name",
   size: "Size",
   dateCreated: "Created",
@@ -103,6 +101,8 @@ export const metadataNameMap: MetadataNameMap = {
   assignees: "Assignees",
 };
 
+type DataKeyLabel = { key: string; label: string };
+
 interface Props {
   metadata: MetaItem;
   close: () => void;
@@ -111,13 +111,13 @@ interface Props {
 export default function MetadataDrawer(props: Props): ReactElement {
   const classes = useStyles();
   const [hover, sethover] = useState(false);
-  const [metaKeys, setMetaKeys] = useState<MetadataLabel[]>([]);
+  const [metaKeys, setMetaKeys] = useState<DataKeyLabel[]>([]);
 
   useEffect(() => {
     setMetaKeys(
       Object.keys(props.metadata).reduce(
-        getLabelsFromKeys,
-        [] as MetadataLabel[]
+        getLabelsFromKeys(dataNameMap)(),
+        [] as DataKeyLabel[]
       )
     );
   }, [props.metadata]);
@@ -178,8 +178,8 @@ export default function MetadataDrawer(props: Props): ReactElement {
                   <ListItemText
                     primaryTypographyProps={{ variant: "h6" }}
                     className={classes.metaKey}
-                    title={`${metadataNameMap[key] || key}`}
-                    primary={`${metadataNameMap[key] || key}:`}
+                    title={`${dataNameMap[key] || key}`}
+                    primary={`${dataNameMap[key] || key}:`}
                     classes={{
                       primary: classes.metaKey,
                       root: classes.metaRoot,

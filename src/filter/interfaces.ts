@@ -3,11 +3,12 @@ type Filter = {
   value: string;
 };
 
-interface Item {
+interface FilterDataItem {
   [key: string]: string | boolean | number | string[];
   filterShow: boolean;
+  newGroup: boolean;
 }
 
-type Data = Item[];
+type FilterData = FilterDataItem[];
 
-export type { Filter, Item, Data };
+export type { Filter, FilterDataItem, FilterData };

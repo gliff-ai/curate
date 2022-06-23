@@ -56,6 +56,35 @@ const makeThumbnail = (image: Array<Array<ImageBitmap>>): string => {
   return canvas.toDataURL();
 };
 
+const getLabelsFromKeys =
+  (keyToLabelMap: { [key: string]: string }) =>
+  (excludedKeys: string[] = []) =>
+  (
+    acc: { key: string; label: string }[],
+    key: string
+  ): { key: string; label: string }[] => {
+    // Just an example of how to exclude data from the list if we need
+    if (
+      [
+        "fileMetaVersion",
+        "id",
+        "thumbnail",
+        "selected",
+        "newGroup",
+        "filterShow",
+        ...excludedKeys,
+      ].includes(key)
+    )
+      return acc;
+
+    const label = keyToLabelMap[key] || key;
+    acc.push({
+      label,
+      key,
+    });
+    return acc;
+  };
+
 const getMonthAndYear = (date: string): string =>
   date !== undefined
     ? new Date(date).toLocaleDateString("en-GB", {
@@ -64,4 +93,10 @@ const getMonthAndYear = (date: string): string =>
       })
     : "";
 
-export { kCombinations, shuffle, makeThumbnail, getMonthAndYear };
+export {
+  kCombinations,
+  shuffle,
+  makeThumbnail,
+  getMonthAndYear,
+  getLabelsFromKeys,
+};
