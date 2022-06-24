@@ -1,7 +1,8 @@
-import { Filter, MetaItem } from "@/interfaces";
-import { sortMetadata, filterMetadata } from "./helpers";
+import { MetaItem } from "@/interfaces";
+import { Filter, FilterData, Filters } from "./filter";
 
 type TestMetaData = Partial<MetaItem>[];
+const filters = new Filters();
 const metadata: Partial<MetaItem>[] = [
   {
     string: "through",
@@ -31,8 +32,12 @@ describe("sort metadata with missing values", () => {
   test.each(testSample)(
     `sort values of type %s`,
     (key: string, output: any[]) => {
-      const metadataAsc = sortMetadata(cloneMetadata(), key);
-      const metadataDes = sortMetadata(cloneMetadata(), key, false);
+      const metadataAsc = filters.sortData(cloneMetadata() as FilterData, key);
+      const metadataDes = filters.sortData(
+        cloneMetadata() as FilterData,
+        key,
+        false
+      );
       const arrayUndefined = Array.from(
         metadata.filter((mitem) => !Object.keys(mitem).includes(key))
       ).fill(undefined);
@@ -48,8 +53,9 @@ describe("sort metadata with missing values", () => {
   );
 });
 
-const testFilter = (filters: Filter[], outcome: TestMetaData): void => {
-  const newMetadata = filterMetadata(cloneMetadata(), filters);
+const testFilter = (activeFilters: Filter[], outcome: TestMetaData): void => {
+  filters.activeFilters = activeFilters;
+  const newMetadata = filters.filterData(cloneMetadata() as FilterData);
   expect(
     newMetadata
       .filter(({ filterShow }) => filterShow)
