@@ -10,8 +10,9 @@ import { Card, Paper, TextField } from "@mui/material";
 import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
-import { IconButton, theme, icons, MuiCard } from "@gliff-ai/style";
+import { IconButton, theme, icons } from "@gliff-ai/style";
 import { Filters, FilterData, FilterDataItem } from "@/filter";
+
 interface DataKeyLabel {
   key: string;
   label: string;
