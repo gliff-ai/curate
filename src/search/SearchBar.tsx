@@ -6,24 +6,12 @@ import {
   ReactElement,
   useCallback,
 } from "react";
-import { Card, CardContent, Paper, TextField } from "@mui/material";
+import { Card, Paper, TextField } from "@mui/material";
 import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
-import { IconButton, theme, icons } from "@gliff-ai/style";
+import { IconButton, theme, icons, MuiCard } from "@gliff-ai/style";
 import { Filters, FilterData, FilterDataItem } from "@/filter";
-
-const cardContent = {
-  backgroundColor: theme.palette.primary.light,
-  display: "flex",
-  flexDirection: "column",
-  padding: "10px",
-  borderRadius: "9px",
-  marginTop: "15px",
-  height: "110px",
-  marginBottom: "15px",
-};
-
 interface DataKeyLabel {
   key: string;
   label: string;
@@ -108,67 +96,74 @@ function SearchBar({
         );
         e.preventDefault();
       }}
-      sx={{ display: "inline" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "9px",
+        backgroundColor: theme.palette.primary.light,
+        height: "110px",
+        padding: "10px",
+        marginTop: "15px",
+        marginBottom: "15px",
+      }}
     >
-      <CardContent sx={{ ...cardContent }}>
-        <Autocomplete
-          id="combobox-metadata-key"
-          sx={{ "& > div > div": { height: "40px" } }}
-          getOptionLabel={(option: DataKeyLabel) => option.label}
-          isOptionEqualToValue={(option, value) => option.label === value.label}
-          onInputChange={(e: ChangeEvent, newInputKey: string) => {
-            // Match the text with the actual key we want
-            const metaLabel = dataKeyLabels.filter(
-              ({ label }) => label === newInputKey
-            );
+      <Autocomplete
+        id="combobox-metadata-key"
+        sx={{ "& > div > div": { height: "40px" } }}
+        getOptionLabel={(option: DataKeyLabel) => option.label}
+        isOptionEqualToValue={(option, value) => option.label === value.label}
+        onInputChange={(e: ChangeEvent, newInputKey: string) => {
+          // Match the text with the actual key we want
+          const metaLabel = dataKeyLabels.filter(
+            ({ label }) => label === newInputKey
+          );
 
-            setInputKey(metaLabel?.[0]);
+          setInputKey(metaLabel?.[0]);
+        }}
+        options={dataKeyLabels}
+        renderInput={(params: AutocompleteRenderInputParams) => (
+          <TextField {...params} label="Search Category" variant="outlined" />
+        )}
+        PaperComponent={CustomPaper}
+      />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          alignItems: "center",
+          marginTop: "7px",
+        }}
+      >
+        <Autocomplete
+          id="combobox-metadata-value"
+          sx={{ width: "100%", "& > div > div": { height: "40px" } }}
+          inputValue={inputValue}
+          freeSolo
+          onInputChange={(e: ChangeEvent, newInputValue: string) => {
+            setInputValue(newInputValue);
           }}
-          options={dataKeyLabels}
+          options={inputOptions}
           renderInput={(params: AutocompleteRenderInputParams) => (
-            <TextField {...params} label="Search Category" variant="outlined" />
+            <TextField {...params} label="..." variant="outlined" />
           )}
           PaperComponent={CustomPaper}
         />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            alignItems: "center",
-            marginTop: "7px",
+        <IconButton
+          sx={{ padding: 0 }}
+          type="submit"
+          icon={icons.search}
+          tooltip={{
+            name: "Search",
           }}
-        >
-          <Autocomplete
-            id="combobox-metadata-value"
-            sx={{ width: "100%", "& > div > div": { height: "40px" } }}
-            inputValue={inputValue}
-            freeSolo
-            onInputChange={(e: ChangeEvent, newInputValue: string) => {
-              setInputValue(newInputValue);
-            }}
-            options={inputOptions}
-            renderInput={(params: AutocompleteRenderInputParams) => (
-              <TextField {...params} label="..." variant="outlined" />
-            )}
-            PaperComponent={CustomPaper}
-          />
-          <IconButton
-            sx={{ padding: 0 }}
-            type="submit"
-            icon={icons.search}
-            tooltip={{
-              name: "Search",
-            }}
-            fill={null}
-            onClick={(e) => {
-              if (!inputKey) {
-                e?.preventDefault();
-              }
-            }}
-            tooltipPlacement="bottom"
-          />
-        </div>
-      </CardContent>
+          fill={null}
+          onClick={(e) => {
+            if (!inputKey) {
+              e?.preventDefault();
+            }
+          }}
+          tooltipPlacement="bottom"
+        />
+      </div>
     </Card>
   );
 }
