@@ -476,13 +476,13 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           sx={{ marginBottom: "10px" }}
         >
-          <MuiCard>
+          <MuiCard variant="outlined">
             <SizeThumbnails
               disabled={this.state.datasetViewType !== "View Dataset as Images"}
               resizeThumbnails={this.resizeThumbnails}
             />
           </MuiCard>
-          <MuiCard>
+          <MuiCard variant="outlined">
             <DatasetViewToggle
               changeDatasetViewType={this.changeDatasetViewType}
             />
@@ -493,7 +493,7 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           sx={{ margin: "15px 0 15px" }}
         >
-          <MuiCard>
+          <MuiCard variant="outlined">
             <ButtonGroup
               orientation="horizontal"
               variant="text"
@@ -535,7 +535,7 @@ class UserInterface extends Component<Props, State> {
               />
             </ButtonGroup>
           </MuiCard>
-          <MuiCard sx={{ ...smallButton }}>
+          <MuiCard variant="outlined" sx={{ ...smallButton }}>
             <SortPopover
               data={this.state.metadata as FilterData}
               filters={this.filters}
@@ -550,7 +550,7 @@ class UserInterface extends Component<Props, State> {
     );
 
     const deleteImageCard = (
-      <MuiCard>
+      <MuiCard variant="outlined">
         <List component="div" style={{ display: "flex" }}>
           <ListItem
             sx={{
@@ -685,7 +685,7 @@ class UserInterface extends Component<Props, State> {
                         justifyContent="left"
                         sx={{ marginTop: "10px" }}
                       >
-                        <MuiCard>
+                        <MuiCard variant="outlined">
                           <ViewAnnotationsDialog
                             users={this.props.profiles
                               .filter((profile) =>
@@ -722,7 +722,7 @@ class UserInterface extends Component<Props, State> {
                     position="fixed"
                     sx={{ bottom: "10px", width: "274px" }}
                   >
-                    <MuiCard sx={{ ...bottomLeftButtons }}>
+                    <MuiCard variant="outlined" sx={{ ...bottomLeftButtons }}>
                       {this.isOwnerOrMember() && (
                         <UploadImage
                           setUploadedImage={this.addUploadedImages}
@@ -748,7 +748,7 @@ class UserInterface extends Component<Props, State> {
                       />
                     </MuiCard>
                     {this.state.datasetViewType !== "View Dataset as Table" ? (
-                      <MuiCard sx={{ ...smallButton }}>
+                      <MuiCard variant="outlined" sx={{ ...smallButton }}>
                         <IconButton
                           tooltip={tooltips.selectMultipleImages}
                           fill={this.state.selectMultipleImagesMode}
