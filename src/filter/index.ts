@@ -37,6 +37,8 @@ export class Filters {
   getDataKeys = (item: FilterDataItem): string[] =>
     Object.keys(item).filter((k) => k !== "selected");
 
+  hasAnyFilters = (): boolean => this.activeFilters.length > 0;
+
   private hasFilter = (filter: Filter): boolean =>
     this.activeFilters.some(
       (filt) => filt.key === filter.key && filt.value === filter.value

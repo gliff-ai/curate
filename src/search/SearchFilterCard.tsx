@@ -14,7 +14,7 @@ export function SearchFilterCard({ filters, updateData }: Props): ReactElement {
         width: "100%",
         height: "auto",
         backgroundColor: theme.palette.primary.light,
-        padding: "10px",
+        padding: filters.hasAnyFilters() ? "10px" : "0px",
       }}
     >
       <List
