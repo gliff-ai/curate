@@ -10,15 +10,17 @@ import { Card, CardContent, Paper, TextField } from "@mui/material";
 import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
-import { BaseIconButton, theme, icons } from "@gliff-ai/style";
+import { IconButton, theme, icons } from "@gliff-ai/style";
 import { Filters, FilterData, FilterDataItem } from "@/filter";
 
 const cardContent = {
   backgroundColor: theme.palette.primary.light,
+  display: "flex",
+  flexDirection: "column",
+  padding: "10px",
   borderRadius: "9px",
   marginTop: "15px",
   height: "110px",
-  padding: "inherit",
   marginBottom: "15px",
 };
 
@@ -111,7 +113,7 @@ function SearchBar({
       <CardContent sx={{ ...cardContent }}>
         <Autocomplete
           id="combobox-metadata-key"
-          sx={{ paddingLeft: "10px", width: "90%" }}
+          sx={{ "& > div > div": { height: "40px" } }}
           getOptionLabel={(option: DataKeyLabel) => option.label}
           isOptionEqualToValue={(option, value) => option.label === value.label}
           onInputChange={(e: ChangeEvent, newInputKey: string) => {
@@ -124,39 +126,48 @@ function SearchBar({
           }}
           options={dataKeyLabels}
           renderInput={(params: AutocompleteRenderInputParams) => (
-            <TextField {...params} label="Search Category" variant="standard" />
+            <TextField {...params} label="Search Category" variant="outlined" />
           )}
           PaperComponent={CustomPaper}
         />
-        <Autocomplete
-          id="combobox-metadata-value"
-          sx={{ paddingLeft: "10px", width: "80%", display: "inline-block" }}
-          inputValue={inputValue}
-          freeSolo
-          onInputChange={(e: ChangeEvent, newInputValue: string) => {
-            setInputValue(newInputValue);
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            marginTop: "7px",
           }}
-          options={inputOptions}
-          renderInput={(params: AutocompleteRenderInputParams) => (
-            <TextField {...params} label="..." variant="standard" />
-          )}
-          PaperComponent={CustomPaper}
-        />
-
-        <BaseIconButton
-          type="submit"
-          tooltip={{
-            name: "Search",
-            icon: icons.search,
-          }}
-          fill={null}
-          onClick={(e) => {
-            if (!inputKey) {
-              e?.preventDefault();
-            }
-          }}
-          tooltipPlacement="bottom"
-        />
+        >
+          <Autocomplete
+            id="combobox-metadata-value"
+            sx={{ width: "100%", "& > div > div": { height: "40px" } }}
+            inputValue={inputValue}
+            freeSolo
+            onInputChange={(e: ChangeEvent, newInputValue: string) => {
+              setInputValue(newInputValue);
+            }}
+            options={inputOptions}
+            renderInput={(params: AutocompleteRenderInputParams) => (
+              <TextField {...params} label="..." variant="outlined" />
+            )}
+            PaperComponent={CustomPaper}
+          />
+          <IconButton
+            sx={{ padding: 0 }}
+            type="submit"
+            icon={icons.search}
+            tooltip={{
+              name: "Search",
+            }}
+            fill={null}
+            onClick={(e) => {
+              if (!inputKey) {
+                e?.preventDefault();
+              }
+            }}
+            tooltipPlacement="bottom"
+          />
+        </div>
       </CardContent>
     </Card>
   );
