@@ -1,7 +1,5 @@
 import { Component, ChangeEvent, ReactNode } from "react";
-
 import StylesProvider from "@mui/styles/StylesProvider";
-
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import {
   CssBaseline,
@@ -100,11 +98,11 @@ interface Props {
   saveMetadataCallback?: ((data: unknown) => void) | null;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
+  ZooDialog?: ReactNode;
 }
 
 interface State {
   metadata: Metadata;
-  metadataKeys: string[];
   defaultLabels: string[];
   expanded: string | boolean;
   thumbnailSize: number;
@@ -149,6 +147,7 @@ class UserInterface extends Component<Props, State> {
     restrictLabels: false,
     multiLabel: true,
     saveMetadataCallback: null,
+    ZooDialog: null,
   };
 
   constructor(props: Props) {
@@ -159,9 +158,6 @@ class UserInterface extends Component<Props, State> {
         ...mitem,
         filterShow: true,
       })),
-      metadataKeys: this.props.metadata?.length
-        ? this.getMetadataKeys(this.props.metadata[0])
-        : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
       thumbnailSize: thumbnailSizes[2].size,
@@ -182,13 +178,10 @@ class UserInterface extends Component<Props, State> {
   componentDidMount(): void {}
 
   /* eslint-disable react/no-did-update-set-state */
-  componentDidUpdate = (prevProps: Props): void => {
-    if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
-      if (this.props.metadata.length > 0) {
-        this.setState({
-          metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
-        });
-      }
+  componentDidUpdate = ({ ZooDialog, ...prevProps }: Props): void => {
+    const { ZooDialog: currZooDialog, ...currProps } = this.props;
+
+    if (JSON.stringify(prevProps) !== JSON.stringify(currProps)) {
       this.setState((oldState) => ({
         metadata: this.props.metadata.map((mitem) => ({
           ...mitem,
@@ -429,16 +422,9 @@ class UserInterface extends Component<Props, State> {
       this.filters.resetSort();
     } else {
       // add the uploaded image directly to state.metadata
-      this.setState((state) => {
-        const metaKeys =
-          state.metadataKeys.length === 0
-            ? this.getMetadataKeys(newMetadata[0])
-            : state.metadataKeys;
-        return {
-          metadata: state.metadata.concat(newMetadata),
-          metadataKeys: metaKeys,
-        };
-      });
+      this.setState((state) => ({
+        metadata: state.metadata.concat(newMetadata),
+      }));
       this.filters.resetSort();
     }
   }
@@ -747,7 +733,15 @@ class UserInterface extends Component<Props, State> {
                         onClick={this.props.downloadDatasetCallback}
                       />
                     </MuiCard>
-                    {this.state.datasetViewType !== "View Dataset as Table" ? (
+                    {this.props.ZooDialog && (
+                      <MuiCard
+                        variant="outlined"
+                        sx={{ marginRight: "-50px", ...bottomLeftButtons }}
+                      >
+                        {this.props.ZooDialog}
+                      </MuiCard>
+                    )}
+                    {this.state.datasetViewType !== "View Dataset as Table" && (
                       <MuiCard variant="outlined" sx={{ ...smallButton }}>
                         <IconButton
                           tooltip={tooltips.selectMultipleImages}
@@ -764,8 +758,6 @@ class UserInterface extends Component<Props, State> {
                           size="small"
                         />
                       </MuiCard>
-                    ) : (
-                      ""
                     )}
                   </Box>
                 </Grid>
