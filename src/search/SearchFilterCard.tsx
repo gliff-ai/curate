@@ -2,23 +2,6 @@ import { ReactElement } from "react";
 import { theme, MuiCard, List, ListItem, ListItemText } from "@gliff-ai/style";
 import { Filters, FilterData } from "@/filter";
 
-const list = {
-  display: "flex",
-  flexDirection: "row",
-  flexWrap: "wrap",
-  color: "brown",
-};
-const listItem = {
-  padding: `${theme.spacing(0)}, ${theme.spacing(0)}`,
-  marginLeft: theme.spacing(1),
-  marginBottom: theme.spacing(1),
-  marginTop: theme.spacing(1),
-  width: "auto",
-  border: "1px solid",
-  borderColor: theme.palette.text.secondary,
-  borderRadius: "10px",
-};
-
 interface Props {
   filters: Filters;
   updateData: (func: (data: FilterData) => FilterData) => void;
@@ -31,9 +14,19 @@ export function SearchFilterCard({ filters, updateData }: Props): ReactElement {
         width: "100%",
         height: "auto",
         backgroundColor: theme.palette.primary.light,
+        padding: "10px",
       }}
     >
-      <List component="div" disablePadding sx={{ ...list }}>
+      <List
+        component="div"
+        disablePadding
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          margin: 0,
+        }}
+      >
         {filters.activeFilters.map((f) => (
           <ListItem
             key={`${f.key}: ${f.value}`}
@@ -41,7 +34,15 @@ export function SearchFilterCard({ filters, updateData }: Props): ReactElement {
               filters.toggleFilter(f);
               updateData(filters.filterData);
             }}
-            sx={{ ...listItem }}
+            sx={{
+              padding: `${theme.spacing(0)}, ${theme.spacing(0)}`,
+              marginTop: "5px",
+              width: "auto",
+              border: "1px solid",
+              borderColor: theme.palette.text.secondary,
+              borderRadius: "9px",
+              maxWidth: "255px",
+            }}
             button
             dense
           >
@@ -50,6 +51,10 @@ export function SearchFilterCard({ filters, updateData }: Props): ReactElement {
               sx={{
                 paddingLeft: theme.spacing(2),
                 color: theme.palette.text.secondary,
+                overflow: "hidden",
+                display: "-webkit-box",
+                "-webkit-box-orient": "vertical",
+                "-webkit-line-clamp": "2",
               }}
             />
           </ListItem>
