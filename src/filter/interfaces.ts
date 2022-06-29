@@ -4,7 +4,7 @@ type Filter = {
 };
 
 interface FilterDataItem {
-  [key: string]: string | boolean | number | string[];
+  [key: string]: string | boolean | number | string[] | undefined;
   filterShow: boolean;
   newGroup: boolean;
 }
