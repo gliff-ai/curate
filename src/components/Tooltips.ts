@@ -77,8 +77,12 @@ const tooltips: Tooltips = {
     name: "Set default labels",
     icon: icons.annotationLabels,
   },
-  viewAnnotations: {
-    name: "View Annotations",
+  viewAnnotation: {
+    name: "View Annotation",
+    icon: icons.imageViewer,
+  },
+  compareAnnotations: {
+    name: "Compare Annotations",
     icon: icons.imageViewer,
   },
 };

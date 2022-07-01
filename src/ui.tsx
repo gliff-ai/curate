@@ -697,6 +697,24 @@ class UserInterface extends Component<Props, State> {
     );
     this.isOwnerOrMember();
 
+    const selectedImageAssignees =
+      this.state.selectedImagesUid.size === 1
+        ? this.props.profiles
+            .filter((profile) =>
+              this.state.metadata
+                .find(
+                  (mitem) =>
+                    mitem.id ===
+                    [...this.state.selectedImagesUid.values()].pop()
+                )
+                .assignees.includes(profile.email)
+            )
+            .map((profile) => ({
+              label: `${profile.name} - ${profile.email}`,
+              email: profile.email,
+            }))
+        : [];
+
     return (
       <StylesProvider generateClassName={generateClassName("curate")}>
         <StyledEngineProvider injectFirst>
@@ -773,27 +791,12 @@ class UserInterface extends Component<Props, State> {
                     this.isOwnerOrMember() && (
                       <Box
                         display="flex"
-                        justifyContent="left"
+                        justifyContent="flex-end"
                         sx={{ marginTop: "10px" }}
                       >
                         <MuiCard>
                           <ViewAnnotationsDialog
-                            users={this.props.profiles
-                              .filter((profile) =>
-                                this.state.metadata
-                                  .find(
-                                    (mitem) =>
-                                      mitem.id ===
-                                      [
-                                        ...this.state.selectedImagesUid.values(),
-                                      ].pop()
-                                  )
-                                  .assignees.includes(profile.email)
-                              )
-                              .map((profile) => ({
-                                label: `${profile.name} - ${profile.email}`,
-                                email: profile.email,
-                              }))}
+                            users={selectedImageAssignees}
                             annotateCallback={(
                               username1: string,
                               username2: string
@@ -806,6 +809,25 @@ class UserInterface extends Component<Props, State> {
                                 username2
                               )
                             }
+                            compare={false}
+                          />
+                        </MuiCard>
+                        <MuiCard sx={{ marginLeft: "10px" }}>
+                          <ViewAnnotationsDialog
+                            users={selectedImageAssignees}
+                            annotateCallback={(
+                              username1: string,
+                              username2: string
+                            ) =>
+                              this.props.annotateCallback(
+                                [
+                                  ...this.state.selectedImagesUid.values(),
+                                ].pop(),
+                                username1,
+                                username2
+                              )
+                            }
+                            compare
                           />
                         </MuiCard>
                       </Box>
