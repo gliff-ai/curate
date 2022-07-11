@@ -49,6 +49,15 @@ export class Filters {
     return this.selectAll(data);
   };
 
+  public static convertToFilterData = (
+    data: { [key: string]: unknown }[]
+  ): FilterData =>
+    data.map((d) => ({
+      ...d,
+      filterShow: true,
+      newGroup: false,
+    })) as FilterData;
+
   selectAll = (data: FilterData): FilterData =>
     data.map((i) => ({ ...i, filterShow: true }));
 
@@ -134,8 +143,9 @@ export class Filters {
   };
 
   filterData = (data: FilterData): FilterData => {
+    const dataCopy = [...data];
     if (this.activeFilters.length > 0) {
-      data.forEach((item) => {
+      dataCopy.forEach((item) => {
         this.activeFilters.forEach((filter, fi) => {
           const value = item[filter.key];
 
@@ -153,10 +163,10 @@ export class Filters {
           item.filterShow = Boolean(prevSel * currentSel);
         });
       });
-      return data;
+      return dataCopy;
     }
     // select all items
-    return this.selectAll(data);
+    return this.selectAll(dataCopy);
   };
 
   private getMonthAndYear = (date: string): string =>
