@@ -22,6 +22,7 @@ interface Props {
   filters: Filters;
   updateData: (func: (data: FilterData) => FilterData) => void;
   getLabelsFromKeys: (acc: DataKeyLabel[], key: string) => DataKeyLabel[];
+  showGroupBy?: boolean;
 }
 
 export const SortPopover = ({
@@ -29,6 +30,7 @@ export const SortPopover = ({
   filters,
   updateData,
   getLabelsFromKeys,
+  showGroupBy,
 }: Props): ReactElement => {
   const [inputKey, setInputKey] = useState<DataKeyLabel>({
     key: "",
@@ -131,19 +133,21 @@ export const SortPopover = ({
                   />
                 </RadioGroup>
               </FormControl>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isGrouped}
-                    onChange={() => {
-                      filters.toggleIsGrouped();
-                      setIsGrouped((value) => !value);
-                    }}
-                    name="group-by"
-                  />
-                }
-                label="Group by value"
-              />
+              {showGroupBy && (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isGrouped}
+                      onChange={() => {
+                        filters.toggleIsGrouped();
+                        setIsGrouped((value) => !value);
+                      }}
+                      name="group-by"
+                    />
+                  }
+                  label="Group by value"
+                />
+              )}
             </>
           )}
         </Paper>
@@ -160,7 +164,9 @@ export const SortPopover = ({
                 sortOrder === "asc"
               );
 
-              newMetadata = filters.groupByValue(newMetadata || metadata);
+              if (showGroupBy) {
+                newMetadata = filters.groupByValue(newMetadata || metadata);
+              }
 
               return newMetadata;
             });
@@ -170,4 +176,8 @@ export const SortPopover = ({
       </>
     </Popover>
   );
+};
+
+SortPopover.defaultProps = {
+  showGroupBy: true,
 };
