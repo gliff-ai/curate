@@ -49,15 +49,6 @@ export class Filters {
     return this.selectAll(data);
   };
 
-  public static convertToFilterData = (
-    data: { [key: string]: unknown }[]
-  ): FilterData =>
-    data.map((d) => ({
-      ...d,
-      filterShow: true,
-      newGroup: false,
-    })) as FilterData;
-
   selectAll = (data: FilterData): FilterData =>
     data.map((i) => ({ ...i, filterShow: true }));
 
