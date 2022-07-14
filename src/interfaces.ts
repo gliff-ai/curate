@@ -13,13 +13,7 @@ type Profile = {
 type Metadata = MetaItem[];
 
 type MetaItem = {
-  [index: string]:
-    | string
-    | string[]
-    | boolean
-    | number
-    | { [username: string]: string }
-    | undefined;
+  [index: string]: string | string[] | boolean | number | undefined;
 } & {
   id?: string;
   imageName?: string;
@@ -29,7 +23,7 @@ type MetaItem = {
   numberOfDimensions?: "2" | "3"; // Not sure why these are strings?
   dimensions?: string;
   size?: string;
-  annotationUID?: { [username: string]: string };
+  usersWithAnnotations?: string[];
 };
 
 type Filter = {
