@@ -49,14 +49,6 @@ const tooltips: Tooltips = {
     name: "Download Dataset",
     icon: icons.download,
   },
-  sort: {
-    name: "Sort",
-    icon: icons.searchFilter,
-  },
-  search: {
-    name: "Search",
-    icon: icons.search,
-  },
   addLabels: {
     name: "Update Image Labels",
     icon: icons.annotationLabel,

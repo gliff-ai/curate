@@ -1,7 +1,5 @@
 import { Component, ChangeEvent, ReactNode } from "react";
-
 import StylesProvider from "@mui/styles/StylesProvider";
-
 import { UploadImage, ImageFileInfo } from "@gliff-ai/upload";
 import {
   CssBaseline,
@@ -37,15 +35,16 @@ import {
 
 import { SortPopover } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
-import MetadataDrawer from "./MetadataDrawer";
+import MetadataDrawer, { dataNameMap } from "./MetadataDrawer";
 import { UserAccess } from "./interfaces";
-import type { Metadata, MetaItem, Filter, Profile } from "./interfaces";
+import type { Metadata, MetaItem, Profile } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
-import { sortMetadata, filterMetadata, makeThumbnail } from "@/helpers";
+import { getLabelsFromKeys, makeThumbnail } from "@/helpers";
 import { PluginObject, PluginsAccordion } from "./components/plugins";
 import { DatasetView as DatasetViewToggle } from "./components/DatasetView";
 import { TableView } from "./TableView";
 import { TileView } from "@/TileView";
+import { Filters, FilterData } from "@/filter";
 
 const bottomLeftButtons = {
   display: "flex",
@@ -103,18 +102,15 @@ interface Props {
   saveMetadataCallback?: ((data: unknown) => void) | null;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
+  ZooDialog?: ReactNode;
 }
 
 interface State {
   metadata: Metadata;
-  metadataKeys: string[];
-  activeFilters: Filter[];
   defaultLabels: string[];
   expanded: string | boolean;
   thumbnailSize: number;
   selectMultipleImagesMode: boolean;
-  sortedBy: string;
-  isGrouped: boolean;
   showPluginsAccordion: boolean;
   restrictLabels: boolean;
   multiLabel: boolean;
@@ -133,6 +129,8 @@ type SelectedImagesAction =
     };
 
 class UserInterface extends Component<Props, State> {
+  private filters: Filters;
+
   public static defaultProps: Omit<Props, "showAppBar" | "classes"> = {
     metadata: null,
     saveImageCallback: null,
@@ -153,6 +151,7 @@ class UserInterface extends Component<Props, State> {
     restrictLabels: false,
     multiLabel: true,
     saveMetadataCallback: null,
+    ZooDialog: null,
   };
 
   constructor(props: Props) {
@@ -163,22 +162,17 @@ class UserInterface extends Component<Props, State> {
         ...mitem,
         filterShow: true,
       })),
-      metadataKeys: this.props.metadata?.length
-        ? this.getMetadataKeys(this.props.metadata[0])
-        : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
-      activeFilters: [],
       thumbnailSize: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
-      sortedBy: null,
-      isGrouped: false,
       showPluginsAccordion: false,
       restrictLabels: false,
       multiLabel: true,
       datasetViewType: datasetType[0].name,
       selectedImagesUid: new Set<string>(),
     };
+    this.filters = new Filters();
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
     this.addUploadedImages = this.addUploadedImages.bind(this);
@@ -188,13 +182,10 @@ class UserInterface extends Component<Props, State> {
   componentDidMount(): void {}
 
   /* eslint-disable react/no-did-update-set-state */
-  componentDidUpdate = (prevProps: Props): void => {
-    if (JSON.stringify(prevProps) !== JSON.stringify(this.props)) {
-      if (this.props.metadata.length > 0) {
-        this.setState({
-          metadataKeys: this.getMetadataKeys(this.props.metadata[0]),
-        });
-      }
+  componentDidUpdate = ({ ZooDialog, ...prevProps }: Props): void => {
+    const { ZooDialog: currZooDialog, ...currProps } = this.props;
+
+    if (JSON.stringify(prevProps) !== JSON.stringify(currProps)) {
       this.setState((oldState) => ({
         metadata: this.props.metadata.map((mitem) => ({
           ...mitem,
@@ -217,22 +208,6 @@ class UserInterface extends Component<Props, State> {
     (event: ChangeEvent, isExpanded: boolean): void => {
       this.setState({ expanded: isExpanded ? panel : false });
     };
-
-  hasSearchFilter = (activeFilters: Filter[], filter: Filter): boolean =>
-    // Check whether active filters includes filter.
-    activeFilters.some(
-      (filt) => filt.key === filter.key && filt.value === filter.value
-    );
-
-  resetSearchFilters = (): void => {
-    // Select all items and empty active filters array.
-    this.setState((prevState) => {
-      prevState.metadata.forEach((mitem) => {
-        mitem.filterShow = true;
-      });
-      return { activeFilters: [], metadata: prevState.metadata };
-    });
-  };
 
   // This can be swapped out for useReducer when this is a functional
   dispatchSelectedImagesUid = (action: SelectedImagesAction): void => {
@@ -267,35 +242,18 @@ class UserInterface extends Component<Props, State> {
     }));
   };
 
-  setActiveFilter = (filter: Filter): void => {
-    // Add or remove filter from the list of active filters
-    this.setState(
-      (prevState) => {
-        if (this.hasSearchFilter(prevState.activeFilters, filter)) {
-          prevState.activeFilters.splice(
-            prevState.activeFilters.indexOf(filter),
-            1
-          );
-        } else {
-          prevState.activeFilters.push(filter);
-        }
-        return { activeFilters: prevState.activeFilters };
-      },
-      () => {
-        this.applySearchFiltersToMetadata();
-      }
-    );
-  };
-
   applySearchFiltersToMetadata = (): void => {
-    this.setState(({ metadata, activeFilters }) => {
-      const newMetadata = filterMetadata(metadata, activeFilters);
-      return newMetadata ? { metadata } : undefined;
-    });
+    this.setState((prevState) => {
+      // filter the data
+      let newMetadata = this.filters.filterData(
+        prevState.metadata as FilterData
+      );
 
-    if (this.state.isGrouped) {
-      this.groupByValue(this.state.sortedBy);
-    }
+      // group data by value
+      newMetadata = this.filters.groupByValue(newMetadata);
+
+      return { metadata: newMetadata as Metadata };
+    });
   };
 
   handleOnLabelSelection = (selectedLabels: string[] | null): void => {
@@ -313,33 +271,12 @@ class UserInterface extends Component<Props, State> {
         }
       });
 
-      return { metadata: prevState.metadata };
+      const newMetadata = this.filters.groupByValue(
+        prevState.metadata as FilterData
+      ) as Metadata;
+
+      return { metadata: newMetadata };
     });
-
-    if (this.state.isGrouped) {
-      this.groupByValue(this.state.sortedBy);
-    }
-  };
-
-  handleOnSearchSubmit = (filter: Filter): void => {
-    // Filter metadata based on filter's key-value pairs
-
-    // Open search-filters-toolbox, if closed
-    if (this.state.expanded !== "search-filter-toolbox") {
-      this.setState({ expanded: "search-filter-toolbox" });
-    }
-
-    // Add new filter
-    if (
-      filter.value === "All values" ||
-      filter.key === "" ||
-      filter.value === ""
-    ) {
-      this.resetSearchFilters();
-    } else if (!this.hasSearchFilter(this.state.activeFilters, filter)) {
-      // Apply new filter if not present already in the list of active filters
-      this.setActiveFilter(filter);
-    }
   };
 
   resizeThumbnails = (size: number): void => {
@@ -352,64 +289,6 @@ class UserInterface extends Component<Props, State> {
     this.setState({
       datasetViewType: name,
     });
-  };
-
-  handleOnActiveFiltersChange = (filter: Filter): void => {
-    // If a filter is removed, update list of active filters and metadata selection.
-    this.setActiveFilter(filter);
-  };
-
-  handleOnSortSubmit = (key: string, sortOrder: string): void => {
-    if (key === "") return;
-
-    this.setState(({ metadata }: State) => {
-      const newMetadata = sortMetadata(metadata, key, sortOrder === "asc");
-      return newMetadata ? { metadata: newMetadata, sortedBy: key } : undefined;
-    });
-
-    if (this.state.isGrouped) {
-      this.groupByValue(key);
-    }
-
-    // TODO: Close the sort popup?
-  };
-
-  groupByValue = (key: string): void => {
-    // Assign the newGroup field to all items, based on the same key used for sort
-    if (!key) return;
-    const areValuesEqual = key?.toLowerCase().includes("date")
-      ? (value: unknown, previousValue: unknown) =>
-          this.getMonthAndYear(value as string) !==
-          this.getMonthAndYear(previousValue as string)
-      : (value: unknown, previousValue: unknown) => value !== previousValue;
-
-    let prevValue: unknown = null;
-    this.setState(({ metadata }) => {
-      metadata.forEach((mitem) => {
-        if (!mitem.filterShow) return;
-        // Number.MAX_VALUE added to handle missing values
-        const value = (mitem[key] as string) || Number.MAX_VALUE;
-        if (!prevValue || areValuesEqual(value, prevValue)) {
-          mitem.newGroup = true;
-        } else {
-          mitem.newGroup = false;
-        }
-        prevValue = value;
-      });
-      return { metadata };
-    });
-  };
-
-  getMonthAndYear = (date: string): string =>
-    date !== undefined
-      ? new Date(date).toLocaleDateString("en-GB", {
-          month: "short",
-          year: "numeric",
-        })
-      : "";
-
-  toggleIsGrouped = (): void => {
-    this.setState(({ isGrouped }) => ({ isGrouped: !isGrouped }));
   };
 
   getImageLabels = (metadata: Metadata): string[] => {
@@ -544,22 +423,23 @@ class UserInterface extends Component<Props, State> {
     if (this.props.saveImageCallback) {
       // Store uploaded image
       await this.props.saveImageCallback(imageFileInfo, images);
-      this.setState({ sortedBy: null });
+      this.filters.resetSort();
     } else {
       // add the uploaded image directly to state.metadata
-      this.setState((state) => {
-        const metaKeys =
-          state.metadataKeys.length === 0
-            ? this.getMetadataKeys(newMetadata[0])
-            : state.metadataKeys;
-        return {
-          metadata: state.metadata.concat(newMetadata),
-          metadataKeys: metaKeys,
-          sortedBy: null,
-        };
-      });
+      this.setState((state) => ({
+        metadata: state.metadata.concat(newMetadata),
+      }));
+      this.filters.resetSort();
     }
   }
+
+  updateMetadata = (func: (data: FilterData) => FilterData) => {
+    this.setState((prevState) => {
+      const newMetadata = func(prevState.metadata as FilterData) as Metadata;
+
+      return { metadata: newMetadata ? newMetadata : undefined };
+    });
+  };
 
   render = (): ReactNode => {
     const { showAppBar } = this.props;
@@ -586,13 +466,13 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           sx={{ marginBottom: "10px" }}
         >
-          <MuiCard>
+          <MuiCard variant="outlined">
             <SizeThumbnails
               disabled={this.state.datasetViewType !== "View Dataset as Images"}
               resizeThumbnails={this.resizeThumbnails}
             />
           </MuiCard>
-          <MuiCard>
+          <MuiCard variant="outlined">
             <DatasetViewToggle
               changeDatasetViewType={this.changeDatasetViewType}
             />
@@ -603,7 +483,7 @@ class UserInterface extends Component<Props, State> {
           justifyContent="space-between"
           sx={{ margin: "15px 0 15px" }}
         >
-          <MuiCard>
+          <MuiCard variant="outlined">
             <ButtonGroup
               orientation="horizontal"
               variant="text"
@@ -645,12 +525,14 @@ class UserInterface extends Component<Props, State> {
               />
             </ButtonGroup>
           </MuiCard>
-          <MuiCard sx={{ ...smallButton }}>
+          <MuiCard variant="outlined" sx={{ ...smallButton }}>
             <SortPopover
-              metadataKeys={this.state.metadataKeys}
-              callbackSort={this.handleOnSortSubmit}
-              isGrouped={this.state.isGrouped}
-              toggleIsGrouped={this.toggleIsGrouped}
+              data={this.state.metadata as FilterData}
+              filters={this.filters}
+              updateData={this.updateMetadata}
+              getLabelsFromKeys={getLabelsFromKeys(dataNameMap)([
+                "imageLabels",
+              ])}
             />
           </MuiCard>
         </Box>
@@ -658,7 +540,7 @@ class UserInterface extends Component<Props, State> {
     );
 
     const deleteImageCard = (
-      <MuiCard>
+      <MuiCard variant="outlined">
         <List component="div" style={{ display: "flex" }}>
           <ListItem
             sx={{
@@ -749,13 +631,24 @@ class UserInterface extends Component<Props, State> {
                   ) : (
                     <>
                       <SearchBar
-                        metadata={this.state.metadata}
-                        metadataKeys={this.state.metadataKeys}
-                        callbackSearch={this.handleOnSearchSubmit}
+                        data={this.state.metadata as FilterData}
+                        filters={this.filters}
+                        updateData={(
+                          func: (data: FilterData) => FilterData
+                        ): void => {
+                          if (this.state.expanded !== "search-filter-toolbox") {
+                            this.setState({
+                              expanded: "search-filter-toolbox",
+                            });
+                          }
+
+                          this.updateMetadata(func);
+                        }}
+                        getLabelsFromKeys={getLabelsFromKeys(dataNameMap)()}
                       />
                       <SearchFilterCard
-                        activeFilters={this.state.activeFilters}
-                        callback={this.handleOnActiveFiltersChange}
+                        filters={this.filters}
+                        updateData={this.updateMetadata}
                       />
                       <LabelsFilterAccordion
                         expanded={
@@ -766,7 +659,13 @@ class UserInterface extends Component<Props, State> {
                         )}
                         allLabels={this.getImageLabels(this.state.metadata)}
                         callbackOnLabelSelection={this.handleOnLabelSelection}
-                        callbackOnAccordionExpanded={this.resetSearchFilters}
+                        callbackOnAccordionExpanded={() =>
+                          this.setState((prevState) => ({
+                            metadata: this.filters.resetFilters(
+                              prevState.metadata as FilterData
+                            ) as Metadata,
+                          }))
+                        }
                       />
                       {this.state.showPluginsAccordion && (
                         <PluginsAccordion
@@ -794,7 +693,7 @@ class UserInterface extends Component<Props, State> {
                         justifyContent="flex-end"
                         sx={{ marginTop: "10px" }}
                       >
-                        <MuiCard>
+                        <MuiCard variant="outlined">
                           <ViewAnnotationsDialog
                             users={selectedImageAssignees}
                             annotateCallback={(
@@ -839,7 +738,7 @@ class UserInterface extends Component<Props, State> {
                     position="fixed"
                     sx={{ bottom: "10px", width: "274px" }}
                   >
-                    <MuiCard sx={{ ...bottomLeftButtons }}>
+                    <MuiCard variant="outlined" sx={{ ...bottomLeftButtons }}>
                       {this.isOwnerOrMember() && (
                         <UploadImage
                           setUploadedImage={this.addUploadedImages}
@@ -864,8 +763,16 @@ class UserInterface extends Component<Props, State> {
                         onClick={this.props.downloadDatasetCallback}
                       />
                     </MuiCard>
-                    {this.state.datasetViewType !== "View Dataset as Table" ? (
-                      <MuiCard sx={{ ...smallButton }}>
+                    {this.props.ZooDialog && (
+                      <MuiCard
+                        variant="outlined"
+                        sx={{ marginRight: "-50px", ...bottomLeftButtons }}
+                      >
+                        {this.props.ZooDialog}
+                      </MuiCard>
+                    )}
+                    {this.state.datasetViewType !== "View Dataset as Table" && (
+                      <MuiCard variant="outlined" sx={{ ...smallButton }}>
                         <IconButton
                           tooltip={tooltips.selectMultipleImages}
                           fill={this.state.selectMultipleImagesMode}
@@ -881,8 +788,6 @@ class UserInterface extends Component<Props, State> {
                           size="small"
                         />
                       </MuiCard>
-                    ) : (
-                      ""
                     )}
                   </Box>
                 </Grid>
@@ -906,11 +811,11 @@ class UserInterface extends Component<Props, State> {
                         this.dispatchSelectedImagesUid,
                       ]}
                       thumbnailSize={this.state.thumbnailSize}
-                      isGrouped={this.state.isGrouped}
+                      isGrouped={this.filters.isGrouped}
                       selectMultipleImagesMode={
                         this.state.selectMultipleImagesMode
                       }
-                      sortedBy={this.state.sortedBy}
+                      sortedBy={this.filters.sortedBy}
                       onDoubleClick={(id) => {
                         this.props.annotateCallback?.(id);
                       }}

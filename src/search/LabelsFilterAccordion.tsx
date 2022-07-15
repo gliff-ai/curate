@@ -33,6 +33,7 @@ const labelList = {
   },
 };
 const accordion = {
+  marginTop: "15px",
   borderRadius: "9px",
   position: "static",
   "& .Mui-expanded": {
