@@ -8,16 +8,22 @@ import {
   Box,
   Autocomplete,
   TextField,
+  Typography,
 } from "@gliff-ai/style";
 import { tooltips } from "@/components";
 
 interface Props {
   users: { label: string; email: string }[];
-  annotateCallback: (username: string) => void;
+  annotateCallback: (username1: string, username2: string) => void;
+  compare: boolean; // if true, render two autocompletes and pass two usernames to annotateCallback
 }
 
 export function ViewAnnotationsDialog(props: Props): React.ReactElement {
   const [username1, setUsername1] = useState<{ label: string; email: string }>({
+    label: "",
+    email: "",
+  });
+  const [username2, setUsername2] = useState<{ label: string; email: string }>({
     label: "",
     email: "",
   });
@@ -35,15 +41,25 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
       title="View Annotations"
       TriggerButton={
         <IconButton
-          icon={icons.showHidePassword}
-          tooltip={tooltips.viewAnnotations}
+          icon={props.compare ? icons.convert : icons.showHidePassword}
+          tooltip={
+            props.compare
+              ? tooltips.compareAnnotations
+              : tooltips.viewAnnotation
+          }
           size="small"
-          id="view-annotations"
+          id={props.compare ? "id-compare-annotations" : "id-view-annotations"}
         />
       }
       close={close}
     >
       <Box sx={{ width: "400px" }}>
+        <Typography sx={{ marginBottom: "20px" }}>
+          {props.compare
+            ? "Select two assignees to compare their annotations for this image."
+            : "Select an assignee to view their annotation for this image."}
+        </Typography>
+
         <Autocomplete
           onChange={(event, value) => {
             setUsername1(value as { label: string; email: string });
@@ -54,7 +70,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="User email"
+              label={props.compare ? "User 1" : "User"}
               autoFocus
               sx={{
                 fontSize: 14,
@@ -65,6 +81,29 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           options={props.users}
           fullWidth
         />
+
+        {props.compare && (
+          <Autocomplete
+            onChange={(event, value) => {
+              setUsername2(value as { label: string; email: string });
+            }}
+            key="input-user2"
+            placeholder=""
+            value={username2}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={props.compare ? "User 2" : "User"}
+                sx={{
+                  fontSize: 14,
+                  marginBottom: "20px",
+                }}
+              />
+            )}
+            options={props.users}
+            fullWidth
+          />
+        )}
 
         <Box
           sx={{
@@ -84,11 +123,17 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           <BaseTextButton
             id="confirm-view-annotations"
             disabled={
-              !props.users.map((user) => user.email).includes(username1?.email)
+              !props.users
+                .map((user) => user.email)
+                .includes(username1?.email) ||
+              (props.compare &&
+                !props.users
+                  .map((user) => user.email)
+                  .includes(username2?.email))
             }
             text="Confirm"
             onClick={() => {
-              props.annotateCallback(username1.email);
+              props.annotateCallback(username1.email, username2.email); // username2.email will be "" when compare===false, which will have the same effect as not passing it
             }}
           />
         </Box>
