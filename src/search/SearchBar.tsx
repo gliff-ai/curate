@@ -52,13 +52,13 @@ const getLabelsFromKeys = (
       "selected",
       "newGroup",
       "filterShow",
+      "usersWithAnnotations",
+      "fileName",
     ].includes(key)
   )
     return acc;
 
-  if (!Object.keys(metadataNameMap).includes(key)) return acc;
-
-  const label = metadataNameMap[key];
+  const label = metadataNameMap[key] || key;
   acc.push({
     label,
     key,
