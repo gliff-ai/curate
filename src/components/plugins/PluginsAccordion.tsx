@@ -132,7 +132,7 @@ export const PluginsAccordion = ({
       } else {
         data = {
           collectionUid,
-          imageUid: selectedImagesUid[0] || undefined,
+          imageUids: selectedImagesUid,
         };
       }
 
