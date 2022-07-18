@@ -38,7 +38,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
 
   return (
     <Dialog
-      title="View Annotations"
+      title={props.compare ? "Compare Annotations" : "View Annotations"}
       TriggerButton={
         <IconButton
           icon={props.compare ? icons.convert : icons.showHidePassword}

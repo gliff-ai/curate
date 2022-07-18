@@ -23,6 +23,7 @@ type MetaItem = {
   numberOfDimensions?: "2" | "3"; // Not sure why these are strings?
   dimensions?: string;
   size?: string;
+  usersWithAnnotations?: string[];
 };
 
 type Filter = {
