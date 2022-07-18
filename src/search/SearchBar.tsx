@@ -56,7 +56,9 @@ const getLabelsFromKeys = (
   )
     return acc;
 
-  const label = metadataNameMap[key] || key;
+  if (!Object.keys(metadataNameMap).includes(key)) return acc;
+
+  const label = metadataNameMap[key];
   acc.push({
     label,
     key,
