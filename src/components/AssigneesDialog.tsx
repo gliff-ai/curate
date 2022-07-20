@@ -5,7 +5,7 @@ import {
   icons,
   MenuItem,
   FormControl,
-  Dialog,
+  Dialogue,
   IconButton,
   Chip,
   Box,
@@ -90,7 +90,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
 
   return (
     <>
-      <Dialog
+      <Dialogue
         title="Assign selected images"
         close={closeDialog}
         TriggerButton={
@@ -112,7 +112,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         >
           {multiInputForm}
         </Box>
-      </Dialog>
+      </Dialogue>
     </>
   );
 }

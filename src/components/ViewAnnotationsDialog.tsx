@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import {
   BaseTextButton,
   icons,
-  Dialog,
+  Dialogue,
   IconButton,
   Box,
   Autocomplete,
@@ -37,7 +37,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
   }, [close]);
 
   return (
-    <Dialog
+    <Dialogue
       title={props.compare ? "Compare Annotations" : "View Annotations"}
       TriggerButton={
         <IconButton
@@ -138,6 +138,6 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           />
         </Box>
       </Box>
-    </Dialog>
+    </Dialogue>
   );
 }

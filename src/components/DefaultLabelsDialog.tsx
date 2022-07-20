@@ -4,7 +4,7 @@ import {
   BaseTextButton,
   theme,
   icons,
-  Dialog,
+  Dialogue,
   IconButton,
   MuiIconbutton,
   Box,
@@ -70,7 +70,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   };
 
   return (
-    <Dialog
+    <Dialogue
       close={closeDialog}
       title="Set default labels"
       TriggerButton={
@@ -210,6 +210,6 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           </Box>
         </CardContent>
       </Box>
-    </Dialog>
+    </Dialogue>
   );
 }

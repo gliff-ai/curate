@@ -10,7 +10,7 @@ import {
   BaseTextButton,
   icons,
   Alert,
-  Dialog,
+  Dialogue,
   Box,
   MenuItem,
   IconButton,
@@ -523,7 +523,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
   );
 
   return (
-    <Dialog
+    <Dialogue
       title="Auto-Assign Images"
       TriggerButton={
         <IconButton
@@ -568,6 +568,6 @@ export function AutoAssignDialog(props: Props): ReactElement {
 
         {dialogContent}
       </Box>
-    </Dialog>
+    </Dialogue>
   );
 }
