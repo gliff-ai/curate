@@ -675,6 +675,7 @@ class UserInterface extends Component<Props, State> {
               border: "none",
               backgroundColor: "transparent",
             }}
+            variant="text"
           >
             {this.isOwnerOrMember() && this.props.profiles && (
               <AssigneesDialog
