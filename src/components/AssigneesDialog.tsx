@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
-  BaseTextButton,
+  Button,
   icons,
   MenuItem,
   FormControl,
@@ -70,7 +70,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <BaseTextButton
+      <Button
         text="Assign"
         onClick={() => {
           props.updateAssignees(

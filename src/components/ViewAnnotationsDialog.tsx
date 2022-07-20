@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useState, useEffect } from "react";
 import {
-  BaseTextButton,
+  Button,
   icons,
   Dialogue,
   IconButton,
@@ -112,7 +112,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
             justifyContent: "space-between",
           }}
         >
-          <BaseTextButton
+          <Button
             id="cancel-view-annotations"
             text="Cancel"
             onClick={() => {
@@ -120,7 +120,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
             }}
             variant="outlined"
           />
-          <BaseTextButton
+          <Button
             id="confirm-view-annotations"
             disabled={
               !props.users
