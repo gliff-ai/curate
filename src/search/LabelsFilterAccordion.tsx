@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useState, ReactElement } from "react";
-import makeStyles from "@mui/styles/makeStyles";
 import SVG from "react-inlinesvg";
 import {
   theme,
@@ -15,72 +14,55 @@ import {
   Avatar,
 } from "@gliff-ai/style";
 
-const useStyles = makeStyles({
-  accordion: {
-    borderRadius: "9px",
+const iconButton = {
+  margin: "0 -12px",
+  "& svg": {
+    width: "55%",
+    height: "100%",
   },
-  title: {
-    paddingLeft: theme.spacing(1),
-  },
-  labelsList: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
-  labelsListItem: {
+};
+
+const labelList = {
+  display: "flex",
+  flexDirection: "row",
+  flexWrap: "wrap",
+  "& div": {
     paddingLeft: "12px",
     width: "auto",
     display: "flex",
   },
-  labelIcon: {
-    width: "20px",
-    height: "auto",
-    color: theme.palette.primary.dark,
+};
+const accordion = {
+  borderRadius: "9px",
+  position: "static",
+  "& .Mui-expanded": {
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: "9px 9px 0 0",
   },
-  labelText: {
-    paddingLeft: theme.spacing(1),
-    marginRight: theme.spacing(4),
-  },
-  buttonsList: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    marginBottom: "-18px",
-  },
-  buttonsListItem: {
+};
+
+const buttonsList = {
+  display: "flex",
+  flexDirection: "row",
+  flexWrap: "nowrap",
+  marginBottom: "-18px",
+  "& li": {
     padding: theme.spacing(1),
     width: "auto",
+    display: "flex",
   },
-  iconButton: {
-    margin: "0 -12px",
+};
+
+const avatar = {
+  backgroundColor: theme.palette.primary.light,
+  width: "30px",
+  height: "30px",
+  "& svg": {
+    width: "15px",
+    height: "100%",
+    transform: "rotate(-90deg)",
   },
-  infoOnHover: {
-    color: theme.palette.text.secondary,
-    fontStyle: "italic",
-    fontSize: "12px",
-  },
-  paper: {
-    borderRadius: (accordionOpened) =>
-      accordionOpened ? "9px 9px 0 0" : "9px",
-    height: "49px",
-    minHeight: "49px !important",
-    backgroundColor: (accordionOpened) =>
-      accordionOpened
-        ? theme.palette.primary.main
-        : theme.palette.primary.light,
-  },
-  accordionDetails: {
-    display: "inline",
-  },
-  accordionTypography: {
-    fontWeight: 500,
-  },
-  avatar: {
-    backgroundColor: (accordionOpened) =>
-      accordionOpened ? theme.palette.primary.light : "transparent",
-    width: "30px",
-    height: "30px",
-  },
-  svgLarge: { width: "55%", height: "100%" },
-  svgSmall: { width: "15px", height: "100%" },
-  rotateIcon: { transform: "rotate(-90deg)" },
-});
+};
 
 interface Props {
   expanded: boolean;
@@ -94,14 +76,11 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
   const [labels, setLabels] = useState<string[] | null>([]);
   const [infoOnHover, setInfoOnHover] = useState("");
 
-  const classes = useStyles(props.expanded);
-
   const toggleLabelSelection = (label: string) => (): void => {
     // Add label to labels if it is not included, otherwise remove it.
     setLabels((prevLabels) => {
-      if (prevLabels === null) prevLabels = [];
       /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-      const newLabels: string[] = [...prevLabels];
+      const newLabels: string[] = [...(prevLabels || [])];
       if (newLabels.includes(label)) {
         newLabels.splice(newLabels.indexOf(label), 1);
       } else {
@@ -140,29 +119,35 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
   return (
     <Accordion
       disableGutters
-      className={classes.accordion}
       expanded={props.expanded}
       onChange={props.handleToolboxChange}
+      sx={{ ...accordion }}
     >
       <AccordionSummary
         expandIcon={
-          <Avatar className={classes.avatar}>
+          <Avatar
+            sx={{
+              ...avatar,
+            }}
+          >
             <SVG
-              className={`${classes.svgSmall} ${classes.rotateIcon}`}
               src={icons.previousNext}
               fill={props.expanded ? theme.palette.primary.main : null}
             />
           </Avatar>
         }
         id="labels-filter-toolbox"
-        className={classes.paper}
       >
-        <Typography className={classes.accordionTypography}>
-          Annotation Labels
-        </Typography>
+        <Typography sx={{ fontWeight: 500 }}>Annotation Labels</Typography>
       </AccordionSummary>
-      <AccordionDetails className={classes.accordionDetails}>
-        <List component="div" disablePadding className={classes.labelsList}>
+      <AccordionDetails sx={{ display: "inline" }}>
+        <List
+          component="div"
+          disablePadding
+          sx={{
+            ...labelList,
+          }}
+        >
           {props.allLabels &&
             props.allLabels.map((label) => (
               <ListItem
@@ -171,55 +156,51 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
                 button
                 onDoubleClick={SelectDeselectAllButOne(label)}
                 onClick={toggleLabelSelection(label)}
-                className={classes.labelsListItem}
               >
                 {labels && labels.includes(label) ? (
                   <>
-                    <SVG
-                      src={icons.selectedChip}
-                      className={classes.labelIcon}
-                    />
+                    <SVG src={icons.selectedChip} width="20px" height="100%" />
                   </>
                 ) : (
-                  <SVG
-                    src={icons.notSelectedChip}
-                    className={classes.labelIcon}
-                  />
+                  <SVG src={icons.notSelectedChip} width="20px" height="100%" />
                 )}
-                <ListItemText primary={label} className={classes.labelText} />
+                <ListItemText
+                  primary={label}
+                  sx={{
+                    paddingLeft: theme.spacing(1),
+                    marginRight: theme.spacing(4),
+                  }}
+                />
               </ListItem>
             ))}
         </List>
-        <List component="span" disablePadding className={classes.buttonsList}>
-          <ListItem className={classes.buttonsListItem}>
+        <List component="span" disablePadding sx={{ ...buttonsList }}>
+          <ListItem>
             <MuiIconbutton
-              className={classes.iconButton}
+              sx={{ ...iconButton }}
               onClick={selectAll}
               onMouseOver={() => setInfoOnHover("Select all labels")}
               onMouseOut={() => setInfoOnHover("")}
               size="large"
             >
               <Avatar variant="circular">
-                <SVG className={classes.svgLarge} src={icons.selectAllLabels} />
+                <SVG src={icons.selectAllLabels} />
               </Avatar>
             </MuiIconbutton>
 
             <MuiIconbutton
-              className={classes.iconButton}
+              sx={{ ...iconButton }}
               onClick={() => setLabels([])}
               onMouseOver={() => setInfoOnHover("Deselect all labels")}
               onMouseOut={() => setInfoOnHover("")}
               size="large"
             >
               <Avatar variant="circular">
-                <SVG
-                  className={classes.svgLarge}
-                  src={icons.deselectAllLabels}
-                />
+                <SVG src={icons.deselectAllLabels} />
               </Avatar>
             </MuiIconbutton>
             <MuiIconbutton
-              className={classes.iconButton}
+              sx={{ ...iconButton }}
               onClick={() => setLabels(null)}
               onMouseOver={() => setInfoOnHover("Select all unlabelled images")}
               onMouseOut={() => setInfoOnHover("")}
@@ -227,14 +208,21 @@ export function LabelsFilterAccordion(props: Props): ReactElement {
             >
               <Avatar variant="circular">
                 <SVG
-                  className={classes.svgLarge}
                   src={icons.displayUnlabelledImages}
                   fill={labels === null ? theme.palette.primary.main : null}
                 />
               </Avatar>
             </MuiIconbutton>
           </ListItem>
-          <ListItem className={classes.infoOnHover}>{infoOnHover}</ListItem>
+          <ListItem
+            sx={{
+              color: theme.palette.text.secondary,
+              fontStyle: "italic",
+              fontSize: "12px",
+            }}
+          >
+            {infoOnHover}
+          </ListItem>
         </List>
       </AccordionDetails>
     </Accordion>

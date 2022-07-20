@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeEvent,
-  ReactNode,
-  KeyboardEvent,
-  MouseEvent,
-  Fragment,
-} from "react";
+import { Component, ChangeEvent, ReactNode } from "react";
 
 import StylesProvider from "@mui/styles/StylesProvider";
 
@@ -22,7 +15,6 @@ import {
   Grid,
   List,
   ListItem,
-  Button,
   Container,
   MuiCard,
   Box,
@@ -31,7 +23,7 @@ import {
   ButtonGroup,
 } from "@gliff-ai/style";
 
-import Tile, {
+import {
   tooltips,
   thumbnailSizes,
   SizeThumbnails,
@@ -39,19 +31,21 @@ import Tile, {
   AssigneesDialog,
   AutoAssignDialog,
   DefaultLabelsDialog,
+  ViewAnnotationsDialog,
   datasetType,
 } from "@/components";
 
-import { SortPopover, GroupBySeparator } from "@/sort";
+import { SortPopover } from "@/sort";
 import { logTaskExecution, pageLoading } from "@/decorators";
 import MetadataDrawer from "./MetadataDrawer";
 import { UserAccess } from "./interfaces";
 import type { Metadata, MetaItem, Filter, Profile } from "./interfaces";
 import { SearchBar, LabelsFilterAccordion, SearchFilterCard } from "@/search";
-import { sortMetadata, filterMetadata } from "@/helpers";
+import { sortMetadata, filterMetadata, makeThumbnail } from "@/helpers";
 import { PluginObject, PluginsAccordion } from "./components/plugins";
 import { DatasetView as DatasetViewToggle } from "./components/DatasetView";
 import { TableView } from "./TableView";
+import { TileView } from "@/TileView";
 
 const bottomLeftButtons = {
   display: "flex",
@@ -87,7 +81,11 @@ interface Props {
     newAssignees: string[][]
   ) => void;
   deleteImagesCallback?: (imageUids: string[]) => void;
-  annotateCallback?: (id: string) => void;
+  annotateCallback?: (
+    imageUid: string,
+    username1?: string,
+    usernam2?: string
+  ) => void;
   downloadDatasetCallback?: () => void;
   // eslint-disable-next-line react/no-unused-prop-types
   setTask?: (task: {
@@ -102,7 +100,7 @@ interface Props {
   profiles?: Profile[] | null;
   userAccess?: UserAccess;
   launchPluginSettingsCallback?: (() => void) | null;
-  saveMetadataCallback?: ((data: any) => void) | null;
+  saveMetadataCallback?: ((data: unknown) => void) | null;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
 }
@@ -113,9 +111,7 @@ interface State {
   activeFilters: Filter[];
   defaultLabels: string[];
   expanded: string | boolean;
-  selectedImagesUid: string[]; // Uids for selected images
-  thumbnailWidth: number;
-  thumbnailHeight: number;
+  thumbnailSize: number;
   selectMultipleImagesMode: boolean;
   sortedBy: string;
   isGrouped: boolean;
@@ -123,7 +119,18 @@ interface State {
   restrictLabels: boolean;
   multiLabel: boolean;
   datasetViewType: string;
+  selectedImagesUid: Set<string>;
 }
+
+type SelectedImagesAction =
+  | {
+      type: "add" | "delete" | "toggle";
+      id: string;
+    }
+  | {
+      type: "set";
+      id: string[];
+    };
 
 class UserInterface extends Component<Props, State> {
   public static defaultProps: Omit<Props, "showAppBar" | "classes"> = {
@@ -152,16 +159,17 @@ class UserInterface extends Component<Props, State> {
     super(props);
 
     this.state = {
-      metadata: this.addFieldSelectedToMetadata(this.props.metadata),
+      metadata: this.props.metadata.map((mitem) => ({
+        ...mitem,
+        filterShow: true,
+      })),
       metadataKeys: this.props.metadata?.length
         ? this.getMetadataKeys(this.props.metadata[0])
         : [],
       defaultLabels: this.props.defaultLabels || [],
       expanded: "labels-filter-toolbox",
-      selectedImagesUid: [],
       activeFilters: [],
-      thumbnailWidth: thumbnailSizes[2].size,
-      thumbnailHeight: thumbnailSizes[2].size,
+      thumbnailSize: thumbnailSizes[2].size,
       selectMultipleImagesMode: false,
       sortedBy: null,
       isGrouped: false,
@@ -169,6 +177,7 @@ class UserInterface extends Component<Props, State> {
       restrictLabels: false,
       multiLabel: true,
       datasetViewType: datasetType[0].name,
+      selectedImagesUid: new Set<string>(),
     };
 
     /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-assignment */
@@ -187,18 +196,21 @@ class UserInterface extends Component<Props, State> {
         });
       }
       this.setState((oldState) => ({
-        metadata: this.addFieldSelectedToMetadata(this.props.metadata),
+        metadata: this.props.metadata.map((mitem) => ({
+          ...mitem,
+          filterShow: true,
+        })),
+        selectedImagesUid: new Set( // deselect images that have been deleted
+          [...this.state.selectedImagesUid.values()].filter((id: string) =>
+            this.props.metadata.map((mitem) => mitem.id).includes(id)
+          )
+        ),
         defaultLabels: this.props.defaultLabels || oldState.defaultLabels,
         restrictLabels: this.props.restrictLabels,
         multiLabel: this.props.multiLabel,
       }));
     }
   };
-
-  // Add field "selected" to metadata; this field is used to define which
-  // metadata items are displayed on the dashboard.
-  addFieldSelectedToMetadata = (metadata: Metadata = []): Metadata =>
-    metadata.map((mitem) => ({ ...mitem, selected: true }));
 
   handleToolboxChange =
     (panel: string) =>
@@ -216,10 +228,43 @@ class UserInterface extends Component<Props, State> {
     // Select all items and empty active filters array.
     this.setState((prevState) => {
       prevState.metadata.forEach((mitem) => {
-        mitem.selected = true;
+        mitem.filterShow = true;
       });
       return { activeFilters: [], metadata: prevState.metadata };
     });
+  };
+
+  // This can be swapped out for useReducer when this is a functional
+  dispatchSelectedImagesUid = (action: SelectedImagesAction): void => {
+    function reducer(
+      oldState: Set<string>,
+      { type, id }: SelectedImagesAction
+    ): Set<string> {
+      const state = new Set([...oldState]);
+      switch (type) {
+        case "add":
+          return state.add(id);
+        case "delete":
+          state.delete(id);
+          return state;
+        case "toggle":
+          if (state.has(id)) {
+            state.delete(id);
+          } else {
+            state.add(id);
+          }
+
+          return state;
+        case "set":
+          return new Set(id);
+        default:
+          throw new Error();
+      }
+    }
+
+    this.setState((oldState) => ({
+      selectedImagesUid: reducer(oldState.selectedImagesUid, action),
+    }));
   };
 
   setActiveFilter = (filter: Filter): void => {
@@ -259,12 +304,12 @@ class UserInterface extends Component<Props, State> {
       prevState.metadata.forEach((mitem) => {
         if (selectedLabels === null) {
           // select all unlabelled images
-          mitem.selected = mitem.imageLabels.length === 0;
+          mitem.filterShow = mitem.imageLabels.length === 0;
         } else {
           const intersection = mitem.imageLabels.filter((l) =>
             selectedLabels.includes(l)
           );
-          mitem.selected = intersection.length === selectedLabels.length;
+          mitem.filterShow = intersection.length === selectedLabels.length;
         }
       });
 
@@ -299,8 +344,7 @@ class UserInterface extends Component<Props, State> {
 
   resizeThumbnails = (size: number): void => {
     this.setState({
-      thumbnailHeight: size,
-      thumbnailWidth: size,
+      thumbnailSize: size,
     });
   };
 
@@ -342,7 +386,7 @@ class UserInterface extends Component<Props, State> {
     let prevValue: unknown = null;
     this.setState(({ metadata }) => {
       metadata.forEach((mitem) => {
-        if (!mitem.selected) return;
+        if (!mitem.filterShow) return;
         // Number.MAX_VALUE added to handle missing values
         const value = (mitem[key] as string) || Number.MAX_VALUE;
         if (!prevValue || areValuesEqual(value, prevValue)) {
@@ -384,76 +428,24 @@ class UserInterface extends Component<Props, State> {
   getImageNames = (data: Metadata): string[] =>
     data.map((mitem: MetaItem) => mitem.imageName);
 
-  makeThumbnail = (image: Array<Array<ImageBitmap>>): string => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 128;
-    const imageWidth = image[0][0].width;
-    const imageHeight = image[0][0].height;
-    const ratio = Math.min(
-      canvas.width / imageWidth,
-      canvas.height / imageHeight
-    );
-    const ctx = canvas.getContext("2d");
-    ctx.globalCompositeOperation = "lighter";
-    image[0].forEach((channel) => {
-      ctx.drawImage(
-        channel,
-        0,
-        0,
-        imageWidth,
-        imageHeight,
-        (canvas.width - imageWidth * ratio) / 2,
-        (canvas.height - imageHeight * ratio) / 2,
-        imageWidth * ratio,
-        imageHeight * ratio
-      );
-    });
-    return canvas.toDataURL();
-  };
-
   deleteSelectedImages = (): void => {
     if (!this.state.selectedImagesUid) return;
 
-    this.props.deleteImagesCallback?.(this.state.selectedImagesUid);
+    this.props.deleteImagesCallback?.([...this.state.selectedImagesUid]);
 
     if (!this.props.deleteImagesCallback) {
       // running standalone, so remove images here and now rather than waiting for store to update:
       this.setState((state) => {
         const metadata: Metadata = state.metadata.filter(
-          (mitem) => !state.selectedImagesUid.includes(mitem.id)
+          (mitem) => !state.selectedImagesUid.has(mitem.id)
         );
 
         return {
-          selectedImagesUid: [],
+          selectedImagesUid: new Set(),
           metadata,
         };
       });
     }
-  };
-
-  getItemUidNextToLastSelected = (forward = true): number | null => {
-    const inc = forward ? 1 : -1;
-    let index: number;
-    for (let i = 0; i < this.state.metadata.length; i += 1) {
-      index = i + inc;
-      if (
-        this.state.metadata[i].id ===
-          this.state.selectedImagesUid.slice(-1).pop() &&
-        index < this.state.metadata.length &&
-        index >= 0
-      ) {
-        return index;
-      }
-    }
-    return null;
-  };
-
-  getIndexFromUid = (uid: string): number | null => {
-    for (let i = 0; i < this.state.metadata.length; i += 1) {
-      if (this.state.metadata[i].id === uid) return i;
-    }
-    return null;
   };
 
   updateLabels =
@@ -510,11 +502,10 @@ class UserInterface extends Component<Props, State> {
 
   getCurrentAssignees = (): string[] => {
     // Get assignees for the images selected
-
     let currentAssignees: string[] = [];
     this.state.metadata.forEach(({ id, assignees }) => {
-      if (this.state.selectedImagesUid.includes(id)) {
-        currentAssignees = currentAssignees.concat(assignees as string[]);
+      if (this.state.selectedImagesUid.has(id)) {
+        currentAssignees = currentAssignees.concat(assignees);
       }
     });
     return Array.from(new Set(currentAssignees));
@@ -533,7 +524,7 @@ class UserInterface extends Component<Props, State> {
 
     const newMetadata: MetaItem[] = [];
     for (let i = 0; i < images.length; i += 1) {
-      const thumbnail = this.makeThumbnail(images[i]);
+      const thumbnail = makeThumbnail(images[i]);
       const today = new Date();
       newMetadata.push({
         imageName: imageFileInfo[i].fileName,
@@ -543,6 +534,8 @@ class UserInterface extends Component<Props, State> {
         numberOfDimensions: images.length === 1 ? "2" : "3",
         numberOfChannels: images[i][0].length.toString(),
         imageLabels: [] as Array<string>,
+        assignees: [],
+        usersWithAnnotations: [],
         thumbnail,
         selected: true,
         newGroup: false,
@@ -625,7 +618,7 @@ class UserInterface extends Component<Props, State> {
                 <AutoAssignDialog
                   profiles={this.props.profiles}
                   metadata={this.state.metadata}
-                  selectedImagesUids={this.state.selectedImagesUid}
+                  selectedImagesUids={[...this.state.selectedImagesUid]}
                   updateAssignees={this.updateAssignees}
                 />
               )}
@@ -674,7 +667,7 @@ class UserInterface extends Component<Props, State> {
               justifyContent: "left",
               width: "1000px",
             }}
-          >{`${this.state.selectedImagesUid.length} images selected`}</ListItem>
+          >{`${this.state.selectedImagesUid.size} images selected`}</ListItem>
           <ButtonGroup
             orientation="horizontal"
             size="small"
@@ -686,7 +679,7 @@ class UserInterface extends Component<Props, State> {
             {this.isOwnerOrMember() && this.props.profiles && (
               <AssigneesDialog
                 profiles={this.props.profiles}
-                selectedImagesUids={this.state.selectedImagesUid}
+                selectedImagesUids={[...this.state.selectedImagesUid]}
                 updateAssignees={this.updateAssignees}
                 getCurrentAssignees={this.getCurrentAssignees}
               />
@@ -696,145 +689,32 @@ class UserInterface extends Component<Props, State> {
               icon={icons.delete}
               fill={null}
               onClick={this.deleteSelectedImages}
-              disabled={this.state.selectedImagesUid.length === 0}
+              disabled={this.state.selectedImagesUid.size === 0}
               tooltipPlacement="bottom"
             />
           </ButtonGroup>
         </List>
       </MuiCard>
     );
+    this.isOwnerOrMember();
 
-    const imagesView = this.state.metadata
-      .filter((mitem) => mitem.selected)
-      .map((mitem: MetaItem, itemIndex) => (
-        <Fragment key={mitem.id}>
-          {this.state.isGrouped && (
-            <GroupBySeparator
-              mitem={mitem}
-              sortedBy={this.state.sortedBy}
-              getMonthAndYear={this.getMonthAndYear}
-            />
-          )}
-          <Grid
-            item
-            style={{
-              backgroundColor:
-                this.state.selectedImagesUid.includes(mitem.id) &&
-                theme.palette.primary.main,
-            }}
-          >
-            <Box
-              sx={{
-                position: "relative" as const,
-                "& > button": {
-                  margin: "5px",
-                },
-              }}
-            >
-              <Button
-                id="images"
-                onClick={(e: MouseEvent) => {
-                  const imageUid = mitem.id;
-
-                  if (
-                    e.metaKey ||
-                    e.ctrlKey ||
-                    this.state.selectMultipleImagesMode
-                  ) {
-                    // Add image to selection if not included, otherwise remove it
-                    this.setState((state) => {
-                      if (state.selectedImagesUid.includes(imageUid)) {
-                        state.selectedImagesUid.splice(
-                          state.selectedImagesUid.indexOf(imageUid),
-                          1
-                        );
-                      } else {
-                        state.selectedImagesUid.push(imageUid);
-                      }
-                      return {
-                        selectedImagesUid: state.selectedImagesUid,
-                      };
-                    });
-                  } else if (
-                    e.shiftKey &&
-                    this.state.selectedImagesUid.length > 0
-                  ) {
-                    // Selected all images between a pair of clicked images.
-                    this.setState((state) => {
-                      const currIdx = this.getIndexFromUid(imageUid);
-                      const prevIdx = this.getIndexFromUid(
-                        state.selectedImagesUid[0]
-                      );
-                      // first element added to the selection remains one end of the range
-                      const selectedImagesUid = [state.selectedImagesUid[0]];
-
-                      const startIdx = prevIdx < currIdx ? prevIdx : currIdx;
-                      const endIdx = prevIdx < currIdx ? currIdx : prevIdx;
-
-                      for (let i = startIdx; i <= endIdx; i += 1) {
-                        if (!selectedImagesUid.includes(state.metadata[i].id)) {
-                          selectedImagesUid.push(state.metadata[i].id);
-                        }
-                      }
-                      return { selectedImagesUid };
-                    });
-                  } else {
-                    // Select single item
-                    this.setState({
-                      selectedImagesUid: [imageUid],
-                    });
-                  }
-                }}
-                onDoubleClick={() => {
-                  this.props.annotateCallback?.(mitem.id);
-                }}
-                onKeyDown={(e: KeyboardEvent) => {
-                  if (
-                    e.shiftKey &&
-                    (e.key === "ArrowLeft" || e.key === "ArrowRight")
-                  ) {
-                    // Select consecutive images to the left or to the right of the clicked image.
-                    const index = this.getItemUidNextToLastSelected(
-                      e.key === "ArrowRight"
-                    );
-                    if (index !== null) {
-                      this.setState((state) => {
-                        const uid = state.metadata[index].id;
-                        if (state.selectedImagesUid.includes(uid)) {
-                          state.selectedImagesUid.pop();
-                        } else {
-                          state.selectedImagesUid.push(uid);
-                        }
-                        return {
-                          selectedImagesUid: state.selectedImagesUid,
-                        };
-                      });
-                    }
-                  } else if (e.key === "Escape") {
-                    // Deselect all
-                    this.setState({ selectedImagesUid: [] });
-                  }
-                }}
-              >
-                <Tile
-                  mitem={mitem}
-                  width={this.state.thumbnailWidth}
-                  height={this.state.thumbnailHeight}
-                />
-              </Button>
-              <LabelsPopover
-                id={mitem.id}
-                imageName={mitem.imageName}
-                labels={mitem.imageLabels}
-                updateLabels={this.updateLabels(itemIndex)}
-                restrictLabels={this.state.restrictLabels}
-                defaultLabels={this.state.defaultLabels}
-                multiLabel={this.state.multiLabel}
-              />
-            </Box>
-          </Grid>
-        </Fragment>
-      ));
+    const selectedImageAnnotators =
+      this.state.selectedImagesUid.size === 1
+        ? this.props.profiles
+            .filter((profile) =>
+              this.state.metadata
+                .find(
+                  (mitem) =>
+                    mitem.id ===
+                    [...this.state.selectedImagesUid.values()].pop()
+                )
+                .usersWithAnnotations.includes(profile.email)
+            )
+            .map((profile) => ({
+              label: `${profile.name} - ${profile.email}`,
+              email: profile.email,
+            }))
+        : [];
 
     return (
       <StylesProvider generateClassName={generateClassName("curate")}>
@@ -854,15 +734,17 @@ class UserInterface extends Component<Props, State> {
 
                   {deleteImageCard}
 
-                  {this.state.selectedImagesUid.length === 1 &&
+                  {this.state.selectedImagesUid.size === 1 &&
                   !this.state.selectMultipleImagesMode ? (
                     <MetadataDrawer
                       metadata={this.state.metadata.find(
-                        ({ id }) => id === this.state.selectedImagesUid[0]
+                        ({ id }) =>
+                          id ===
+                          [...this.state.selectedImagesUid.values()].pop()
                       )}
                       close={() => {
                         // deselect the image to close the drawer
-                        this.setState({ selectedImagesUid: [] });
+                        this.setState({ selectedImagesUid: new Set() });
                       }}
                     />
                   ) : (
@@ -895,7 +777,7 @@ class UserInterface extends Component<Props, State> {
                             "plugins-toolbox"
                           )}
                           metadata={this.state.metadata}
-                          selectedImagesUid={this.state.selectedImagesUid}
+                          selectedImagesUid={[...this.state.selectedImagesUid]}
                           updateImagesCallback={this.props.updateImagesCallback}
                           launchPluginSettingsCallback={
                             this.props.launchPluginSettingsCallback
@@ -905,6 +787,53 @@ class UserInterface extends Component<Props, State> {
                       )}
                     </>
                   )}
+
+                  {this.state.selectedImagesUid.size === 1 &&
+                    this.isOwnerOrMember() && (
+                      <Box
+                        display="flex"
+                        justifyContent="flex-end"
+                        sx={{ marginTop: "10px" }}
+                      >
+                        <MuiCard>
+                          <ViewAnnotationsDialog
+                            users={selectedImageAnnotators}
+                            annotateCallback={(
+                              username1: string,
+                              username2: string
+                            ) =>
+                              this.props.annotateCallback(
+                                [
+                                  ...this.state.selectedImagesUid.values(),
+                                ].pop(),
+                                username1,
+                                username2
+                              )
+                            }
+                            compare={false}
+                          />
+                        </MuiCard>
+                        <MuiCard sx={{ marginLeft: "10px" }}>
+                          <ViewAnnotationsDialog
+                            users={selectedImageAnnotators}
+                            annotateCallback={(
+                              username1: string,
+                              username2: string
+                            ) =>
+                              this.props.annotateCallback(
+                                [
+                                  ...this.state.selectedImagesUid.values(),
+                                ].pop(),
+                                username1,
+                                username2
+                              )
+                            }
+                            compare
+                          />
+                        </MuiCard>
+                      </Box>
+                    )}
+
                   <Box
                     display="flex"
                     justifyContent="space-between"
@@ -969,12 +898,44 @@ class UserInterface extends Component<Props, State> {
                   }}
                 >
                   {this.state.datasetViewType === "View Dataset as Images" ? (
-                    imagesView
+                    <TileView
+                      metadata={this.state.metadata.filter(
+                        (mitem) => mitem.filterShow
+                      )}
+                      selectedImagesUid={[
+                        this.state.selectedImagesUid,
+                        this.dispatchSelectedImagesUid,
+                      ]}
+                      thumbnailSize={this.state.thumbnailSize}
+                      isGrouped={this.state.isGrouped}
+                      selectMultipleImagesMode={
+                        this.state.selectMultipleImagesMode
+                      }
+                      sortedBy={this.state.sortedBy}
+                      onDoubleClick={(id) => {
+                        this.props.annotateCallback?.(id);
+                      }}
+                      labelsPopover={(mitem: MetaItem, index: number) => (
+                        <LabelsPopover
+                          id={mitem.id}
+                          imageName={mitem.imageName}
+                          labels={mitem.imageLabels}
+                          updateLabels={this.updateLabels(index)}
+                          restrictLabels={this.state.restrictLabels}
+                          defaultLabels={this.state.defaultLabels}
+                          multiLabel={this.state.multiLabel}
+                        />
+                      )}
+                    />
                   ) : (
                     <TableView
                       metadata={this.state.metadata.filter(
-                        (mitem) => mitem.selected
+                        (mitem) => mitem.filterShow
                       )}
+                      selectedImagesUid={[
+                        this.state.selectedImagesUid,
+                        this.dispatchSelectedImagesUid,
+                      ]}
                     />
                   )}
                 </Grid>

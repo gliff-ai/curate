@@ -100,6 +100,7 @@ export const metadataNameMap: MetadataNameMap = {
   resolution_x: "X Resolution",
   resolution_y: "Y Resolution",
   resolution_z: "Z Resolution",
+  assignees: "Assignees",
 };
 
 interface Props {
@@ -126,7 +127,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
 
   return (
     <>
-      <Card className={classes.card}>
+      <Card className={classes.card} sx={{ marginTop: "15px" }}>
         <Paper elevation={0} variant="outlined" className={classes.paperHeader}>
           <Typography className={classes.typographyHeader}>Metadata</Typography>
           <HtmlTooltip
@@ -177,7 +178,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                   <ListItemText
                     primaryTypographyProps={{ variant: "h6" }}
                     className={classes.metaKey}
-                    title={metadataNameMap[key] || key}
+                    title={`${metadataNameMap[key] || key}`}
                     primary={`${metadataNameMap[key] || key}:`}
                     classes={{
                       primary: classes.metaKey,
@@ -186,7 +187,7 @@ export default function MetadataDrawer(props: Props): ReactElement {
                   />
                   <ListItemText
                     className={classes.metaValue}
-                    title={props.metadata[key] as string}
+                    title={`${props.metadata[key] as string}`}
                     primary={
                       key === "imageLabels"
                         ? props.metadata[key].join(", ")

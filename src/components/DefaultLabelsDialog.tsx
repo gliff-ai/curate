@@ -15,6 +15,7 @@ import {
   Chip,
   InputBase,
 } from "@gliff-ai/style";
+import { tooltips } from "./Tooltips";
 
 interface Props {
   labels: string[];
@@ -58,10 +59,10 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   };
 
   const handleDeleteLabel = (label: string) => (): void => {
-    const oldLabels: string[] = props.labels;
-    oldLabels.splice(oldLabels.indexOf(label), 1);
+    const oldLabelsCopy: string[] = props.labels;
+    oldLabelsCopy.splice(oldLabelsCopy.indexOf(label), 1);
     props.updateDefaultLabels(
-      oldLabels,
+      oldLabelsCopy,
       props.restrictLabels,
       props.multiLabel,
       false
@@ -74,9 +75,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
       title="Set default labels"
       TriggerButton={
         <IconButton
-          tooltip={{
-            name: "Set default labels",
-          }}
+          tooltip={tooltips.defaultLabels}
           tooltipPlacement="top"
           icon={icons.annotationLabels}
           size="small"
@@ -107,7 +106,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           />
           <MuiIconbutton
             aria-label="add-label"
-            key={"button-add-default-label"}
+            key="button-add-default-label"
             onClick={handleAddLabel(inputString)}
           >
             <SVG

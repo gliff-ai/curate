@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { useState, ReactElement, ChangeEvent } from "react";
 import SVG from "react-inlinesvg";
 
@@ -135,7 +136,7 @@ export function LabelsPopover(props: Props): ReactElement {
           key={`button-add-${props.id}`}
           onClick={handleAddLabel(newLabel)}
           size="large"
-          sx={{ position: "absolute", right: "10px", top: "70px" }}
+          sx={{ position: "absolute", right: "10px", top: "55px" }}
         >
           <SVG
             src={icons.add}

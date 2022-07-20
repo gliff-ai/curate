@@ -23,7 +23,7 @@ const datasetType: DatasetViewType[] = [
   },
   {
     name: "View Dataset as Table",
-    icon: icons.tableViewer as string,
+    icon: icons.tableViewer,
     id: "table-dataset-view",
   },
 ];
@@ -76,6 +76,14 @@ const tooltips: Tooltips = {
   defaultLabels: {
     name: "Set default labels",
     icon: icons.annotationLabels,
+  },
+  viewAnnotation: {
+    name: "View Annotation",
+    icon: icons.imageViewer,
+  },
+  compareAnnotations: {
+    name: "Compare Annotations",
+    icon: icons.imageViewer,
   },
 };
 

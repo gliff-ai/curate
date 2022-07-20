@@ -1,39 +1,23 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { ChangeEvent, useState, useEffect, ReactElement } from "react";
 
-import makeStyles from "@mui/styles/makeStyles";
 import { Card, CardContent, Paper, TextField } from "@mui/material";
-import Autocomplete, { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
+import Autocomplete, {
+  AutocompleteRenderInputParams,
+} from "@mui/material/Autocomplete";
 import { BaseIconButton, theme } from "@gliff-ai/style";
 import { metadataNameMap } from "@/MetadataDrawer";
 import { tooltips } from "@/components/Tooltips";
 import { Metadata, MetaItem, Filter } from "@/interfaces";
 
-const useStyles = makeStyles({
-  root: {
-    display: "inline",
-  },
-  cardContent: {
-    backgroundColor: theme.palette.primary.light,
-    borderRadius: "9px",
-    marginTop: "15px",
-    height: "110px",
-    padding: "inherit",
-    marginBottom: "15px",
-  },
-  input1: {
-    paddingLeft: "10px",
-    width: "90%",
-  },
-  input2: {
-    paddingLeft: "10px",
-    width: "80%",
-    display: "inline-block",
-  },
-  inputField: {
-    fontSize: "11px",
-  },
-});
+const cardContent = {
+  backgroundColor: theme.palette.primary.light,
+  borderRadius: "9px",
+  marginTop: "15px",
+  height: "110px",
+  padding: "inherit",
+  marginBottom: "15px",
+};
 
 interface Props {
   metadata: Metadata;
@@ -61,7 +45,16 @@ const getLabelsFromKeys = (
 ): MetadataLabel[] => {
   // Just an example of how to exclude metadata from the list if we need
   if (
-    ["fileMetaVersion", "id", "thumbnail", "selected", "newGroup"].includes(key)
+    [
+      "fileMetaVersion",
+      "id",
+      "thumbnail",
+      "selected",
+      "newGroup",
+      "filterShow",
+      "usersWithAnnotations",
+      "fileName",
+    ].includes(key)
   )
     return acc;
 
@@ -78,7 +71,6 @@ function SearchBar({
   metadataKeys,
   callbackSearch,
 }: Props): ReactElement {
-  const classes = useStyles();
   const [inputKey, setInputKey] = useState<MetadataLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -88,7 +80,7 @@ function SearchBar({
     if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
     const options: Set<string> = new Set();
     metadata.forEach((mitem: MetaItem) => {
-      if (mitem.selected && mitem[inputKey.key] !== undefined) {
+      if (mitem.filterShow && mitem[inputKey.key] !== undefined) {
         const value = mitem[inputKey.key];
         if (Array.isArray(value)) {
           value.forEach((v) => options.add(v));
@@ -122,12 +114,12 @@ function SearchBar({
         callbackSearch({ key: inputKey.key, value: inputValue });
         e.preventDefault();
       }}
-      className={classes.root}
+      sx={{ display: "inline" }}
     >
-      <CardContent className={classes.cardContent}>
+      <CardContent sx={{ ...cardContent }}>
         <Autocomplete
           id="combobox-metadata-key"
-          className={classes.input1}
+          sx={{ paddingLeft: "10px", width: "90%" }}
           getOptionLabel={(option: MetadataLabel) => option.label}
           isOptionEqualToValue={(option, value) => option.label === value.label}
           onInputChange={(e: ChangeEvent, newInputKey: string) => {
@@ -146,7 +138,7 @@ function SearchBar({
         />
         <Autocomplete
           id="combobox-metadata-value"
-          className={classes.input2}
+          sx={{ paddingLeft: "10px", width: "80%", display: "inline-block" }}
           inputValue={inputValue}
           freeSolo
           onInputChange={(e: ChangeEvent, newInputValue: string) => {

@@ -1,18 +1,23 @@
 import { ReactElement } from "react";
 
-import {
-  DataGrid,
-  Chip,
-  Box,
-  Typography,
-  GridRenderCellParams,
-  GridColDef,
-  HtmlTooltip,
-} from "@gliff-ai/style";
-import { Metadata, MetaItem } from "@/interfaces";
+import { DataGrid, Chip, Box, Typography, HtmlTooltip } from "@gliff-ai/style";
+
+import type { GridRenderCellParams, GridColDef } from "@gliff-ai/style";
+import type { Metadata, MetaItem } from "@/interfaces";
+
+type SelectedImagesAction =
+  | {
+      type: "add" | "delete" | "toggle";
+      id: string;
+    }
+  | {
+      type: "set";
+      id: string[];
+    };
 
 interface Props {
   metadata: Metadata;
+  selectedImagesUid: [Set<string>, (action: SelectedImagesAction) => void];
 }
 
 const defaultColumns = [
@@ -76,6 +81,7 @@ const defaultColumns = [
     sortable: false,
   },
 ];
+
 const ignoreMetaColumns = [
   "imageName",
   "annotationProgress",
@@ -85,9 +91,12 @@ const ignoreMetaColumns = [
   "size",
   "id",
   "dimensions",
+  "filterShow",
 ];
 
-export function TableView({ metadata }: Props): ReactElement {
+export function TableView({ metadata, ...props }: Props): ReactElement {
+  const [selectedImagesUid, dispatch] = props.selectedImagesUid;
+
   const colsObj = metadata.reduce((acc, el) => {
     Object.keys(el).forEach((field) => {
       if (!ignoreMetaColumns.includes(field)) {
@@ -117,6 +126,13 @@ export function TableView({ metadata }: Props): ReactElement {
         sx={{ height: "82.7vh" }}
         hideFooterPagination
         pageSize={metadata.length}
+        onSelectionModelChange={(newSelectionModel) =>
+          dispatch({
+            type: "set",
+            id: newSelectionModel as string[], // MetaItem.id is a string
+          })
+        }
+        selectionModel={[...selectedImagesUid]}
       />
     </Box>
   );

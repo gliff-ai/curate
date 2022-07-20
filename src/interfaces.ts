@@ -13,12 +13,17 @@ type Profile = {
 type Metadata = MetaItem[];
 
 type MetaItem = {
-  [index: string]: string | string[] | boolean | number;
+  [index: string]: string | string[] | boolean | number | undefined;
 } & {
   id?: string;
   imageName?: string;
   imageLabels?: string[];
-  selected?: boolean; // TODO change this to "filtered" or something
+  filterShow?: boolean;
+  assignees?: string[];
+  numberOfDimensions?: "2" | "3"; // Not sure why these are strings?
+  dimensions?: string;
+  size?: string;
+  usersWithAnnotations?: string[];
 };
 
 type Filter = {
