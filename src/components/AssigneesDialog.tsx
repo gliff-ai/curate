@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import {
-  BaseTextButton,
+  Button,
   icons,
   MenuItem,
   FormControl,
-  Dialog,
+  Dialogue,
   IconButton,
   Chip,
   Box,
@@ -70,7 +70,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
           ))}
         </Select>
       </FormControl>
-      <BaseTextButton
+      <Button
         text="Assign"
         onClick={() => {
           props.updateAssignees(
@@ -90,7 +90,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
 
   return (
     <>
-      <Dialog
+      <Dialogue
         title="Assign selected images"
         close={closeDialog}
         TriggerButton={
@@ -112,7 +112,7 @@ export function AssigneesDialog(props: Props): React.ReactElement {
         >
           {multiInputForm}
         </Box>
-      </Dialog>
+      </Dialogue>
     </>
   );
 }
