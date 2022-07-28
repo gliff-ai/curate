@@ -670,6 +670,7 @@ class UserInterface extends Component<Props, State> {
           >{`${this.state.selectedImagesUid.size} images selected`}</ListItem>
           <ButtonGroup
             orientation="horizontal"
+            variant="text"
             size="small"
             sx={{
               border: "none",

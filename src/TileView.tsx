@@ -1,5 +1,5 @@
 import { KeyboardEvent, MouseEvent, Fragment, ReactElement } from "react";
-import { theme, Grid, Button, Box } from "@gliff-ai/style";
+import { theme, Grid,  Box, MuiButton } from "@gliff-ai/style";
 
 import { Metadata, MetaItem } from "@/interfaces";
 import { Tile } from "@/components";
@@ -82,7 +82,7 @@ export function TileView({
                 },
               }}
             >
-              <Button
+              <MuiButton
                 id="images"
                 onClick={(e: MouseEvent) => {
                   const { id } = mitem;
@@ -140,7 +140,7 @@ export function TileView({
                   width={thumbnailSize}
                   height={thumbnailSize}
                 />
-              </Button>
+              </MuiButton>
               {labelsPopover(mitem, itemIndex)}
             </Box>
           </Grid>
