@@ -17,7 +17,7 @@ import {
   InputLabel,
   FormControl,
   Select,
-  MuiButton
+  MuiButton,
 } from "@gliff-ai/style";
 import { kCombinations, shuffle } from "../helpers";
 import { Metadata, MetaItem, Profile, UserAccess } from "@/interfaces";
