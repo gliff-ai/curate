@@ -103,6 +103,12 @@ interface Props {
   saveMetadataCallback?: ((data: unknown) => void) | null;
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
+  logPluginCall?: (data: {
+    pluginName: string;
+    pluginType?: string;
+    imageUid: string;
+    imageMetadata?: Metadata;
+  }) => void;
 }
 
 interface State {
@@ -784,6 +790,7 @@ class UserInterface extends Component<Props, State> {
                             this.props.launchPluginSettingsCallback
                           }
                           saveMetadataCallback={this.props.saveMetadataCallback}
+                          logPluginCall={this.props.logPluginCall}
                         />
                       )}
                     </>
