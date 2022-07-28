@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useState, useEffect } from "react";
 import {
-  BaseTextButton,
+  Button,
   icons,
-  Dialog,
+  Dialogue,
   IconButton,
   Box,
   Autocomplete,
@@ -37,8 +37,8 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
   }, [close]);
 
   return (
-    <Dialog
-      title="View Annotations"
+    <Dialogue
+      title={props.compare ? "Compare Annotations" : "View Annotations"}
       TriggerButton={
         <IconButton
           icon={props.compare ? icons.convert : icons.showHidePassword}
@@ -112,7 +112,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
             justifyContent: "space-between",
           }}
         >
-          <BaseTextButton
+          <Button
             id="cancel-view-annotations"
             text="Cancel"
             onClick={() => {
@@ -120,7 +120,7 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
             }}
             variant="outlined"
           />
-          <BaseTextButton
+          <Button
             id="confirm-view-annotations"
             disabled={
               !props.users
@@ -138,6 +138,6 @@ export function ViewAnnotationsDialog(props: Props): React.ReactElement {
           />
         </Box>
       </Box>
-    </Dialog>
+    </Dialogue>
   );
 }

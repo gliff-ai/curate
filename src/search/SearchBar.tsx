@@ -52,6 +52,8 @@ const getLabelsFromKeys = (
       "selected",
       "newGroup",
       "filterShow",
+      "usersWithAnnotations",
+      "fileName",
     ].includes(key)
   )
     return acc;

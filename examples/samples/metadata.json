@@ -10,7 +10,8 @@
     "assignees": ["mike@gliff.app", "john@gliff.app", "sarah@gliff.app"],
     "fileMetaVersion": "1.0.0",
     "width": 1230,
-    "height": 2402
+    "height": 2402,
+    "usersWithAnnotations": ["mike@gliff.app", "sarah@gliff.app"]
   },
   {
     "imageName": "sample1.png",
@@ -23,7 +24,8 @@
     "assignees": ["sarah@gliff.app", "mike@gliff.app"],
     "fileMetaVersion": "1.0.0",
     "width": 1500,
-    "height": 3402
+    "height": 3402,
+    "usersWithAnnotations": ["mike@gliff.app", "sarah@gliff.app"]
   },
   {
     "imageName": "sample2.png",
@@ -36,7 +38,8 @@
     "assignees": ["mike@gliff.app", "john@gliff.app"],
     "fileMetaVersion": "1.0.0",
     "width": 396,
-    "height": 297
+    "height": 297,
+    "usersWithAnnotations": ["john@gliff.app"]
   },
   {
     "imageName": "sample3.png",
@@ -49,7 +52,8 @@
     "assignees": ["mike@gliff.app"],
     "fileMetaVersion": "1.0.0",
     "width": 252,
-    "height": 169
+    "height": 169,
+    "usersWithAnnotations": []
   },
   {
     "imageName": "sample4.png",
@@ -60,7 +64,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label4"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["mike@gliff.app", "sarah@gliff.app"]
   },
   {
     "imageName": "sample5.png",
@@ -71,7 +76,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["mike@gliff.app"]
   },
   {
     "imageName": "sample6.png",
@@ -82,7 +88,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "john@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["mike@gliff.app"]
   },
   {
     "imageName": "sample7.png",
@@ -93,7 +100,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "john@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["mike@gliff.app", "john@gliff.app"]
   },
   {
     "imageName": "sample8.png",
@@ -104,7 +112,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["mike@gliff.app", "sarah@gliff.app"]
   },
   {
     "imageName": "sample9.png",
@@ -115,7 +124,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "john@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["john@gliff.app"]
   },
   {
     "imageName": "sample10.png",
@@ -126,7 +136,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["mike@gliff.app", "sarah@gliff.app"]
   },
   {
     "imageName": "sample11.png",
@@ -137,7 +148,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["mike@gliff.app"]
   },
   {
     "imageName": "sample12.png",
@@ -148,7 +160,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": ["sarah@gliff.app"]
   },
   {
     "imageName": "sample13.png",
@@ -159,7 +172,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": []
   },
   {
     "imageName": "sample14.png",
@@ -170,7 +184,8 @@
     "numberOfChannels": "1",
     "imageLabels": ["label5", "label7"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": []
   },
   {
     "imageName": "sample15.png",
@@ -181,6 +196,7 @@
     "numberOfChannels": "1",
     "imageLabels": ["label2", "label7"],
     "assignees": ["mike@gliff.app", "sarah@gliff.app"],
-    "fileMetaVersion": "1.0.0"
+    "fileMetaVersion": "1.0.0",
+    "usersWithAnnotations": []
   }
 ]

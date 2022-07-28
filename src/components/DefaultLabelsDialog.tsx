@@ -1,10 +1,10 @@
 import { useState, ChangeEvent, useEffect } from "react";
 import SVG from "react-inlinesvg";
 import {
-  BaseTextButton,
+  Button,
   theme,
   icons,
-  Dialog,
+  Dialogue,
   IconButton,
   MuiIconbutton,
   Box,
@@ -70,7 +70,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
   };
 
   return (
-    <Dialog
+    <Dialogue
       close={closeDialog}
       title="Set default labels"
       TriggerButton={
@@ -178,7 +178,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               justifyContent: "space-between",
             }}
           >
-            <BaseTextButton
+            <Button
               id="cancel-default=labels"
               text="Cancel"
               onClick={() => {
@@ -192,7 +192,7 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
               }}
               variant="outlined"
             />
-            <BaseTextButton
+            <Button
               id="confirm-default-labels"
               disabled={props.labels.length < 1}
               text="Confirm"
@@ -210,6 +210,6 @@ export function DefaultLabelsDialog(props: Props): React.ReactElement {
           </Box>
         </CardContent>
       </Box>
-    </Dialog>
+    </Dialogue>
   );
 }
