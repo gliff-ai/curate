@@ -3,6 +3,8 @@ import { Dialog, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { theme, IconButton, icons } from "@gliff-ai/style";
 
+//TODO use Dialogue from STYLE 
+
 interface Props {
   children: JSX.Element | null;
   setChildren: Dispatch<SetStateAction<JSX.Element>>;

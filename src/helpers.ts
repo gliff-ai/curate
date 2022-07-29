@@ -70,8 +70,10 @@ const getLabelsFromKeys =
         "id",
         "thumbnail",
         "selected",
+        "usersWithAnnotations",
         "newGroup",
         "filterShow",
+        "fileName",
         ...excludedKeys,
       ].includes(key)
     )

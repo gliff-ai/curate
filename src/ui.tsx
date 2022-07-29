@@ -103,6 +103,12 @@ interface Props {
   restrictLabels?: boolean; // restrict image labels to defaultLabels
   multiLabel?: boolean;
   ZooDialog?: ReactNode;
+  logPluginCall?: (data: {
+    pluginName: string;
+    pluginType?: string;
+    imageUid: string;
+    imageMetadata?: Metadata;
+  }) => void;
 }
 
 interface State {
@@ -414,6 +420,7 @@ class UserInterface extends Component<Props, State> {
         numberOfChannels: images[i][0].length.toString(),
         imageLabels: [] as Array<string>,
         assignees: [],
+        usersWithAnnotations: [],
         thumbnail,
         selected: true,
         newGroup: false,
@@ -551,6 +558,7 @@ class UserInterface extends Component<Props, State> {
           >{`${this.state.selectedImagesUid.size} images selected`}</ListItem>
           <ButtonGroup
             orientation="horizontal"
+            variant="text"
             size="small"
             sx={{
               border: "none",
@@ -579,7 +587,7 @@ class UserInterface extends Component<Props, State> {
     );
     this.isOwnerOrMember();
 
-    const selectedImageAssignees =
+    const selectedImageAnnotators =
       this.state.selectedImagesUid.size === 1
         ? this.props.profiles
             .filter((profile) =>
@@ -589,7 +597,7 @@ class UserInterface extends Component<Props, State> {
                     mitem.id ===
                     [...this.state.selectedImagesUid.values()].pop()
                 )
-                .assignees.includes(profile.email)
+                .usersWithAnnotations.includes(profile.email)
             )
             .map((profile) => ({
               label: `${profile.name} - ${profile.email}`,
@@ -681,6 +689,7 @@ class UserInterface extends Component<Props, State> {
                             this.props.launchPluginSettingsCallback
                           }
                           saveMetadataCallback={this.props.saveMetadataCallback}
+                          logPluginCall={this.props.logPluginCall}
                         />
                       )}
                     </>
@@ -695,7 +704,7 @@ class UserInterface extends Component<Props, State> {
                       >
                         <MuiCard variant="outlined">
                           <ViewAnnotationsDialog
-                            users={selectedImageAssignees}
+                            users={selectedImageAnnotators}
                             annotateCallback={(
                               username1: string,
                               username2: string
@@ -713,7 +722,7 @@ class UserInterface extends Component<Props, State> {
                         </MuiCard>
                         <MuiCard sx={{ marginLeft: "10px" }}>
                           <ViewAnnotationsDialog
-                            users={selectedImageAssignees}
+                            users={selectedImageAnnotators}
                             annotateCallback={(
                               username1: string,
                               username2: string

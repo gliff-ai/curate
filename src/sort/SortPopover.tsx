@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useState, ChangeEvent } from "react";
 import {
-  BaseTextButton,
+  Button,
   RadioGroup,
   MenuItem,
   Paper,
@@ -151,7 +151,7 @@ export const SortPopover = ({
             </>
           )}
         </Paper>
-        <BaseTextButton
+        <Button
           text="Sort"
           onClick={() => {
             const { key } = inputKey;

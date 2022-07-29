@@ -93,6 +93,12 @@ interface Props {
   updateImagesCallback: () => void | null;
   launchPluginSettingsCallback: (() => void) | null;
   saveMetadataCallback: ((data: any) => void) | null;
+  logPluginCall?: (data: {
+    pluginName: string;
+    pluginType?: string;
+    imageUid: string;
+    imageMetadata?: Metadata;
+  }) => void;
 }
 
 export const PluginsAccordion = ({
@@ -104,6 +110,7 @@ export const PluginsAccordion = ({
   selectedImagesUid,
   saveMetadataCallback,
   launchPluginSettingsCallback,
+  logPluginCall,
 }: Props): ReactElement | null => {
   const classes = useStyles(expanded);
   const [error, setError] = useState<string | null>(null);
@@ -137,6 +144,12 @@ export const PluginsAccordion = ({
       }
 
       const response = await plugin.onClick(data);
+      logPluginCall({
+        pluginName: plugin.name,
+        pluginType: plugin.type,
+        imageUid: imageUids[0],
+        imageMetadata: data.metadata,
+      });
       if (updateImagesCallback) {
         updateImagesCallback();
       }

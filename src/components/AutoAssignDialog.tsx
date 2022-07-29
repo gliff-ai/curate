@@ -7,17 +7,17 @@ import {
   useMemo,
 } from "react";
 import {
-  BaseTextButton,
+  Button,
   icons,
   Alert,
-  Dialog,
+  Dialogue,
   Box,
   MenuItem,
   IconButton,
   InputLabel,
   FormControl,
   Select,
-  Button,
+  MuiButton,
 } from "@gliff-ai/style";
 import { kCombinations, shuffle } from "../helpers";
 import { Metadata, MetaItem, Profile, UserAccess } from "@/interfaces";
@@ -512,7 +512,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
           ))}
         </Select>
       </FormControl>
-      <BaseTextButton
+      <Button
         id="assign"
         text="Assign"
         onClick={autoAssignImages}
@@ -523,7 +523,7 @@ export function AutoAssignDialog(props: Props): ReactElement {
   );
 
   return (
-    <Dialog
+    <Dialogue
       title="Auto-Assign Images"
       TriggerButton={
         <IconButton
@@ -559,15 +559,15 @@ export function AutoAssignDialog(props: Props): ReactElement {
           <Alert severity={message.severity}>
             {message.text}
             {requiresConfirmation && (
-              <Button onClick={resetDefaults} color="inherit">
+              <MuiButton onClick={resetDefaults} color="inherit">
                 Ok
-              </Button>
+              </MuiButton>
             )}
           </Alert>
         ) : null}
 
         {dialogContent}
       </Box>
-    </Dialog>
+    </Dialogue>
   );
 }
