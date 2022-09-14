@@ -706,7 +706,7 @@ class UserInterface extends Component<Props, State> {
     this.isOwnerOrMember();
 
     const selectedImageAnnotators =
-      this.state.selectedImagesUid.size === 1
+      this.state.selectedImagesUid.size === 1 && this.props.profiles !== null
         ? this.props.profiles
             .filter((profile) =>
               this.state.metadata
