@@ -34,7 +34,7 @@
     "@mui/styles": "^5.9.2",
     "@mui/x-data-grid": "^5.15.0",
     "@percy/cli": "^1.7.2",
-    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/jest-dom": "^6.2.1",
     "@testing-library/react": "^12.1.5",
     "@types/jest": "^27.5.2",
     "@types/react": "^17.0.48",
