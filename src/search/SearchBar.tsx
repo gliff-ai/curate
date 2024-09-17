@@ -1,33 +1,27 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { ChangeEvent, useState, useEffect, ReactElement } from "react";
-
-import { Card, CardContent, Paper, TextField } from "@mui/material";
+import {
+  ChangeEvent,
+  useState,
+  useEffect,
+  ReactElement,
+  useCallback,
+} from "react";
+import { Card, Paper, TextField } from "@mui/material";
 import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
-import { BaseIconButton, theme } from "@gliff-ai/style";
-import { metadataNameMap } from "@/MetadataDrawer";
-import { tooltips } from "@/components/Tooltips";
-import { Metadata, MetaItem, Filter } from "@/interfaces";
+import { IconButton, theme, icons } from "@gliff-ai/style";
+import { Filters, FilterData, FilterDataItem } from "@/filter";
 
-const cardContent = {
-  backgroundColor: theme.palette.primary.light,
-  borderRadius: "9px",
-  marginTop: "15px",
-  height: "110px",
-  padding: "inherit",
-  marginBottom: "15px",
-};
-
-interface Props {
-  metadata: Metadata;
-  metadataKeys: string[];
-  callbackSearch: (filter: Filter) => void;
-}
-
-interface MetadataLabel {
+interface DataKeyLabel {
   key: string;
   label: string;
+}
+interface Props {
+  data: FilterData;
+  filters: Filters;
+  updateData: (func: (data: FilterData) => FilterData) => void;
+  getLabelsFromKeys: (acc: DataKeyLabel[], key: string) => DataKeyLabel[];
 }
 
 // To be able to style the dropdown list
@@ -39,47 +33,24 @@ const CustomPaper = (props: Record<string, unknown>) => (
   />
 );
 
-const getLabelsFromKeys = (
-  acc: MetadataLabel[],
-  key: string
-): MetadataLabel[] => {
-  // Just an example of how to exclude metadata from the list if we need
-  if (
-    [
-      "fileMetaVersion",
-      "id",
-      "thumbnail",
-      "selected",
-      "newGroup",
-      "filterShow",
-      "usersWithAnnotations",
-      "fileName",
-    ].includes(key)
-  )
-    return acc;
-
-  const label = metadataNameMap[key] || key;
-  acc.push({
-    label,
-    key,
-  });
-  return acc;
-};
-
 function SearchBar({
-  metadata,
-  metadataKeys,
-  callbackSearch,
+  data,
+  filters,
+  updateData,
+  getLabelsFromKeys,
 }: Props): ReactElement {
-  const [inputKey, setInputKey] = useState<MetadataLabel>();
+  const [dataKeys, setDataKeys] = useState<string[]>([]);
+  const [inputKey, setInputKey] = useState<DataKeyLabel>();
   const [inputOptions, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [metadataLabels, setMetadataLabels] = useState<MetadataLabel[]>([]);
+  const [dataKeyLabels, setDataKeyLabels] = useState<DataKeyLabel[]>([]);
 
-  const updateOptions = (): void => {
-    if (!inputKey?.key || !metadataKeys.includes(inputKey.key)) return;
+  const updateOptions = useCallback((): void => {
+    if (!inputKey?.key || !dataKeys.includes(inputKey.key)) return;
+
     const options: Set<string> = new Set();
-    metadata.forEach((mitem: MetaItem) => {
+
+    data.forEach((mitem: FilterDataItem) => {
       if (mitem.filterShow && mitem[inputKey.key] !== undefined) {
         const value = mitem[inputKey.key];
         if (Array.isArray(value)) {
@@ -89,56 +60,84 @@ function SearchBar({
         }
       }
     });
+
     options.add("All values");
     setOptions(Array.from(options));
-  };
+  }, [inputKey, data, dataKeys]);
 
   useEffect(() => {
-    if (inputValue !== "") setInputValue("");
-    updateOptions();
+    setInputValue("");
   }, [inputKey]);
 
   useEffect(() => {
-    if (!metadataKeys || metadataKeys.length === 0) return;
-    const labels = metadataKeys.reduce(
-      getLabelsFromKeys,
-      [] as MetadataLabel[]
-    );
-    setMetadataLabels(labels);
-  }, [metadataKeys]);
+    if (data.length > 0) {
+      setDataKeys(filters.getDataKeys(data[0]));
+    }
+  }, [data, filters]);
+
+  useEffect(() => {
+    updateOptions();
+  }, [updateOptions]);
+
+  useEffect(() => {
+    if (!dataKeys || dataKeys.length === 0) return;
+    const labels = dataKeys.reduce(getLabelsFromKeys, [] as DataKeyLabel[]);
+    setDataKeyLabels(labels);
+  }, [dataKeys, getLabelsFromKeys]);
 
   return (
     <Card
       component="form"
       onSubmit={(e) => {
-        callbackSearch({ key: inputKey.key, value: inputValue });
+        updateData((prevData) =>
+          filters.applyFilter(prevData, {
+            key: inputKey.key,
+            value: inputValue,
+          })
+        );
         e.preventDefault();
       }}
-      sx={{ display: "inline" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "9px",
+        backgroundColor: theme.palette.primary.light,
+        height: "110px",
+        padding: "10px",
+        marginTop: "15px",
+        marginBottom: "15px",
+      }}
     >
-      <CardContent sx={{ ...cardContent }}>
-        <Autocomplete
-          id="combobox-metadata-key"
-          sx={{ paddingLeft: "10px", width: "90%" }}
-          getOptionLabel={(option: MetadataLabel) => option.label}
-          isOptionEqualToValue={(option, value) => option.label === value.label}
-          onInputChange={(e: ChangeEvent, newInputKey: string) => {
-            // Match the text with the actual key we want
-            const metaLabel = metadataLabels.filter(
-              ({ label }) => label === newInputKey
-            );
+      <Autocomplete
+        id="combobox-metadata-key"
+        sx={{ "& > div > div": { height: "40px" } }}
+        getOptionLabel={(option: DataKeyLabel) => option.label}
+        isOptionEqualToValue={(option, value) => option.label === value.label}
+        onInputChange={(e: ChangeEvent, newInputKey: string) => {
+          // Match the text with the actual key we want
+          const metaLabel = dataKeyLabels.filter(
+            ({ label }) => label === newInputKey
+          );
 
-            setInputKey(metaLabel?.[0]);
-          }}
-          options={metadataLabels}
-          renderInput={(params: AutocompleteRenderInputParams) => (
-            <TextField {...params} label="Search Category" variant="standard" />
-          )}
-          PaperComponent={CustomPaper}
-        />
+          setInputKey(metaLabel?.[0]);
+        }}
+        options={dataKeyLabels}
+        renderInput={(params: AutocompleteRenderInputParams) => (
+          <TextField {...params} label="Search Category" variant="outlined" />
+        )}
+        PaperComponent={CustomPaper}
+      />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          alignItems: "center",
+          marginTop: "7px",
+        }}
+      >
         <Autocomplete
           id="combobox-metadata-value"
-          sx={{ paddingLeft: "10px", width: "80%", display: "inline-block" }}
+          sx={{ width: "100%", "& > div > div": { height: "40px" } }}
           inputValue={inputValue}
           freeSolo
           onInputChange={(e: ChangeEvent, newInputValue: string) => {
@@ -146,14 +145,17 @@ function SearchBar({
           }}
           options={inputOptions}
           renderInput={(params: AutocompleteRenderInputParams) => (
-            <TextField {...params} label="..." variant="standard" />
+            <TextField {...params} label="..." variant="outlined" />
           )}
           PaperComponent={CustomPaper}
         />
-
-        <BaseIconButton
+        <IconButton
+          sx={{ padding: 0 }}
           type="submit"
-          tooltip={tooltips.search}
+          icon={icons.search}
+          tooltip={{
+            name: "Search",
+          }}
           fill={null}
           onClick={(e) => {
             if (!inputKey) {
@@ -162,9 +164,9 @@ function SearchBar({
           }}
           tooltipPlacement="bottom"
         />
-      </CardContent>
+      </div>
     </Card>
   );
 }
 
-export { getLabelsFromKeys, SearchBar, MetadataLabel };
+export { SearchBar, DataKeyLabel };

@@ -26,10 +26,5 @@ type MetaItem = {
   usersWithAnnotations?: string[];
 };
 
-type Filter = {
-  key: string;
-  value: string;
-};
-
 export { UserAccess };
-export type { Profile, Metadata, MetaItem, Filter };
+export type { Profile, Metadata, MetaItem };

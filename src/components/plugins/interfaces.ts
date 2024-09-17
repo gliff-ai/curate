@@ -9,7 +9,7 @@ interface PluginElement {
 
 type PluginInput = Partial<{
   collectionUid: string;
-  imageUid: string;
+  imageUids: string[];
   metadata: Metadata;
 }>;
 
